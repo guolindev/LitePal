@@ -1,0 +1,85 @@
+package org.litepal.exceptions;
+
+/**
+ * When LitePal deals with CRUD actions of DataSupport, it may throw
+ * DataSupportException.
+ * 
+ * @author Tony Green
+ * @since 1.1
+ */
+public class DataSupportException extends RuntimeException {
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Thrown when models have invalid type for id fields. Only int or long is
+	 * supported.
+	 */
+	public static final String ID_TYPE_INVALID_EXCEPTION = "id type is not supported. Only int or long is acceptable for id";
+
+	/**
+	 * Thrown when the saving model is not an instance of DataSupport.
+	 */
+	public static final String MODEL_IS_NOT_AN_INSTANCE_OF_DATA_SUPPORT = " should be inherited from DataSupport";
+
+	/**
+	 * Thrown when developers use wrong field to declare many2one or many2many
+	 * associations.
+	 */
+	public static final String WRONG_FIELD_TYPE_FOR_ASSOCIATIONS = "The field to declare many2one or many2many associations should be List or Set.";
+
+	/**
+	 * Thrown when fail to save a model.
+	 */
+	public static final String SAVE_FAILED = "Save current model failed.";
+
+	/**
+	 * Thrown when there is no default constructor in model class to update.
+	 */
+	public static final String INSTANTIATION_EXCEPTION = " needs a default constructor.";
+
+	/**
+	 * Thrown when the parameters in conditions are incorrect.
+	 */
+	public static final String UPDATE_CONDITIONS_EXCEPTION = "The parameters in conditions are incorrect.";
+
+	/**
+	 * Constructor of DataSupportException.
+	 * 
+	 * @param errorMessage
+	 *            the description of this exception.
+	 */
+	public DataSupportException(String errorMessage) {
+		super(errorMessage);
+	}
+
+	/**
+	 * Thrown when the VM notices that a program tries to reference, on a class
+	 * or object, a method that does not exist.
+	 * 
+	 * @param className
+	 *            The class name.
+	 * @param methodName
+	 *            The method name which is missing.
+	 * @return Exception message.
+	 */
+	public static String noSuchMethodException(String className, String methodName) {
+		return "The " + methodName + " method in " + className
+				+ " class is necessary which does not exist.";
+	}
+
+	/**
+	 * Thrown when the virtual machine notices that a program tries to
+	 * reference, on a class or object, a field that does not exist.
+	 * 
+	 * @param className
+	 *            The class name.
+	 * @param fieldName
+	 *            The field name which is missing.
+	 * @return Exception message.
+	 */
+	public static String noSuchFieldExceptioin(String className, String fieldName) {
+		return "The " + fieldName + " field in " + className
+				+ " class is necessary which does not exist.";
+	}
+
+}
