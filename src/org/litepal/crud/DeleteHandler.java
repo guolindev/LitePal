@@ -1,13 +1,17 @@
 package org.litepal.crud;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.litepal.crud.model.AssociationsInfo;
 import org.litepal.exceptions.DataSupportException;
+import org.litepal.util.Const;
 import org.litepal.util.DBUtility;
+import org.litepal.util.LogUtil;
 
 import android.database.sqlite.SQLiteDatabase;
 
@@ -19,6 +23,8 @@ import android.database.sqlite.SQLiteDatabase;
  * @since 1.1
  */
 public class DeleteHandler extends DataHandler {
+
+	private List<String> foreignKeyTableToDelete;
 
 	/**
 	 * Initialize {@link DataHandler#mDatabase} for operating database. Do not
@@ -57,6 +63,23 @@ public class DeleteHandler extends DataHandler {
 			throw new DataSupportException(e.getMessage());
 		}
 		return 0;
+	}
+
+	private void analyzeAssociations(Class<?> modelClass) {
+		Collection<AssociationsInfo> associationInfos = getAssociationInfo(modelClass.getName());
+		for (AssociationsInfo associationInfo : associationInfos) {
+			if (associationInfo.getAssociationType() == Const.Model.MANY_TO_ONE
+					|| associationInfo.getAssociationType() == Const.Model.ONE_TO_ONE) {
+				String classHoldsForeignKey = associationInfo.getClassHoldsForeignKey();
+				if (!modelClass.getName().equals(classHoldsForeignKey)) {
+					getForeignKeyTableToDelete().add(classHoldsForeignKey);
+				}
+			} else if (associationInfo.getAssociationType() == Const.Model.MANY_TO_MANY) {
+			}
+		}
+		for (String s : getForeignKeyTableToDelete()) {
+			LogUtil.d(TAG, s);
+		}
 	}
 
 	/**
@@ -135,6 +158,16 @@ public class DeleteHandler extends DataHandler {
 					fkName + " = " + baseObj.getBaseObjId(), null);
 		}
 		return rowsAffected;
+	}
+
+	/**
+	 * @return the foreignKeyTableToDelete
+	 */
+	private List<String> getForeignKeyTableToDelete() {
+		if (foreignKeyTableToDelete == null) {
+			foreignKeyTableToDelete = new ArrayList<String>();
+		}
+		return foreignKeyTableToDelete;
 	}
 
 }
