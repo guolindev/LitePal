@@ -64,6 +64,15 @@ public class DeleteHandler extends DataHandler {
 		}
 		return 0;
 	}
+	
+	int onDelete(Class<?> modelClass, long id) {
+		try {
+			analyzeAssociations(modelClass);
+			return mDatabase.delete(getTableName(modelClass), "id = " + id, null);
+		} catch (Exception e) {
+			throw new DataSupportException(e.getMessage());
+		}
+	}
 
 	private void analyzeAssociations(Class<?> modelClass) {
 		Collection<AssociationsInfo> associationInfos = getAssociationInfo(modelClass.getName());

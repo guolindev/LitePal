@@ -184,18 +184,6 @@ class UpdateHandler extends DataHandler {
 	}
 
 	/**
-	 * Get the simple name of modelClass. Then change the case by the setting
-	 * rule in litepal.xml as table name.
-	 * 
-	 * @param modelClass
-	 *            Class of model to get table name from.
-	 * @return The table name of model.
-	 */
-	private String getTableName(Class<?> modelClass) {
-		return BaseUtility.changeCase(modelClass.getSimpleName());
-	}
-
-	/**
 	 * Check the number of question mark existed in conditions[0] equals the
 	 * number of rest conditions elements or not. If not equals, throws
 	 * DataSupportException.

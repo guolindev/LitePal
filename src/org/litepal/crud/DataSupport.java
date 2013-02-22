@@ -68,6 +68,11 @@ public abstract class DataSupport {
 	 */
 	private List<String> fieldsToSetToDefault;
 
+	public static synchronized int delete(Class<?> modelClass, long id) {
+		DeleteHandler deleteHandler = new DeleteHandler(Connector.getDatabase());
+		return deleteHandler.onDelete(modelClass, id);
+	}
+
 	/**
 	 * Updates the corresponding record by id with ContentValues. Returns the
 	 * number of affected rows.

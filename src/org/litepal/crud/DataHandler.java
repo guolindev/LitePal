@@ -277,6 +277,18 @@ abstract class DataHandler extends LitePalBase {
 	}
 	
 	/**
+	 * Get the simple name of modelClass. Then change the case by the setting
+	 * rule in litepal.xml as table name.
+	 * 
+	 * @param modelClass
+	 *            Class of model to get table name from.
+	 * @return The table name of model.
+	 */
+	protected String getTableName(Class<?> modelClass) {
+		return BaseUtility.changeCase(modelClass.getSimpleName());
+	}
+	
+	/**
 	 * Get the types of parameters for {@link ContentValues#put}. Need two
 	 * parameters. First is String type for key. Second is depend on field for
 	 * value.
