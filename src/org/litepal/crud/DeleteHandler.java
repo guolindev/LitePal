@@ -64,11 +64,13 @@ public class DeleteHandler extends DataHandler {
 		}
 		return 0;
 	}
-	
+
 	int onDelete(Class<?> modelClass, long id) {
 		try {
 			analyzeAssociations(modelClass);
-			return mDatabase.delete(getTableName(modelClass), "id = " + id, null);
+			int rowsAffected = deleteCascade(modelClass, id);
+			rowsAffected += mDatabase.delete(getTableName(modelClass), "id = " + id, null);
+			return rowsAffected;
 		} catch (Exception e) {
 			throw new DataSupportException(e.getMessage());
 		}
@@ -81,14 +83,23 @@ public class DeleteHandler extends DataHandler {
 					|| associationInfo.getAssociationType() == Const.Model.ONE_TO_ONE) {
 				String classHoldsForeignKey = associationInfo.getClassHoldsForeignKey();
 				if (!modelClass.getName().equals(classHoldsForeignKey)) {
-					getForeignKeyTableToDelete().add(classHoldsForeignKey);
+					String associatedTableName = DBUtility
+							.getTableNameByClassName(classHoldsForeignKey);
+					getForeignKeyTableToDelete().add(associatedTableName);
 				}
 			} else if (associationInfo.getAssociationType() == Const.Model.MANY_TO_MANY) {
 			}
 		}
-		for (String s : getForeignKeyTableToDelete()) {
-			LogUtil.d(TAG, s);
+	}
+
+	private int deleteCascade(Class<?> modelClass, long id) {
+		int rowsAffected = 0;
+		for (String associatedTableName : getForeignKeyTableToDelete()) {
+			LogUtil.d(TAG, "Delete values in " + associatedTableName);
+			String fkName = getForeignKeyColumnName(getTableName(modelClass));
+			rowsAffected += mDatabase.delete(associatedTableName, fkName + " = " + id, null);
 		}
+		return rowsAffected;
 	}
 
 	/**
