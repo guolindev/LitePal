@@ -87,8 +87,10 @@ public class One2OneAnalyzer extends AssociationsAnalyzer {
 	 */
 	private void bidirectionalCondition(DataSupport baseObj, DataSupport associatedModel) {
 		if (associatedModel.isSaved()) {
+			// use to update associated table after saving
 			baseObj.addAssociatedModelWithFK(associatedModel.getTableName(),
 					associatedModel.getBaseObjId());
+			// use to add foreign key value while saving
 			baseObj.addAssociatedModelWithoutFK(associatedModel.getTableName(),
 					associatedModel.getBaseObjId());
 		}
