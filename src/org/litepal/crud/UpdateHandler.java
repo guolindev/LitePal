@@ -33,8 +33,8 @@ class UpdateHandler extends DataHandler {
 
 	/**
 	 * The open interface for other classes in CRUD package to update. Using
-	 * baseObj to decide which table to update, and id to decide a specific
-	 * line. The value that need to update is stored in baseObj.
+	 * baseObj to decide which table to update, and id to decide a specific row.
+	 * The value that need to update is stored in baseObj.
 	 * 
 	 * @param baseObj
 	 *            Which table to update by model instance.
@@ -61,7 +61,7 @@ class UpdateHandler extends DataHandler {
 	/**
 	 * The open interface for other classes in CRUD package to update. Using
 	 * modelClass to decide which table to update, and id to decide a specific
-	 * line. The value that need to update is stored in ContentValues.
+	 * row. The value that need to update is stored in ContentValues.
 	 * 
 	 * @param modelClass
 	 *            Which table to update by class.
@@ -87,7 +87,7 @@ class UpdateHandler extends DataHandler {
 
 	/**
 	 * The open interface for other classes in CRUD package to update multiple
-	 * lines. Using baseObj to decide which table to update, and conditions
+	 * rows. Using baseObj to decide which table to update, and conditions
 	 * representing the WHERE part of an SQL statement. The value that need to
 	 * update is stored in baseObj.
 	 * 

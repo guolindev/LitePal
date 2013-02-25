@@ -68,6 +68,17 @@ public abstract class DataSupport {
 	 */
 	private List<String> fieldsToSetToDefault;
 
+	/**
+	 * Deletes the record in the database by id.<br>
+	 * The data in other tables which is referenced with the record will be
+	 * removed too.
+	 * 
+	 * @param modelClass
+	 *            Which table to delete from by class.
+	 * @param id
+	 *            Which record to delete.
+	 * @return The number of rows affected. Including cascade delete rows.
+	 */
 	public static synchronized int delete(Class<?> modelClass, long id) {
 		DeleteHandler deleteHandler = new DeleteHandler(Connector.getDatabase());
 		return deleteHandler.onDelete(modelClass, id);

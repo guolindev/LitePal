@@ -9,9 +9,9 @@ import java.util.Set;
 
 import org.litepal.crud.model.AssociationsInfo;
 import org.litepal.exceptions.DataSupportException;
+import org.litepal.util.BaseUtility;
 import org.litepal.util.Const;
 import org.litepal.util.DBUtility;
-import org.litepal.util.LogUtil;
 
 import android.database.sqlite.SQLiteDatabase;
 
@@ -24,6 +24,10 @@ import android.database.sqlite.SQLiteDatabase;
  */
 public class DeleteHandler extends DataHandler {
 
+	/**
+	 * To store associated tables of current model's table. Only used while
+	 * deleting by id.
+	 */
 	private List<String> foreignKeyTableToDelete;
 
 	/**
@@ -65,37 +69,77 @@ public class DeleteHandler extends DataHandler {
 		return 0;
 	}
 
+	/**
+	 * The open interface for other classes in CRUD package to delete. Using
+	 * modelClass to decide which table to delete from, and id to decide a
+	 * specific row. This method can action cascade delete. When the record is
+	 * deleted from database, all the referenced data such as foreign key value
+	 * will be removed too.
+	 * 
+	 * @param modelClass
+	 *            Which table to delete from.
+	 * @param id
+	 *            Which record to delete.
+	 * @return The number of rows affected. Including cascade delete rows.
+	 * @throws DataSupportException
+	 */
 	int onDelete(Class<?> modelClass, long id) {
 		try {
 			analyzeAssociations(modelClass);
 			int rowsAffected = deleteCascade(modelClass, id);
 			rowsAffected += mDatabase.delete(getTableName(modelClass), "id = " + id, null);
+			getForeignKeyTableToDelete().clear();
 			return rowsAffected;
 		} catch (Exception e) {
 			throw new DataSupportException(e.getMessage());
 		}
 	}
 
+	/**
+	 * Analyze the associations of modelClass and store the associated tables.
+	 * The associated tables might be used when deleting referenced data of a
+	 * specified row.
+	 * 
+	 * @param modelClass
+	 *            To get associations of this class.
+	 */
 	private void analyzeAssociations(Class<?> modelClass) {
 		Collection<AssociationsInfo> associationInfos = getAssociationInfo(modelClass.getName());
 		for (AssociationsInfo associationInfo : associationInfos) {
+			String associatedTableName = DBUtility.getTableNameByClassName(associationInfo
+					.getAssociatedClassName());
 			if (associationInfo.getAssociationType() == Const.Model.MANY_TO_ONE
 					|| associationInfo.getAssociationType() == Const.Model.ONE_TO_ONE) {
 				String classHoldsForeignKey = associationInfo.getClassHoldsForeignKey();
 				if (!modelClass.getName().equals(classHoldsForeignKey)) {
-					String associatedTableName = DBUtility
-							.getTableNameByClassName(classHoldsForeignKey);
 					getForeignKeyTableToDelete().add(associatedTableName);
 				}
 			} else if (associationInfo.getAssociationType() == Const.Model.MANY_TO_MANY) {
+				String joinTableName = DBUtility.getIntermediateTableName(getTableName(modelClass),
+						associatedTableName);
+				joinTableName = BaseUtility.changeCase(joinTableName);
+				getForeignKeyTableToDelete().add(joinTableName);
 			}
 		}
 	}
 
+	/**
+	 * Use the analyzed result of associations to delete referenced data. So
+	 * this method must be called after {@link #analyzeAssociations(Class)}.
+	 * There're two parts of referenced data to delete. The foreign key rows in
+	 * associated table and the foreign key rows in intermediate join table.
+	 * 
+	 * @param modelClass
+	 *            To get the table name and combine with id as a foreign key
+	 *            column.
+	 * @param id
+	 *            Delete all the rows which referenced with this id.
+	 * @return The number of rows affected in associated tables and intermediate
+	 *         join tables.
+	 */
 	private int deleteCascade(Class<?> modelClass, long id) {
 		int rowsAffected = 0;
 		for (String associatedTableName : getForeignKeyTableToDelete()) {
-			LogUtil.d(TAG, "Delete values in " + associatedTableName);
 			String fkName = getForeignKeyColumnName(getTableName(modelClass));
 			rowsAffected += mDatabase.delete(associatedTableName, fkName + " = " + id, null);
 		}
@@ -125,8 +169,8 @@ public class DeleteHandler extends DataHandler {
 	 * Use the analyzed result of associations to delete referenced data. So
 	 * this method must be called after
 	 * {@link #analyzeAssociations(DataSupport)}. There're two parts of
-	 * referenced data to delete. The foreign key rows in associated table and
-	 * the foreign key rows in intermediate join table.
+	 * referenced data to delete. The foreign key rows in associated tables and
+	 * the foreign key rows in intermediate join tables.
 	 * 
 	 * @param baseObj
 	 *            The record to delete. Now contains associations info.
@@ -181,7 +225,10 @@ public class DeleteHandler extends DataHandler {
 	}
 
 	/**
-	 * @return the foreignKeyTableToDelete
+	 * Get all the associated tables of current model's table. Only used while
+	 * deleting by id.
+	 * 
+	 * @return All the associated tables of current model's table.
 	 */
 	private List<String> getForeignKeyTableToDelete() {
 		if (foreignKeyTableToDelete == null) {
