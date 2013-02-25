@@ -14,7 +14,6 @@ import org.litepal.exceptions.DatabaseGenerateException;
 import org.litepal.util.BaseUtility;
 import org.litepal.util.Const;
 import org.litepal.util.DBUtility;
-import org.litepal.util.DSUtility;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
@@ -50,7 +49,7 @@ abstract class DataHandler extends LitePalBase {
 	 * @param supportedFields
 	 *            List of all supported fields.
 	 * @param values
-	 *           To store data of current model for persisting or updating.
+	 *            To store data of current model for persisting or updating.
 	 * @throws SecurityException
 	 * @throws IllegalArgumentException
 	 * @throws NoSuchMethodException
@@ -157,7 +156,7 @@ abstract class DataHandler extends LitePalBase {
 					dataSupport.getClass(), new Class[] { field.getType() });
 		}
 	}
-	
+
 	/**
 	 * Find all the associated models of currently model. Then add all the
 	 * associated models into {@link DataSupport#associatedModels} of baseObj.
@@ -275,7 +274,7 @@ abstract class DataHandler extends LitePalBase {
 		return changeCase(DBUtility.getIntermediateTableName(baseObj.getTableName(),
 				associatedTableName));
 	}
-	
+
 	/**
 	 * Get the simple name of modelClass. Then change the case by the setting
 	 * rule in litepal.xml as table name.
@@ -287,7 +286,7 @@ abstract class DataHandler extends LitePalBase {
 	protected String getTableName(Class<?> modelClass) {
 		return BaseUtility.changeCase(modelClass.getSimpleName());
 	}
-	
+
 	/**
 	 * Get the types of parameters for {@link ContentValues#put}. Need two
 	 * parameters. First is String type for key. Second is depend on field for
@@ -309,13 +308,46 @@ abstract class DataHandler extends LitePalBase {
 			parameterTypes = new Class[] { String.class, String.class };
 		} else {
 			if (field.getType().isPrimitive()) {
-				parameterTypes = new Class[] { String.class,
-						DSUtility.getObjectType(field.getType()) };
+				parameterTypes = new Class[] { String.class, getObjectType(field.getType()) };
 			} else {
 				parameterTypes = new Class[] { String.class, field.getType() };
 			}
 		}
 		return parameterTypes;
+	}
+
+	/**
+	 * Each primitive type has a corresponding object type. For example int and
+	 * Integer, boolean and Boolean. This method gives a way to turn primitive
+	 * type into object type.
+	 * 
+	 * @param primitiveType
+	 *            The class of primitive type.
+	 * @return If the passed in parameter is primitive type, return a
+	 *         corresponding object type. Otherwise return null.
+	 */
+	private Class<?> getObjectType(Class<?> primitiveType) {
+		if (primitiveType != null) {
+			if (primitiveType.isPrimitive()) {
+				String basicTypeName = primitiveType.getName();
+				if ("int".equals(basicTypeName)) {
+					return Integer.class;
+				} else if ("short".equals(basicTypeName)) {
+					return Short.class;
+				} else if ("long".equals(basicTypeName)) {
+					return Long.class;
+				} else if ("float".equals(basicTypeName)) {
+					return Float.class;
+				} else if ("double".equals(basicTypeName)) {
+					return Double.class;
+				} else if ("boolean".equals(basicTypeName)) {
+					return Boolean.class;
+				} else if ("char".equals(basicTypeName)) {
+					return Character.class;
+				}
+			}
+		}
+		return null;
 	}
 
 	/**
