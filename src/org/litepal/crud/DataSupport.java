@@ -93,6 +93,11 @@ public abstract class DataSupport {
 		}
 	}
 
+	public static synchronized int deleteAll(Class<?> modelClass, String[] conditions) {
+		DeleteHandler deleteHandler = new DeleteHandler(Connector.getDatabase());
+		return deleteHandler.onDeleteAll(modelClass, conditions);
+	}
+
 	/**
 	 * Updates the corresponding record by id with ContentValues. Returns the
 	 * number of affected rows.

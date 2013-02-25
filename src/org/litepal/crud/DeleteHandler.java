@@ -95,6 +95,16 @@ public class DeleteHandler extends DataHandler {
 		}
 	}
 
+	int onDeleteAll(Class<?> modelClass, String[] conditions) {
+		try {
+			checkConditionsCorrect(conditions);
+			return mDatabase.delete(getTableName(modelClass), getWhereClause(conditions),
+					getWhereArgs(conditions));
+		} catch (Exception e) {
+			throw new DataSupportException(e.getMessage());
+		}
+	}
+
 	/**
 	 * Analyze the associations of modelClass and store the associated tables.
 	 * The associated tables might be used when deleting referenced data of a
