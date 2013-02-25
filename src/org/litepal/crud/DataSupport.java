@@ -80,8 +80,17 @@ public abstract class DataSupport {
 	 * @return The number of rows affected. Including cascade delete rows.
 	 */
 	public static synchronized int delete(Class<?> modelClass, long id) {
-		DeleteHandler deleteHandler = new DeleteHandler(Connector.getDatabase());
-		return deleteHandler.onDelete(modelClass, id);
+		int rowsAffected = 0;
+		SQLiteDatabase db = Connector.getDatabase();
+		db.beginTransaction();
+		try {
+			DeleteHandler deleteHandler = new DeleteHandler(db);
+			rowsAffected = deleteHandler.onDelete(modelClass, id);
+			db.setTransactionSuccessful();
+			return rowsAffected;
+		} finally {
+			db.endTransaction();
+		}
 	}
 
 	/**
