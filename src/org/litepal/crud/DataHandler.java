@@ -217,6 +217,70 @@ abstract class DataHandler extends LitePalBase {
 	}
 
 	/**
+	 * Check the number of question mark existed in conditions[0] equals the
+	 * number of rest conditions elements or not. If not equals, throws
+	 * DataSupportException.
+	 * 
+	 * @param conditions
+	 *            A string array representing the WHERE part of an SQL
+	 *            statement.
+	 * @throws DataSupportException
+	 */
+	protected void checkConditionsCorrect(String[] conditions) {
+		if (conditions != null) {
+			int conditionsSize = conditions.length;
+			if (conditionsSize > 0) {
+				String whereClause = conditions[0];
+				int placeHolderSize = BaseUtility.count(whereClause, "?");
+				if (conditionsSize != placeHolderSize + 1) {
+					throw new DataSupportException(DataSupportException.UPDATE_CONDITIONS_EXCEPTION);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Get the WHERE clause to apply when updating or deleting multiple rows.
+	 * 
+	 * @param conditions
+	 *            A string array representing the WHERE part of an SQL
+	 *            statement.
+	 * @return The WHERE clause to apply when updating or deleting multiple
+	 *         rows.
+	 */
+	protected String getWhereClause(String[] conditions) {
+		if (isAffectAllLines(conditions)) {
+			return null;
+		}
+		if (conditions != null && conditions.length > 0) {
+			return conditions[0];
+		}
+		return null;
+	}
+
+	/**
+	 * Get the WHERE arguments to fill into where clause when updating or
+	 * deleting multiple rows.
+	 * 
+	 * @param conditions
+	 *            A string array representing the WHERE part of an SQL
+	 *            statement.
+	 * @return The WHERE arguments to fill into where clause when updating or
+	 *         deleting multiple rows.
+	 */
+	protected String[] getWhereArgs(String[] conditions) {
+		if (isAffectAllLines(conditions)) {
+			return null;
+		}
+		if (conditions != null && conditions.length > 1) {
+			String[] whereArgs = new String[conditions.length - 1];
+			System.arraycopy(conditions, 1, whereArgs, 0, conditions.length - 1);
+			return whereArgs;
+		}
+		return null;
+	}
+
+	/**
 	 * Do not suggest use this method to find DataSupport class from hierarchy.
 	 * Try to use DataSupport.class directly.
 	 * 
@@ -461,6 +525,36 @@ abstract class DataHandler extends LitePalBase {
 			return realFieldValue.equals(defaultFieldValue);
 		}
 		return realReturn == defaultReturn;
+	}
+
+	/**
+	 * Check the passing conditions represent to affect all lines or not. <br>
+	 * Here are the supported format means affect all lines.
+	 * 
+	 * <pre>
+	 * null
+	 * new String[] {}
+	 * new String[] { null }
+	 * new String[] { "" }
+	 * </pre>
+	 * 
+	 * @param conditions
+	 *            A string array representing the WHERE part of an SQL
+	 *            statement.
+	 * @return Affect all lines or not.
+	 */
+	private boolean isAffectAllLines(String[] conditions) {
+		if (conditions == null) {
+			return true;
+		}
+		if (conditions.length == 0) {
+			return true;
+		}
+		String whereClause = conditions[0];
+		if (whereClause == null || "".equals(whereClause.trim())) {
+			return true;
+		}
+		return false;
 	}
 
 }
