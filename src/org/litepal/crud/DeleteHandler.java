@@ -17,9 +17,12 @@ import android.database.sqlite.SQLiteDatabase;
 
 /**
  * This is a component under DataSupport. It deals with the deleting stuff as
- * primary task.
+ * primary task. If deletes a saved model or delete a record with id, the
+ * cascade delete function would work. But considering efficiency, if deletes
+ * with deleteAll method, the referenced data in other tables will not be
+ * affected. Developers should remove those referenced data by their own.
  * 
- * @author tony
+ * @author Tony Green
  * @since 1.1
  */
 public class DeleteHandler extends DataHandler {
