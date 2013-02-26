@@ -181,6 +181,32 @@ public abstract class DataSupport {
 	}
 
 	/**
+	 * Updates all records with details given if they match a set of conditions
+	 * supplied. This method constructs a single SQL UPDATE statement and sends
+	 * it to the database.
+	 * 
+	 * @param tableName
+	 *            Which table to update.
+	 * @param conditions
+	 *            A string array representing the WHERE part of an SQL
+	 *            statement. First parameter is the WHERE clause to apply when
+	 *            updating. The way of specifying place holders is to insert one
+	 *            or more question marks in the SQL. The first question mark is
+	 *            replaced by the second element of the array, the next question
+	 *            mark by the third, and so on. Passing null will update all
+	 *            rows.
+	 * @param values
+	 *            A map from column names to new column values. null is a valid
+	 *            value that will be translated to NULL.
+	 * @return The number of rows affected.
+	 */
+	public static synchronized int updateAll(String tableName, String[] conditions,
+			ContentValues values) {
+		UpdateHandler updateHandler = new UpdateHandler(Connector.getDatabase());
+		return updateHandler.onUpdateAll(tableName, conditions, values);
+	}
+
+	/**
 	 * Deletes the record in the database. The record must be saved already.<br>
 	 * The data in other tables which is referenced with the record will be
 	 * removed too.

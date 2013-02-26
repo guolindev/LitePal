@@ -1,7 +1,6 @@
 package org.litepal.crud;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.litepal.exceptions.DataSupportException;
@@ -64,7 +63,6 @@ class UpdateHandler extends DataHandler {
 	 * @param values
 	 *            A map from column names to new column values. null is a valid
 	 *            value that will be translated to NULL.
-	 * 
 	 * @return The number of rows affected.
 	 */
 	int onUpdate(Class<?> modelClass, long id, ContentValues values) {
@@ -88,16 +86,11 @@ class UpdateHandler extends DataHandler {
 	 * @return The number of rows affected.
 	 */
 	int onUpdateAll(DataSupport baseObj, String[] conditions) {
-		checkConditionsCorrect(conditions);
 		List<Field> supportedFields = getSupportedFields(baseObj.getClassName());
 		ContentValues values = new ContentValues();
 		putFieldsValue(baseObj, supportedFields, values);
 		putFieldsToDefaultValue(baseObj, values);
-		if (values.size() > 0) {
-			return mDatabase.update(baseObj.getTableName(), values, getWhereClause(conditions),
-					getWhereArgs(conditions));
-		}
-		return 0;
+		return doUpdateAllAction(baseObj.getTableName(), conditions, values);
 	}
 
 	/**
@@ -117,9 +110,48 @@ class UpdateHandler extends DataHandler {
 	 * @return The number of rows affected.
 	 */
 	int onUpdateAll(Class<?> modelClass, String[] conditions, ContentValues values) {
+		return doUpdateAllAction(getTableName(modelClass), conditions, values);
+	}
+
+	/**
+	 * The open interface for other classes in CRUD package to update multiple
+	 * rows. Using tableName to decide which table to update, and conditions
+	 * representing the WHERE part of an SQL statement. The value that need to
+	 * update is stored in ContentValues.
+	 * 
+	 * @param tableName
+	 *            Which table to update.
+	 * @param conditions
+	 *            A string array representing the WHERE part of an SQL
+	 *            statement.
+	 * @param values
+	 *            A map from column names to new column values. null is a valid
+	 *            value that will be translated to NULL.
+	 * @return The number of rows affected.
+	 */
+	int onUpdateAll(String tableName, String[] conditions, ContentValues values) {
+		return doUpdateAllAction(tableName, conditions, values);
+	}
+
+	/**
+	 * Do the action for updating multiple rows. It will check the validity of
+	 * conditions, then update rows in database. If the format of conditions is
+	 * invalid, throw DataSupportException.
+	 * 
+	 * @param tableName
+	 *            Which table to delete from.
+	 * @param conditions
+	 *            A string array representing the WHERE part of an SQL
+	 *            statement.
+	 * @param values
+	 *            A map from column names to new column values. null is a valid
+	 *            value that will be translated to NULL.
+	 * @return The number of rows affected.
+	 */
+	private int doUpdateAllAction(String tableName, String[] conditions, ContentValues values) {
 		checkConditionsCorrect(conditions);
 		if (values.size() > 0) {
-			return mDatabase.update(getTableName(modelClass), values, getWhereClause(conditions),
+			return mDatabase.update(tableName, values, getWhereClause(conditions),
 					getWhereArgs(conditions));
 		}
 		return 0;
@@ -133,12 +165,6 @@ class UpdateHandler extends DataHandler {
 	 *            Which table to update by model instance.
 	 * @param values
 	 *            To store data of current model for persisting or updating.
-	 * @throws IllegalAccessException
-	 * @throws SecurityException
-	 * @throws NoSuchFieldException
-	 * @throws IllegalArgumentException
-	 * @throws NoSuchMethodException
-	 * @throws InvocationTargetException
 	 */
 	private void putFieldsToDefaultValue(DataSupport baseObj, ContentValues values) {
 		String fieldName = null;
