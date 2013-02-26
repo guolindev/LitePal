@@ -85,10 +85,53 @@ public class DeleteHandler extends DataHandler {
 		return rowsAffected;
 	}
 
+	/**
+	 * The open interface for other classes in CRUD package to delete multiple
+	 * rows. Using modelClass to decide which table to delete from, and
+	 * conditions representing the WHERE part of an SQL statement.
+	 * 
+	 * @param modelClass
+	 *            Which table to delete from.
+	 * @param conditions
+	 *            A string array representing the WHERE part of an SQL
+	 *            statement.
+	 * @return The number of rows affected.
+	 */
 	int onDeleteAll(Class<?> modelClass, String[] conditions) {
+		return doDeleteAllAction(getTableName(modelClass), conditions);
+	}
+
+	/**
+	 * The open interface for other classes in CRUD package to delete multiple
+	 * rows. Using tableName to decide which table to delete from, and
+	 * conditions representing the WHERE part of an SQL statement.
+	 * 
+	 * @param tableName
+	 *            Which table to delete from.
+	 * @param conditions
+	 *            A string array representing the WHERE part of an SQL
+	 *            statement.
+	 * @return The number of rows affected.
+	 */
+	int onDeleteAll(String tableName, String[] conditions) {
+		return doDeleteAllAction(tableName, conditions);
+	}
+
+	/**
+	 * Do the action for deleting multiple rows. It will check the validity of
+	 * conditions, then delete values in database. If the format of conditions
+	 * is invalid, throw DataSupportException.
+	 * 
+	 * @param tableName
+	 *            Which table to delete from.
+	 * @param conditions
+	 *            A string array representing the WHERE part of an SQL
+	 *            statement.
+	 * @return The number of rows affected.
+	 */
+	private int doDeleteAllAction(String tableName, String[] conditions) {
 		checkConditionsCorrect(conditions);
-		return mDatabase.delete(getTableName(modelClass), getWhereClause(conditions),
-				getWhereArgs(conditions));
+		return mDatabase.delete(tableName, getWhereClause(conditions), getWhereArgs(conditions));
 	}
 
 	/**

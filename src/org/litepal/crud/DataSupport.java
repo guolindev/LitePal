@@ -115,6 +115,28 @@ public abstract class DataSupport {
 	}
 
 	/**
+	 * Deletes all records with details given if they match a set of conditions
+	 * supplied. This method constructs a single SQL DELETE statement and sends
+	 * it to the database.
+	 * 
+	 * @param tableName
+	 *            Which table to delete from.
+	 * @param conditions
+	 *            A string array representing the WHERE part of an SQL
+	 *            statement. First parameter is the WHERE clause to apply when
+	 *            updating. The way of specifying place holders is to insert one
+	 *            or more question marks in the SQL. The first question mark is
+	 *            replaced by the second element of the array, the next question
+	 *            mark by the third, and so on. Passing null will update all
+	 *            rows.
+	 * @return The number of rows affected.
+	 */
+	public static synchronized int deleteAll(String tableName, String[] conditions) {
+		DeleteHandler deleteHandler = new DeleteHandler(Connector.getDatabase());
+		return deleteHandler.onDeleteAll(tableName, conditions);
+	}
+
+	/**
 	 * Updates the corresponding record by id with ContentValues. Returns the
 	 * number of affected rows.
 	 * 
@@ -182,7 +204,7 @@ public abstract class DataSupport {
 	/**
 	 * Updates the corresponding record by id. Use setXxx to decide which
 	 * columns to update. <br>
-	 * <b>Note: <b> 1. If you set default value to a field, the corresponding
+	 * <b>Note: </b> 1. If you set default value to a field, the corresponding
 	 * column won't be updated. Use {@link #setToDefault(String)} to update
 	 * columns into default value. 2. This method couldn't update foreign key in
 	 * database. So do not use setXxx to set associations between models.<br>

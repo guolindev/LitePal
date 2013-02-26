@@ -102,7 +102,7 @@ class UpdateHandler extends DataHandler {
 
 	/**
 	 * The open interface for other classes in CRUD package to update multiple
-	 * lines. Using modelClass to decide which table to update, and conditions
+	 * rows. Using modelClass to decide which table to update, and conditions
 	 * representing the WHERE part of an SQL statement. The value that need to
 	 * update is stored in ContentValues.
 	 * 
