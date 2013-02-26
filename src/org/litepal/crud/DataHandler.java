@@ -59,12 +59,15 @@ abstract class DataHandler extends LitePalBase {
 	 * @throws ClassNotFoundException
 	 */
 	protected void putFieldsValue(DataSupport baseObj, List<Field> supportedFields,
-			ContentValues values) throws SecurityException, IllegalArgumentException,
-			NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-		for (Field field : supportedFields) {
-			if (!isIdColumn(field.getName())) {
-				putFieldsValueDependsOnSaveOrUpdate(baseObj, field, values);
+			ContentValues values) {
+		try {
+			for (Field field : supportedFields) {
+				if (!isIdColumn(field.getName())) {
+					putFieldsValueDependsOnSaveOrUpdate(baseObj, field, values);
+				}
 			}
+		} catch (Exception e) {
+			throw new DataSupportException(e.getMessage());
 		}
 	}
 
@@ -165,24 +168,21 @@ abstract class DataHandler extends LitePalBase {
 	 *            The class of base object.
 	 * @param foreignKeyId
 	 *            The id value of foreign key.
-	 * @throws SecurityException
-	 * @throws IllegalArgumentException
-	 * @throws NoSuchMethodException
-	 * @throws IllegalAccessException
-	 * @throws InvocationTargetException
 	 */
 	protected void analyzeAssociatedModels(DataSupport baseObj,
-			Collection<AssociationsInfo> associationInfos) throws SecurityException,
-			IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
-			InvocationTargetException {
-		for (AssociationsInfo associationInfo : associationInfos) {
-			if (associationInfo.getAssociationType() == Const.Model.MANY_TO_ONE) {
-				new Many2OneAnalyzer().analyze(baseObj, associationInfo);
-			} else if (associationInfo.getAssociationType() == Const.Model.ONE_TO_ONE) {
-				new One2OneAnalyzer().analyze(baseObj, associationInfo);
-			} else if (associationInfo.getAssociationType() == Const.Model.MANY_TO_MANY) {
-				new Many2ManyAnalyzer().analyze(baseObj, associationInfo);
+			Collection<AssociationsInfo> associationInfos) {
+		try {
+			for (AssociationsInfo associationInfo : associationInfos) {
+				if (associationInfo.getAssociationType() == Const.Model.MANY_TO_ONE) {
+					new Many2OneAnalyzer().analyze(baseObj, associationInfo);
+				} else if (associationInfo.getAssociationType() == Const.Model.ONE_TO_ONE) {
+					new One2OneAnalyzer().analyze(baseObj, associationInfo);
+				} else if (associationInfo.getAssociationType() == Const.Model.MANY_TO_MANY) {
+					new Many2ManyAnalyzer().analyze(baseObj, associationInfo);
+				}
 			}
+		} catch (Exception e) {
+			throw new DataSupportException(e.getMessage());
 		}
 	}
 
@@ -194,11 +194,8 @@ abstract class DataHandler extends LitePalBase {
 	 * @param baseObj
 	 *            Current model to update.
 	 * @return An empty instance of baseObj.
-	 * @throws IllegalAccessException
-	 * @throws DatabaseGenerateException
-	 * @throws DataSupportException
 	 */
-	protected DataSupport getEmptyModel(DataSupport baseObj) throws IllegalAccessException {
+	protected DataSupport getEmptyModel(DataSupport baseObj) {
 		if (tempEmptyModel != null) {
 			return tempEmptyModel;
 		}
@@ -213,6 +210,8 @@ abstract class DataHandler extends LitePalBase {
 					+ className);
 		} catch (InstantiationException e) {
 			throw new DataSupportException(className + DataSupportException.INSTANTIATION_EXCEPTION);
+		} catch (Exception e) {
+			throw new DataSupportException(e.getMessage());
 		}
 	}
 

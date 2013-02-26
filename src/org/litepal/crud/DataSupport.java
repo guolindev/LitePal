@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.litepal.exceptions.DataSupportException;
 import org.litepal.tablemanager.Connector;
 import org.litepal.util.BaseUtility;
 
@@ -93,6 +92,23 @@ public abstract class DataSupport {
 		}
 	}
 
+	/**
+	 * Deletes all records with details given if they match a set of conditions
+	 * supplied. This method constructs a single SQL DELETE statement and sends
+	 * it to the database.
+	 * 
+	 * @param modelClass
+	 *            Which table to delete from by class.
+	 * @param conditions
+	 *            A string array representing the WHERE part of an SQL
+	 *            statement. First parameter is the WHERE clause to apply when
+	 *            updating. The way of specifying place holders is to insert one
+	 *            or more question marks in the SQL. The first question mark is
+	 *            replaced by the second element of the array, the next question
+	 *            mark by the third, and so on. Passing null will update all
+	 *            rows.
+	 * @return The number of rows affected.
+	 */
 	public static synchronized int deleteAll(Class<?> modelClass, String[] conditions) {
 		DeleteHandler deleteHandler = new DeleteHandler(Connector.getDatabase());
 		return deleteHandler.onDeleteAll(modelClass, conditions);
@@ -110,8 +126,6 @@ public abstract class DataSupport {
 	 *            A map from column names to new column values. null is a valid
 	 *            value that will be translated to NULL.
 	 * @return The number of rows affected.
-	 * 
-	 * @throws DataSupportException
 	 */
 	public static synchronized int update(Class<?> modelClass, long id, ContentValues values) {
 		UpdateHandler updateHandler = new UpdateHandler(Connector.getDatabase());
@@ -137,7 +151,6 @@ public abstract class DataSupport {
 	 *            A map from column names to new column values. null is a valid
 	 *            value that will be translated to NULL.
 	 * @return The number of rows affected.
-	 * @throws DataSupportException
 	 */
 	public static synchronized int updateAll(Class<?> modelClass, String[] conditions,
 			ContentValues values) {
@@ -178,7 +191,6 @@ public abstract class DataSupport {
 	 * @param id
 	 *            Which record to update.
 	 * @return The number of rows affected.
-	 * @throws DataSupportException
 	 */
 	public synchronized int update(long id) {
 		UpdateHandler updateHandler = new UpdateHandler(Connector.getDatabase());
@@ -206,7 +218,6 @@ public abstract class DataSupport {
 	 *            mark by the third, and so on. Passing null will update all
 	 *            rows.
 	 * @return The number of rows affected.
-	 * @throws DataSupportException
 	 */
 	public synchronized int updateAll(String[] conditions) {
 		UpdateHandler updateHandler = new UpdateHandler(Connector.getDatabase());

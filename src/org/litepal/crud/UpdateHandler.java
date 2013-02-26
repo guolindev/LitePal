@@ -40,19 +40,14 @@ class UpdateHandler extends DataHandler {
 	 * @param id
 	 *            Which record to update.
 	 * @return The number of rows affected.
-	 * @throws DataSupportException
 	 */
 	int onUpdate(DataSupport baseObj, long id) {
 		List<Field> supportedFields = getSupportedFields(baseObj.getClassName());
-		try {
-			ContentValues values = new ContentValues();
-			putFieldsValue(baseObj, supportedFields, values);
-			putFieldsToDefaultValue(baseObj, values);
-			if (values.size() > 0) {
-				return mDatabase.update(baseObj.getTableName(), values, "id = " + id, null);
-			}
-		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage());
+		ContentValues values = new ContentValues();
+		putFieldsValue(baseObj, supportedFields, values);
+		putFieldsToDefaultValue(baseObj, values);
+		if (values.size() > 0) {
+			return mDatabase.update(baseObj.getTableName(), values, "id = " + id, null);
 		}
 		return 0;
 	}
@@ -71,17 +66,12 @@ class UpdateHandler extends DataHandler {
 	 *            value that will be translated to NULL.
 	 * 
 	 * @return The number of rows affected.
-	 * @throws DataSupportException
 	 */
 	int onUpdate(Class<?> modelClass, long id, ContentValues values) {
-		try {
-			if (values.size() > 0) {
-				return mDatabase.update(getTableName(modelClass), values, "id = " + id, null);
-			}
-			return 0;
-		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage());
+		if (values.size() > 0) {
+			return mDatabase.update(getTableName(modelClass), values, "id = " + id, null);
 		}
+		return 0;
 	}
 
 	/**
@@ -96,24 +86,18 @@ class UpdateHandler extends DataHandler {
 	 *            A string array representing the WHERE part of an SQL
 	 *            statement.
 	 * @return The number of rows affected.
-	 * 
-	 * @throws DataSupportException
 	 */
 	int onUpdateAll(DataSupport baseObj, String[] conditions) {
+		checkConditionsCorrect(conditions);
 		List<Field> supportedFields = getSupportedFields(baseObj.getClassName());
-		try {
-			checkConditionsCorrect(conditions);
-			ContentValues values = new ContentValues();
-			putFieldsValue(baseObj, supportedFields, values);
-			putFieldsToDefaultValue(baseObj, values);
-			if (values.size() > 0) {
-				return mDatabase.update(baseObj.getTableName(), values, getWhereClause(conditions),
-						getWhereArgs(conditions));
-			}
-			return 0;
-		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage());
+		ContentValues values = new ContentValues();
+		putFieldsValue(baseObj, supportedFields, values);
+		putFieldsToDefaultValue(baseObj, values);
+		if (values.size() > 0) {
+			return mDatabase.update(baseObj.getTableName(), values, getWhereClause(conditions),
+					getWhereArgs(conditions));
 		}
+		return 0;
 	}
 
 	/**
@@ -131,20 +115,14 @@ class UpdateHandler extends DataHandler {
 	 *            A map from column names to new column values. null is a valid
 	 *            value that will be translated to NULL.
 	 * @return The number of rows affected.
-	 * 
-	 * @throws DataSupportException
 	 */
 	int onUpdateAll(Class<?> modelClass, String[] conditions, ContentValues values) {
-		try {
-			checkConditionsCorrect(conditions);
-			if (values.size() > 0) {
-				return mDatabase.update(getTableName(modelClass), values,
-						getWhereClause(conditions), getWhereArgs(conditions));
-			}
-			return 0;
-		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage());
+		checkConditionsCorrect(conditions);
+		if (values.size() > 0) {
+			return mDatabase.update(getTableName(modelClass), values, getWhereClause(conditions),
+					getWhereArgs(conditions));
 		}
+		return 0;
 	}
 
 	/**
@@ -162,9 +140,7 @@ class UpdateHandler extends DataHandler {
 	 * @throws NoSuchMethodException
 	 * @throws InvocationTargetException
 	 */
-	private void putFieldsToDefaultValue(DataSupport baseObj, ContentValues values)
-			throws IllegalAccessException, SecurityException, IllegalArgumentException,
-			NoSuchMethodException, InvocationTargetException {
+	private void putFieldsToDefaultValue(DataSupport baseObj, ContentValues values) {
 		String fieldName = null;
 		try {
 			DataSupport emptyModel = getEmptyModel(baseObj);
@@ -179,6 +155,8 @@ class UpdateHandler extends DataHandler {
 		} catch (NoSuchFieldException e) {
 			throw new DataSupportException(DataSupportException.noSuchFieldExceptioin(
 					baseObj.getClassName(), fieldName));
+		} catch (Exception e) {
+			throw new DataSupportException(e.getMessage());
 		}
 	}
 

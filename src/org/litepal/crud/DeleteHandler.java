@@ -52,19 +52,14 @@ public class DeleteHandler extends DataHandler {
 	 * @param baseObj
 	 *            The record to delete.
 	 * @return The number of rows affected. Including cascade delete rows.
-	 * @throws DataSupportException
 	 */
 	int onDelete(DataSupport baseObj) {
-		try {
-			if (baseObj.isSaved()) {
-				analyzeAssociations(baseObj);
-				int rowsAffected = deleteCascade(baseObj);
-				rowsAffected += mDatabase.delete(baseObj.getTableName(),
-						"id = " + baseObj.getBaseObjId(), null);
-				return rowsAffected;
-			}
-		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage());
+		if (baseObj.isSaved()) {
+			analyzeAssociations(baseObj);
+			int rowsAffected = deleteCascade(baseObj);
+			rowsAffected += mDatabase.delete(baseObj.getTableName(),
+					"id = " + baseObj.getBaseObjId(), null);
+			return rowsAffected;
 		}
 		return 0;
 	}
@@ -81,28 +76,19 @@ public class DeleteHandler extends DataHandler {
 	 * @param id
 	 *            Which record to delete.
 	 * @return The number of rows affected. Including cascade delete rows.
-	 * @throws DataSupportException
 	 */
 	int onDelete(Class<?> modelClass, long id) {
-		try {
-			analyzeAssociations(modelClass);
-			int rowsAffected = deleteCascade(modelClass, id);
-			rowsAffected += mDatabase.delete(getTableName(modelClass), "id = " + id, null);
-			getForeignKeyTableToDelete().clear();
-			return rowsAffected;
-		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage());
-		}
+		analyzeAssociations(modelClass);
+		int rowsAffected = deleteCascade(modelClass, id);
+		rowsAffected += mDatabase.delete(getTableName(modelClass), "id = " + id, null);
+		getForeignKeyTableToDelete().clear();
+		return rowsAffected;
 	}
 
 	int onDeleteAll(Class<?> modelClass, String[] conditions) {
-		try {
-			checkConditionsCorrect(conditions);
-			return mDatabase.delete(getTableName(modelClass), getWhereClause(conditions),
-					getWhereArgs(conditions));
-		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage());
-		}
+		checkConditionsCorrect(conditions);
+		return mDatabase.delete(getTableName(modelClass), getWhereClause(conditions),
+				getWhereArgs(conditions));
 	}
 
 	/**
@@ -168,11 +154,14 @@ public class DeleteHandler extends DataHandler {
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	private void analyzeAssociations(DataSupport baseObj) throws SecurityException,
-			IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
-			InvocationTargetException {
-		Collection<AssociationsInfo> associationInfos = getAssociationInfo(baseObj.getClassName());
-		analyzeAssociatedModels(baseObj, associationInfos);
+	private void analyzeAssociations(DataSupport baseObj) {
+		try {
+			Collection<AssociationsInfo> associationInfos = getAssociationInfo(baseObj
+					.getClassName());
+			analyzeAssociatedModels(baseObj, associationInfos);
+		} catch (Exception e) {
+			throw new DataSupportException(e.getMessage());
+		}
 	}
 
 	/**
