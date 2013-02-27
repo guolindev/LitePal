@@ -480,8 +480,8 @@ public abstract class DataSupport {
 
 	/**
 	 * Get the associated model's map of self model. It can be used for
-	 * associations actions of CRUD. The key is the name of associated model.
-	 * The value is the id of associated model.
+	 * associations actions of CRUD. The key is the name of associated model's
+	 * table. The value is the id of associated model.
 	 * 
 	 * @return An associated model's map to save self model with foreign key.
 	 */

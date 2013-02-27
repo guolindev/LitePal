@@ -1,8 +1,11 @@
 package org.litepal.crud;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
+import org.litepal.crud.model.AssociationsInfo;
 import org.litepal.exceptions.DataSupportException;
 
 import android.content.ContentValues;
@@ -45,10 +48,11 @@ class UpdateHandler extends DataHandler {
 		ContentValues values = new ContentValues();
 		putFieldsValue(baseObj, supportedFields, values);
 		putFieldsToDefaultValue(baseObj, values);
+		int rowsAffected = doUpdateAssociations(baseObj, id, values);
 		if (values.size() > 0) {
-			return mDatabase.update(baseObj.getTableName(), values, "id = " + id, null);
+			rowsAffected += mDatabase.update(baseObj.getTableName(), values, "id = " + id, null);
 		}
-		return 0;
+		return rowsAffected;
 	}
 
 	/**
@@ -184,6 +188,34 @@ class UpdateHandler extends DataHandler {
 		} catch (Exception e) {
 			throw new DataSupportException(e.getMessage());
 		}
+	}
+
+	/**
+	 * Analyze the associations of baseObj and store the result in it. The
+	 * associations will be used when deleting referenced data of baseObj.
+	 * 
+	 * @param baseObj
+	 *            The record to update.
+	 */
+	private void analyzeAssociations(DataSupport baseObj) {
+		try {
+			Collection<AssociationsInfo> associationInfos = getAssociationInfo(baseObj
+					.getClassName());
+			analyzeAssociatedModels(baseObj, associationInfos);
+		} catch (Exception e) {
+			throw new DataSupportException(e.getMessage());
+		}
+	}
+
+	private int doUpdateAssociations(DataSupport baseObj, long id, ContentValues values) {
+		int rowsAffected = 0;
+		analyzeAssociations(baseObj);
+		Map<String, Long> associatedModelMap = baseObj.getAssociatedModelsMapWithoutFK();
+		for (String associatedTable : associatedModelMap.keySet()) {
+			String fkName = getForeignKeyColumnName(associatedTable);
+			values.put(fkName, associatedModelMap.get(associatedTable));
+		}
+		return rowsAffected;
 	}
 
 }
