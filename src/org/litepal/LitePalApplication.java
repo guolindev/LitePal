@@ -28,12 +28,10 @@ public class LitePalApplication extends Application {
 	private static Context mContext;
 
 	/**
-	 * Initialize application context.
+	 * Construct of LitePalApplication. Initialize application context.
 	 */
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		mContext = getApplicationContext();
+	public LitePalApplication() {
+		mContext = this;
 	}
 
 	/**
