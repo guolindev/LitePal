@@ -278,6 +278,27 @@ abstract class DataHandler extends LitePalBase {
 		}
 		return null;
 	}
+	
+	/**
+	 * Get the where clause by the passed in id collection to update tables.
+	 * 
+	 * @param ids
+	 *            The id collection.
+	 * @return The where clause to execute.
+	 */
+	protected String getWhereOfIdsWithOr(Collection<Long> ids) {
+		StringBuilder whereClause = new StringBuilder();
+		boolean needOr = false;
+		for (long id : ids) {
+			if (needOr) {
+				whereClause.append(" or ");
+			}
+			needOr = true;
+			whereClause.append("id = ");
+			whereClause.append(id);
+		}
+		return changeCase(whereClause.toString());
+	}
 
 	/**
 	 * Do not suggest use this method to find DataSupport class from hierarchy.

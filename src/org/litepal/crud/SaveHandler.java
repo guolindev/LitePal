@@ -8,7 +8,6 @@ import java.util.Set;
 
 import org.litepal.crud.model.AssociationsInfo;
 import org.litepal.exceptions.DataSupportException;
-import static org.litepal.util.BaseUtility.*;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
@@ -326,8 +325,8 @@ class SaveHandler extends DataHandler {
 		ContentValues values = new ContentValues();
 		for (String associatedTableName : associatedModelMap.keySet()) {
 			values.clear();
-			String foreignKeyName = changeCase(getForeignKeyColumnName(baseObj.getTableName()));
-			values.put(foreignKeyName, baseObj.getBaseObjId());
+			String fkName = getForeignKeyColumnName(baseObj.getTableName());
+			values.put(fkName, baseObj.getBaseObjId());
 			Set<Long> ids = associatedModelMap.get(associatedTableName);
 			if (ids != null && !ids.isEmpty()) {
 				mDatabase.update(associatedTableName, values, getWhereOfIdsWithOr(ids), null);
@@ -379,27 +378,6 @@ class SaveHandler extends DataHandler {
 				mDatabase.insert(joinTableName, null, values);
 			}
 		}
-	}
-
-	/**
-	 * Get the where clause by the passed in id collection to update tables.
-	 * 
-	 * @param ids
-	 *            The id collection.
-	 * @return The where clause to execute.
-	 */
-	private String getWhereOfIdsWithOr(Collection<Long> ids) {
-		StringBuilder whereClause = new StringBuilder();
-		boolean needOr = false;
-		for (long id : ids) {
-			if (needOr) {
-				whereClause.append(" or ");
-			}
-			needOr = true;
-			whereClause.append("id = ");
-			whereClause.append(id);
-		}
-		return changeCase(whereClause.toString());
 	}
 
 	/**

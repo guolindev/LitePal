@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.litepal.crud.model.AssociationsInfo;
 import org.litepal.exceptions.DataSupportException;
@@ -48,11 +49,10 @@ class UpdateHandler extends DataHandler {
 		ContentValues values = new ContentValues();
 		putFieldsValue(baseObj, supportedFields, values);
 		putFieldsToDefaultValue(baseObj, values);
-		int rowsAffected = doUpdateAssociations(baseObj, id, values);
 		if (values.size() > 0) {
-			rowsAffected += mDatabase.update(baseObj.getTableName(), values, "id = " + id, null);
+			return mDatabase.update(baseObj.getTableName(), values, "id = " + id, null);
 		}
-		return rowsAffected;
+		return 0;
 	}
 
 	/**
@@ -191,8 +191,21 @@ class UpdateHandler extends DataHandler {
 	}
 
 	/**
+	 * Unused currently.
+	 */
+	@SuppressWarnings("unused")
+	private int doUpdateAssociations(DataSupport baseObj, long id, ContentValues values) {
+		int rowsAffected = 0;
+		analyzeAssociations(baseObj);
+		updateSelfTableForeignKey(baseObj, values);
+		rowsAffected += updateAssociatedTableForeignKey(baseObj, id);
+		return rowsAffected;
+	}
+
+	/**
 	 * Analyze the associations of baseObj and store the result in it. The
 	 * associations will be used when deleting referenced data of baseObj.
+	 * Unused currently.
 	 * 
 	 * @param baseObj
 	 *            The record to update.
@@ -207,15 +220,33 @@ class UpdateHandler extends DataHandler {
 		}
 	}
 
-	private int doUpdateAssociations(DataSupport baseObj, long id, ContentValues values) {
-		int rowsAffected = 0;
-		analyzeAssociations(baseObj);
+	/**
+	 * Unused currently.
+	 */
+	private void updateSelfTableForeignKey(DataSupport baseObj, ContentValues values) {
 		Map<String, Long> associatedModelMap = baseObj.getAssociatedModelsMapWithoutFK();
 		for (String associatedTable : associatedModelMap.keySet()) {
 			String fkName = getForeignKeyColumnName(associatedTable);
 			values.put(fkName, associatedModelMap.get(associatedTable));
 		}
-		return rowsAffected;
+	}
+
+	/**
+	 * Unused currently.
+	 */
+	private int updateAssociatedTableForeignKey(DataSupport baseObj, long id) {
+		Map<String, Set<Long>> associatedModelMap = baseObj.getAssociatedModelsMapWithFK();
+		ContentValues values = new ContentValues();
+		for (String associatedTable : associatedModelMap.keySet()) {
+			values.clear();
+			String fkName = getForeignKeyColumnName(baseObj.getTableName());
+			values.put(fkName, id);
+			Set<Long> ids = associatedModelMap.get(associatedTable);
+			if (ids != null && !ids.isEmpty()) {
+				return mDatabase.update(associatedTable, values, getWhereOfIdsWithOr(ids), null);
+			}
+		}
+		return 0;
 	}
 
 }
