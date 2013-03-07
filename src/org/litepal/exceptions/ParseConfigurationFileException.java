@@ -13,7 +13,7 @@ public class ParseConfigurationFileException extends RuntimeException {
 	/**
 	 * can not find the litepal.xml file by the given id.
 	 */
-	public static final String CAN_NOT_FIND_LITEPAL_FILE = "can not find the litepal.xml file";
+	public static final String CAN_NOT_FIND_LITEPAL_FILE = "litepal.xml file is missing. Please ensure it under assets folder.";
 
 	/**
 	 * can not parse the litepal.xml, check if it's in correct format.

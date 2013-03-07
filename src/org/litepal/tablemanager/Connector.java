@@ -97,7 +97,7 @@ public class Connector {
 	 */
 	private static LitePalOpenHelper buildConnection() {
 		if (mLitePalAttr == null) {
-			LitePalParser.parseBySAX();
+			LitePalParser.parseLitePalConfiguration();
 			mLitePalAttr = LitePalAttr.getInstance();
 		}
 		if (mLitePalAttr.checkSelfValid()) {

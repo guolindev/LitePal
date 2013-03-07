@@ -8,24 +8,24 @@
 		For example:    
     	<dbname value="demo" ></dbname>
 		
-		Note that this mark is necessary.    -->
+		Note that this tag is necessary.    -->
     <dbname value="demo" ></dbname>
 
     <!--
     	Define the version of your codes currently is. Each time you 
     	want to upgrade your database, the version mark will help
     	you. Using LitePal to upgrade database is very simple. Modify
-    	the models you defined in the mapping mark, and just make the
+    	the models you defined in the mapping tag, and just make the
     	value in version mark plus one, the upgrade of database will
     	be processed automaticly without concern.
 		For example:    
     	<version value="1" ></version>
 		    	
-    	Note that this mark is necessary.    -->
+    	Note that this tag is necessary.    -->
     <version value="1" ></version>
 
     <!--
-    	Define your models in the list with mapping mark, LitePal will create
+    	Define your models in the list with mapping tag, LitePal will create
     	tables for each mapping class with all the supported fields
     	defined in models into corresponding columns. Remeber to use
     	the full name of class, or LitePal won't be able to find it.
@@ -35,7 +35,7 @@
     		<mapping class="com.test.model.Magazine"></mapping>
     	</list>
     	
-    	Note that the list mark and mapping mark are necessary.    -->
+    	Note that the list tag and mapping tag are necessary.    -->
     <list>
     </list>
 
@@ -46,13 +46,13 @@
     	by default while creating or upgrading database. Users can change
     	this behavior into the styles their like. "keep" will keep the
     	cases of classes and fields. "upper" will turn all classes names
-    	and fields names into uppercase. "lower" will act as default. 
+    	and fields names into uppercase. "lower" will act as default.
     	Do not change the value after you run your app for the first time,
     	or it might cause the exception that column can not be found.
     	value options: keep lower upper
     	For example:    
     	<cases value="lower" ></cases>
     	
-		Note that this mark is optional for developers.    -->
+		Note that this tag is optional for developers.    -->
 
 </litepal>

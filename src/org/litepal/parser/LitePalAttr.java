@@ -99,12 +99,12 @@ public final class LitePalAttr {
 	}
 
 	/**
-	 * Add a class name into the current list.
+	 * Add a class name into the current mapping model list.
 	 * 
 	 * @param className
-	 *            The class name.
+	 *            Full package class name.
 	 */
-	public void addClassName(String className) {
+	void addClassName(String className) {
 		getClassNames().add(className);
 	}
 
@@ -112,7 +112,7 @@ public final class LitePalAttr {
 		return cases;
 	}
 
-	public void setCases(String cases) {
+	void setCases(String cases) {
 		this.cases = cases;
 	}
 
