@@ -38,7 +38,6 @@ class DynamicExecutor {
 	 *            The parameter types.
 	 * @return Returns the result of dynamically invoking method.
 	 * @throws SecurityException
-	 * @throws NoSuchMethodException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
@@ -76,7 +75,6 @@ class DynamicExecutor {
 	 * @param objectClass
 	 *            The class of object.
 	 * @throws SecurityException
-	 * @throws NoSuchFieldException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 */
