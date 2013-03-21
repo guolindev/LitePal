@@ -99,7 +99,7 @@ public class DeleteHandler extends DataHandler {
 	 *            statement.
 	 * @return The number of rows affected.
 	 */
-	int onDeleteAll(Class<?> modelClass, String[] conditions) {
+	int onDeleteAll(Class<?> modelClass, String... conditions) {
 		return doDeleteAllAction(getTableName(modelClass), conditions);
 	}
 
@@ -115,7 +115,7 @@ public class DeleteHandler extends DataHandler {
 	 *            statement.
 	 * @return The number of rows affected.
 	 */
-	int onDeleteAll(String tableName, String[] conditions) {
+	int onDeleteAll(String tableName, String... conditions) {
 		return doDeleteAllAction(tableName, conditions);
 	}
 
@@ -131,7 +131,7 @@ public class DeleteHandler extends DataHandler {
 	 *            statement.
 	 * @return The number of rows affected.
 	 */
-	private int doDeleteAllAction(String tableName, String[] conditions) {
+	private int doDeleteAllAction(String tableName, String... conditions) {
 		checkConditionsCorrect(conditions);
 		return mDatabase.delete(tableName, getWhereClause(conditions), getWhereArgs(conditions));
 	}

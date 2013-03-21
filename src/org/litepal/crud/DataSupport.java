@@ -107,11 +107,11 @@ public abstract class DataSupport {
 	 *            updating. The way of specifying place holders is to insert one
 	 *            or more question marks in the SQL. The first question mark is
 	 *            replaced by the second element of the array, the next question
-	 *            mark by the third, and so on. Passing null will update all
-	 *            rows.
+	 *            mark by the third, and so on. Passing empty string will update
+	 *            all rows.
 	 * @return The number of rows affected.
 	 */
-	public static synchronized int deleteAll(Class<?> modelClass, String[] conditions) {
+	public static synchronized int deleteAll(Class<?> modelClass, String... conditions) {
 		DeleteHandler deleteHandler = new DeleteHandler(Connector.getDatabase());
 		return deleteHandler.onDeleteAll(modelClass, conditions);
 	}
@@ -131,11 +131,11 @@ public abstract class DataSupport {
 	 *            updating. The way of specifying place holders is to insert one
 	 *            or more question marks in the SQL. The first question mark is
 	 *            replaced by the second element of the array, the next question
-	 *            mark by the third, and so on. Passing null will update all
-	 *            rows.
+	 *            mark by the third, and so on. Passing empty string will update
+	 *            all rows.
 	 * @return The number of rows affected.
 	 */
-	public static synchronized int deleteAll(String tableName, String[] conditions) {
+	public static synchronized int deleteAll(String tableName, String... conditions) {
 		DeleteHandler deleteHandler = new DeleteHandler(Connector.getDatabase());
 		return deleteHandler.onDeleteAll(tableName, conditions);
 	}
@@ -153,7 +153,7 @@ public abstract class DataSupport {
 	 *            value that will be translated to NULL.
 	 * @return The number of rows affected.
 	 */
-	public static synchronized int update(Class<?> modelClass, long id, ContentValues values) {
+	public static synchronized int update(Class<?> modelClass, ContentValues values, long id) {
 		UpdateHandler updateHandler = new UpdateHandler(Connector.getDatabase());
 		return updateHandler.onUpdate(modelClass, id, values);
 	}
@@ -171,17 +171,17 @@ public abstract class DataSupport {
 	 *            updating. The way of specifying place holders is to insert one
 	 *            or more question marks in the SQL. The first question mark is
 	 *            replaced by the second element of the array, the next question
-	 *            mark by the third, and so on. Passing null will update all
-	 *            rows.
+	 *            mark by the third, and so on. Passing empty string will update
+	 *            all rows.
 	 * @param values
 	 *            A map from column names to new column values. null is a valid
 	 *            value that will be translated to NULL.
 	 * @return The number of rows affected.
 	 */
-	public static synchronized int updateAll(Class<?> modelClass, String[] conditions,
-			ContentValues values) {
+	public static synchronized int updateAll(Class<?> modelClass, ContentValues values,
+			String... conditions) {
 		UpdateHandler updateHandler = new UpdateHandler(Connector.getDatabase());
-		return updateHandler.onUpdateAll(modelClass, conditions, values);
+		return updateHandler.onUpdateAll(modelClass, values, conditions);
 	}
 
 	/**
@@ -197,17 +197,17 @@ public abstract class DataSupport {
 	 *            updating. The way of specifying place holders is to insert one
 	 *            or more question marks in the SQL. The first question mark is
 	 *            replaced by the second element of the array, the next question
-	 *            mark by the third, and so on. Passing null will update all
-	 *            rows.
+	 *            mark by the third, and so on. Passing empty string will update
+	 *            all rows.
 	 * @param values
 	 *            A map from column names to new column values. null is a valid
 	 *            value that will be translated to NULL.
 	 * @return The number of rows affected.
 	 */
-	public static synchronized int updateAll(String tableName, String[] conditions,
-			ContentValues values) {
+	public static synchronized int updateAll(String tableName, ContentValues values,
+			String... conditions) {
 		UpdateHandler updateHandler = new UpdateHandler(Connector.getDatabase());
-		return updateHandler.onUpdateAll(tableName, conditions, values);
+		return updateHandler.onUpdateAll(tableName, values, conditions);
 	}
 
 	/**
@@ -267,11 +267,11 @@ public abstract class DataSupport {
 	 *            updating. The way of specifying place holders is to insert one
 	 *            or more question marks in the SQL. The first question mark is
 	 *            replaced by the second element of the array, the next question
-	 *            mark by the third, and so on. Passing null will update all
-	 *            rows.
+	 *            mark by the third, and so on. Passing empty string will update
+	 *            all rows.
 	 * @return The number of rows affected.
 	 */
-	public synchronized int updateAll(String[] conditions) {
+	public synchronized int updateAll(String... conditions) {
 		UpdateHandler updateHandler = new UpdateHandler(Connector.getDatabase());
 		int rowsAffected = updateHandler.onUpdateAll(this, conditions);
 		getFieldsToSetToDefault().clear();

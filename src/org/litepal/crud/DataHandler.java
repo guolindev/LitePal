@@ -225,7 +225,7 @@ abstract class DataHandler extends LitePalBase {
 	 *            statement.
 	 * @throws DataSupportException
 	 */
-	protected void checkConditionsCorrect(String[] conditions) {
+	protected void checkConditionsCorrect(String... conditions) {
 		if (conditions != null) {
 			int conditionsSize = conditions.length;
 			if (conditionsSize > 0) {
@@ -247,7 +247,7 @@ abstract class DataHandler extends LitePalBase {
 	 * @return The WHERE clause to apply when updating or deleting multiple
 	 *         rows.
 	 */
-	protected String getWhereClause(String[] conditions) {
+	protected String getWhereClause(String... conditions) {
 		if (isAffectAllLines(conditions)) {
 			return null;
 		}
@@ -267,7 +267,7 @@ abstract class DataHandler extends LitePalBase {
 	 * @return The WHERE arguments to fill into where clause when updating or
 	 *         deleting multiple rows.
 	 */
-	protected String[] getWhereArgs(String[] conditions) {
+	protected String[] getWhereArgs(String... conditions) {
 		if (isAffectAllLines(conditions)) {
 			return null;
 		}
@@ -278,7 +278,7 @@ abstract class DataHandler extends LitePalBase {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Get the where clause by the passed in id collection to update tables.
 	 * 
@@ -553,25 +553,22 @@ abstract class DataHandler extends LitePalBase {
 	 * 
 	 * <pre>
 	 * null
-	 * new String[] {}
-	 * new String[] { null }
-	 * new String[] { "" }
+	 * ""
+	 * "  "
 	 * </pre>
+	 * 
+	 * Only the empty string format is recommended.
 	 * 
 	 * @param conditions
 	 *            A string array representing the WHERE part of an SQL
 	 *            statement.
 	 * @return Affect all lines or not.
 	 */
-	private boolean isAffectAllLines(String[] conditions) {
+	private boolean isAffectAllLines(String... conditions) {
 		if (conditions == null) {
 			return true;
 		}
-		if (conditions.length == 0) {
-			return true;
-		}
-		String whereClause = conditions[0];
-		if (whereClause == null || "".equals(whereClause.trim())) {
+		if (conditions.length == 1 && conditions[0] == null || "".equals(conditions[0].trim())) {
 			return true;
 		}
 		return false;

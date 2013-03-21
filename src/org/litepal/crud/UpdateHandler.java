@@ -89,12 +89,12 @@ class UpdateHandler extends DataHandler {
 	 *            statement.
 	 * @return The number of rows affected.
 	 */
-	int onUpdateAll(DataSupport baseObj, String[] conditions) {
+	int onUpdateAll(DataSupport baseObj, String... conditions) {
 		List<Field> supportedFields = getSupportedFields(baseObj.getClassName());
 		ContentValues values = new ContentValues();
 		putFieldsValue(baseObj, supportedFields, values);
 		putFieldsToDefaultValue(baseObj, values);
-		return doUpdateAllAction(baseObj.getTableName(), conditions, values);
+		return doUpdateAllAction(baseObj.getTableName(), values, conditions);
 	}
 
 	/**
@@ -113,8 +113,8 @@ class UpdateHandler extends DataHandler {
 	 *            value that will be translated to NULL.
 	 * @return The number of rows affected.
 	 */
-	int onUpdateAll(Class<?> modelClass, String[] conditions, ContentValues values) {
-		return doUpdateAllAction(getTableName(modelClass), conditions, values);
+	int onUpdateAll(Class<?> modelClass, ContentValues values, String... conditions) {
+		return doUpdateAllAction(getTableName(modelClass), values, conditions);
 	}
 
 	/**
@@ -133,8 +133,8 @@ class UpdateHandler extends DataHandler {
 	 *            value that will be translated to NULL.
 	 * @return The number of rows affected.
 	 */
-	int onUpdateAll(String tableName, String[] conditions, ContentValues values) {
-		return doUpdateAllAction(tableName, conditions, values);
+	int onUpdateAll(String tableName, ContentValues values, String... conditions) {
+		return doUpdateAllAction(tableName, values, conditions);
 	}
 
 	/**
@@ -152,7 +152,7 @@ class UpdateHandler extends DataHandler {
 	 *            value that will be translated to NULL.
 	 * @return The number of rows affected.
 	 */
-	private int doUpdateAllAction(String tableName, String[] conditions, ContentValues values) {
+	private int doUpdateAllAction(String tableName, ContentValues values, String... conditions) {
 		checkConditionsCorrect(conditions);
 		if (values.size() > 0) {
 			return mDatabase.update(tableName, values, getWhereClause(conditions),
