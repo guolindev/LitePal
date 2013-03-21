@@ -50,13 +50,6 @@ abstract class DataHandler extends LitePalBase {
 	 *            List of all supported fields.
 	 * @param values
 	 *            To store data of current model for persisting or updating.
-	 * @throws SecurityException
-	 * @throws IllegalArgumentException
-	 * @throws NoSuchMethodException
-	 * @throws IllegalAccessException
-	 * @throws InvocationTargetException
-	 * @throws InstantiationException
-	 * @throws ClassNotFoundException
 	 */
 	protected void putFieldsValue(DataSupport baseObj, List<Field> supportedFields,
 			ContentValues values) {
