@@ -2,6 +2,7 @@ package org.litepal.crud;
 
 import static org.litepal.util.BaseUtility.changeCase;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -428,6 +429,44 @@ abstract class DataHandler extends LitePalBase {
 	}
 
 	/**
+	 * Gives the passed in parameter an initialized value. If the parameter is
+	 * basic data type or the corresponding object data type, return the default
+	 * data. Or return null.
+	 * 
+	 * @param paramType
+	 *            Parameter to get initialized value.
+	 * @return Default data of basic data type or null.
+	 */
+	private Object getInitParamValue(Class<?> paramType) {
+		String paramTypeName = paramType.getName();
+		if ("boolean".equals(paramTypeName) || "java.lang.Boolean".equals(paramTypeName)) {
+			return false;
+		}
+		if ("float".equals(paramTypeName) || "java.lang.Float".equals(paramTypeName)) {
+			return 0f;
+		}
+		if ("double".equals(paramTypeName) || "java.lang.Double".equals(paramTypeName)) {
+			return 0.0;
+		}
+		if ("int".equals(paramTypeName) || "java.lang.Integer".equals(paramTypeName)) {
+			return 0;
+		}
+		if ("long".equals(paramTypeName) || "java.lang.Long".equals(paramTypeName)) {
+			return 0l;
+		}
+		if ("short".equals(paramTypeName) || "java.lang.Short".equals(paramTypeName)) {
+			return 0;
+		}
+		if ("char".equals(paramTypeName) || "java.lang.Character".equals(paramTypeName)) {
+			return ' ';
+		}
+		if ("java.lang.String".equals(paramTypeName)) {
+			return "";
+		}
+		return null;
+	}
+
+	/**
 	 * Judge if the field is char or Character type.
 	 * 
 	 * @param field
@@ -565,6 +604,52 @@ abstract class DataHandler extends LitePalBase {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Finds the best suit constructor for creating an instance of a class. The
+	 * principle is that constructor with least parameters will be the best suit
+	 * one to create instance. So this method will find the constructor with
+	 * least parameters of the passed in class.
+	 * 
+	 * @param modelClass
+	 *            To get constructors from.
+	 * @return The best suit constructor with least parameters.
+	 */
+	private Constructor<?> findBestSuitConstructor(Class<?> modelClass) {
+		Constructor<?> finalConstructor = null;
+		Constructor<?>[] constructors = modelClass.getConstructors();
+		for (Constructor<?> constructor : constructors) {
+			if (finalConstructor == null) {
+				finalConstructor = constructor;
+			} else {
+				int finalParamLength = finalConstructor.getParameterTypes().length;
+				int newParamLength = constructor.getParameterTypes().length;
+				if (newParamLength < finalParamLength) {
+					finalConstructor = constructor;
+				}
+			}
+		}
+		finalConstructor.setAccessible(true);
+		return finalConstructor;
+	}
+
+	/**
+	 * Depends on the passed in constructor, creating a parameters array with
+	 * initialized values for the constructor.
+	 * 
+	 * @param constructor
+	 *            The constructor to get parameters for it.
+	 * 
+	 * @return A parameters array with initialized values.
+	 */
+	private Object[] getConstructorParams(Constructor<?> constructor) {
+		Class<?>[] paramTypes = constructor.getParameterTypes();
+		Object[] params = new Object[paramTypes.length];
+		for (int i = 0; i < paramTypes.length; i++) {
+			params[i] = getInitParamValue(paramTypes[i]);
+		}
+		return params;
 	}
 
 }
