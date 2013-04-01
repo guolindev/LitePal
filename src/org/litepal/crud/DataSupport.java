@@ -67,6 +67,10 @@ public abstract class DataSupport {
 	 */
 	private List<String> fieldsToSetToDefault;
 
+	public static synchronized void find(Class<?> modelClass, long id) {
+		
+	}
+
 	/**
 	 * Deletes the record in the database by id.<br>
 	 * The data in other tables which is referenced with the record will be
