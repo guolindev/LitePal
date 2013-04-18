@@ -364,6 +364,52 @@ abstract class DataHandler extends LitePalBase {
 	protected String getTableName(Class<?> modelClass) {
 		return BaseUtility.changeCase(modelClass.getSimpleName());
 	}
+	
+	/**
+	 * Finds the best suit constructor for creating an instance of a class. The
+	 * principle is that constructor with least parameters will be the best suit
+	 * one to create instance. So this method will find the constructor with
+	 * least parameters of the passed in class.
+	 * 
+	 * @param modelClass
+	 *            To get constructors from.
+	 * @return The best suit constructor with least parameters.
+	 */
+	protected Constructor<?> findBestSuitConstructor(Class<?> modelClass) {
+		Constructor<?> finalConstructor = null;
+		Constructor<?>[] constructors = modelClass.getConstructors();
+		for (Constructor<?> constructor : constructors) {
+			if (finalConstructor == null) {
+				finalConstructor = constructor;
+			} else {
+				int finalParamLength = finalConstructor.getParameterTypes().length;
+				int newParamLength = constructor.getParameterTypes().length;
+				if (newParamLength < finalParamLength) {
+					finalConstructor = constructor;
+				}
+			}
+		}
+		finalConstructor.setAccessible(true);
+		return finalConstructor;
+	}
+	
+	/**
+	 * Depends on the passed in constructor, creating a parameters array with
+	 * initialized values for the constructor.
+	 * 
+	 * @param constructor
+	 *            The constructor to get parameters for it.
+	 * 
+	 * @return A parameters array with initialized values.
+	 */
+	protected Object[] getConstructorParams(Constructor<?> constructor) {
+		Class<?>[] paramTypes = constructor.getParameterTypes();
+		Object[] params = new Object[paramTypes.length];
+		for (int i = 0; i < paramTypes.length; i++) {
+			params[i] = getInitParamValue(paramTypes[i]);
+		}
+		return params;
+	}
 
 	/**
 	 * Get the types of parameters for {@link ContentValues#put}. Need two
@@ -604,52 +650,6 @@ abstract class DataHandler extends LitePalBase {
 			return true;
 		}
 		return false;
-	}
-
-	/**
-	 * Finds the best suit constructor for creating an instance of a class. The
-	 * principle is that constructor with least parameters will be the best suit
-	 * one to create instance. So this method will find the constructor with
-	 * least parameters of the passed in class.
-	 * 
-	 * @param modelClass
-	 *            To get constructors from.
-	 * @return The best suit constructor with least parameters.
-	 */
-	private Constructor<?> findBestSuitConstructor(Class<?> modelClass) {
-		Constructor<?> finalConstructor = null;
-		Constructor<?>[] constructors = modelClass.getConstructors();
-		for (Constructor<?> constructor : constructors) {
-			if (finalConstructor == null) {
-				finalConstructor = constructor;
-			} else {
-				int finalParamLength = finalConstructor.getParameterTypes().length;
-				int newParamLength = constructor.getParameterTypes().length;
-				if (newParamLength < finalParamLength) {
-					finalConstructor = constructor;
-				}
-			}
-		}
-		finalConstructor.setAccessible(true);
-		return finalConstructor;
-	}
-
-	/**
-	 * Depends on the passed in constructor, creating a parameters array with
-	 * initialized values for the constructor.
-	 * 
-	 * @param constructor
-	 *            The constructor to get parameters for it.
-	 * 
-	 * @return A parameters array with initialized values.
-	 */
-	private Object[] getConstructorParams(Constructor<?> constructor) {
-		Class<?>[] paramTypes = constructor.getParameterTypes();
-		Object[] params = new Object[paramTypes.length];
-		for (int i = 0; i < paramTypes.length; i++) {
-			params[i] = getInitParamValue(paramTypes[i]);
-		}
-		return params;
 	}
 
 }
