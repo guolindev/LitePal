@@ -68,7 +68,8 @@ public abstract class DataSupport {
 	private List<String> fieldsToSetToDefault;
 
 	public static synchronized void find(Class<?> modelClass, long id) {
-		
+		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
+		queryHandler.onFind(modelClass, id);
 	}
 
 	/**
