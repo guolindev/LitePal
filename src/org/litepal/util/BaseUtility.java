@@ -1,6 +1,7 @@
 package org.litepal.util;
 
 import java.util.Collection;
+import java.util.Locale;
 
 import org.litepal.parser.LitePalAttr;
 
@@ -38,9 +39,9 @@ public class BaseUtility {
 			if (Const.LitePal.CASES_KEEP.equals(cases)) {
 				return string;
 			} else if (Const.LitePal.CASES_UPPER.equals(cases)) {
-				return string.toUpperCase();
+				return string.toUpperCase(Locale.getDefault());
 			}
-			return string.toLowerCase();
+			return string.toLowerCase(Locale.getDefault());
 		}
 		return null;
 	}
@@ -85,7 +86,14 @@ public class BaseUtility {
 	 */
 	public static String capitalize(String string) {
 		if (!TextUtils.isEmpty(string)) {
-			return string.substring(0, 1).toUpperCase() + string.substring(1);
+			return string.substring(0, 1).toUpperCase(Locale.getDefault()) + string.substring(1);
+		}
+		return string == null ? null : "";
+	}
+
+	public static String getCamelHead(String string) {
+		if (!TextUtils.isEmpty(string)) {
+			
 		}
 		return string == null ? null : "";
 	}
