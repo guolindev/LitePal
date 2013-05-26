@@ -5,6 +5,8 @@ import static org.litepal.util.BaseUtility.changeCase;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -17,6 +19,7 @@ import org.litepal.util.Const;
 import org.litepal.util.DBUtility;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
@@ -39,6 +42,79 @@ abstract class DataHandler extends LitePalBase {
 	 * field is with default value or not.
 	 */
 	private DataSupport tempEmptyModel;
+
+	/**
+	 * Query the table of the given model, returning a model list over the
+	 * result set.
+	 * 
+	 * @param modelClass
+	 *            The model to compile the query against.
+	 * @param columns
+	 *            A list of which columns to return. Passing null will return
+	 *            all columns, which is discouraged to prevent reading data from
+	 *            storage that isn't going to be used.
+	 * @param selection
+	 *            A filter declaring which rows to return, formatted as an SQL
+	 *            WHERE clause (excluding the WHERE itself). Passing null will
+	 *            return all rows for the given table.
+	 * @param selectionArgs
+	 *            You may include ?s in selection, which will be replaced by the
+	 *            values from selectionArgs, in order that they appear in the
+	 *            selection. The values will be bound as Strings.
+	 * @param groupBy
+	 *            A filter declaring how to group rows, formatted as an SQL
+	 *            GROUP BY clause (excluding the GROUP BY itself). Passing null
+	 *            will cause the rows to not be grouped.
+	 * @param having
+	 *            A filter declare which row groups to include in the cursor, if
+	 *            row grouping is being used, formatted as an SQL HAVING clause
+	 *            (excluding the HAVING itself). Passing null will cause all row
+	 *            groups to be included, and is required when row grouping is
+	 *            not being used.
+	 * @param orderBy
+	 *            How to order the rows, formatted as an SQL ORDER BY clause
+	 *            (excluding the ORDER BY itself). Passing null will use the
+	 *            default sort order, which may be unordered.
+	 * @return A model list. The list may be empty.
+	 */
+	@SuppressWarnings("unchecked")
+	protected <T> List<T> query(Class<T> modelClass, String[] columns, String selection,
+			String[] selectionArgs, String groupBy, String having, String orderBy) {
+		List<T> dataList = new ArrayList<T>();
+		Cursor cursor = null;
+		try {
+			List<Field> supportedFields = getSupportedFields(modelClass.getName());
+			String tableName = getTableName(modelClass);
+			cursor = mDatabase.query(tableName, columns, selection, selectionArgs, groupBy, having,
+					orderBy);
+			if (cursor.moveToFirst()) {
+				do {
+					Constructor<?> constructor = findBestSuitConstructor(modelClass);
+					T modelInstance = (T) constructor
+							.newInstance(getConstructorParams(constructor));
+					for (Field field : supportedFields) {
+						String getMethodName = genGetColumnMethod(field);
+						int columnIndex = cursor.getColumnIndex(BaseUtility.changeCase(field
+								.getName()));
+						if (columnIndex != -1) {
+							Class<?> cursorClass = cursor.getClass();
+							Method method = cursorClass.getMethod(getMethodName, int.class);
+							Object value = method.invoke(cursor, columnIndex);
+							setValueToModel(modelInstance, field, value);
+						}
+					}
+					dataList.add(modelInstance);
+				} while (cursor.moveToNext());
+			}
+			return dataList;
+		} catch (Exception e) {
+			throw new DataSupportException(e.getMessage());
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+			}
+		}
+	}
 
 	/**
 	 * Iterate all the fields passed in. Each field calls
@@ -682,6 +758,62 @@ abstract class DataHandler extends LitePalBase {
 			setterMethodName = setterMethodPrefix + BaseUtility.capitalize(field.getName());
 		}
 		return setterMethodName;
+	}
+
+	/**
+	 * Generates the getType method for cursor based on field. There're two
+	 * unusual conditions. If field type is boolean, generate getInt method. If
+	 * field type is char, generate getString method.
+	 * 
+	 * @param field
+	 *            To generate getType method for cursor.
+	 * @return The getType method for cursor.
+	 */
+	private String genGetColumnMethod(Field field) {
+		String typeName;
+		Class<?> fieldType = field.getType();
+		if (fieldType.isPrimitive()) {
+			typeName = BaseUtility.capitalize(fieldType.getName());
+		} else {
+			typeName = fieldType.getSimpleName();
+		}
+		String methodName = "get" + typeName;
+		if ("getBoolean".equals(methodName)) {
+			methodName = "getInt";
+		} else if ("getChar".equals(methodName)) {
+			methodName = "getString";
+		}
+		return methodName;
+	}
+
+	/**
+	 * Set the value into modelInstance.
+	 * 
+	 * @param modelInstance
+	 *            The model to set into.
+	 * @param field
+	 *            Use to generate setter method name.
+	 * @param value
+	 *            The value to set.
+	 * @throws SecurityException
+	 * @throws IllegalArgumentException
+	 * @throws NoSuchMethodException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
+	private void setValueToModel(Object modelInstance, Field field, Object value)
+			throws SecurityException, IllegalArgumentException, NoSuchMethodException,
+			IllegalAccessException, InvocationTargetException {
+		if (field.getType() == boolean.class || field.getType() == Boolean.class) {
+			if ("0".equals(String.valueOf(value))) {
+				value = false;
+			} else if ("1".equals(String.valueOf(value))) {
+				value = true;
+			}
+		} else if (field.getType() == char.class || field.getType() == Character.class) {
+			value = ((String) value).charAt(0);
+		}
+		putSetMethodValueByField((DataSupport) modelInstance, field, value);
 	}
 
 }
