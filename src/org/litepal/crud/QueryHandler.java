@@ -11,11 +11,16 @@ class QueryHandler extends DataHandler {
 	}
 
 	<T> T onFind(Class<T> modelClass, long id) {
-		List<T> dataList = query(modelClass, null, "id = ?", new String[] { String.valueOf(id) }, null,
-				null, null);
+		List<T> dataList = query(modelClass, null, "id = ?", new String[] { String.valueOf(id) },
+				null, null, null);
 		if (dataList.size() > 0) {
 			return dataList.get(0);
 		}
 		return null;
+	}
+
+	<T> List<T> onFindMul(Class<T> modelClass, long[] ids) {
+		List<T> dataList = query(modelClass, null, getWhereOfIdsWithOr(ids), null, null, null, null);
+		return dataList;
 	}
 }

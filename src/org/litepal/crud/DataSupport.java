@@ -67,9 +67,49 @@ public abstract class DataSupport {
 	 */
 	private List<String> fieldsToSetToDefault;
 
+	/**
+	 * Finds the record by a specific id.
+	 * 
+	 * <pre>
+	 * Person p = DataSupport.find(Person.class, 1);
+	 * </pre>
+	 * 
+	 * The modelClass determines which table to query and the object type to
+	 * return. If no record can be found, then return null.
+	 * 
+	 * @param modelClass
+	 *            Which table to query and the object type to return.
+	 * @param id
+	 *            Which record to query.
+	 * @return An object with founded data from database, or null.
+	 */
 	public static synchronized <T> T find(Class<T> modelClass, long id) {
 		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
 		return queryHandler.onFind(modelClass, id);
+	}
+
+	/**
+	 * Finds multiple records by an id array.
+	 * 
+	 * <pre>
+	 * List&lt;Person&gt; people = DataSupport.find(Person.class, 1, 2, 3);
+	 * 
+	 * long[] bookIds = { 10, 18 };
+	 * List&lt;Book&gt; books = DataSupport.find(Book.class, bookIds);
+	 * </pre>
+	 * 
+	 * The modelClass determines which table to query and the object type to
+	 * return. If no record can be found, then return an empty list.
+	 * 
+	 * @param modelClass
+	 *            Which table to query and the object type to return.
+	 * @param ids
+	 *            Which records to query.
+	 * @return An object list with founded data from database, or an empty list.
+	 */
+	public static synchronized <T> List<T> findMul(Class<T> modelClass, long... ids) {
+		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
+		return queryHandler.onFindMul(modelClass, ids);
 	}
 
 	/**
@@ -109,7 +149,7 @@ public abstract class DataSupport {
 	 * @param conditions
 	 *            A string array representing the WHERE part of an SQL
 	 *            statement. First parameter is the WHERE clause to apply when
-	 *            updating. The way of specifying place holders is to insert one
+	 *            deleting. The way of specifying place holders is to insert one
 	 *            or more question marks in the SQL. The first question mark is
 	 *            replaced by the second element of the array, the next question
 	 *            mark by the third, and so on. Passing empty string will update
@@ -133,7 +173,7 @@ public abstract class DataSupport {
 	 * @param conditions
 	 *            A string array representing the WHERE part of an SQL
 	 *            statement. First parameter is the WHERE clause to apply when
-	 *            updating. The way of specifying place holders is to insert one
+	 *            deleting. The way of specifying place holders is to insert one
 	 *            or more question marks in the SQL. The first question mark is
 	 *            replaced by the second element of the array, the next question
 	 *            mark by the third, and so on. Passing empty string will update
@@ -239,11 +279,10 @@ public abstract class DataSupport {
 	/**
 	 * Updates the corresponding record by id. Use setXxx to decide which
 	 * columns to update. <br>
-	 * <b>Note: </b> 1. If you set default value to a field, the corresponding
+	 * <b>Note: </b> 1. If you set a default value to a field, the corresponding
 	 * column won't be updated. Use {@link #setToDefault(String)} to update
 	 * columns into default value. 2. This method couldn't update foreign key in
-	 * database. So do not use setXxx to set associations between models.<br>
-	 * Returns the number of affected rows.
+	 * database. So do not use setXxx to set associations between models.
 	 * 
 	 * @param id
 	 *            Which record to update.
@@ -260,11 +299,10 @@ public abstract class DataSupport {
 	 * Updates all records with details given if they match a set of conditions
 	 * supplied. This method constructs a single SQL UPDATE statement and sends
 	 * it to the database.<br>
-	 * <b>Note: <b> 1. If you set default value to a field, the corresponding
+	 * <b>Note: <b> 1. If you set a default value to a field, the corresponding
 	 * column won't be updated. Use {@link #setToDefault(String)} to update
 	 * columns into default value. 2. This method couldn't update foreign key in
-	 * database. So do not use setXxx to set associations between models.<br>
-	 * Returns the number of affected rows.
+	 * database. So do not use setXxx to set associations between models.
 	 * 
 	 * @param conditions
 	 *            A string array representing the WHERE part of an SQL

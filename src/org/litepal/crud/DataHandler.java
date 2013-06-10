@@ -343,13 +343,35 @@ abstract class DataHandler extends LitePalBase {
 	}
 
 	/**
-	 * Get the where clause by the passed in id collection to update tables.
+	 * Get the where clause by the passed in id collection to apply multiple
+	 * rows.
 	 * 
 	 * @param ids
 	 *            The id collection.
 	 * @return The where clause to execute.
 	 */
 	protected String getWhereOfIdsWithOr(Collection<Long> ids) {
+		StringBuilder whereClause = new StringBuilder();
+		boolean needOr = false;
+		for (long id : ids) {
+			if (needOr) {
+				whereClause.append(" or ");
+			}
+			needOr = true;
+			whereClause.append("id = ");
+			whereClause.append(id);
+		}
+		return changeCase(whereClause.toString());
+	}
+
+	/**
+	 * Get the where clause by the passed in id array to apply multiple rows.
+	 * 
+	 * @param ids
+	 *            The id collection.
+	 * @return The where clause to execute.
+	 */
+	protected String getWhereOfIdsWithOr(long... ids) {
 		StringBuilder whereClause = new StringBuilder();
 		boolean needOr = false;
 		for (long id : ids) {
