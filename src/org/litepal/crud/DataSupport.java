@@ -122,6 +122,20 @@ public abstract class DataSupport {
 		return queryHandler.onFindMul(modelClass, ids);
 	}
 
+	/**
+	 * Finds all records of a single table.
+	 * 
+	 * <pre>
+	 * List&lt;Book&gt; allBooks = DataSupport.find(Book.class);
+	 * </pre>
+	 * 
+	 * The modelClass determines which table to query and the object type to
+	 * return.
+	 * 
+	 * @param modelClass
+	 *            Which table to query and the object type to return.
+	 * @return An object list with all rows in a single table.
+	 */
 	public static synchronized <T> List<T> findAll(Class<T> modelClass) {
 		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
 		return queryHandler.onFindAll(modelClass);
