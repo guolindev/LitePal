@@ -88,6 +88,16 @@ public abstract class DataSupport {
 		return queryHandler.onFind(modelClass, id);
 	}
 
+	public static synchronized <T> T findFirst(Class<T> modelClass) {
+		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
+		return queryHandler.onFindFirst(modelClass);
+	}
+
+	public static synchronized <T> T findLast(Class<T> modelClass) {
+		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
+		return queryHandler.onFindLast(modelClass);
+	}
+
 	/**
 	 * Finds multiple records by an id array.
 	 * 
@@ -110,6 +120,11 @@ public abstract class DataSupport {
 	public static synchronized <T> List<T> findMul(Class<T> modelClass, long... ids) {
 		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
 		return queryHandler.onFindMul(modelClass, ids);
+	}
+
+	public static synchronized <T> List<T> findAll(Class<T> modelClass) {
+		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
+		return queryHandler.onFindAll(modelClass);
 	}
 
 	/**
