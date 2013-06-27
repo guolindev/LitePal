@@ -331,6 +331,22 @@ abstract class DataHandler extends LitePalBase {
 		}
 		return null;
 	}
+	
+	/**
+	 * Check the passing conditions represent to affect all lines or not. <br>
+	 * Do not pass anything to the conditions parameter means affect all lines.
+	 * 
+	 * @param conditions
+	 *            An array representing the WHERE part of an SQL
+	 *            statement.
+	 * @return Affect all lines or not.
+	 */
+	protected boolean isAffectAllLines(Object... conditions) {
+		if (conditions != null && conditions.length == 0) {
+			return true;
+		}
+		return false;
+	}
 
 	/**
 	 * Get the where clause by the passed in id collection to apply multiple
@@ -704,30 +720,6 @@ abstract class DataHandler extends LitePalBase {
 			return realFieldValue.equals(defaultFieldValue);
 		}
 		return realReturn == defaultReturn;
-	}
-
-	/**
-	 * Check the passing conditions represent to affect all lines or not. <br>
-	 * Here are the supported format means affect all lines.
-	 * 
-	 * <pre>
-	 * null
-	 * ""
-	 * "  "
-	 * </pre>
-	 * 
-	 * Only the empty string format is recommended.
-	 * 
-	 * @param conditions
-	 *            A string array representing the WHERE part of an SQL
-	 *            statement.
-	 * @return Affect all lines or not.
-	 */
-	private boolean isAffectAllLines(Object... conditions) {
-		if (conditions != null && conditions.length == 0) {
-			return true;
-		}
-		return false;
 	}
 
 	/**

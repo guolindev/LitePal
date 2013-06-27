@@ -102,31 +102,17 @@ public abstract class DataSupport {
 	 * Finds multiple records by an id array.
 	 * 
 	 * <pre>
-	 * List&lt;Person&gt; people = DataSupport.find(Person.class, 1, 2, 3);
+	 * List&lt;Person&gt; people = DataSupport.findAll(Person.class, 1, 2, 3);
 	 * 
 	 * long[] bookIds = { 10, 18 };
-	 * List&lt;Book&gt; books = DataSupport.find(Book.class, bookIds);
+	 * List&lt;Book&gt; books = DataSupport.findAll(Book.class, bookIds);
 	 * </pre>
 	 * 
-	 * The modelClass determines which table to query and the object type to
-	 * return. If no record can be found, then return an empty list.
-	 * 
-	 * @param modelClass
-	 *            Which table to query and the object type to return.
-	 * @param ids
-	 *            Which records to query.
-	 * @return An object list with founded data from database, or an empty list.
-	 */
-	public static synchronized <T> List<T> findMul(Class<T> modelClass, long... ids) {
-		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
-		return queryHandler.onFindMul(modelClass, ids);
-	}
-
-	/**
-	 * Finds all records of a single table.
+	 * Of course you can find all records by passing nothing to the ids
+	 * parameter.
 	 * 
 	 * <pre>
-	 * List&lt;Book&gt; allBooks = DataSupport.find(Book.class);
+	 * List&lt;Book&gt; allBooks = DataSupport.findAll(Book.class);
 	 * </pre>
 	 * 
 	 * The modelClass determines which table to query and the object type to
@@ -134,11 +120,13 @@ public abstract class DataSupport {
 	 * 
 	 * @param modelClass
 	 *            Which table to query and the object type to return.
-	 * @return An object list with all rows in a single table.
+	 * @param ids
+	 *            Which records to query. Or do not pass it to find all records.
+	 * @return An object list with founded data from database, or an empty list.
 	 */
-	public static synchronized <T> List<T> findAll(Class<T> modelClass) {
+	public static synchronized <T> List<T> findAll(Class<T> modelClass, long... ids) {
 		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
-		return queryHandler.onFindAll(modelClass);
+		return queryHandler.onFindAll(modelClass, ids);
 	}
 
 	/**

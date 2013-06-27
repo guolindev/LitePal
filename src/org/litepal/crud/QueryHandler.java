@@ -35,13 +35,14 @@ class QueryHandler extends DataHandler {
 		return null;
 	}
 
-	<T> List<T> onFindMul(Class<T> modelClass, long[] ids) {
-		List<T> dataList = query(modelClass, null, getWhereOfIdsWithOr(ids), null, null, null, null);
+	<T> List<T> onFindAll(Class<T> modelClass, long[] ids) {
+		List<T> dataList;
+		if (isAffectAllLines(ids)) {
+			dataList = query(modelClass, null, null, null, null, null, null);
+		} else {
+			dataList = query(modelClass, null, getWhereOfIdsWithOr(ids), null, null, null, null);
+		}
 		return dataList;
 	}
 
-	<T> List<T> onFindAll(Class<T> modelClass) {
-		List<T> dataList = query(modelClass, null, null, null, null, null, null);
-		return dataList;
-	}
 }
