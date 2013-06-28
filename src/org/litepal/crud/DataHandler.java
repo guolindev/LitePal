@@ -75,18 +75,21 @@ abstract class DataHandler extends LitePalBase {
 	 *            How to order the rows, formatted as an SQL ORDER BY clause
 	 *            (excluding the ORDER BY itself). Passing null will use the
 	 *            default sort order, which may be unordered.
+	 * @param limit
+	 *            Limits the number of rows returned by the query, formatted as
+	 *            LIMIT clause. Passing null denotes no LIMIT clause.
 	 * @return A model list. The list may be empty.
 	 */
 	@SuppressWarnings("unchecked")
 	protected <T> List<T> query(Class<T> modelClass, String[] columns, String selection,
-			String[] selectionArgs, String groupBy, String having, String orderBy) {
+			String[] selectionArgs, String groupBy, String having, String orderBy, String limit) {
 		List<T> dataList = new ArrayList<T>();
 		Cursor cursor = null;
 		try {
 			List<Field> supportedFields = getSupportedFields(modelClass.getName());
 			String tableName = getTableName(modelClass);
 			cursor = mDatabase.query(tableName, columns, selection, selectionArgs, groupBy, having,
-					orderBy);
+					orderBy, limit);
 			if (cursor.moveToFirst()) {
 				do {
 					Constructor<?> constructor = findBestSuitConstructor(modelClass);
@@ -331,14 +334,13 @@ abstract class DataHandler extends LitePalBase {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Check the passing conditions represent to affect all lines or not. <br>
 	 * Do not pass anything to the conditions parameter means affect all lines.
 	 * 
 	 * @param conditions
-	 *            An array representing the WHERE part of an SQL
-	 *            statement.
+	 *            An array representing the WHERE part of an SQL statement.
 	 * @return Affect all lines or not.
 	 */
 	protected boolean isAffectAllLines(Object... conditions) {
@@ -466,7 +468,7 @@ abstract class DataHandler extends LitePalBase {
 	 * Finds the best suit constructor for creating an instance of a class. The
 	 * principle is that constructor with least parameters will be the best suit
 	 * one to create instance. So this method will find the constructor with
-	 * least parameters of the passed in class.
+	 * least parameters of the class passed in.
 	 * 
 	 * @param modelClass
 	 *            To get constructors from.
