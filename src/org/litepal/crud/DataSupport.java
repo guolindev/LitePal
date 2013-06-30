@@ -91,6 +91,10 @@ public abstract class DataSupport {
 	/**
 	 * Finds the first record of a single table.
 	 * 
+	 * <pre>
+	 * Person p = DataSupport.findFirst(Person.class);
+	 * </pre>
+	 * 
 	 * @param modelClass
 	 *            Which table to query and the object type to return.
 	 * @return An object with data of first row, or null.
@@ -102,6 +106,10 @@ public abstract class DataSupport {
 
 	/**
 	 * Finds the last record of a single table.
+	 * 
+	 * <pre>
+	 * Person p = DataSupport.findLast(Person.class);
+	 * </pre>
 	 * 
 	 * @param modelClass
 	 *            Which table to query and the object type to return.
@@ -133,7 +141,7 @@ public abstract class DataSupport {
 	 * return.
 	 * 
 	 * @param modelClass
-	 *            Which table to query and the object type to return.
+	 *            Which table to query and the object type to return as a list.
 	 * @param ids
 	 *            Which records to query. Or do not pass it to find all records.
 	 * @return An object list with founded data from database, or an empty list.
