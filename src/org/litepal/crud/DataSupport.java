@@ -88,11 +88,25 @@ public abstract class DataSupport {
 		return queryHandler.onFind(modelClass, id);
 	}
 
+	/**
+	 * Finds the first record of a single table.
+	 * 
+	 * @param modelClass
+	 *            Which table to query and the object type to return.
+	 * @return An object with data of first row, or null.
+	 */
 	public static synchronized <T> T findFirst(Class<T> modelClass) {
 		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
 		return queryHandler.onFindFirst(modelClass);
 	}
 
+	/**
+	 * Finds the last record of a single table.
+	 * 
+	 * @param modelClass
+	 *            Which table to query and the object type to return.
+	 * @return An object with data of last row, or null.
+	 */
 	public static synchronized <T> T findLast(Class<T> modelClass) {
 		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
 		return queryHandler.onFindLast(modelClass);
