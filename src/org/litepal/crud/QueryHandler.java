@@ -98,8 +98,10 @@ class QueryHandler extends DataHandler {
 
 	<T> List<T> onFind(Class<T> modelClass, String[] columns, String[] conditions, String groupBy,
 			String having, String orderBy, String limit) {
-		
-		return null;
+		checkConditionsCorrect(conditions);
+		List<T> dataList = query(modelClass, columns, getWhereClause(conditions),
+				getWhereArgs(conditions), groupBy, having, orderBy, limit);
+		return dataList;
 	}
 
 }
