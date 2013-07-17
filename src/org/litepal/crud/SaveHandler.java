@@ -247,22 +247,6 @@ class SaveHandler extends DataHandler {
 	}
 
 	/**
-	 * Assign the generated id value to {@link DataSupport#baseObjId}. This
-	 * value will be used as identify of this model for system use.
-	 * 
-	 * @param baseObj
-	 *            The class of base object.
-	 * @param id
-	 *            The value of id.
-	 */
-	private void giveBaseObjIdValue(DataSupport baseObj, long id) throws SecurityException,
-			NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
-		if (id > 0) {
-			DynamicExecutor.setField(baseObj, "baseObjId", id, DataSupport.class);
-		}
-	}
-
-	/**
 	 * After saving a model, the id for this model will be returned. Assign this
 	 * id to the model's id or _id field if it exists.
 	 * 

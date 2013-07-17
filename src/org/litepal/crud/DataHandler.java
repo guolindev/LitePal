@@ -88,8 +88,9 @@ abstract class DataHandler extends LitePalBase {
 		try {
 			List<Field> supportedFields = getSupportedFields(modelClass.getName());
 			String tableName = getTableName(modelClass);
-			cursor = mDatabase.query(tableName, columns, selection, selectionArgs, groupBy, having,
-					orderBy, limit);
+			String[] customizedColumns = getCustomizedColumns(columns);
+			cursor = mDatabase.query(tableName, customizedColumns, selection, selectionArgs,
+					groupBy, having, orderBy, limit);
 			if (cursor.moveToFirst()) {
 				do {
 					Constructor<?> constructor = findBestSuitConstructor(modelClass);
@@ -106,6 +107,22 @@ abstract class DataHandler extends LitePalBase {
 			if (cursor != null) {
 				cursor.close();
 			}
+		}
+	}
+
+	/**
+	 * Assign the generated id value to {@link DataSupport#baseObjId}. This
+	 * value will be used as identify of this model for system use.
+	 * 
+	 * @param baseObj
+	 *            The class of base object.
+	 * @param id
+	 *            The value of id.
+	 */
+	protected void giveBaseObjIdValue(DataSupport baseObj, long id) throws SecurityException,
+			NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+		if (id > 0) {
+			DynamicExecutor.setField(baseObj, "baseObjId", id, DataSupport.class);
 		}
 	}
 
@@ -787,6 +804,25 @@ abstract class DataHandler extends LitePalBase {
 			methodName = "getString";
 		}
 		return methodName;
+	}
+
+	private String[] getCustomizedColumns(String[] columns) {
+		if (columns != null) {
+			for (int i = 0; i < columns.length; i++) {
+				String columnName = columns[i];
+				if (isIdColumn(columnName)) {
+					if ("_id".equalsIgnoreCase(columnName)) {
+						columns[i] = BaseUtility.changeCase("id");
+					}
+					return columns;
+				}
+			}
+			String[] customizedColumns = new String[columns.length + 1];
+			System.arraycopy(columns, 0, customizedColumns, 0, columns.length);
+			customizedColumns[columns.length + 1] = BaseUtility.changeCase("id");
+			return customizedColumns;
+		}
+		return null;
 	}
 
 	/**
