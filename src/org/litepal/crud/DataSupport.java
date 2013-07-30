@@ -79,18 +79,6 @@ public class DataSupport {
 		return cQuery;
 	}
 
-	public static ClusterQuery group(String args) {
-		ClusterQuery cQuery = new ClusterQuery();
-		cQuery.mGroupBy = args;
-		return cQuery;
-	}
-
-	public static ClusterQuery having(String options) {
-		ClusterQuery cQuery = new ClusterQuery();
-		cQuery.mHaving = options;
-		return cQuery;
-	}
-
 	public static ClusterQuery order(String args) {
 		ClusterQuery cQuery = new ClusterQuery();
 		cQuery.mOrderBy = args;

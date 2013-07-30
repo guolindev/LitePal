@@ -10,10 +10,6 @@ public class ClusterQuery {
 
 	String[] mConditions;
 
-	String mGroupBy;
-
-	String mHaving;
-
 	String mOrderBy;
 
 	String mLimit;
@@ -31,16 +27,6 @@ public class ClusterQuery {
 		return this;
 	}
 
-	public ClusterQuery group(String args) {
-		mGroupBy = args;
-		return this;
-	}
-
-	public ClusterQuery having(String options) {
-		mHaving = options;
-		return this;
-	}
-
 	public ClusterQuery order(String args) {
 		mOrderBy = args;
 		return this;
@@ -53,8 +39,7 @@ public class ClusterQuery {
 
 	public <T> List<T> execute(Class<T> modelClass) {
 		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
-		return queryHandler.onFind(modelClass, mColumns, mConditions, mGroupBy, mHaving, mOrderBy,
-				mLimit);
+		return queryHandler.onFind(modelClass, mColumns, mConditions, mOrderBy, mLimit);
 	}
 
 }
