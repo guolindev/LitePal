@@ -157,7 +157,8 @@ public abstract class LitePalBase {
 		}
 		Field[] fields = dynamicClass.getDeclaredFields();
 		for (Field field : fields) {
-			if (Modifier.isPrivate(field.getModifiers())) {
+			int modifiers = field.getModifiers();
+			if (Modifier.isPrivate(modifiers) && !Modifier.isStatic(modifiers)) {
 				Class<?> fieldTypeClass = field.getType();
 				String fieldType = fieldTypeClass.getName();
 				if (BaseUtility.isFieldTypeSupported(fieldType)) {
