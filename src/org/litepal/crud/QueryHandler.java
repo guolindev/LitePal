@@ -96,6 +96,27 @@ class QueryHandler extends DataHandler {
 		return dataList;
 	}
 
+	/**
+	 * The open interface for other classes in CRUD package to query multiple
+	 * records by parameters.
+	 * 
+	 * @param modelClass
+	 *            Which table to query and the object type to return as a list.
+	 * @param columns
+	 *            A String array of which columns to return. Passing null will
+	 *            return all columns.
+	 * @param conditions
+	 *            A filter declaring which rows to return, formatted as an SQL
+	 *            WHERE clause. Passing null will return all rows.
+	 * @param orderBy
+	 *            How to order the rows, formatted as an SQL ORDER BY clause.
+	 *            Passing null will use the default sort order, which may be
+	 *            unordered.
+	 * @param limit
+	 *            Limits the number of rows returned by the query, formatted as
+	 *            LIMIT clause.
+	 * @return
+	 */
 	<T> List<T> onFind(Class<T> modelClass, String[] columns, String[] conditions, String orderBy,
 			String limit) {
 		checkConditionsCorrect(conditions);
