@@ -291,29 +291,6 @@ abstract class DataHandler extends LitePalBase {
 	}
 
 	/**
-	 * Check the number of question mark existed in conditions[0] equals the
-	 * number of rest conditions elements or not. If not equals, throws
-	 * DataSupportException.
-	 * 
-	 * @param conditions
-	 *            A string array representing the WHERE part of an SQL
-	 *            statement.
-	 * @throws DataSupportException
-	 */
-	protected void checkConditionsCorrect(String... conditions) {
-		if (conditions != null) {
-			int conditionsSize = conditions.length;
-			if (conditionsSize > 0) {
-				String whereClause = conditions[0];
-				int placeHolderSize = BaseUtility.count(whereClause, "?");
-				if (conditionsSize != placeHolderSize + 1) {
-					throw new DataSupportException(DataSupportException.UPDATE_CONDITIONS_EXCEPTION);
-				}
-			}
-		}
-	}
-
-	/**
 	 * Get the WHERE clause to apply when updating or deleting multiple rows.
 	 * 
 	 * @param conditions

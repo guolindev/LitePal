@@ -3,6 +3,7 @@ package org.litepal.util;
 import java.util.Collection;
 import java.util.Locale;
 
+import org.litepal.exceptions.DataSupportException;
 import org.litepal.parser.LitePalAttr;
 
 import android.text.TextUtils;
@@ -91,13 +92,6 @@ public class BaseUtility {
 		return string == null ? null : "";
 	}
 
-	public static String getCamelHead(String string) {
-		if (!TextUtils.isEmpty(string)) {
-			
-		}
-		return string == null ? null : "";
-	}
-
 	/**
 	 * Count how many marks existed in string.
 	 * 
@@ -119,6 +113,29 @@ public class BaseUtility {
 			return count;
 		}
 		return 0;
+	}
+	
+	/**
+	 * Check the number of question mark existed in conditions[0] equals the
+	 * number of rest conditions elements or not. If not equals, throws
+	 * DataSupportException.
+	 * 
+	 * @param conditions
+	 *            A string array representing the WHERE part of an SQL
+	 *            statement.
+	 * @throws DataSupportException
+	 */
+	public static void checkConditionsCorrect(String... conditions) {
+		if (conditions != null) {
+			int conditionsSize = conditions.length;
+			if (conditionsSize > 0) {
+				String whereClause = conditions[0];
+				int placeHolderSize = BaseUtility.count(whereClause, "?");
+				if (conditionsSize != placeHolderSize + 1) {
+					throw new DataSupportException(DataSupportException.UPDATE_CONDITIONS_EXCEPTION);
+				}
+			}
+		}
 	}
 
 	/**

@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.litepal.crud.model.AssociationsInfo;
 import org.litepal.exceptions.DataSupportException;
+import org.litepal.util.BaseUtility;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
@@ -153,7 +154,7 @@ class UpdateHandler extends DataHandler {
 	 * @return The number of rows affected.
 	 */
 	private int doUpdateAllAction(String tableName, ContentValues values, String... conditions) {
-		checkConditionsCorrect(conditions);
+		BaseUtility.checkConditionsCorrect(conditions);
 		if (values.size() > 0) {
 			return mDatabase.update(tableName, values, getWhereClause(conditions),
 					getWhereArgs(conditions));

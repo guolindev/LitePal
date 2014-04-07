@@ -132,7 +132,7 @@ public class DeleteHandler extends DataHandler {
 	 * @return The number of rows affected.
 	 */
 	private int doDeleteAllAction(String tableName, String... conditions) {
-		checkConditionsCorrect(conditions);
+		BaseUtility.checkConditionsCorrect(conditions);
 		return mDatabase.delete(tableName, getWhereClause(conditions), getWhereArgs(conditions));
 	}
 

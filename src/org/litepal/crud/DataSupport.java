@@ -11,6 +11,7 @@ import org.litepal.tablemanager.Connector;
 import org.litepal.util.BaseUtility;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
@@ -165,7 +166,7 @@ public class DataSupport {
 	 *            The offset amount of rows returned by the query.
 	 * @return A ClusterQuery instance.
 	 */
-	public static ClusterQuery offset(String value) {
+	public static ClusterQuery offset(int value) {
 		ClusterQuery cQuery = new ClusterQuery();
 		cQuery.mOffset = String.valueOf(value);
 		return cQuery;
@@ -253,6 +254,40 @@ public class DataSupport {
 	public static synchronized <T> List<T> findAll(Class<T> modelClass, long... ids) {
 		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
 		return queryHandler.onFindAll(modelClass, ids);
+	}
+
+	/**
+	 * Runs the provided SQL and returns a Cursor over the result set. You may
+	 * include ?s in where clause in the query, which will be replaced by the
+	 * second to the last parameters, such as:
+	 * 
+	 * <pre>
+	 * Cursor cursor = DataSupport.findBySQL(&quot;select * from person where name=? and age=?&quot;, &quot;Tom&quot;, &quot;14&quot;);
+	 * </pre>
+	 * 
+	 * @param sql
+	 *            First parameter is the SQL clause to apply. Second to the last
+	 *            parameters will replace the place holders.
+	 * @return A Cursor object, which is positioned before the first entry. Note
+	 *         that Cursors are not synchronized, see the documentation for more
+	 *         details.
+	 */
+	public static synchronized Cursor findBySQL(String... sql) {
+		BaseUtility.checkConditionsCorrect(sql);
+		if (sql == null) {
+			return null;
+		}
+		if (sql.length <= 0) {
+			return null;
+		}
+		String[] selectionArgs;
+		if (sql.length == 1) {
+			selectionArgs = null;
+		} else {
+			selectionArgs = new String[sql.length - 1];
+			System.arraycopy(sql, 1, selectionArgs, 0, sql.length - 1);
+		}
+		return Connector.getDatabase().rawQuery(sql[0], selectionArgs);
 	}
 
 	/**
@@ -396,6 +431,10 @@ public class DataSupport {
 			String... conditions) {
 		UpdateHandler updateHandler = new UpdateHandler(Connector.getDatabase());
 		return updateHandler.onUpdateAll(tableName, values, conditions);
+	}
+
+	public static synchronized void saveAll() {
+
 	}
 
 	/**
