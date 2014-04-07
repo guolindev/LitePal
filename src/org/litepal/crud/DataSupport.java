@@ -1,6 +1,7 @@
 package org.litepal.crud;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -433,8 +434,42 @@ public class DataSupport {
 		return updateHandler.onUpdateAll(tableName, values, conditions);
 	}
 
-	public static synchronized void saveAll() {
-
+	/**
+	 * Saves the collection into database. <br />
+	 * 
+	 * <pre>
+	 * DataSupport.saveAll(people);
+	 * </pre>
+	 * 
+	 * If the model in collection is a new record gets created in the database,
+	 * otherwise the existing record gets updated.<br />
+	 * If saving process failed by any accident, the whole action will be
+	 * cancelled and your database will be <b>rolled back</b>. <br />
+	 * This method acts the same result as the below way, but <b>much more
+	 * efficient</b>.
+	 * 
+	 * <pre>
+	 * for (Person person : people) {
+	 * 	person.save();
+	 * }
+	 * </pre>
+	 * 
+	 * So when your collection holds huge of models,
+	 * {@link #saveAll(Collection)} is the better choice.
+	 * 
+	 * @param collection
+	 *            Holds all models to save.
+	 */
+	public static synchronized void saveAll(Collection<?> collection) {
+		SQLiteDatabase db = Connector.getDatabase();
+		db.beginTransaction();
+		try {
+			SaveHandler saveHandler = new SaveHandler(db);
+			saveHandler.onSaveAll(collection);
+			db.setTransactionSuccessful();
+		} finally {
+			db.endTransaction();
+		}
 	}
 
 	/**
@@ -505,7 +540,14 @@ public class DataSupport {
 
 	/**
 	 * Saves the model. <br />
-	 * <br />
+	 * 
+	 * <pre>
+	 * Person person = new Person();
+	 * person.setName(&quot;Tom&quot;);
+	 * person.setAge(22);
+	 * person.save();
+	 * </pre>
+	 * 
 	 * If the model is a new record gets created in the database, otherwise the
 	 * existing record gets updated.<br />
 	 * If saving process failed by any accident, the whole action will be
@@ -779,7 +821,7 @@ public class DataSupport {
 	/**
 	 * Clear all the data for storing associated models' data.
 	 */
-	private void clearAssociatedData() {
+	void clearAssociatedData() {
 		clearIdOfModelWithFK();
 		clearIdOfModelWithoutFK();
 		clearIdOfModelForJoinTable();

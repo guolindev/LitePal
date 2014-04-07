@@ -38,7 +38,7 @@ class SaveHandler extends DataHandler {
 
 	/**
 	 * The open interface for other classes in CRUD package to save a model. It
-	 * is called when a model class calls the save method, First of all the
+	 * is called when a model class calls the save method. First of all, the
 	 * passed in baseObj will be saved into database. Then LitePal will analyze
 	 * the associations. If there're associated models detected, each associated
 	 * model which is persisted will build association with current model in
@@ -58,6 +58,38 @@ class SaveHandler extends DataHandler {
 		} else {
 			analyzeAssociatedModels(baseObj, associationInfos);
 			doUpdateAction(baseObj, supportedFields);
+		}
+	}
+
+	/**
+	 * The open interface for other classes in CRUD package to save a model
+	 * collection. It is called when developer calls
+	 * {@link DataSupport#saveAll(Collection)}. Each model in the collection
+	 * will be persisted. If there're associated models detected, each
+	 * associated model which is persisted will build association with current
+	 * model in database.
+	 * 
+	 * @param collection
+	 *            Holds all models to persist.
+	 */
+	void onSaveAll(Collection<?> collection) {
+		if (collection != null && collection.size() > 0) {
+			DataSupport[] array = collection.toArray(new DataSupport[0]);
+			DataSupport firstObj = array[0];
+			String className = firstObj.getClassName();
+			List<Field> supportedFields = getSupportedFields(className);
+			Collection<AssociationsInfo> associationInfos = getAssociationInfo(className);
+			for (DataSupport baseObj : array) {
+				if (!baseObj.isSaved()) {
+					analyzeAssociatedModels(baseObj, associationInfos);
+					doSaveAction(baseObj, supportedFields);
+					analyzeAssociatedModels(baseObj, associationInfos);
+				} else {
+					analyzeAssociatedModels(baseObj, associationInfos);
+					doUpdateAction(baseObj, supportedFields);
+				}
+				baseObj.clearAssociatedData();
+			}
 		}
 	}
 
