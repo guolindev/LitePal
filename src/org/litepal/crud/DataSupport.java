@@ -191,7 +191,12 @@ public class DataSupport {
 	 */
 	public static synchronized <T> T find(Class<T> modelClass, long id) {
 		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
-		return queryHandler.onFind(modelClass, id);
+		return queryHandler.onFind(modelClass, id, false);
+	}
+
+	public static synchronized <T> T find(Class<T> modelClass, long id, boolean isEager) {
+		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
+		return queryHandler.onFind(modelClass, id, isEager);
 	}
 
 	/**
@@ -460,7 +465,7 @@ public class DataSupport {
 	 * @param collection
 	 *            Holds all models to save.
 	 */
-	public static synchronized void saveAll(Collection<?> collection) {
+	public static synchronized <T extends DataSupport> void saveAll(Collection<T> collection) {
 		SQLiteDatabase db = Connector.getDatabase();
 		db.beginTransaction();
 		try {
