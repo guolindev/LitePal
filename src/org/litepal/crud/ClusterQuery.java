@@ -37,6 +37,8 @@ public class ClusterQuery {
 	 */
 	String mOffset;
 
+	boolean mEager = false;
+
 	/**
 	 * Do not allow to create instance by developers.
 	 */
@@ -142,6 +144,11 @@ public class ClusterQuery {
 		return this;
 	}
 
+	public ClusterQuery eager(boolean isEager) {
+		mEager = isEager;
+		return this;
+	}
+
 	/**
 	 * Finds multiple records by the cluster parameters. You can use the below
 	 * way to finish a complicated query:
@@ -174,7 +181,7 @@ public class ClusterQuery {
 			}
 			limit = mOffset + "," + mLimit;
 		}
-		return queryHandler.onFind(modelClass, mColumns, mConditions, mOrderBy, limit);
+		return queryHandler.onFind(modelClass, mColumns, mConditions, mOrderBy, limit, mEager);
 	}
 
 }

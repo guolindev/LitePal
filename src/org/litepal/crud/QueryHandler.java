@@ -1,10 +1,16 @@
 package org.litepal.crud;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.litepal.crud.model.AssociationsInfo;
+import org.litepal.exceptions.DataSupportException;
 import org.litepal.util.BaseUtility;
+import org.litepal.util.Const;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 /**
  * This is a component under DataSupport. It deals with query stuff as primary
@@ -36,11 +42,39 @@ class QueryHandler extends DataHandler {
 	 *            Which record to query.
 	 * @return An object with founded data from database, or null.
 	 */
-	<T> T onFind(Class<T> modelClass, long id) {
-		List<T> dataList = query(modelClass, null, "id = ?", new String[] { String.valueOf(id) },
-				null, null, null, null);
-		if (dataList.size() > 0) {
-			return dataList.get(0);
+	<T> T onFind(Class<T> modelClass, long id, boolean isEager) {
+		if (!isEager) {
+			List<T> dataList = query(modelClass, null, "id = ?",
+					new String[] { String.valueOf(id) }, null, null, null, null, null);
+			if (dataList.size() > 0) {
+				return dataList.get(0);
+			}
+		} else {
+			Collection<AssociationsInfo> associationInfos = getAssociationInfo(modelClass.getName());
+			try {
+				List<AssociationsInfo> foreignKeyAssociations = new ArrayList<AssociationsInfo>();
+				for (AssociationsInfo associationInfo : associationInfos) {
+					Log.d("TAG", "association type " + associationInfo.getAssociationType()
+							+ " class hold fk " + associationInfo.getClassHoldsForeignKey());
+					if (associationInfo.getAssociationType() == Const.Model.MANY_TO_ONE
+							|| associationInfo.getAssociationType() == Const.Model.ONE_TO_ONE) {
+						if (modelClass.getName().equals(associationInfo.getClassHoldsForeignKey())) {
+							foreignKeyAssociations.add(associationInfo);
+						} else {
+						}
+					} else if (associationInfo.getAssociationType() == Const.Model.MANY_TO_MANY) {
+					}
+				}
+				Log.d("TAG", foreignKeyAssociations.toString());
+				List<T> dataList = query(modelClass, null, "id = ?",
+						new String[] { String.valueOf(id) }, null, null, null, null,
+						foreignKeyAssociations);
+				if (dataList.size() > 0) {
+					return dataList.get(0);
+				}
+			} catch (Exception e) {
+				throw new DataSupportException(e.getMessage());
+			}
 		}
 		return null;
 	}
@@ -54,7 +88,7 @@ class QueryHandler extends DataHandler {
 	 * @return An object with data of first row, or null.
 	 */
 	<T> T onFindFirst(Class<T> modelClass) {
-		List<T> dataList = query(modelClass, null, null, null, null, null, "id", "1");
+		List<T> dataList = query(modelClass, null, null, null, null, null, "id", "1", null);
 		if (dataList.size() > 0) {
 			return dataList.get(0);
 		}
@@ -70,7 +104,7 @@ class QueryHandler extends DataHandler {
 	 * @return An object with data of last row, or null.
 	 */
 	<T> T onFindLast(Class<T> modelClass) {
-		List<T> dataList = query(modelClass, null, null, null, null, null, "id desc", "1");
+		List<T> dataList = query(modelClass, null, null, null, null, null, "id desc", "1", null);
 		if (dataList.size() > 0) {
 			return dataList.get(0);
 		}
@@ -90,10 +124,10 @@ class QueryHandler extends DataHandler {
 	<T> List<T> onFindAll(Class<T> modelClass, long... ids) {
 		List<T> dataList;
 		if (isAffectAllLines(ids)) {
-			dataList = query(modelClass, null, null, null, null, null, "id", null);
+			dataList = query(modelClass, null, null, null, null, null, "id", null, null);
 		} else {
 			dataList = query(modelClass, null, getWhereOfIdsWithOr(ids), null, null, null, "id",
-					null);
+					null, null);
 		}
 		return dataList;
 	}
@@ -120,11 +154,14 @@ class QueryHandler extends DataHandler {
 	 * @return
 	 */
 	<T> List<T> onFind(Class<T> modelClass, String[] columns, String[] conditions, String orderBy,
-			String limit) {
+			String limit, boolean isEager) {
 		BaseUtility.checkConditionsCorrect(conditions);
-		List<T> dataList = query(modelClass, columns, getWhereClause(conditions),
-				getWhereArgs(conditions), null, null, orderBy, limit);
-		return dataList;
+		if (!isEager) {
+			List<T> dataList = query(modelClass, columns, getWhereClause(conditions),
+					getWhereArgs(conditions), null, null, orderBy, limit, null);
+			return dataList;
+		}
+		return null;
 	}
 
 }

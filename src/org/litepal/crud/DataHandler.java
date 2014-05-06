@@ -78,17 +78,21 @@ abstract class DataHandler extends LitePalBase {
 	 * @param limit
 	 *            Limits the number of rows returned by the query, formatted as
 	 *            LIMIT clause. Passing null denotes no LIMIT clause.
+	 * @param foreignKeyAssociations
+	 *            Associated classes which have foreign keys in the current
+	 *            model's table.
 	 * @return A model list. The list may be empty.
 	 */
 	@SuppressWarnings("unchecked")
 	protected <T> List<T> query(Class<T> modelClass, String[] columns, String selection,
-			String[] selectionArgs, String groupBy, String having, String orderBy, String limit) {
+			String[] selectionArgs, String groupBy, String having, String orderBy, String limit,
+			List<AssociationsInfo> foreignKeyAssociations) {
 		List<T> dataList = new ArrayList<T>();
 		Cursor cursor = null;
 		try {
 			List<Field> supportedFields = getSupportedFields(modelClass.getName());
 			String tableName = getTableName(modelClass);
-			String[] customizedColumns = getCustomizedColumns(columns);
+			String[] customizedColumns = getCustomizedColumns(columns, foreignKeyAssociations);
 			cursor = mDatabase.query(tableName, customizedColumns, selection, selectionArgs,
 					groupBy, having, orderBy, limit);
 			if (cursor.moveToFirst()) {
@@ -98,7 +102,7 @@ abstract class DataHandler extends LitePalBase {
 							.newInstance(getConstructorParams(constructor));
 					giveBaseObjIdValue((DataSupport) modelInstance,
 							cursor.getLong(cursor.getColumnIndexOrThrow("id")));
-					setValueToModel(modelInstance, supportedFields, cursor);
+					setValueToModel(modelInstance, supportedFields, foreignKeyAssociations, cursor);
 					dataList.add(modelInstance);
 				} while (cursor.moveToNext());
 			}
@@ -785,8 +789,32 @@ abstract class DataHandler extends LitePalBase {
 		return methodName;
 	}
 
-	private String[] getCustomizedColumns(String[] columns) {
+	/**
+	 * Customize the passed in columns. If the columns contains an id column
+	 * already, just return it. If contains an _id column, rename it to id. If
+	 * not, an add id column then return.
+	 * 
+	 * @param columns
+	 *            The original columns that passed in.
+	 * @param foreignKeyAssociations
+	 *            Associated classes which have foreign keys in the current
+	 *            model's table.
+	 * @return Customized columns with id column always.
+	 */
+	private String[] getCustomizedColumns(String[] columns,
+			List<AssociationsInfo> foreignKeyAssociations) {
 		if (columns != null) {
+			if (foreignKeyAssociations != null && foreignKeyAssociations.size() > 0) {
+				String[] tempColumns = new String[columns.length + foreignKeyAssociations.size()];
+				System.arraycopy(columns, 0, tempColumns, 0, columns.length);
+				for (int i = 0; i < foreignKeyAssociations.size(); i++) {
+					String associatedTable = DBUtility
+							.getTableNameByClassName(foreignKeyAssociations.get(i)
+									.getAssociatedClassName());
+					tempColumns[columns.length + i] = getForeignKeyColumnName(associatedTable);
+				}
+				columns = tempColumns;
+			}
 			for (int i = 0; i < columns.length; i++) {
 				String columnName = columns[i];
 				if (isIdColumn(columnName)) {
@@ -811,6 +839,9 @@ abstract class DataHandler extends LitePalBase {
 	 *            The model to set into.
 	 * @param supportedFields
 	 *            Corresponding to each column in database.
+	 * @param foreignKeyAssociations
+	 *            Associated classes which have foreign keys in the current
+	 *            model's table.
 	 * @param cursor
 	 *            Use to get value from database.
 	 * @throws SecurityException
@@ -819,12 +850,14 @@ abstract class DataHandler extends LitePalBase {
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	private void setValueToModel(Object modelInstance, List<Field> supportedFields, Cursor cursor)
-			throws SecurityException, IllegalArgumentException, NoSuchMethodException,
-			IllegalAccessException, InvocationTargetException {
+	private void setValueToModel(Object modelInstance, List<Field> supportedFields,
+			List<AssociationsInfo> foreignKeyAssociations, Cursor cursor) throws SecurityException,
+			IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
+			InvocationTargetException {
 		for (Field field : supportedFields) {
 			String getMethodName = genGetColumnMethod(field);
-			int columnIndex = cursor.getColumnIndex(BaseUtility.changeCase(field.getName()));
+			String columnName = isIdColumn(field.getName()) ? "id" : field.getName();
+			int columnIndex = cursor.getColumnIndex(BaseUtility.changeCase(columnName));
 			if (columnIndex != -1) {
 				Class<?> cursorClass = cursor.getClass();
 				Method method = cursorClass.getMethod(getMethodName, int.class);
@@ -843,6 +876,27 @@ abstract class DataHandler extends LitePalBase {
 						value = ((String) value).charAt(0);
 					}
 					putSetMethodValueByField((DataSupport) modelInstance, field, value);
+				}
+			}
+		}
+		if (foreignKeyAssociations != null) {
+			for (AssociationsInfo associationInfo : foreignKeyAssociations) {
+				String foreignKeyColumn = getForeignKeyColumnName(DBUtility
+						.getTableNameByClassName(associationInfo.getAssociatedClassName()));
+				int columnIndex = cursor.getColumnIndex(foreignKeyColumn);
+				if (columnIndex != -1) {
+					long associatedClassId = cursor.getLong(columnIndex);
+					try {
+						DataSupport associatedObj = (DataSupport) DataSupport.find(
+								Class.forName(associationInfo.getAssociatedClassName()),
+								associatedClassId);
+						if (associatedObj != null) {
+							putSetMethodValueByField((DataSupport) modelInstance,
+									associationInfo.getAssociateOtherModelFromSelf(), associatedObj);
+						}
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
