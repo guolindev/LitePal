@@ -8,6 +8,7 @@ import org.litepal.crud.model.AssociationsInfo;
 import org.litepal.exceptions.DataSupportException;
 import org.litepal.util.BaseUtility;
 import org.litepal.util.Const;
+import org.litepal.util.DBUtility;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -44,34 +45,46 @@ class QueryHandler extends DataHandler {
 	 */
 	<T> T onFind(Class<T> modelClass, long id, boolean isEager) {
 		if (!isEager) {
-			List<T> dataList = query(modelClass, null, "id = ?",
-					new String[] { String.valueOf(id) }, null, null, null, null, null);
+			List<T> dataList = query(modelClass, null, "id = ?", new String[] { String.valueOf(id) }, null,
+					null, null, null, null);
 			if (dataList.size() > 0) {
 				return dataList.get(0);
 			}
 		} else {
 			Collection<AssociationsInfo> associationInfos = getAssociationInfo(modelClass.getName());
 			try {
-				List<AssociationsInfo> foreignKeyAssociations = new ArrayList<AssociationsInfo>();
+				List<AssociationsInfo> fkInCurrentModel = new ArrayList<AssociationsInfo>();
+				List<AssociationsInfo> fkInOtherModel = new ArrayList<AssociationsInfo>();
 				for (AssociationsInfo associationInfo : associationInfos) {
 					Log.d("TAG", "association type " + associationInfo.getAssociationType()
 							+ " class hold fk " + associationInfo.getClassHoldsForeignKey());
 					if (associationInfo.getAssociationType() == Const.Model.MANY_TO_ONE
 							|| associationInfo.getAssociationType() == Const.Model.ONE_TO_ONE) {
 						if (modelClass.getName().equals(associationInfo.getClassHoldsForeignKey())) {
-							foreignKeyAssociations.add(associationInfo);
+							fkInCurrentModel.add(associationInfo);
 						} else {
+							fkInOtherModel.add(associationInfo);
 						}
 					} else if (associationInfo.getAssociationType() == Const.Model.MANY_TO_MANY) {
 					}
 				}
-				Log.d("TAG", foreignKeyAssociations.toString());
-				List<T> dataList = query(modelClass, null, "id = ?",
-						new String[] { String.valueOf(id) }, null, null, null, null,
-						foreignKeyAssociations);
+				Log.d("TAG", fkInCurrentModel.toString());
+				List<T> dataList = query(modelClass, null, "id = ?", new String[] { String.valueOf(id) },
+						null, null, null, null, fkInCurrentModel);
+				DataSupport baseObj = null;
 				if (dataList.size() > 0) {
-					return dataList.get(0);
+					baseObj = (DataSupport) dataList.get(0);
 				}
+				if (baseObj != null) {
+					for (AssociationsInfo info : fkInOtherModel) {
+						String foreignKeyColumn = getForeignKeyColumnName(DBUtility
+								.getTableNameByClassName(info.getSelfClassName()));
+//						List<T> list = (List<T>) DataSupport.where("? = ?", foreignKeyColumn,
+//								String.valueOf(baseObj.getBaseObjId())).find(
+//								Class.forName(info.getAssociatedClassName()));
+					}
+				}
+				return (T) baseObj;
 			} catch (Exception e) {
 				throw new DataSupportException(e.getMessage());
 			}
@@ -126,8 +139,7 @@ class QueryHandler extends DataHandler {
 		if (isAffectAllLines(ids)) {
 			dataList = query(modelClass, null, null, null, null, null, "id", null, null);
 		} else {
-			dataList = query(modelClass, null, getWhereOfIdsWithOr(ids), null, null, null, "id",
-					null, null);
+			dataList = query(modelClass, null, getWhereOfIdsWithOr(ids), null, null, null, "id", null, null);
 		}
 		return dataList;
 	}
