@@ -1,5 +1,7 @@
 package org.litepal.crud;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -10,6 +12,7 @@ import org.litepal.util.BaseUtility;
 import org.litepal.util.Const;
 import org.litepal.util.DBUtility;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -43,10 +46,11 @@ class QueryHandler extends DataHandler {
 	 *            Which record to query.
 	 * @return An object with founded data from database, or null.
 	 */
+	@SuppressWarnings("unchecked")
 	<T> T onFind(Class<T> modelClass, long id, boolean isEager) {
 		if (!isEager) {
-			List<T> dataList = query(modelClass, null, "id = ?", new String[] { String.valueOf(id) }, null,
-					null, null, null, null);
+			List<T> dataList = query(modelClass, null, "id = ?",
+					new String[] { String.valueOf(id) }, null, null, null, null, null);
 			if (dataList.size() > 0) {
 				return dataList.get(0);
 			}
@@ -69,8 +73,9 @@ class QueryHandler extends DataHandler {
 					}
 				}
 				Log.d("TAG", fkInCurrentModel.toString());
-				List<T> dataList = query(modelClass, null, "id = ?", new String[] { String.valueOf(id) },
-						null, null, null, null, fkInCurrentModel);
+				List<T> dataList = query(modelClass, null, "id = ?",
+						new String[] { String.valueOf(id) }, null, null, null, null,
+						fkInCurrentModel);
 				DataSupport baseObj = null;
 				if (dataList.size() > 0) {
 					baseObj = (DataSupport) dataList.get(0);
@@ -79,9 +84,8 @@ class QueryHandler extends DataHandler {
 					for (AssociationsInfo info : fkInOtherModel) {
 						String foreignKeyColumn = getForeignKeyColumnName(DBUtility
 								.getTableNameByClassName(info.getSelfClassName()));
-//						List<T> list = (List<T>) DataSupport.where("? = ?", foreignKeyColumn,
-//								String.valueOf(baseObj.getBaseObjId())).find(
-//								Class.forName(info.getAssociatedClassName()));
+						setAssociatedModel(baseObj, info.getAssociatedClassName(),
+								foreignKeyColumn, info);
 					}
 				}
 				return (T) baseObj;
@@ -139,7 +143,8 @@ class QueryHandler extends DataHandler {
 		if (isAffectAllLines(ids)) {
 			dataList = query(modelClass, null, null, null, null, null, "id", null, null);
 		} else {
-			dataList = query(modelClass, null, getWhereOfIdsWithOr(ids), null, null, null, "id", null, null);
+			dataList = query(modelClass, null, getWhereOfIdsWithOr(ids), null, null, null, "id",
+					null, null);
 		}
 		return dataList;
 	}
@@ -174,6 +179,40 @@ class QueryHandler extends DataHandler {
 			return dataList;
 		}
 		return null;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void setAssociatedModel(DataSupport baseObj, String className, String foreignKeyColumn,
+			AssociationsInfo info) {
+		Cursor cursor = null;
+		try {
+			List<Field> supportedFields = getSupportedFields(className);
+			String tableName = DBUtility.getTableNameByClassName(className);
+			cursor = mDatabase
+					.query(tableName, null, foreignKeyColumn + "=?",
+							new String[] { String.valueOf(baseObj.getBaseObjId()) }, null, null,
+							null, null);
+			if (cursor.moveToFirst()) {
+				do {
+					Constructor<?> constructor = findBestSuitConstructor(Class.forName(className));
+					DataSupport modelInstance = (DataSupport) constructor
+							.newInstance(getConstructorParams(constructor));
+					giveBaseObjIdValue(modelInstance,
+							cursor.getLong(cursor.getColumnIndexOrThrow("id")));
+					setValueToModel(modelInstance, supportedFields, null, cursor);
+					Collection collection = (Collection) takeGetMethodValueByField(baseObj,
+							info.getAssociateOtherModelFromSelf());
+					collection.add(modelInstance);
+					Log.d("TAG", "associated model is " + modelInstance);
+				} while (cursor.moveToNext());
+			}
+		} catch (Exception e) {
+			throw new DataSupportException(e.getMessage());
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+			}
+		}
 	}
 
 }

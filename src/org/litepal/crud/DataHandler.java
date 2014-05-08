@@ -509,6 +509,76 @@ abstract class DataHandler extends LitePalBase {
 		}
 		return params;
 	}
+	
+	/**
+	 * Get value from database by cursor, then set the value into modelInstance.
+	 * 
+	 * @param modelInstance
+	 *            The model to set into.
+	 * @param supportedFields
+	 *            Corresponding to each column in database.
+	 * @param foreignKeyAssociations
+	 *            Associated classes which have foreign keys in the current
+	 *            model's table.
+	 * @param cursor
+	 *            Use to get value from database.
+	 * @throws SecurityException
+	 * @throws IllegalArgumentException
+	 * @throws NoSuchMethodException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
+	protected void setValueToModel(Object modelInstance, List<Field> supportedFields,
+			List<AssociationsInfo> foreignKeyAssociations, Cursor cursor) throws SecurityException,
+			IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
+			InvocationTargetException {
+		for (Field field : supportedFields) {
+			String getMethodName = genGetColumnMethod(field);
+			String columnName = isIdColumn(field.getName()) ? "id" : field.getName();
+			int columnIndex = cursor.getColumnIndex(BaseUtility.changeCase(columnName));
+			if (columnIndex != -1) {
+				Class<?> cursorClass = cursor.getClass();
+				Method method = cursorClass.getMethod(getMethodName, int.class);
+				Object value = method.invoke(cursor, columnIndex);
+				if (isIdColumn(field.getName())) {
+					DynamicExecutor.setField(modelInstance, field.getName(), value,
+							modelInstance.getClass());
+				} else {
+					if (field.getType() == boolean.class || field.getType() == Boolean.class) {
+						if ("0".equals(String.valueOf(value))) {
+							value = false;
+						} else if ("1".equals(String.valueOf(value))) {
+							value = true;
+						}
+					} else if (field.getType() == char.class || field.getType() == Character.class) {
+						value = ((String) value).charAt(0);
+					}
+					putSetMethodValueByField((DataSupport) modelInstance, field, value);
+				}
+			}
+		}
+		if (foreignKeyAssociations != null) {
+			for (AssociationsInfo associationInfo : foreignKeyAssociations) {
+				String foreignKeyColumn = getForeignKeyColumnName(DBUtility
+						.getTableNameByClassName(associationInfo.getAssociatedClassName()));
+				int columnIndex = cursor.getColumnIndex(foreignKeyColumn);
+				if (columnIndex != -1) {
+					long associatedClassId = cursor.getLong(columnIndex);
+					try {
+						DataSupport associatedObj = (DataSupport) DataSupport.find(
+								Class.forName(associationInfo.getAssociatedClassName()),
+								associatedClassId);
+						if (associatedObj != null) {
+							putSetMethodValueByField((DataSupport) modelInstance,
+									associationInfo.getAssociateOtherModelFromSelf(), associatedObj);
+						}
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	}
 
 	/**
 	 * Get the types of parameters for {@link ContentValues#put}. Need two
@@ -830,76 +900,6 @@ abstract class DataHandler extends LitePalBase {
 			return customizedColumns;
 		}
 		return null;
-	}
-
-	/**
-	 * Get value from database by cursor, then set the value into modelInstance.
-	 * 
-	 * @param modelInstance
-	 *            The model to set into.
-	 * @param supportedFields
-	 *            Corresponding to each column in database.
-	 * @param foreignKeyAssociations
-	 *            Associated classes which have foreign keys in the current
-	 *            model's table.
-	 * @param cursor
-	 *            Use to get value from database.
-	 * @throws SecurityException
-	 * @throws IllegalArgumentException
-	 * @throws NoSuchMethodException
-	 * @throws IllegalAccessException
-	 * @throws InvocationTargetException
-	 */
-	private void setValueToModel(Object modelInstance, List<Field> supportedFields,
-			List<AssociationsInfo> foreignKeyAssociations, Cursor cursor) throws SecurityException,
-			IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
-			InvocationTargetException {
-		for (Field field : supportedFields) {
-			String getMethodName = genGetColumnMethod(field);
-			String columnName = isIdColumn(field.getName()) ? "id" : field.getName();
-			int columnIndex = cursor.getColumnIndex(BaseUtility.changeCase(columnName));
-			if (columnIndex != -1) {
-				Class<?> cursorClass = cursor.getClass();
-				Method method = cursorClass.getMethod(getMethodName, int.class);
-				Object value = method.invoke(cursor, columnIndex);
-				if (isIdColumn(field.getName())) {
-					DynamicExecutor.setField(modelInstance, field.getName(), value,
-							modelInstance.getClass());
-				} else {
-					if (field.getType() == boolean.class || field.getType() == Boolean.class) {
-						if ("0".equals(String.valueOf(value))) {
-							value = false;
-						} else if ("1".equals(String.valueOf(value))) {
-							value = true;
-						}
-					} else if (field.getType() == char.class || field.getType() == Character.class) {
-						value = ((String) value).charAt(0);
-					}
-					putSetMethodValueByField((DataSupport) modelInstance, field, value);
-				}
-			}
-		}
-		if (foreignKeyAssociations != null) {
-			for (AssociationsInfo associationInfo : foreignKeyAssociations) {
-				String foreignKeyColumn = getForeignKeyColumnName(DBUtility
-						.getTableNameByClassName(associationInfo.getAssociatedClassName()));
-				int columnIndex = cursor.getColumnIndex(foreignKeyColumn);
-				if (columnIndex != -1) {
-					long associatedClassId = cursor.getLong(columnIndex);
-					try {
-						DataSupport associatedObj = (DataSupport) DataSupport.find(
-								Class.forName(associationInfo.getAssociatedClassName()),
-								associatedClassId);
-						if (associatedObj != null) {
-							putSetMethodValueByField((DataSupport) modelInstance,
-									associationInfo.getAssociateOtherModelFromSelf(), associatedObj);
-						}
-					} catch (ClassNotFoundException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
 	}
 
 }
