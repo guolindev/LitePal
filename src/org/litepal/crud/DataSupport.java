@@ -212,7 +212,12 @@ public class DataSupport {
 	 */
 	public static synchronized <T> T findFirst(Class<T> modelClass) {
 		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
-		return queryHandler.onFindFirst(modelClass);
+		return queryHandler.onFindFirst(modelClass, false);
+	}
+
+	public static synchronized <T> T findFirst(Class<T> modelClass, boolean isEager) {
+		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
+		return queryHandler.onFindFirst(modelClass, isEager);
 	}
 
 	/**
