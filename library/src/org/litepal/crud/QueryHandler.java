@@ -74,10 +74,19 @@ class QueryHandler extends DataHandler {
 	 *            Which table to query and the object type to return.
 	 * @return An object with data of first row, or null.
 	 */
+	@SuppressWarnings("unchecked")
 	<T> T onFindFirst(Class<T> modelClass, boolean isEager) {
-		List<T> dataList = query(modelClass, null, null, null, null, null, "id", "1", null);
+		List<T> dataList = query(modelClass, null, null, null, null, null, "id", "1",
+				getForeignKeyAssociations(modelClass.getName(), isEager));
+		DataSupport baseObj = null;
 		if (dataList.size() > 0) {
-			return dataList.get(0);
+			baseObj = (DataSupport) dataList.get(0);
+		}
+		if (baseObj != null) {
+			if (isEager) {
+				setAssociatedModel(baseObj);
+			}
+			return (T) baseObj;
 		}
 		return null;
 	}
@@ -90,10 +99,19 @@ class QueryHandler extends DataHandler {
 	 *            Which table to query and the object type to return.
 	 * @return An object with data of last row, or null.
 	 */
-	<T> T onFindLast(Class<T> modelClass) {
-		List<T> dataList = query(modelClass, null, null, null, null, null, "id desc", "1", null);
+	@SuppressWarnings("unchecked")
+	<T> T onFindLast(Class<T> modelClass, boolean isEager) {
+		List<T> dataList = query(modelClass, null, null, null, null, null, "id desc", "1",
+				getForeignKeyAssociations(modelClass.getName(), isEager));
+		DataSupport baseObj = null;
 		if (dataList.size() > 0) {
-			return dataList.get(0);
+			baseObj = (DataSupport) dataList.get(0);
+		}
+		if (baseObj != null) {
+			if (isEager) {
+				setAssociatedModel(baseObj);
+			}
+			return (T) baseObj;
 		}
 		return null;
 	}

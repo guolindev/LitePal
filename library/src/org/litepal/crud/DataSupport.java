@@ -233,7 +233,12 @@ public class DataSupport {
 	 */
 	public static synchronized <T> T findLast(Class<T> modelClass) {
 		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
-		return queryHandler.onFindLast(modelClass);
+		return queryHandler.onFindLast(modelClass, false);
+	}
+
+	public static synchronized <T> T findLast(Class<T> modelClass, boolean isEager) {
+		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
+		return queryHandler.onFindLast(modelClass, isEager);
 	}
 
 	/**
