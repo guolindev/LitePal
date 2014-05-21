@@ -59,6 +59,10 @@ abstract class DataHandler extends LitePalBase {
 	 */
 	private DataSupport tempEmptyModel;
 
+	private List<AssociationsInfo> fkInCurrentModel;
+
+	private List<AssociationsInfo> fkInOtherModel;
+
 	/**
 	 * Query the table of the given model, returning a model list over the
 	 * result set.
@@ -119,6 +123,9 @@ abstract class DataHandler extends LitePalBase {
 					giveBaseObjIdValue((DataSupport) modelInstance,
 							cursor.getLong(cursor.getColumnIndexOrThrow("id")));
 					setValueToModel(modelInstance, supportedFields, foreignKeyAssociations, cursor);
+					if (foreignKeyAssociations != null) {
+						setAssociatedModel((DataSupport) modelInstance);
+					}
 					dataList.add(modelInstance);
 				} while (cursor.moveToNext());
 			}
@@ -525,7 +532,7 @@ abstract class DataHandler extends LitePalBase {
 		}
 		return params;
 	}
-	
+
 	/**
 	 * Get value from database by cursor, then set the value into modelInstance.
 	 * 
@@ -594,6 +601,14 @@ abstract class DataHandler extends LitePalBase {
 				}
 			}
 		}
+	}
+
+	protected List<AssociationsInfo> getForeignKeyAssociations(String className, boolean isEager) {
+		if (isEager) {
+			analyzeAssociations(className);
+			return fkInCurrentModel;
+		}
+		return null;
 	}
 
 	/**
@@ -916,6 +931,95 @@ abstract class DataHandler extends LitePalBase {
 			return customizedColumns;
 		}
 		return null;
+	}
+
+	private void analyzeAssociations(String className) {
+		Collection<AssociationsInfo> associationInfos = getAssociationInfo(className);
+		if (fkInCurrentModel == null) {
+			fkInCurrentModel = new ArrayList<AssociationsInfo>();
+		} else {
+			fkInCurrentModel.clear();
+		}
+		if (fkInOtherModel == null) {
+			fkInOtherModel = new ArrayList<AssociationsInfo>();
+		} else {
+			fkInOtherModel.clear();
+		}
+		for (AssociationsInfo associationInfo : associationInfos) {
+			if (associationInfo.getAssociationType() == Const.Model.MANY_TO_ONE
+					|| associationInfo.getAssociationType() == Const.Model.ONE_TO_ONE) {
+				if (associationInfo.getClassHoldsForeignKey().equals(className)) {
+					fkInCurrentModel.add(associationInfo);
+				} else {
+					fkInOtherModel.add(associationInfo);
+				}
+			} else if (associationInfo.getAssociationType() == Const.Model.MANY_TO_MANY) {
+				fkInOtherModel.add(associationInfo);
+			}
+		}
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void setAssociatedModel(DataSupport baseObj) {
+		if (fkInOtherModel == null) {
+			return;
+		}
+		for (AssociationsInfo info : fkInOtherModel) {
+			Cursor cursor = null;
+			String associatedClassName = info.getAssociatedClassName();
+			boolean isM2M = info.getAssociationType() == Const.Model.MANY_TO_MANY ? true : false;
+			try {
+				List<Field> supportedFields = getSupportedFields(associatedClassName);
+				if (isM2M) {
+					String tableName = baseObj.getTableName();
+					String associatedTableName = DBUtility
+							.getTableNameByClassName(associatedClassName);
+					String intermediateTableName = DBUtility.getIntermediateTableName(tableName,
+							associatedTableName);
+					StringBuilder sql = new StringBuilder();
+					sql.append("select * from ").append(associatedTableName)
+							.append(" a inner join ").append(intermediateTableName)
+							.append(" b on a.id = b.").append(associatedTableName + "_id")
+							.append(" where b.").append(tableName).append("_id = ?");
+					cursor = DataSupport.findBySQL(BaseUtility.changeCase(sql.toString()),
+							String.valueOf(baseObj.getBaseObjId()));
+				} else {
+					String foreignKeyColumn = getForeignKeyColumnName(DBUtility
+							.getTableNameByClassName(info.getSelfClassName()));
+					String associatedTableName = DBUtility
+							.getTableNameByClassName(associatedClassName);
+					cursor = mDatabase.query(BaseUtility.changeCase(associatedTableName), null,
+							foreignKeyColumn + "=?",
+							new String[] { String.valueOf(baseObj.getBaseObjId()) }, null, null,
+							null, null);
+				}
+				if (cursor.moveToFirst()) {
+					do {
+						Constructor<?> constructor = findBestSuitConstructor(Class
+								.forName(associatedClassName));
+						DataSupport modelInstance = (DataSupport) constructor
+								.newInstance(getConstructorParams(constructor));
+						giveBaseObjIdValue(modelInstance,
+								cursor.getLong(cursor.getColumnIndexOrThrow("id")));
+						setValueToModel(modelInstance, supportedFields, null, cursor);
+						if (info.getAssociationType() == Const.Model.MANY_TO_ONE || isM2M) {
+							Collection collection = (Collection) takeGetMethodValueByField(baseObj,
+									info.getAssociateOtherModelFromSelf());
+							collection.add(modelInstance);
+						} else if (info.getAssociationType() == Const.Model.ONE_TO_ONE) {
+							putSetMethodValueByField(baseObj,
+									info.getAssociateOtherModelFromSelf(), modelInstance);
+						}
+					} while (cursor.moveToNext());
+				}
+			} catch (Exception e) {
+				throw new DataSupportException(e.getMessage());
+			} finally {
+				if (cursor != null) {
+					cursor.close();
+				}
+			}
+		}
 	}
 
 }
