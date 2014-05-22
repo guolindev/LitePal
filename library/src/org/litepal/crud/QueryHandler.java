@@ -141,12 +141,10 @@ class QueryHandler extends DataHandler {
 	<T> List<T> onFind(Class<T> modelClass, String[] columns, String[] conditions, String orderBy,
 			String limit, boolean isEager) {
 		BaseUtility.checkConditionsCorrect(conditions);
-		if (!isEager) {
-			List<T> dataList = query(modelClass, columns, getWhereClause(conditions),
-					getWhereArgs(conditions), null, null, orderBy, limit, null);
-			return dataList;
-		}
-		return null;
+		List<T> dataList = query(modelClass, columns, getWhereClause(conditions),
+				getWhereArgs(conditions), null, null, orderBy, limit,
+				getForeignKeyAssociations(modelClass.getName(), isEager));
+		return dataList;
 	}
 
 }
