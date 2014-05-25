@@ -50,7 +50,9 @@ class QueryHandler extends DataHandler {
 	 *            Which table to query and the object type to return.
 	 * @param id
 	 *            Which record to query.
-	 * @return An object with founded data from database, or null.
+	 * @param isEager
+	 *            True to load the associated models, false not.
+	 * @return An object with found data from database, or null.
 	 */
 	<T> T onFind(Class<T> modelClass, long id, boolean isEager) {
 		List<T> dataList = query(modelClass, null, "id = ?", new String[] { String.valueOf(id) },
@@ -67,6 +69,8 @@ class QueryHandler extends DataHandler {
 	 * 
 	 * @param modelClass
 	 *            Which table to query and the object type to return.
+	 * @param isEager
+	 *            True to load the associated models, false not.
 	 * @return An object with data of first row, or null.
 	 */
 	<T> T onFindFirst(Class<T> modelClass, boolean isEager) {
@@ -84,6 +88,8 @@ class QueryHandler extends DataHandler {
 	 * 
 	 * @param modelClass
 	 *            Which table to query and the object type to return.
+	 * @param isEager
+	 *            True to load the associated models, false not.
 	 * @return An object with data of last row, or null.
 	 */
 	<T> T onFindLast(Class<T> modelClass, boolean isEager) {
@@ -101,9 +107,11 @@ class QueryHandler extends DataHandler {
 	 * 
 	 * @param modelClass
 	 *            Which table to query and the object type to return as a list.
+	 * @param isEager
+	 *            True to load the associated models, false not.
 	 * @param ids
 	 *            Which records to query. Or do not pass it to find all records.
-	 * @return An object list with founded data from database, or an empty list.
+	 * @return An object list with found data from database, or an empty list.
 	 */
 	<T> List<T> onFindAll(Class<T> modelClass, boolean isEager, long... ids) {
 		List<T> dataList;
@@ -136,7 +144,9 @@ class QueryHandler extends DataHandler {
 	 * @param limit
 	 *            Limits the number of rows returned by the query, formatted as
 	 *            LIMIT clause.
-	 * @return
+	 * @param isEager
+	 *            True to load the associated models, false not.
+	 * @return An object list with found data from database, or an empty list.
 	 */
 	<T> List<T> onFind(Class<T> modelClass, String[] columns, String[] conditions, String orderBy,
 			String limit, boolean isEager) {

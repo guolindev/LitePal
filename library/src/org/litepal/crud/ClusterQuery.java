@@ -163,7 +163,8 @@ public class ClusterQuery {
 	 * way to finish a complicated query:
 	 * 
 	 * <pre>
-	 * DataSupport.select(&quot;name&quot;).where(&quot;age &gt; ?&quot;, 14).order(&quot;age&quot;).limit(1).offset(2).find(Person.class);
+	 * DataSupport.select(&quot;name&quot;).where(&quot;age &gt; ?&quot;, &quot;14&quot;).order(&quot;age&quot;).limit(1).offset(2)
+	 * 		.find(Person.class);
 	 * </pre>
 	 * 
 	 * You can also do the same job with SQLiteDatabase like this:
@@ -173,26 +174,29 @@ public class ClusterQuery {
 	 * 		&quot;2,1&quot;);
 	 * </pre>
 	 * 
-	 * Obviously, the first way is much more semantic.
+	 * Obviously, the first way is much more semantic.<br>
+	 * Note that the associated models won't be loaded by default considering
+	 * the efficiency, but you can do that by using
+	 * {@link ClusterQuery#find(Class, boolean)}.
 	 * 
 	 * @param modelClass
 	 *            Which table to query and the object type to return as a list.
 	 * @return An object list with founded data from database, or an empty list.
 	 */
 	public <T> List<T> find(Class<T> modelClass) {
-		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
-		String limit;
-		if (mOffset == null) {
-			limit = mLimit;
-		} else {
-			if (mLimit == null) {
-				mLimit = "0";
-			}
-			limit = mOffset + "," + mLimit;
-		}
-		return queryHandler.onFind(modelClass, mColumns, mConditions, mOrderBy, limit, false);
+		return find(modelClass, false);
 	}
-	
+
+	/**
+	 * It is mostly same as {@link ClusterQuery#find(Class)} but an isEager
+	 * parameter. If set true the associated models will be loaded as well.
+	 * 
+	 * @param modelClass
+	 *            Which table to query and the object type to return as a list.
+	 * @param isEager
+	 *            True to load the associated models, false not.
+	 * @return An object list with founded data from database, or an empty list.
+	 */
 	public <T> List<T> find(Class<T> modelClass, boolean isEager) {
 		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
 		String limit;

@@ -197,19 +197,34 @@ public class DataSupport {
 	 * </pre>
 	 * 
 	 * The modelClass determines which table to query and the object type to
-	 * return. If no record can be found, then return null.
+	 * return. If no record can be found, then return null. <br>
+	 * 
+	 * Note that the associated models won't be loaded by default considering
+	 * the efficiency, but you can do that by using
+	 * {@link DataSupport#find(Class, long, boolean)}.
 	 * 
 	 * @param modelClass
 	 *            Which table to query and the object type to return.
 	 * @param id
 	 *            Which record to query.
-	 * @return An object with founded data from database, or null.
+	 * @return An object with found data from database, or null.
 	 */
 	public static synchronized <T> T find(Class<T> modelClass, long id) {
-		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
-		return queryHandler.onFind(modelClass, id, false);
+		return find(modelClass, id, false);
 	}
 
+	/**
+	 * It is mostly same as {@link DataSupport#find(Class, long)} but an isEager
+	 * parameter. If set true the associated models will be loaded as well.
+	 * 
+	 * @param modelClass
+	 *            Which table to query and the object type to return.
+	 * @param id
+	 *            Which record to query.
+	 * @param isEager
+	 *            True to load the associated models, false not.
+	 * @return An object with found data from database, or null.
+	 */
 	public static synchronized <T> T find(Class<T> modelClass, long id, boolean isEager) {
 		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
 		return queryHandler.onFind(modelClass, id, isEager);
@@ -222,15 +237,28 @@ public class DataSupport {
 	 * Person p = DataSupport.findFirst(Person.class);
 	 * </pre>
 	 * 
+	 * Note that the associated models won't be loaded by default considering
+	 * the efficiency, but you can do that by using
+	 * {@link DataSupport#findFirst(Class, boolean)}.
+	 * 
 	 * @param modelClass
 	 *            Which table to query and the object type to return.
 	 * @return An object with data of first row, or null.
 	 */
 	public static synchronized <T> T findFirst(Class<T> modelClass) {
-		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
-		return queryHandler.onFindFirst(modelClass, false);
+		return findFirst(modelClass, false);
 	}
 
+	/**
+	 * It is mostly same as {@link DataSupport#findFirst(Class)} but an isEager
+	 * parameter. If set true the associated models will be loaded as well.
+	 * 
+	 * @param modelClass
+	 *            Which table to query and the object type to return.
+	 * @param isEager
+	 *            True to load the associated models, false not.
+	 * @return An object with data of first row, or null.
+	 */
 	public static synchronized <T> T findFirst(Class<T> modelClass, boolean isEager) {
 		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
 		return queryHandler.onFindFirst(modelClass, isEager);
@@ -243,15 +271,28 @@ public class DataSupport {
 	 * Person p = DataSupport.findLast(Person.class);
 	 * </pre>
 	 * 
+	 * Note that the associated models won't be loaded by default considering
+	 * the efficiency, but you can do that by using
+	 * {@link DataSupport#findLast(Class, boolean)}.
+	 * 
 	 * @param modelClass
 	 *            Which table to query and the object type to return.
 	 * @return An object with data of last row, or null.
 	 */
 	public static synchronized <T> T findLast(Class<T> modelClass) {
-		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
-		return queryHandler.onFindLast(modelClass, false);
+		return findLast(modelClass, false);
 	}
 
+	/**
+	 * It is mostly same as {@link DataSupport#findLast(Class)} but an isEager
+	 * parameter. If set true the associated models will be loaded as well.
+	 * 
+	 * @param modelClass
+	 *            Which table to query and the object type to return.
+	 * @param isEager
+	 *            True to load the associated models, false not.
+	 * @return An object with data of last row, or null.
+	 */
 	public static synchronized <T> T findLast(Class<T> modelClass, boolean isEager) {
 		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
 		return queryHandler.onFindLast(modelClass, isEager);
@@ -274,6 +315,10 @@ public class DataSupport {
 	 * List&lt;Book&gt; allBooks = DataSupport.findAll(Book.class);
 	 * </pre>
 	 * 
+	 * Note that the associated models won't be loaded by default considering
+	 * the efficiency, but you can do that by using
+	 * {@link DataSupport#findAll(Class, boolean, long...)}.
+	 * 
 	 * The modelClass determines which table to query and the object type to
 	 * return.
 	 * 
@@ -281,13 +326,25 @@ public class DataSupport {
 	 *            Which table to query and the object type to return as a list.
 	 * @param ids
 	 *            Which records to query. Or do not pass it to find all records.
-	 * @return An object list with founded data from database, or an empty list.
+	 * @return An object list with found data from database, or an empty list.
 	 */
 	public static synchronized <T> List<T> findAll(Class<T> modelClass, long... ids) {
-		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
-		return queryHandler.onFindAll(modelClass, false, ids);
+		return findAll(modelClass, false, ids);
 	}
 
+	/**
+	 * It is mostly same as {@link DataSupport#findAll(Class, long...)} but an
+	 * isEager parameter. If set true the associated models will be loaded as
+	 * well.
+	 * 
+	 * @param modelClass
+	 *            Which table to query and the object type to return as a list.
+	 * @param isEager
+	 *            True to load the associated models, false not.
+	 * @param ids
+	 *            Which records to query. Or do not pass it to find all records.
+	 * @return An object list with found data from database, or an empty list.
+	 */
 	public static synchronized <T> List<T> findAll(Class<T> modelClass, boolean isEager,
 			long... ids) {
 		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
