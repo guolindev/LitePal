@@ -100,7 +100,7 @@ public class DataSupport {
 	 * 
 	 * @return A ClusterQuery instance.
 	 */
-	public static ClusterQuery select(String... columns) {
+	public static synchronized ClusterQuery select(String... columns) {
 		ClusterQuery cQuery = new ClusterQuery();
 		cQuery.mColumns = columns;
 		return cQuery;
@@ -121,7 +121,7 @@ public class DataSupport {
 	 *            WHERE clause. Passing null will return all rows.
 	 * @return A ClusterQuery instance.
 	 */
-	public static ClusterQuery where(String... conditions) {
+	public static synchronized ClusterQuery where(String... conditions) {
 		ClusterQuery cQuery = new ClusterQuery();
 		cQuery.mConditions = conditions;
 		return cQuery;
@@ -143,7 +143,7 @@ public class DataSupport {
 	 *            unordered.
 	 * @return A ClusterQuery instance.
 	 */
-	public static ClusterQuery order(String column) {
+	public static synchronized ClusterQuery order(String column) {
 		ClusterQuery cQuery = new ClusterQuery();
 		cQuery.mOrderBy = column;
 		return cQuery;
@@ -163,7 +163,7 @@ public class DataSupport {
 	 *            LIMIT clause.
 	 * @return A ClusterQuery instance.
 	 */
-	public static ClusterQuery limit(int value) {
+	public static synchronized ClusterQuery limit(int value) {
 		ClusterQuery cQuery = new ClusterQuery();
 		cQuery.mLimit = String.valueOf(value);
 		return cQuery;
@@ -183,10 +183,19 @@ public class DataSupport {
 	 *            The offset amount of rows returned by the query.
 	 * @return A ClusterQuery instance.
 	 */
-	public static ClusterQuery offset(int value) {
+	public static synchronized ClusterQuery offset(int value) {
 		ClusterQuery cQuery = new ClusterQuery();
 		cQuery.mOffset = String.valueOf(value);
 		return cQuery;
+	}
+
+	public static synchronized <T> int count(Class<T> modelClass) {
+		return count(BaseUtility.changeCase(modelClass.getSimpleName()));
+	}
+
+	public static synchronized <T> int count(String tableName) {
+		ClusterQuery cQuery = new ClusterQuery();
+		return cQuery.count(tableName);
 	}
 
 	/**
@@ -430,8 +439,7 @@ public class DataSupport {
 	 * @return The number of rows affected.
 	 */
 	public static synchronized int deleteAll(Class<?> modelClass, String... conditions) {
-		DeleteHandler deleteHandler = new DeleteHandler(Connector.getDatabase());
-		return deleteHandler.onDeleteAll(modelClass, conditions);
+		return deleteAll(BaseUtility.changeCase(modelClass.getSimpleName()), conditions);
 	}
 
 	/**
@@ -498,8 +506,7 @@ public class DataSupport {
 	 */
 	public static synchronized int updateAll(Class<?> modelClass, ContentValues values,
 			String... conditions) {
-		UpdateHandler updateHandler = new UpdateHandler(Connector.getDatabase());
-		return updateHandler.onUpdateAll(modelClass, values, conditions);
+		return updateAll(BaseUtility.changeCase(modelClass.getSimpleName()), values, conditions);
 	}
 
 	/**
