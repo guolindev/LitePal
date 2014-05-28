@@ -18,8 +18,10 @@ package org.litepal.crud;
 
 import java.util.List;
 
+import org.litepal.exceptions.DataSupportException;
 import org.litepal.util.BaseUtility;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
@@ -157,4 +159,23 @@ class QueryHandler extends DataHandler {
 		return dataList;
 	}
 
+	<T> int onCount(String tableName, String[] conditions) {
+		BaseUtility.checkConditionsCorrect(conditions);
+		Cursor cursor = null;
+		int result = -1;
+		try {
+			cursor = mDatabase.query(tableName, new String[] { "count(1)" },
+					getWhereClause(conditions), getWhereArgs(conditions), null, null, null);
+			if (cursor.moveToFirst()) {
+				result = cursor.getInt(0);
+			}
+		} catch (Exception e) {
+			throw new DataSupportException(e.getMessage());
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+			}
+		}
+		return result;
+	}
 }

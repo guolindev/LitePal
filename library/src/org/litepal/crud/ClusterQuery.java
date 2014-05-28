@@ -19,6 +19,7 @@ package org.litepal.crud;
 import java.util.List;
 
 import org.litepal.tablemanager.Connector;
+import org.litepal.util.BaseUtility;
 
 /**
  * Allows developers to query tables with cluster style.
@@ -197,7 +198,7 @@ public class ClusterQuery {
 	 *            True to load the associated models, false not.
 	 * @return An object list with founded data from database, or an empty list.
 	 */
-	public <T> List<T> find(Class<T> modelClass, boolean isEager) {
+	public synchronized <T> List<T> find(Class<T> modelClass, boolean isEager) {
 		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
 		String limit;
 		if (mOffset == null) {
@@ -209,6 +210,39 @@ public class ClusterQuery {
 			limit = mOffset + "," + mLimit;
 		}
 		return queryHandler.onFind(modelClass, mColumns, mConditions, mOrderBy, limit, isEager);
+	}
+
+	public synchronized <T> int count(Class<T> modelClass) {
+		return count(BaseUtility.changeCase(modelClass.getSimpleName()));
+	}
+
+	public synchronized int count(String tableName) {
+		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
+		return queryHandler.onCount(tableName, mConditions);
+	}
+
+	public synchronized <T> ClusterQuery average(Class<T> modelClass) {
+		return null;
+	}
+
+	public synchronized ClusterQuery average(String tableName) {
+		return null;
+	}
+
+	public synchronized <T> T max(Class<T> modelClass, T column) {
+		return max(BaseUtility.changeCase(modelClass.getSimpleName()), column);
+	}
+
+	public synchronized <T> T max(String tableName, T column) {
+		return null;
+	}
+
+	public synchronized <T> ClusterQuery min(Class<T> modelClass) {
+		return null;
+	}
+
+	public synchronized <T> ClusterQuery sum(Class<T> modelClass) {
+		return null;
 	}
 
 }

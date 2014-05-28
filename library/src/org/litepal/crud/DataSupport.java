@@ -193,7 +193,7 @@ public class DataSupport {
 		return count(BaseUtility.changeCase(modelClass.getSimpleName()));
 	}
 
-	public static synchronized <T> int count(String tableName) {
+	public static synchronized int count(String tableName) {
 		ClusterQuery cQuery = new ClusterQuery();
 		return cQuery.count(tableName);
 	}
