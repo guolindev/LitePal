@@ -116,26 +116,6 @@ class UpdateHandler extends DataHandler {
 
 	/**
 	 * The open interface for other classes in CRUD package to update multiple
-	 * rows. Using modelClass to decide which table to update, and conditions
-	 * representing the WHERE part of an SQL statement. The value that need to
-	 * update is stored in ContentValues.
-	 * 
-	 * @param modelClass
-	 *            Which table to update by class.
-	 * @param conditions
-	 *            A string array representing the WHERE part of an SQL
-	 *            statement.
-	 * @param values
-	 *            A map from column names to new column values. null is a valid
-	 *            value that will be translated to NULL.
-	 * @return The number of rows affected.
-	 */
-	int onUpdateAll(Class<?> modelClass, ContentValues values, String... conditions) {
-		return doUpdateAllAction(getTableName(modelClass), values, conditions);
-	}
-
-	/**
-	 * The open interface for other classes in CRUD package to update multiple
 	 * rows. Using tableName to decide which table to update, and conditions
 	 * representing the WHERE part of an SQL statement. The value that need to
 	 * update is stored in ContentValues.
