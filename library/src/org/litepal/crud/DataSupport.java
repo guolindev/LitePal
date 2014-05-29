@@ -189,46 +189,252 @@ public class DataSupport {
 		return cQuery;
 	}
 
+	/**
+	 * Count the records.
+	 * 
+	 * <pre>
+	 * DataSupport.count(Person.class);
+	 * </pre>
+	 * 
+	 * This will count all rows in person table.<br>
+	 * You can also specify a where clause when counting.
+	 * 
+	 * <pre>
+	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).count(Person.class);
+	 * </pre>
+	 * 
+	 * @param modelClass
+	 *            Which table to query from by class.
+	 * @return Count of the specified table.
+	 */
 	public static synchronized int count(Class<?> modelClass) {
 		return count(BaseUtility.changeCase(modelClass.getSimpleName()));
 	}
 
+	/**
+	 * Count the records.
+	 * 
+	 * <pre>
+	 * DataSupport.count(&quot;person&quot;);
+	 * </pre>
+	 * 
+	 * This will count all rows in person table.<br>
+	 * You can also specify a where clause when counting.
+	 * 
+	 * <pre>
+	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).count(&quot;person&quot;);
+	 * </pre>
+	 * 
+	 * @param tableName
+	 *            Which table to query from.
+	 * @return Count of the specified table.
+	 */
 	public static synchronized int count(String tableName) {
 		ClusterQuery cQuery = new ClusterQuery();
 		return cQuery.count(tableName);
 	}
 
+	/**
+	 * Calculates the average value on a given column.
+	 * 
+	 * <pre>
+	 * DataSupport.average(Person.class, &quot;age&quot;);
+	 * </pre>
+	 * 
+	 * You can also specify a where clause when calculating.
+	 * 
+	 * <pre>
+	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).average(Person.class, &quot;age&quot;);
+	 * </pre>
+	 * 
+	 * @param modelClass
+	 *            Which table to query from by class.
+	 * @param column
+	 *            The based on column to calculate.
+	 * @return The average value on a given column.
+	 */
 	public static synchronized double average(Class<?> modelClass, String column) {
 		return average(BaseUtility.changeCase(modelClass.getSimpleName()), column);
 	}
 
+	/**
+	 * Calculates the average value on a given column.
+	 * 
+	 * <pre>
+	 * DataSupport.average(&quot;person&quot;, &quot;age&quot;);
+	 * </pre>
+	 * 
+	 * You can also specify a where clause when calculating.
+	 * 
+	 * <pre>
+	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).average(&quot;person&quot;, &quot;age&quot;);
+	 * </pre>
+	 * 
+	 * @param tableName
+	 *            Which table to query from.
+	 * @param column
+	 *            The based on column to calculate.
+	 * @return The average value on a given column.
+	 */
 	public static synchronized double average(String tableName, String column) {
 		ClusterQuery cQuery = new ClusterQuery();
 		return cQuery.average(tableName, column);
 	}
 
+	/**
+	 * Calculates the maximum value on a given column. The value is returned
+	 * with the same data type of the column.
+	 * 
+	 * <pre>
+	 * DataSupport.max(Person.class, &quot;age&quot;, int.class);
+	 * </pre>
+	 * 
+	 * You can also specify a where clause when calculating.
+	 * 
+	 * <pre>
+	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).max(Person.class, &quot;age&quot;, int.class);
+	 * </pre>
+	 * 
+	 * @param modelClass
+	 *            Which table to query from by class.
+	 * @param columnName
+	 *            The based on column to calculate.
+	 * @param columnType
+	 *            The type of the based on column.
+	 * @return The maximum value on a given column.
+	 */
 	public static synchronized <T> T max(Class<?> modelClass, String columnName, Class<T> columnType) {
 		return max(BaseUtility.changeCase(modelClass.getSimpleName()), columnName, columnType);
 	}
 
+	/**
+	 * Calculates the maximum value on a given column. The value is returned
+	 * with the same data type of the column.
+	 * 
+	 * <pre>
+	 * DataSupport.max(&quot;person&quot;, &quot;age&quot;, int.class);
+	 * </pre>
+	 * 
+	 * You can also specify a where clause when calculating.
+	 * 
+	 * <pre>
+	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).max(&quot;person&quot;, &quot;age&quot;, int.class);
+	 * </pre>
+	 * 
+	 * @param tableName
+	 *            Which table to query from.
+	 * @param columnName
+	 *            The based on column to calculate.
+	 * @param columnType
+	 *            The type of the based on column.
+	 * @return The maximum value on a given column.
+	 */
 	public static synchronized <T> T max(String tableName, String columnName, Class<T> columnType) {
 		ClusterQuery cQuery = new ClusterQuery();
 		return cQuery.max(tableName, columnName, columnType);
 	}
 
+	/**
+	 * Calculates the minimum value on a given column. The value is returned
+	 * with the same data type of the column.
+	 * 
+	 * <pre>
+	 * DataSupport.min(Person.class, &quot;age&quot;, int.class);
+	 * </pre>
+	 * 
+	 * You can also specify a where clause when calculating.
+	 * 
+	 * <pre>
+	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).min(Person.class, &quot;age&quot;, int.class);
+	 * </pre>
+	 * 
+	 * @param modelClass
+	 *            Which table to query from by class.
+	 * @param columnName
+	 *            The based on column to calculate.
+	 * @param columnType
+	 *            The type of the based on column.
+	 * @return The minimum value on a given column.
+	 */
 	public static synchronized <T> T min(Class<?> modelClass, String columnName, Class<T> columnType) {
 		return min(BaseUtility.changeCase(modelClass.getSimpleName()), columnName, columnType);
 	}
 
+	/**
+	 * Calculates the minimum value on a given column. The value is returned
+	 * with the same data type of the column.
+	 * 
+	 * <pre>
+	 * DataSupport.min(&quot;person&quot;, &quot;age&quot;, int.class);
+	 * </pre>
+	 * 
+	 * You can also specify a where clause when calculating.
+	 * 
+	 * <pre>
+	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).min(&quot;person&quot;, &quot;age&quot;, int.class);
+	 * </pre>
+	 * 
+	 * @param tableName
+	 *            Which table to query from.
+	 * @param columnName
+	 *            The based on column to calculate.
+	 * @param columnType
+	 *            The type of the based on column.
+	 * @return The minimum value on a given column.
+	 */
 	public static synchronized <T> T min(String tableName, String columnName, Class<T> columnType) {
 		ClusterQuery cQuery = new ClusterQuery();
 		return cQuery.min(tableName, columnName, columnType);
 	}
 
+	/**
+	 * Calculates the sum of values on a given column. The value is returned
+	 * with the same data type of the column.
+	 * 
+	 * <pre>
+	 * DataSupport.sum(Person.class, &quot;age&quot;, int.class);
+	 * </pre>
+	 * 
+	 * You can also specify a where clause when calculating.
+	 * 
+	 * <pre>
+	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).sum(Person.class, &quot;age&quot;, int.class);
+	 * </pre>
+	 * 
+	 * @param modelClass
+	 *            Which table to query from by class.
+	 * @param columnName
+	 *            The based on column to calculate.
+	 * @param columnType
+	 *            The type of the based on column.
+	 * @return The sum value on a given column.
+	 */
 	public static synchronized <T> T sum(Class<?> modelClass, String columnName, Class<T> columnType) {
 		return sum(BaseUtility.changeCase(modelClass.getSimpleName()), columnName, columnType);
 	}
 
+	/**
+	 * Calculates the sum of values on a given column. The value is returned
+	 * with the same data type of the column.
+	 * 
+	 * <pre>
+	 * DataSupport.sum(&quot;person&quot;, &quot;age&quot;, int.class);
+	 * </pre>
+	 * 
+	 * You can also specify a where clause when calculating.
+	 * 
+	 * <pre>
+	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).sum(&quot;person&quot;, &quot;age&quot;, int.class);
+	 * </pre>
+	 * 
+	 * @param tableName
+	 *            Which table to query from.
+	 * @param columnName
+	 *            The based on column to calculate.
+	 * @param columnType
+	 *            The type of the based on column.
+	 * @return The sum value on a given column.
+	 */
 	public static synchronized <T> T sum(String tableName, String columnName, Class<T> columnType) {
 		ClusterQuery cQuery = new ClusterQuery();
 		return cQuery.sum(tableName, columnName, columnType);
@@ -390,7 +596,8 @@ public class DataSupport {
 	 *            Which records to query. Or do not pass it to find all records.
 	 * @return An object list with found data from database, or an empty list.
 	 */
-	public static synchronized <T> List<T> findAll(Class<T> modelClass, boolean isEager, long... ids) {
+	public static synchronized <T> List<T> findAll(Class<T> modelClass, boolean isEager,
+			long... ids) {
 		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
 		return queryHandler.onFindAll(modelClass, isEager, ids);
 	}
@@ -539,7 +746,8 @@ public class DataSupport {
 	 *            all rows.
 	 * @return The number of rows affected.
 	 */
-	public static synchronized int updateAll(Class<?> modelClass, ContentValues values, String... conditions) {
+	public static synchronized int updateAll(Class<?> modelClass, ContentValues values,
+			String... conditions) {
 		return updateAll(BaseUtility.changeCase(modelClass.getSimpleName()), values, conditions);
 	}
 
@@ -563,7 +771,8 @@ public class DataSupport {
 	 *            all rows.
 	 * @return The number of rows affected.
 	 */
-	public static synchronized int updateAll(String tableName, ContentValues values, String... conditions) {
+	public static synchronized int updateAll(String tableName, ContentValues values,
+			String... conditions) {
 		UpdateHandler updateHandler = new UpdateHandler(Connector.getDatabase());
 		return updateHandler.onUpdateAll(tableName, values, conditions);
 	}
@@ -828,7 +1037,8 @@ public class DataSupport {
 	 *            The id of associated model.
 	 */
 	void addAssociatedModelForJoinTable(String associatedModelName, long associatedId) {
-		Set<Long> associatedIdsM2MSet = getAssociatedModelsMapForJoinTable().get(associatedModelName);
+		Set<Long> associatedIdsM2MSet = getAssociatedModelsMapForJoinTable().get(
+				associatedModelName);
 		if (associatedIdsM2MSet == null) {
 			associatedIdsM2MSet = new HashSet<Long>();
 			associatedIdsM2MSet.add(associatedId);
@@ -847,7 +1057,8 @@ public class DataSupport {
 	 *            The name of associated model.
 	 */
 	void addEmptyModelForJoinTable(String associatedModelName) {
-		Set<Long> associatedIdsM2MSet = getAssociatedModelsMapForJoinTable().get(associatedModelName);
+		Set<Long> associatedIdsM2MSet = getAssociatedModelsMapForJoinTable().get(
+				associatedModelName);
 		if (associatedIdsM2MSet == null) {
 			associatedIdsM2MSet = new HashSet<Long>();
 			associatedModelsMapForJoinTable.put(associatedModelName, associatedIdsM2MSet);
