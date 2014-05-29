@@ -189,13 +189,49 @@ public class DataSupport {
 		return cQuery;
 	}
 
-	public static synchronized <T> int count(Class<T> modelClass) {
+	public static synchronized int count(Class<?> modelClass) {
 		return count(BaseUtility.changeCase(modelClass.getSimpleName()));
 	}
 
 	public static synchronized int count(String tableName) {
 		ClusterQuery cQuery = new ClusterQuery();
 		return cQuery.count(tableName);
+	}
+
+	public static synchronized double average(Class<?> modelClass, String column) {
+		return average(BaseUtility.changeCase(modelClass.getSimpleName()), column);
+	}
+
+	public static synchronized double average(String tableName, String column) {
+		ClusterQuery cQuery = new ClusterQuery();
+		return cQuery.average(tableName, column);
+	}
+
+	public static synchronized <T> T max(Class<?> modelClass, String columnName, Class<T> columnType) {
+		return max(BaseUtility.changeCase(modelClass.getSimpleName()), columnName, columnType);
+	}
+
+	public static synchronized <T> T max(String tableName, String columnName, Class<T> columnType) {
+		ClusterQuery cQuery = new ClusterQuery();
+		return cQuery.max(tableName, columnName, columnType);
+	}
+
+	public static synchronized <T> T min(Class<?> modelClass, String columnName, Class<T> columnType) {
+		return min(BaseUtility.changeCase(modelClass.getSimpleName()), columnName, columnType);
+	}
+
+	public static synchronized <T> T min(String tableName, String columnName, Class<T> columnType) {
+		ClusterQuery cQuery = new ClusterQuery();
+		return cQuery.min(tableName, columnName, columnType);
+	}
+
+	public static synchronized <T> T sum(Class<?> modelClass, String columnName, Class<T> columnType) {
+		return sum(BaseUtility.changeCase(modelClass.getSimpleName()), columnName, columnType);
+	}
+
+	public static synchronized <T> T sum(String tableName, String columnName, Class<T> columnType) {
+		ClusterQuery cQuery = new ClusterQuery();
+		return cQuery.sum(tableName, columnName, columnType);
 	}
 
 	/**
@@ -354,8 +390,7 @@ public class DataSupport {
 	 *            Which records to query. Or do not pass it to find all records.
 	 * @return An object list with found data from database, or an empty list.
 	 */
-	public static synchronized <T> List<T> findAll(Class<T> modelClass, boolean isEager,
-			long... ids) {
+	public static synchronized <T> List<T> findAll(Class<T> modelClass, boolean isEager, long... ids) {
 		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
 		return queryHandler.onFindAll(modelClass, isEager, ids);
 	}
@@ -504,8 +539,7 @@ public class DataSupport {
 	 *            all rows.
 	 * @return The number of rows affected.
 	 */
-	public static synchronized int updateAll(Class<?> modelClass, ContentValues values,
-			String... conditions) {
+	public static synchronized int updateAll(Class<?> modelClass, ContentValues values, String... conditions) {
 		return updateAll(BaseUtility.changeCase(modelClass.getSimpleName()), values, conditions);
 	}
 
@@ -529,8 +563,7 @@ public class DataSupport {
 	 *            all rows.
 	 * @return The number of rows affected.
 	 */
-	public static synchronized int updateAll(String tableName, ContentValues values,
-			String... conditions) {
+	public static synchronized int updateAll(String tableName, ContentValues values, String... conditions) {
 		UpdateHandler updateHandler = new UpdateHandler(Connector.getDatabase());
 		return updateHandler.onUpdateAll(tableName, values, conditions);
 	}
@@ -795,8 +828,7 @@ public class DataSupport {
 	 *            The id of associated model.
 	 */
 	void addAssociatedModelForJoinTable(String associatedModelName, long associatedId) {
-		Set<Long> associatedIdsM2MSet = getAssociatedModelsMapForJoinTable().get(
-				associatedModelName);
+		Set<Long> associatedIdsM2MSet = getAssociatedModelsMapForJoinTable().get(associatedModelName);
 		if (associatedIdsM2MSet == null) {
 			associatedIdsM2MSet = new HashSet<Long>();
 			associatedIdsM2MSet.add(associatedId);
@@ -815,8 +847,7 @@ public class DataSupport {
 	 *            The name of associated model.
 	 */
 	void addEmptyModelForJoinTable(String associatedModelName) {
-		Set<Long> associatedIdsM2MSet = getAssociatedModelsMapForJoinTable().get(
-				associatedModelName);
+		Set<Long> associatedIdsM2MSet = getAssociatedModelsMapForJoinTable().get(associatedModelName);
 		if (associatedIdsM2MSet == null) {
 			associatedIdsM2MSet = new HashSet<Long>();
 			associatedModelsMapForJoinTable.put(associatedModelName, associatedIdsM2MSet);

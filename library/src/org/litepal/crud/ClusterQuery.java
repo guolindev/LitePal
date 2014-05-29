@@ -164,15 +164,13 @@ public class ClusterQuery {
 	 * way to finish a complicated query:
 	 * 
 	 * <pre>
-	 * DataSupport.select(&quot;name&quot;).where(&quot;age &gt; ?&quot;, &quot;14&quot;).order(&quot;age&quot;).limit(1).offset(2)
-	 * 		.find(Person.class);
+	 * DataSupport.select(&quot;name&quot;).where(&quot;age &gt; ?&quot;, &quot;14&quot;).order(&quot;age&quot;).limit(1).offset(2).find(Person.class);
 	 * </pre>
 	 * 
 	 * You can also do the same job with SQLiteDatabase like this:
 	 * 
 	 * <pre>
-	 * getSQLiteDatabase().query(&quot;Person&quot;, &quot;name&quot;, &quot;age &gt; ?&quot;, new String[] { &quot;14&quot; }, null, null, &quot;age&quot;,
-	 * 		&quot;2,1&quot;);
+	 * getSQLiteDatabase().query(&quot;Person&quot;, &quot;name&quot;, &quot;age &gt; ?&quot;, new String[] { &quot;14&quot; }, null, null, &quot;age&quot;, &quot;2,1&quot;);
 	 * </pre>
 	 * 
 	 * Obviously, the first way is much more semantic.<br>
@@ -212,7 +210,7 @@ public class ClusterQuery {
 		return queryHandler.onFind(modelClass, mColumns, mConditions, mOrderBy, limit, isEager);
 	}
 
-	public synchronized <T> int count(Class<T> modelClass) {
+	public synchronized int count(Class<?> modelClass) {
 		return count(BaseUtility.changeCase(modelClass.getSimpleName()));
 	}
 
@@ -221,28 +219,40 @@ public class ClusterQuery {
 		return queryHandler.onCount(tableName, mConditions);
 	}
 
-	public synchronized <T> ClusterQuery average(Class<T> modelClass) {
-		return null;
+	public synchronized double average(Class<?> modelClass, String column) {
+		return average(BaseUtility.changeCase(modelClass.getSimpleName()), column);
 	}
 
-	public synchronized ClusterQuery average(String tableName) {
-		return null;
+	public synchronized double average(String tableName, String column) {
+		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
+		return queryHandler.onAverage(tableName, column, mConditions);
 	}
 
-	public synchronized <T> T max(Class<T> modelClass, T column) {
-		return max(BaseUtility.changeCase(modelClass.getSimpleName()), column);
+	public synchronized <T> T max(Class<?> modelClass, String columnName, Class<T> columnType) {
+		return max(BaseUtility.changeCase(modelClass.getSimpleName()), columnName, columnType);
 	}
 
-	public synchronized <T> T max(String tableName, T column) {
-		return null;
+	public synchronized <T> T max(String tableName, String columnName, Class<T> columnType) {
+		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
+		return queryHandler.onMax(tableName, columnName, mConditions, columnType);
 	}
 
-	public synchronized <T> ClusterQuery min(Class<T> modelClass) {
-		return null;
+	public synchronized <T> T min(Class<?> modelClass, String columnName, Class<T> columnType) {
+		return min(BaseUtility.changeCase(modelClass.getSimpleName()), columnName, columnType);
 	}
 
-	public synchronized <T> ClusterQuery sum(Class<T> modelClass) {
-		return null;
+	public synchronized <T> T min(String tableName, String columnName, Class<T> columnType) {
+		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
+		return queryHandler.onMin(tableName, columnName, mConditions, columnType);
+	}
+
+	public synchronized <T> T sum(Class<?> modelClass, String columnName, Class<T> columnType) {
+		return sum(BaseUtility.changeCase(modelClass.getSimpleName()), columnName, columnType);
+	}
+
+	public synchronized <T> T sum(String tableName, String columnName, Class<T> columnType) {
+		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
+		return queryHandler.onSum(tableName, columnName, mConditions, columnType);
 	}
 
 }

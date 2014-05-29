@@ -18,10 +18,8 @@ package org.litepal.crud;
 
 import java.util.List;
 
-import org.litepal.exceptions.DataSupportException;
 import org.litepal.util.BaseUtility;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
@@ -57,8 +55,8 @@ class QueryHandler extends DataHandler {
 	 * @return An object with found data from database, or null.
 	 */
 	<T> T onFind(Class<T> modelClass, long id, boolean isEager) {
-		List<T> dataList = query(modelClass, null, "id = ?", new String[] { String.valueOf(id) },
-				null, null, null, null, getForeignKeyAssociations(modelClass.getName(), isEager));
+		List<T> dataList = query(modelClass, null, "id = ?", new String[] { String.valueOf(id) }, null, null,
+				null, null, getForeignKeyAssociations(modelClass.getName(), isEager));
 		if (dataList.size() > 0) {
 			return dataList.get(0);
 		}
@@ -121,8 +119,8 @@ class QueryHandler extends DataHandler {
 			dataList = query(modelClass, null, null, null, null, null, "id", null,
 					getForeignKeyAssociations(modelClass.getName(), isEager));
 		} else {
-			dataList = query(modelClass, null, getWhereOfIdsWithOr(ids), null, null, null, "id",
-					null, getForeignKeyAssociations(modelClass.getName(), isEager));
+			dataList = query(modelClass, null, getWhereOfIdsWithOr(ids), null, null, null, "id", null,
+					getForeignKeyAssociations(modelClass.getName(), isEager));
 		}
 		return dataList;
 	}
@@ -153,29 +151,29 @@ class QueryHandler extends DataHandler {
 	<T> List<T> onFind(Class<T> modelClass, String[] columns, String[] conditions, String orderBy,
 			String limit, boolean isEager) {
 		BaseUtility.checkConditionsCorrect(conditions);
-		List<T> dataList = query(modelClass, columns, getWhereClause(conditions),
-				getWhereArgs(conditions), null, null, orderBy, limit,
-				getForeignKeyAssociations(modelClass.getName(), isEager));
+		List<T> dataList = query(modelClass, columns, getWhereClause(conditions), getWhereArgs(conditions),
+				null, null, orderBy, limit, getForeignKeyAssociations(modelClass.getName(), isEager));
 		return dataList;
 	}
 
-	<T> int onCount(String tableName, String[] conditions) {
-		BaseUtility.checkConditionsCorrect(conditions);
-		Cursor cursor = null;
-		int result = -1;
-		try {
-			cursor = mDatabase.query(tableName, new String[] { "count(1)" },
-					getWhereClause(conditions), getWhereArgs(conditions), null, null, null);
-			if (cursor.moveToFirst()) {
-				result = cursor.getInt(0);
-			}
-		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage());
-		} finally {
-			if (cursor != null) {
-				cursor.close();
-			}
-		}
-		return result;
+	int onCount(String tableName, String[] conditions) {
+		return mathQuery(tableName, new String[] { "count(1)" }, conditions, int.class);
 	}
+
+	double onAverage(String tableName, String column, String[] conditions) {
+		return mathQuery(tableName, new String[] { "avg(" + column + ")" }, conditions, double.class);
+	}
+
+	<T> T onMax(String tableName, String column, String[] conditions, Class<T> type) {
+		return mathQuery(tableName, new String[] { "max(" + column + ")" }, conditions, type);
+	}
+
+	<T> T onMin(String tableName, String column, String[] conditions, Class<T> type) {
+		return mathQuery(tableName, new String[] { "min(" + column + ")" }, conditions, type);
+	}
+
+	<T> T onSum(String tableName, String column, String[] conditions, Class<T> type) {
+		return mathQuery(tableName, new String[] { "sum(" + column + ")" }, conditions, type);
+	}
+
 }
