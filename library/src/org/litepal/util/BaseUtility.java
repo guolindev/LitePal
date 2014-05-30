@@ -130,7 +130,7 @@ public class BaseUtility {
 		}
 		return 0;
 	}
-	
+
 	/**
 	 * Check the number of question mark existed in conditions[0] equals the
 	 * number of rest conditions elements or not. If not equals, throws
@@ -184,7 +184,7 @@ public class BaseUtility {
 		if ("char".equals(fieldType) || "java.lang.Character".equals(fieldType)) {
 			return true;
 		}
-		if ("java.lang.String".equals(fieldType)) {
+		if ("java.lang.String".equals(fieldType) || "java.util.Date".equals(fieldType)) {
 			return true;
 		}
 		return false;
