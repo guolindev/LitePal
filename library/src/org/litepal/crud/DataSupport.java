@@ -292,7 +292,7 @@ public class DataSupport {
 	 * You can also specify a where clause when calculating.
 	 * 
 	 * <pre>
-	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).max(Person.class, &quot;age&quot;, int.class);
+	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).max(Person.class, &quot;age&quot;, Integer.TYPE);
 	 * </pre>
 	 * 
 	 * @param modelClass
@@ -318,7 +318,7 @@ public class DataSupport {
 	 * You can also specify a where clause when calculating.
 	 * 
 	 * <pre>
-	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).max(&quot;person&quot;, &quot;age&quot;, int.class);
+	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).max(&quot;person&quot;, &quot;age&quot;, Integer.TYPE);
 	 * </pre>
 	 * 
 	 * @param tableName
@@ -345,7 +345,7 @@ public class DataSupport {
 	 * You can also specify a where clause when calculating.
 	 * 
 	 * <pre>
-	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).min(Person.class, &quot;age&quot;, int.class);
+	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).min(Person.class, &quot;age&quot;, Integer.TYPE);
 	 * </pre>
 	 * 
 	 * @param modelClass
@@ -371,7 +371,7 @@ public class DataSupport {
 	 * You can also specify a where clause when calculating.
 	 * 
 	 * <pre>
-	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).min(&quot;person&quot;, &quot;age&quot;, int.class);
+	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).min(&quot;person&quot;, &quot;age&quot;, Integer.TYPE);
 	 * </pre>
 	 * 
 	 * @param tableName
@@ -398,7 +398,7 @@ public class DataSupport {
 	 * You can also specify a where clause when calculating.
 	 * 
 	 * <pre>
-	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).sum(Person.class, &quot;age&quot;, int.class);
+	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).sum(Person.class, &quot;age&quot;, Integer.TYPE);
 	 * </pre>
 	 * 
 	 * @param modelClass
@@ -424,7 +424,7 @@ public class DataSupport {
 	 * You can also specify a where clause when calculating.
 	 * 
 	 * <pre>
-	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).sum(&quot;person&quot;, &quot;age&quot;, int.class);
+	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).sum(&quot;person&quot;, &quot;age&quot;, Integer.TYPE);
 	 * </pre>
 	 * 
 	 * @param tableName
@@ -596,8 +596,7 @@ public class DataSupport {
 	 *            Which records to query. Or do not pass it to find all records.
 	 * @return An object list with found data from database, or an empty list.
 	 */
-	public static synchronized <T> List<T> findAll(Class<T> modelClass, boolean isEager,
-			long... ids) {
+	public static synchronized <T> List<T> findAll(Class<T> modelClass, boolean isEager, long... ids) {
 		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
 		return queryHandler.onFindAll(modelClass, isEager, ids);
 	}
@@ -746,8 +745,7 @@ public class DataSupport {
 	 *            all rows.
 	 * @return The number of rows affected.
 	 */
-	public static synchronized int updateAll(Class<?> modelClass, ContentValues values,
-			String... conditions) {
+	public static synchronized int updateAll(Class<?> modelClass, ContentValues values, String... conditions) {
 		return updateAll(BaseUtility.changeCase(modelClass.getSimpleName()), values, conditions);
 	}
 
@@ -771,8 +769,7 @@ public class DataSupport {
 	 *            all rows.
 	 * @return The number of rows affected.
 	 */
-	public static synchronized int updateAll(String tableName, ContentValues values,
-			String... conditions) {
+	public static synchronized int updateAll(String tableName, ContentValues values, String... conditions) {
 		UpdateHandler updateHandler = new UpdateHandler(Connector.getDatabase());
 		return updateHandler.onUpdateAll(tableName, values, conditions);
 	}
@@ -1037,8 +1034,7 @@ public class DataSupport {
 	 *            The id of associated model.
 	 */
 	void addAssociatedModelForJoinTable(String associatedModelName, long associatedId) {
-		Set<Long> associatedIdsM2MSet = getAssociatedModelsMapForJoinTable().get(
-				associatedModelName);
+		Set<Long> associatedIdsM2MSet = getAssociatedModelsMapForJoinTable().get(associatedModelName);
 		if (associatedIdsM2MSet == null) {
 			associatedIdsM2MSet = new HashSet<Long>();
 			associatedIdsM2MSet.add(associatedId);
@@ -1057,8 +1053,7 @@ public class DataSupport {
 	 *            The name of associated model.
 	 */
 	void addEmptyModelForJoinTable(String associatedModelName) {
-		Set<Long> associatedIdsM2MSet = getAssociatedModelsMapForJoinTable().get(
-				associatedModelName);
+		Set<Long> associatedIdsM2MSet = getAssociatedModelsMapForJoinTable().get(associatedModelName);
 		if (associatedIdsM2MSet == null) {
 			associatedIdsM2MSet = new HashSet<Long>();
 			associatedModelsMapForJoinTable.put(associatedModelName, associatedIdsM2MSet);

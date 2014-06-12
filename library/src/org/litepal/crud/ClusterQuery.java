@@ -315,7 +315,7 @@ public class ClusterQuery {
 	 * You can also specify a where clause when calculating.
 	 * 
 	 * <pre>
-	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).max(Person.class, &quot;age&quot;, int.class);
+	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).max(Person.class, &quot;age&quot;, Integer.TYPE);
 	 * </pre>
 	 * 
 	 * @param modelClass
@@ -341,7 +341,7 @@ public class ClusterQuery {
 	 * You can also specify a where clause when calculating.
 	 * 
 	 * <pre>
-	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).max(&quot;person&quot;, &quot;age&quot;, int.class);
+	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).max(&quot;person&quot;, &quot;age&quot;, Integer.TYPE);
 	 * </pre>
 	 * 
 	 * @param tableName
@@ -368,7 +368,7 @@ public class ClusterQuery {
 	 * You can also specify a where clause when calculating.
 	 * 
 	 * <pre>
-	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).min(Person.class, &quot;age&quot;, int.class);
+	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).min(Person.class, &quot;age&quot;, Integer.TYPE);
 	 * </pre>
 	 * 
 	 * @param modelClass
@@ -394,7 +394,7 @@ public class ClusterQuery {
 	 * You can also specify a where clause when calculating.
 	 * 
 	 * <pre>
-	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).min(&quot;person&quot;, &quot;age&quot;, int.class);
+	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).min(&quot;person&quot;, &quot;age&quot;, Integer.TYPE);
 	 * </pre>
 	 * 
 	 * @param tableName
@@ -421,7 +421,7 @@ public class ClusterQuery {
 	 * You can also specify a where clause when calculating.
 	 * 
 	 * <pre>
-	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).sum(Person.class, &quot;age&quot;, int.class);
+	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).sum(Person.class, &quot;age&quot;, Integer.TYPE);
 	 * </pre>
 	 * 
 	 * @param modelClass
@@ -447,7 +447,7 @@ public class ClusterQuery {
 	 * You can also specify a where clause when calculating.
 	 * 
 	 * <pre>
-	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).sum(&quot;person&quot;, &quot;age&quot;, int.class);
+	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).sum(&quot;person&quot;, &quot;age&quot;, Integer.TYPE);
 	 * </pre>
 	 * 
 	 * @param tableName

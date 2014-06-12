@@ -34,7 +34,6 @@ import org.litepal.exceptions.DatabaseGenerateException;
 import org.litepal.util.BaseUtility;
 import org.litepal.util.Const;
 import org.litepal.util.DBUtility;
-import org.litepal.util.LogUtil;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -619,6 +618,8 @@ abstract class DataHandler extends LitePalBase {
 						}
 					} else if (field.getType() == char.class || field.getType() == Character.class) {
 						value = ((String) value).charAt(0);
+					} else if (field.getType() == Date.class) {
+						value = new Date((Long) value);
 					}
 					putSetMethodValueByField((DataSupport) modelInstance, field, value);
 				}
@@ -951,6 +952,8 @@ abstract class DataHandler extends LitePalBase {
 			methodName = "getInt";
 		} else if ("getChar".equals(methodName)) {
 			methodName = "getString";
+		} else if ("getDate".equals(methodName)) {
+			methodName = "getLong";
 		}
 		return methodName;
 	}
