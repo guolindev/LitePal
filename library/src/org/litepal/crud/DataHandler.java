@@ -120,12 +120,13 @@ abstract class DataHandler extends LitePalBase {
 			List<Field> supportedFields = getSupportedFields(modelClass.getName());
 			String tableName = getTableName(modelClass);
 			String[] customizedColumns = getCustomizedColumns(columns, foreignKeyAssociations);
-			cursor = mDatabase.query(tableName, customizedColumns, selection, selectionArgs, groupBy, having,
-					orderBy, limit);
+			cursor = mDatabase.query(tableName, customizedColumns, selection, selectionArgs,
+					groupBy, having, orderBy, limit);
 			if (cursor.moveToFirst()) {
 				do {
 					Constructor<?> constructor = findBestSuitConstructor(modelClass);
-					T modelInstance = (T) constructor.newInstance(getConstructorParams(constructor));
+					T modelInstance = (T) constructor
+							.newInstance(getConstructorParams(constructor));
 					giveBaseObjIdValue((DataSupport) modelInstance,
 							cursor.getLong(cursor.getColumnIndexOrThrow("id")));
 					setValueToModel(modelInstance, supportedFields, foreignKeyAssociations, cursor);
@@ -212,7 +213,8 @@ abstract class DataHandler extends LitePalBase {
 	 * @param values
 	 *            To store data of current model for persisting or updating.
 	 */
-	protected void putFieldsValue(DataSupport baseObj, List<Field> supportedFields, ContentValues values) {
+	protected void putFieldsValue(DataSupport baseObj, List<Field> supportedFields,
+			ContentValues values) {
 		try {
 			for (Field field : supportedFields) {
 				if (!isIdColumn(field.getName())) {
@@ -277,7 +279,8 @@ abstract class DataHandler extends LitePalBase {
 			IllegalAccessException, InvocationTargetException {
 		if (shouldGetOrSet(dataSupport, field)) {
 			String getMethodName = makeGetterMethodName(field);
-			return DynamicExecutor.send(dataSupport, getMethodName, null, dataSupport.getClass(), null);
+			return DynamicExecutor.send(dataSupport, getMethodName, null, dataSupport.getClass(),
+					null);
 		}
 		return null;
 	}
@@ -318,7 +321,8 @@ abstract class DataHandler extends LitePalBase {
 	 * @param foreignKeyId
 	 *            The id value of foreign key.
 	 */
-	protected void analyzeAssociatedModels(DataSupport baseObj, Collection<AssociationsInfo> associationInfos) {
+	protected void analyzeAssociatedModels(DataSupport baseObj,
+			Collection<AssociationsInfo> associationInfos) {
 		try {
 			for (AssociationsInfo associationInfo : associationInfos) {
 				if (associationInfo.getAssociationType() == Const.Model.MANY_TO_ONE) {
@@ -354,7 +358,8 @@ abstract class DataHandler extends LitePalBase {
 			tempEmptyModel = (DataSupport) modelClass.newInstance();
 			return tempEmptyModel;
 		} catch (ClassNotFoundException e) {
-			throw new DatabaseGenerateException(DatabaseGenerateException.CLASS_NOT_FOUND + className);
+			throw new DatabaseGenerateException(DatabaseGenerateException.CLASS_NOT_FOUND
+					+ className);
 		} catch (InstantiationException e) {
 			throw new DataSupportException(className + DataSupportException.INSTANTIATION_EXCEPTION);
 		} catch (Exception e) {
@@ -516,7 +521,8 @@ abstract class DataHandler extends LitePalBase {
 	 * @return The name of intermediate join table.
 	 */
 	protected String getIntermediateTableName(DataSupport baseObj, String associatedTableName) {
-		return changeCase(DBUtility.getIntermediateTableName(baseObj.getTableName(), associatedTableName));
+		return changeCase(DBUtility.getIntermediateTableName(baseObj.getTableName(),
+				associatedTableName));
 	}
 
 	/**
@@ -608,7 +614,8 @@ abstract class DataHandler extends LitePalBase {
 				Method method = cursorClass.getMethod(getMethodName, int.class);
 				Object value = method.invoke(cursor, columnIndex);
 				if (isIdColumn(field.getName())) {
-					DynamicExecutor.setField(modelInstance, field.getName(), value, modelInstance.getClass());
+					DynamicExecutor.setField(modelInstance, field.getName(), value,
+							modelInstance.getClass());
 				} else {
 					if (field.getType() == boolean.class || field.getType() == Boolean.class) {
 						if ("0".equals(String.valueOf(value))) {
@@ -619,7 +626,12 @@ abstract class DataHandler extends LitePalBase {
 					} else if (field.getType() == char.class || field.getType() == Character.class) {
 						value = ((String) value).charAt(0);
 					} else if (field.getType() == Date.class) {
-						value = new Date((Long) value);
+						long date = (Long) value;
+						if (date <= 0) {
+							value = null;
+						} else {
+							value = new Date(date);
+						}
 					}
 					putSetMethodValueByField((DataSupport) modelInstance, field, value);
 				}
@@ -634,7 +646,8 @@ abstract class DataHandler extends LitePalBase {
 					long associatedClassId = cursor.getLong(columnIndex);
 					try {
 						DataSupport associatedObj = (DataSupport) DataSupport.find(
-								Class.forName(associationInfo.getAssociatedClassName()), associatedClassId);
+								Class.forName(associationInfo.getAssociatedClassName()),
+								associatedClassId);
 						if (associatedObj != null) {
 							putSetMethodValueByField((DataSupport) modelInstance,
 									associationInfo.getAssociateOtherModelFromSelf(), associatedObj);
@@ -814,9 +827,9 @@ abstract class DataHandler extends LitePalBase {
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	private void putFieldsValueDependsOnSaveOrUpdate(DataSupport baseObj, Field field, ContentValues values)
-			throws SecurityException, IllegalArgumentException, NoSuchMethodException,
-			IllegalAccessException, InvocationTargetException {
+	private void putFieldsValueDependsOnSaveOrUpdate(DataSupport baseObj, Field field,
+			ContentValues values) throws SecurityException, IllegalArgumentException,
+			NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		if (isUpdating()) {
 			if (!isFieldWithDefaultValue(baseObj, field)) {
 				putContentValues(baseObj, field, values);
@@ -866,8 +879,9 @@ abstract class DataHandler extends LitePalBase {
 	 * @throws DatabaseGenerateException
 	 * @throws DataSupportException
 	 */
-	private boolean isFieldWithDefaultValue(DataSupport baseObj, Field field) throws IllegalAccessException,
-			SecurityException, IllegalArgumentException, NoSuchMethodException, InvocationTargetException {
+	private boolean isFieldWithDefaultValue(DataSupport baseObj, Field field)
+			throws IllegalAccessException, SecurityException, IllegalArgumentException,
+			NoSuchMethodException, InvocationTargetException {
 		DataSupport emptyModel = getEmptyModel(baseObj);
 		Object realReturn = takeGetMethodValueByField(baseObj, field);
 		Object defaultReturn = takeGetMethodValueByField(emptyModel, field);
@@ -970,14 +984,16 @@ abstract class DataHandler extends LitePalBase {
 	 *            model's table.
 	 * @return Customized columns with id column always.
 	 */
-	private String[] getCustomizedColumns(String[] columns, List<AssociationsInfo> foreignKeyAssociations) {
+	private String[] getCustomizedColumns(String[] columns,
+			List<AssociationsInfo> foreignKeyAssociations) {
 		if (columns != null) {
 			if (foreignKeyAssociations != null && foreignKeyAssociations.size() > 0) {
 				String[] tempColumns = new String[columns.length + foreignKeyAssociations.size()];
 				System.arraycopy(columns, 0, tempColumns, 0, columns.length);
 				for (int i = 0; i < foreignKeyAssociations.size(); i++) {
-					String associatedTable = DBUtility.getTableNameByClassName(foreignKeyAssociations.get(i)
-							.getAssociatedClassName());
+					String associatedTable = DBUtility
+							.getTableNameByClassName(foreignKeyAssociations.get(i)
+									.getAssociatedClassName());
 					tempColumns[columns.length + i] = getForeignKeyColumnName(associatedTable);
 				}
 				columns = tempColumns;
@@ -1050,23 +1066,26 @@ abstract class DataHandler extends LitePalBase {
 				List<Field> supportedFields = getSupportedFields(associatedClassName);
 				if (isM2M) {
 					String tableName = baseObj.getTableName();
-					String associatedTableName = DBUtility.getTableNameByClassName(associatedClassName);
+					String associatedTableName = DBUtility
+							.getTableNameByClassName(associatedClassName);
 					String intermediateTableName = DBUtility.getIntermediateTableName(tableName,
 							associatedTableName);
 					StringBuilder sql = new StringBuilder();
-					sql.append("select * from ").append(associatedTableName).append(" a inner join ")
-							.append(intermediateTableName).append(" b on a.id = b.")
-							.append(associatedTableName + "_id").append(" where b.").append(tableName)
-							.append("_id = ?");
+					sql.append("select * from ").append(associatedTableName)
+							.append(" a inner join ").append(intermediateTableName)
+							.append(" b on a.id = b.").append(associatedTableName + "_id")
+							.append(" where b.").append(tableName).append("_id = ?");
 					cursor = DataSupport.findBySQL(BaseUtility.changeCase(sql.toString()),
 							String.valueOf(baseObj.getBaseObjId()));
 				} else {
-					String foreignKeyColumn = getForeignKeyColumnName(DBUtility.getTableNameByClassName(info
-							.getSelfClassName()));
-					String associatedTableName = DBUtility.getTableNameByClassName(associatedClassName);
+					String foreignKeyColumn = getForeignKeyColumnName(DBUtility
+							.getTableNameByClassName(info.getSelfClassName()));
+					String associatedTableName = DBUtility
+							.getTableNameByClassName(associatedClassName);
 					cursor = mDatabase.query(BaseUtility.changeCase(associatedTableName), null,
-							foreignKeyColumn + "=?", new String[] { String.valueOf(baseObj.getBaseObjId()) },
-							null, null, null, null);
+							foreignKeyColumn + "=?",
+							new String[] { String.valueOf(baseObj.getBaseObjId()) }, null, null,
+							null, null);
 				}
 				if (cursor.moveToFirst()) {
 					do {
@@ -1074,15 +1093,16 @@ abstract class DataHandler extends LitePalBase {
 								.forName(associatedClassName));
 						DataSupport modelInstance = (DataSupport) constructor
 								.newInstance(getConstructorParams(constructor));
-						giveBaseObjIdValue(modelInstance, cursor.getLong(cursor.getColumnIndexOrThrow("id")));
+						giveBaseObjIdValue(modelInstance,
+								cursor.getLong(cursor.getColumnIndexOrThrow("id")));
 						setValueToModel(modelInstance, supportedFields, null, cursor);
 						if (info.getAssociationType() == Const.Model.MANY_TO_ONE || isM2M) {
 							Collection collection = (Collection) takeGetMethodValueByField(baseObj,
 									info.getAssociateOtherModelFromSelf());
 							collection.add(modelInstance);
 						} else if (info.getAssociationType() == Const.Model.ONE_TO_ONE) {
-							putSetMethodValueByField(baseObj, info.getAssociateOtherModelFromSelf(),
-									modelInstance);
+							putSetMethodValueByField(baseObj,
+									info.getAssociateOtherModelFromSelf(), modelInstance);
 						}
 					} while (cursor.moveToNext());
 				}
