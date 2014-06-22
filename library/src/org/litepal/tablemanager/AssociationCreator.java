@@ -85,6 +85,9 @@ public abstract class AssociationCreator extends Generator {
 			createTableSQL.append("id integer primary key autoincrement,");
 		}
 		Iterator<String> i = columnNames.iterator();
+		if (!i.hasNext()) {
+			createTableSQL.deleteCharAt(createTableSQL.length() - 1);
+		}
 		boolean needSeparator = false;
 		while (i.hasNext()) {
 			if (needSeparator) {

@@ -1,26 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_margin="10dp"
     android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/manage_table_btn"
+    <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/manage_table" />
-
-    <Button
-        android:id="@+id/crud_btn"
+        android:text="@string/table_generation_tip" />
+    
+    <Button 
+        android:id="@+id/current_model_structure_btn"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/crud" />
-
-    <Button
-        android:id="@+id/aggregate_btn"
+        android:text="@string/current_model_structure"
+        />
+    
+     <Button 
+        android:id="@+id/operate_database_btn"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/aggregate_functions" />
+        android:text="@string/operate_database"
+        />
 
 </LinearLayout>

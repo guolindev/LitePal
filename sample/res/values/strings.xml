@@ -1,8 +1,12 @@
 <resources>
 
     <string name="app_name">LitePal Sample</string>
+    <string name="manage_table_sample">Manage Tables Sample</string>
     <string name="manage_table">Manage Tables</string>
     <string name="crud">CRUD</string>
     <string name="aggregate_functions">Aggregate Functions</string>
+    <string name="table_generation_tip">Tables will be generated automatically depending on the current model structure once you operate database.</string>
+    <string name="current_model_structure">Current Model Structure</string>
+    <string name="operate_database">Operate Database</string>
 
 </resources>

@@ -20,7 +20,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="org.litepal.litepalsample.activity.ManageTablesActivity" >
+        <activity
+            android:name="org.litepal.litepalsample.activity.ManageTablesActivity"
+            android:label="@string/manage_table_sample" >
+        </activity>
+        <activity
+            android:name="org.litepal.litepalsample.activity.ModelListActivity"
+            android:label="@string/manage_table_sample" >
+        </activity>
+        <activity
+            android:name="org.litepal.litepalsample.activity.OperateDatabaseActivity"
+            android:label="@string/manage_table_sample" >
         </activity>
     </application>
 

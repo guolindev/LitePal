@@ -17,17 +17,46 @@
 package org.litepal.litepalsample.activity;
 
 import org.litepal.litepalsample.R;
-import org.litepal.litepalsample.R.layout;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
-public class MainActivity extends Activity {
-	
+public class MainActivity extends Activity implements OnClickListener {
+
+	private Button manageTableBtn;
+
+	private Button crudBtn;
+
+	private Button aggregateBtn;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_layout);
+		manageTableBtn = (Button) findViewById(R.id.manage_table_btn);
+		crudBtn = (Button) findViewById(R.id.crud_btn);
+		aggregateBtn = (Button) findViewById(R.id.aggregate_btn);
+		manageTableBtn.setOnClickListener(this);
+		crudBtn.setOnClickListener(this);
+		aggregateBtn.setOnClickListener(this);
 	}
-	
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.manage_table_btn:
+			ManageTablesActivity.actionStart(this);
+			break;
+		case R.id.crud_btn:
+			break;
+		case R.id.aggregate_btn:
+			break;
+		default:
+			break;
+		}
+	}
+
 }
