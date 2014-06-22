@@ -14,4 +14,6 @@ gen/
 local.properties
 .settings/
 .loadpath
+*.classpath
+*.project
 note.txt
