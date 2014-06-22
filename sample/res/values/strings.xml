@@ -1,0 +1,8 @@
+<resources>
+
+    <string name="app_name">LitePal Sample</string>
+    <string name="manage_table">Manage Tables</string>
+    <string name="crud">CRUD</string>
+    <string name="aggregate_functions">Aggregate Functions</string>
+
+</resources>
