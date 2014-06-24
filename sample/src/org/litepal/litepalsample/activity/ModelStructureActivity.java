@@ -1,10 +1,12 @@
 package org.litepal.litepalsample.activity;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.litepal.litepalsample.R;
+import org.litepal.util.BaseUtility;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 public class ModelStructureActivity extends Activity {
 	
@@ -23,11 +24,11 @@ public class ModelStructureActivity extends Activity {
 
 	private ListView modelStructureListView;
 	
-	private ArrayAdapter<String> adapter;
+	private ArrayAdapter<Field> adapter;
 	
 	private String mClassName;
 
-	private List<String> list = new ArrayList<String>();
+	private List<Field> list = new ArrayList<Field>();
 	
 	public static void actionStart(Context context, String className) {
 		Intent intent = new Intent(context, ModelStructureActivity.class);
@@ -41,29 +42,35 @@ public class ModelStructureActivity extends Activity {
 		setContentView(R.layout.model_structure_layout);
 		mClassName = getIntent().getStringExtra(CLASS_NAME);
 		modelStructureListView = (ListView) findViewById(R.id.model_structure_listview);
-		populateMappingClasses();
+		analyzeModelStructure();
 		adapter = new MyArrayAdapter(this, 0, list);
 		modelStructureListView.setAdapter(adapter);
 	}
 	
 	private void analyzeModelStructure() {
-		try {
-			Class <?> c = Class.forName(mClassName);
-			Field [] fields = c.getDeclaredFields();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+			List<Field> supportedFields = new ArrayList<Field>();
+			Class<?> dynamicClass = null;
+			try {
+				dynamicClass = Class.forName(mClassName);
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			Field[] fields = dynamicClass.getDeclaredFields();
+			for (Field field : fields) {
+				int modifiers = field.getModifiers();
+				if (Modifier.isPrivate(modifiers) && !Modifier.isStatic(modifiers)) {
+					Class<?> fieldTypeClass = field.getType();
+					String fieldType = fieldTypeClass.getName();
+					if (BaseUtility.isFieldTypeSupported(fieldType)) {
+						supportedFields.add(field);
+					}
+				}
+			}
 	}
 	
-	private void populateMappingClasses() {
-		for (int i = 0; i < 50; i++) {
-			list.add("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-		}
-	}
+	class MyArrayAdapter extends ArrayAdapter<Field> {
 
-	class MyArrayAdapter extends ArrayAdapter<String> {
-
-		public MyArrayAdapter(Context context, int textViewResourceId, List<String> objects) {
+		public MyArrayAdapter(Context context, int textViewResourceId, List<Field> objects) {
 			super(context, textViewResourceId, objects);
 		}
 
@@ -76,8 +83,6 @@ public class ModelStructureActivity extends Activity {
 			} else {
 				view = convertView;
 			}
-			TextView textView = (TextView) view.findViewById(R.id.text_1);
-			textView.setText(getItem(position));
 			return view;
 		}
 
