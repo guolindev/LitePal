@@ -37,6 +37,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -62,6 +64,12 @@ public class ModelListActivity extends Activity {
 		populateMappingClasses();
 		adapter = new MyArrayAdapter(this, 0, list);
 		modelListview.setAdapter(adapter);
+		modelListview.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View view, int index, long id) {
+				ModelStructureActivity.actionStart(ModelListActivity.this, list.get(index));
+			}
+		});
 	}
 
 	private void populateMappingClasses() {
