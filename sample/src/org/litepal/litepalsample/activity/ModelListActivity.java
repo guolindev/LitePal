@@ -125,7 +125,7 @@ public class ModelListActivity extends Activity {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View view;
 			if (convertView == null) {
-				view = LayoutInflater.from(ModelListActivity.this).inflate(R.layout.list_view_item,
+				view = LayoutInflater.from(ModelListActivity.this).inflate(R.layout.model_list_item,
 						null);
 			} else {
 				view = convertView;
