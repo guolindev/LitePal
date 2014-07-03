@@ -8,5 +8,7 @@
     <string name="table_generation_tip">Tables will be generated automatically depending on the current model structure once you operate database.</string>
     <string name="current_model_structure">Current Model Structure</string>
     <string name="operate_database">Operate Database</string>
+    <string name="field_name">Field Name</string>
+    <string name="field_type">Field Type</string>
 
 </resources>
