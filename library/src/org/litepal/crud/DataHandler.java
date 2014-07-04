@@ -793,9 +793,10 @@ abstract class DataHandler extends LitePalBase {
 	}
 
 	/**
-	 * Judge a field is a primitive boolean type or not. Cause there's something
-	 * special when use eclipse to generate getter method. The primitive boolean
-	 * type won't be like <b>getXxx</b>, it's something like <b>isXxx</b>.
+	 * Judge a field is a primitive boolean type or not. Cause it's a little
+	 * special when use IDE to generate getter and setter method. The primitive
+	 * boolean type won't be like <b>getXxx</b>, it's something like
+	 * <b>isXxx</b>.
 	 * 
 	 * @param field
 	 *            Use field to get field type.
@@ -926,6 +927,8 @@ abstract class DataHandler extends LitePalBase {
 		String setterMethodPrefix = "set";
 		if (isPrimitiveBooleanType(field) && field.getName().matches("^is[A-Z]{1}.*$")) {
 			setterMethodName = setterMethodPrefix + field.getName().substring(2);
+		} else if (field.getName().matches("^[a-z]{1}[A-Z]{1}.*")) {
+			setterMethodName = setterMethodPrefix + field.getName();
 		} else {
 			setterMethodName = setterMethodPrefix + BaseUtility.capitalize(field.getName());
 		}
