@@ -24,6 +24,7 @@ import java.util.List;
 import org.litepal.LitePalApplication;
 import org.litepal.exceptions.ParseConfigurationFileException;
 import org.litepal.litepalsample.R;
+import org.litepal.litepalsample.adapter.StringArrayAdapter;
 import org.litepal.util.Const;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -34,20 +35,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 public class ModelListActivity extends Activity {
 
 	private ListView modelListview;
 
-	private ArrayAdapter<String> adapter;
+	private StringArrayAdapter adapter;
 
 	private List<String> list = new ArrayList<String>();
 
@@ -62,7 +59,7 @@ public class ModelListActivity extends Activity {
 		setContentView(R.layout.model_list_layout);
 		modelListview = (ListView) findViewById(R.id.model_listview);
 		populateMappingClasses();
-		adapter = new MyArrayAdapter(this, 0, list);
+		adapter = new StringArrayAdapter(this, 0, list);
 		modelListview.setAdapter(adapter);
 		modelListview.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -113,28 +110,6 @@ public class ModelListActivity extends Activity {
 		}
 		throw new ParseConfigurationFileException(
 				ParseConfigurationFileException.CAN_NOT_FIND_LITEPAL_FILE);
-	}
-
-	class MyArrayAdapter extends ArrayAdapter<String> {
-
-		public MyArrayAdapter(Context context, int textViewResourceId, List<String> objects) {
-			super(context, textViewResourceId, objects);
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			View view;
-			if (convertView == null) {
-				view = LayoutInflater.from(ModelListActivity.this).inflate(R.layout.model_list_item,
-						null);
-			} else {
-				view = convertView;
-			}
-			TextView textView = (TextView) view.findViewById(R.id.text_1);
-			textView.setText(getItem(position));
-			return view;
-		}
-
 	}
 
 }

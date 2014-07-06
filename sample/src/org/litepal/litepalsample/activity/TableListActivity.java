@@ -16,49 +16,38 @@
 
 package org.litepal.litepalsample.activity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.litepal.litepalsample.R;
+import org.litepal.litepalsample.adapter.StringArrayAdapter;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.widget.ListView;
 
-public class ManageTablesActivity extends Activity implements OnClickListener {
-
-	private Button currentModelStructureBtn;
+public class TableListActivity extends Activity {
 	
-	private Button operateDatabaseBtn;
+	private ListView tableListview;
 
+	private StringArrayAdapter adapter;
+
+	private List<String> list = new ArrayList<String>();
+	
 	public static void actionStart(Context context) {
-		Intent intent = new Intent(context, ManageTablesActivity.class);
+		Intent intent = new Intent(context, TableListActivity.class);
 		context.startActivity(intent);
 	}
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.manage_tables_layout);
-		currentModelStructureBtn = (Button) findViewById(R.id.current_model_structure_btn);
-		operateDatabaseBtn = (Button) findViewById(R.id.operate_database_btn);
-		currentModelStructureBtn.setOnClickListener(this);
-		operateDatabaseBtn.setOnClickListener(this);
+		setContentView(R.layout.table_list_layout);
+		tableListview = (ListView) findViewById(R.id.table_listview);
+		adapter = new StringArrayAdapter(this, 0, list);
+		tableListview.setAdapter(adapter);
 	}
-
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-		case R.id.current_model_structure_btn:
-			ModelListActivity.actionStart(this);
-			break;
-		case R.id.operate_database_btn:
-			TableListActivity.actionStart(this);
-			break;
-		default:
-			break;
-		}
-	}
-
+	
 }

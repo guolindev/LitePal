@@ -21,7 +21,7 @@
         android:id="@+id/operate_database_btn"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/operate_database"
+        android:text="@string/current_table_structure"
         />
 
 </LinearLayout>
