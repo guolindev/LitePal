@@ -28,9 +28,9 @@ import android.widget.Button;
 
 public class ManageTablesActivity extends Activity implements OnClickListener {
 
-	private Button currentModelStructureBtn;
+	private Button mCurrentModelStructureBtn;
 	
-	private Button operateDatabaseBtn;
+	private Button mOperateDatabaseBtn;
 
 	public static void actionStart(Context context) {
 		Intent intent = new Intent(context, ManageTablesActivity.class);
@@ -41,10 +41,10 @@ public class ManageTablesActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.manage_tables_layout);
-		currentModelStructureBtn = (Button) findViewById(R.id.current_model_structure_btn);
-		operateDatabaseBtn = (Button) findViewById(R.id.operate_database_btn);
-		currentModelStructureBtn.setOnClickListener(this);
-		operateDatabaseBtn.setOnClickListener(this);
+		mCurrentModelStructureBtn = (Button) findViewById(R.id.current_model_structure_btn);
+		mOperateDatabaseBtn = (Button) findViewById(R.id.operate_database_btn);
+		mCurrentModelStructureBtn.setOnClickListener(this);
+		mOperateDatabaseBtn.setOnClickListener(this);
 	}
 
 	@Override

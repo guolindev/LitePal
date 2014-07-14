@@ -42,11 +42,11 @@ import android.widget.ListView;
 
 public class ModelListActivity extends Activity {
 
-	private ListView modelListview;
+	private ListView mModelListview;
 
-	private StringArrayAdapter adapter;
+	private StringArrayAdapter mAdapter;
 
-	private List<String> list = new ArrayList<String>();
+	private List<String> mList = new ArrayList<String>();
 
 	public static void actionStart(Context context) {
 		Intent intent = new Intent(context, ModelListActivity.class);
@@ -57,14 +57,14 @@ public class ModelListActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.model_list_layout);
-		modelListview = (ListView) findViewById(R.id.model_listview);
+		mModelListview = (ListView) findViewById(R.id.model_listview);
 		populateMappingClasses();
-		adapter = new StringArrayAdapter(this, 0, list);
-		modelListview.setAdapter(adapter);
-		modelListview.setOnItemClickListener(new OnItemClickListener() {
+		mAdapter = new StringArrayAdapter(this, 0, mList);
+		mModelListview.setAdapter(mAdapter);
+		mModelListview.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View view, int index, long id) {
-				ModelStructureActivity.actionStart(ModelListActivity.this, list.get(index));
+				ModelStructureActivity.actionStart(ModelListActivity.this, mList.get(index));
 			}
 		});
 	}
@@ -81,7 +81,7 @@ public class ModelListActivity extends Activity {
 				case XmlPullParser.START_TAG: {
 					if ("mapping".equals(nodeName)) {
 						String className = xmlPullParser.getAttributeValue("", "class");
-						list.add(className);
+						mList.add(className);
 					}
 					break;
 				}

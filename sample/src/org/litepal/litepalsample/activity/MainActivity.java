@@ -26,22 +26,22 @@ import android.widget.Button;
 
 public class MainActivity extends Activity implements OnClickListener {
 
-	private Button manageTableBtn;
+	private Button mManageTableBtn;
 
-	private Button crudBtn;
+	private Button mCrudBtn;
 
-	private Button aggregateBtn;
+	private Button mAggregateBtn;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_layout);
-		manageTableBtn = (Button) findViewById(R.id.manage_table_btn);
-		crudBtn = (Button) findViewById(R.id.crud_btn);
-		aggregateBtn = (Button) findViewById(R.id.aggregate_btn);
-		manageTableBtn.setOnClickListener(this);
-		crudBtn.setOnClickListener(this);
-		aggregateBtn.setOnClickListener(this);
+		mManageTableBtn = (Button) findViewById(R.id.manage_table_btn);
+		mCrudBtn = (Button) findViewById(R.id.crud_btn);
+		mAggregateBtn = (Button) findViewById(R.id.aggregate_btn);
+		mManageTableBtn.setOnClickListener(this);
+		mCrudBtn.setOnClickListener(this);
+		mAggregateBtn.setOnClickListener(this);
 	}
 
 	@Override

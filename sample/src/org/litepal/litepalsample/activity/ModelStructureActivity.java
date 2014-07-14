@@ -40,13 +40,13 @@ public class ModelStructureActivity extends Activity {
 
 	public static final String CLASS_NAME = "class_name";
 
-	private ListView modelStructureListView;
+	private ListView mModelStructureListView;
 
-	private ArrayAdapter<Field> adapter;
+	private ArrayAdapter<Field> mAdapter;
 
 	private String mClassName;
 
-	private List<Field> list = new ArrayList<Field>();
+	private List<Field> mList = new ArrayList<Field>();
 
 	public static void actionStart(Context context, String className) {
 		Intent intent = new Intent(context, ModelStructureActivity.class);
@@ -60,10 +60,10 @@ public class ModelStructureActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.model_structure_layout);
 		mClassName = getIntent().getStringExtra(CLASS_NAME);
-		modelStructureListView = (ListView) findViewById(R.id.model_structure_listview);
+		mModelStructureListView = (ListView) findViewById(R.id.model_structure_listview);
 		analyzeModelStructure();
-		adapter = new MyArrayAdapter(this, 0, list);
-		modelStructureListView.setAdapter(adapter);
+		mAdapter = new MyArrayAdapter(this, 0, mList);
+		mModelStructureListView.setAdapter(mAdapter);
 	}
 
 	private void analyzeModelStructure() {
@@ -80,7 +80,7 @@ public class ModelStructureActivity extends Activity {
 				Class<?> fieldTypeClass = field.getType();
 				String fieldType = fieldTypeClass.getName();
 				if (BaseUtility.isFieldTypeSupported(fieldType)) {
-					list.add(field);
+					mList.add(field);
 				}
 			}
 		}

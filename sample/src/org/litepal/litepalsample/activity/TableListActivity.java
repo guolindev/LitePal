@@ -21,33 +21,64 @@ import java.util.List;
 
 import org.litepal.litepalsample.R;
 import org.litepal.litepalsample.adapter.StringArrayAdapter;
+import org.litepal.tablemanager.Connector;
+import org.litepal.util.DBUtility;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 public class TableListActivity extends Activity {
 	
-	private ListView tableListview;
+	private ProgressBar mProgressBar;
 
-	private StringArrayAdapter adapter;
+	private ListView mTableListview;
 
-	private List<String> list = new ArrayList<String>();
+	private StringArrayAdapter mAdapter;
+
+	private List<String> mList = new ArrayList<String>();
 	
 	public static void actionStart(Context context) {
 		Intent intent = new Intent(context, TableListActivity.class);
 		context.startActivity(intent);
 	}
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.table_list_layout);
-		tableListview = (ListView) findViewById(R.id.table_listview);
-		adapter = new StringArrayAdapter(this, 0, list);
-		tableListview.setAdapter(adapter);
+		mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
+		mTableListview = (ListView) findViewById(R.id.table_listview);
+		mAdapter = new StringArrayAdapter(this, 0, mList);
+		mTableListview.setAdapter(mAdapter);
+		populateTables();
 	}
-	
+
+	private void populateTables() {
+		mProgressBar.setVisibility(View.VISIBLE);
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				List<String> tables = DBUtility.findAllTableNames(Connector.getDatabase());
+				for (String table : tables) {
+					if (table.equalsIgnoreCase("android_metadata") || table.equalsIgnoreCase("sqlite_sequence") || table.equalsIgnoreCase("table_schema")) {
+						continue;
+					}
+					mList.add(table);
+				}
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						mProgressBar.setVisibility(View.GONE);
+						mAdapter.notifyDataSetChanged();
+					}
+				});
+			}
+		}).start();
+	}
+
 }
