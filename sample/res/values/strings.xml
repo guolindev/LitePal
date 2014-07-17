@@ -10,5 +10,7 @@
     <string name="current_table_structure">Current Table Structure</string>
     <string name="field_name">Field Name</string>
     <string name="field_type">Field Type</string>
+    <string name="column_name">Column Name</string>
+    <string name="column_type">Column Type</string>
 
 </resources>

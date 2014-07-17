@@ -97,7 +97,7 @@ public class ModelStructureActivity extends Activity {
 			View view;
 			Field field = getItem(position);
 			if (convertView == null) {
-				view = LayoutInflater.from(getContext()).inflate(R.layout.model_structure_item,
+				view = LayoutInflater.from(getContext()).inflate(R.layout.structure_item,
 						null);
 			} else {
 				view = convertView;

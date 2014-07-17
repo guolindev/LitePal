@@ -29,11 +29,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
 public class TableListActivity extends Activity {
-	
+
 	private ProgressBar mProgressBar;
 
 	private ListView mTableListview;
@@ -41,7 +43,7 @@ public class TableListActivity extends Activity {
 	private StringArrayAdapter mAdapter;
 
 	private List<String> mList = new ArrayList<String>();
-	
+
 	public static void actionStart(Context context) {
 		Intent intent = new Intent(context, TableListActivity.class);
 		context.startActivity(intent);
@@ -56,6 +58,12 @@ public class TableListActivity extends Activity {
 		mAdapter = new StringArrayAdapter(this, 0, mList);
 		mTableListview.setAdapter(mAdapter);
 		populateTables();
+		mTableListview.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View view, int index, long id) {
+				TableStructureActivity.actionStart(TableListActivity.this, mList.get(index));
+			}
+		});
 	}
 
 	private void populateTables() {
@@ -65,7 +73,9 @@ public class TableListActivity extends Activity {
 			public void run() {
 				List<String> tables = DBUtility.findAllTableNames(Connector.getDatabase());
 				for (String table : tables) {
-					if (table.equalsIgnoreCase("android_metadata") || table.equalsIgnoreCase("sqlite_sequence") || table.equalsIgnoreCase("table_schema")) {
+					if (table.equalsIgnoreCase("android_metadata")
+							|| table.equalsIgnoreCase("sqlite_sequence")
+							|| table.equalsIgnoreCase("table_schema")) {
 						continue;
 					}
 					mList.add(table);
