@@ -19,41 +19,52 @@ package org.litepal.litepalsample.activity;
 import org.litepal.litepalsample.R;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class CRUDActivity extends Activity implements OnClickListener {
 
-	private Button mManageTableBtn;
+	private Button mSaveSampleBtn;
 
-	private Button mCrudBtn;
+	private Button mUpdateSampleBtn;
 
-	private Button mAggregateBtn;
+	private Button mDeleteSampleBtn;
+
+	private Button mQuerySampleBtn;
+
+	public static void actionStart(Context context) {
+		Intent intent = new Intent(context, CRUDActivity.class);
+		context.startActivity(intent);
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main_layout);
-		mManageTableBtn = (Button) findViewById(R.id.manage_table_btn);
-		mCrudBtn = (Button) findViewById(R.id.crud_btn);
-		mAggregateBtn = (Button) findViewById(R.id.aggregate_btn);
-		mManageTableBtn.setOnClickListener(this);
-		mCrudBtn.setOnClickListener(this);
-		mAggregateBtn.setOnClickListener(this);
+		setContentView(R.layout.crud_layout);
+		mSaveSampleBtn = (Button) findViewById(R.id.save_sample_btn);
+		mUpdateSampleBtn = (Button) findViewById(R.id.update_sample_btn);
+		mDeleteSampleBtn = (Button) findViewById(R.id.delete_sample_btn);
+		mQuerySampleBtn = (Button) findViewById(R.id.query_sample_btn);
+		mSaveSampleBtn.setOnClickListener(this);
+		mUpdateSampleBtn.setOnClickListener(this);
+		mDeleteSampleBtn.setOnClickListener(this);
+		mQuerySampleBtn.setOnClickListener(this);
 	}
 
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.manage_table_btn:
-			ManageTablesActivity.actionStart(this);
+		case R.id.save_sample_btn:
 			break;
-		case R.id.crud_btn:
-			CRUDActivity.actionStart(this);
+		case R.id.update_sample_btn:
 			break;
-		case R.id.aggregate_btn:
+		case R.id.delete_sample_btn:
+			break;
+		case R.id.query_sample_btn:
 			break;
 		default:
 			break;

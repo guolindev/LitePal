@@ -12,5 +12,9 @@
     <string name="field_type">Field Type</string>
     <string name="column_name">Column Name</string>
     <string name="column_type">Column Type</string>
+    <string name="save_sample">Save Sample</string>
+    <string name="update_sample">Update Sample</string>
+    <string name="delete_sample">Delete Sample</string>
+    <string name="query_sample">Query Sample</string>
 
 </resources>

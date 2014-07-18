@@ -40,6 +40,8 @@
         </activity>
         <activity android:name="org.litepal.litepalsample.activity.TableStructureActivity" >
         </activity>
+        <activity android:name="org.litepal.litepalsample.activity.CRUDActivity" >
+        </activity>
     </application>
 
 </manifest>
