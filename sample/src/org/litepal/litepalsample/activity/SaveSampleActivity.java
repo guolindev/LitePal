@@ -32,10 +32,21 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 public class SaveSampleActivity extends Activity implements OnClickListener {
+
+	private RelativeLayout mLayout;
+
+	private EditText mSingerNameEdit;
+
+	private EditText mSingerAgeEdit;
+
+	private EditText mSingerGenderEdit;
 
 	private ProgressBar mProgressBar;
 
@@ -56,7 +67,11 @@ public class SaveSampleActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.save_sample_layout);
+		mLayout = (RelativeLayout) findViewById(R.id.layout);
 		mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
+		mSingerNameEdit = (EditText) findViewById(R.id.singer_name_edit);
+		mSingerAgeEdit = (EditText) findViewById(R.id.singer_age_edit);
+		mSingerGenderEdit = (EditText) findViewById(R.id.singer_gender_edit);
 		mSaveBtn = (Button) findViewById(R.id.save_btn);
 		mDataListView = (ListView) findViewById(R.id.data_list_view);
 		mSaveBtn.setOnClickListener(this);
@@ -69,12 +84,20 @@ public class SaveSampleActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.save_btn:
-			Singer singer = new Singer();
-			singer.setName("Taylor Swift");
-			singer.setAge(25);
-			singer.setMale(false);
-			singer.save();
-			refreshListView(singer.getId(), singer.getName(), singer.getAge(), singer.isMale() ? 1 : 0);
+			try {
+				Singer singer = new Singer();
+				singer.setName(mSingerNameEdit.getText().toString());
+				singer.setAge(Integer.parseInt(mSingerAgeEdit.getText().toString()));
+				singer.setMale(Boolean.parseBoolean(mSingerGenderEdit.getText().toString()));
+				singer.save();
+				refreshListView(singer.getId(), singer.getName(), singer.getAge(),
+						singer.isMale() ? 1 : 0);
+			} catch (Exception e) {
+				e.printStackTrace();
+				Toast.makeText(this, getString(R.string.error_param_is_not_valid),
+						Toast.LENGTH_SHORT).show();
+			}
+			mLayout.requestFocus();
 			break;
 		default:
 			break;
@@ -94,7 +117,8 @@ public class SaveSampleActivity extends Activity implements OnClickListener {
 				mList.add(columnList);
 				Cursor cursor = null;
 				try {
-					cursor = Connector.getDatabase().rawQuery("select * from singer order by id", null);
+					cursor = Connector.getDatabase().rawQuery("select * from singer order by id",
+							null);
 					if (cursor.moveToFirst()) {
 						do {
 							long id = cursor.getLong(cursor.getColumnIndex("id"));
