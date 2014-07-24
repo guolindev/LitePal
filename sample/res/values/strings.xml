@@ -19,6 +19,11 @@
     <string name="delete_sample">Delete Sample</string>
     <string name="query_sample">Query Sample</string>
     <string name="run_codes_above">Run codes above</string>
-    <string name="save_sample_codes">Singer singer = new Singer();\nsinger.setName("Taylor Swift");\nsinger.setAge(25);\nsinger.setMale(false);\nsinger.save();</string>
+    <string name="save_sample_codes">Singer singer = new Singer&#040;&#041;&#059;\nsinger.setName&#040;\&#034;Taylor Swift\&#034;&#041;&#059;\nsinger.setAge&#040;25&#041;&#059;\nsinger.setMale&#040;false&#041;&#059;\nsinger.save&#040;&#041;&#059;</string>
+    <string name="save_sample_codes_first_line">Singer singer = new Singer&#040;&#041;&#059;</string>
+    <string name="save_sample_codes_second_line">singer.setName&#040;\&#034;Taylor Swift\&#034;&#041;&#059;</string>
+    <string name="save_sample_codes_third_line">singer.setAge&#040;25&#041;&#059;</string>
+    <string name="save_sample_codes_fourth_line">singer.setMale&#040;false&#041;&#059;</string>
+    <string name="save_sample_codes_fifth_line">singer.save&#040;&#041;&#059;</string>
 
 </resources>

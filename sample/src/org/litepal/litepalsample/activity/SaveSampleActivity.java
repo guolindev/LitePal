@@ -16,21 +16,37 @@
 
 package org.litepal.litepalsample.activity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.litepal.litepalsample.R;
+import org.litepal.litepalsample.adapter.DataArrayAdapter;
 import org.litepal.litepalsample.model.Singer;
+import org.litepal.tablemanager.Connector;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 
 public class SaveSampleActivity extends Activity implements OnClickListener {
 
-	private Button saveBtn;
-	
+	private ProgressBar mProgressBar;
+
+	private Button mSaveBtn;
+
+	private ListView mDataListView;
+
+	private DataArrayAdapter mAdapter;
+
+	private List<List<String>> mList = new ArrayList<List<String>>();
+
 	public static void actionStart(Context context) {
 		Intent intent = new Intent(context, SaveSampleActivity.class);
 		context.startActivity(intent);
@@ -40,8 +56,13 @@ public class SaveSampleActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.save_sample_layout);
-		saveBtn = (Button) findViewById(R.id.save_btn);
-		saveBtn.setOnClickListener(this);
+		mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
+		mSaveBtn = (Button) findViewById(R.id.save_btn);
+		mDataListView = (ListView) findViewById(R.id.data_list_view);
+		mSaveBtn.setOnClickListener(this);
+		mAdapter = new DataArrayAdapter(this, 0, mList);
+		mDataListView.setAdapter(mAdapter);
+		populateDataFromDB();
 	}
 
 	@Override
@@ -53,10 +74,68 @@ public class SaveSampleActivity extends Activity implements OnClickListener {
 			singer.setAge(25);
 			singer.setMale(false);
 			singer.save();
+			refreshListView(singer.getId(), singer.getName(), singer.getAge(), singer.isMale() ? 1 : 0);
 			break;
 		default:
 			break;
 		}
+	}
+
+	private void populateDataFromDB() {
+		mProgressBar.setVisibility(View.VISIBLE);
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				List<String> columnList = new ArrayList<String>();
+				columnList.add("id");
+				columnList.add("name");
+				columnList.add("age");
+				columnList.add("ismale");
+				mList.add(columnList);
+				Cursor cursor = null;
+				try {
+					cursor = Connector.getDatabase().rawQuery("select * from singer order by id", null);
+					if (cursor.moveToFirst()) {
+						do {
+							long id = cursor.getLong(cursor.getColumnIndex("id"));
+							String name = cursor.getString(cursor.getColumnIndex("name"));
+							int age = cursor.getInt(cursor.getColumnIndex("age"));
+							int isMale = cursor.getInt(cursor.getColumnIndex("ismale"));
+							List<String> stringList = new ArrayList<String>();
+							stringList.add(String.valueOf(id));
+							stringList.add(name);
+							stringList.add(String.valueOf(age));
+							stringList.add(String.valueOf(isMale));
+							mList.add(stringList);
+						} while (cursor.moveToNext());
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+					if (cursor != null) {
+						cursor.close();
+					}
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							mProgressBar.setVisibility(View.GONE);
+							mAdapter.notifyDataSetChanged();
+						}
+					});
+				}
+			}
+		}).start();
+	}
+
+	private void refreshListView(long id, String name, int age, int isMale) {
+		List<String> stringList = new ArrayList<String>();
+		stringList.add(String.valueOf(id));
+		stringList.add(name);
+		stringList.add(String.valueOf(age));
+		stringList.add(String.valueOf(isMale));
+		mList.add(stringList);
+		mAdapter.notifyDataSetChanged();
+		mDataListView.setSelection(mList.size());
 	}
 
 }
