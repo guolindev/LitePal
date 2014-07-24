@@ -2,6 +2,7 @@
 
     <string name="app_name">LitePal Sample</string>
     <string name="manage_table_sample">Manage Tables Sample</string>
+    <string name="crud_sample">CRUD Sample</string>
     <string name="manage_table">Manage Tables</string>
     <string name="crud">CRUD</string>
     <string name="aggregate_functions">Aggregate Functions</string>
@@ -12,9 +13,12 @@
     <string name="field_type">Field Type</string>
     <string name="column_name">Column Name</string>
     <string name="column_type">Column Type</string>
+    <string name="sample_codes">Sample codes:</string>
     <string name="save_sample">Save Sample</string>
     <string name="update_sample">Update Sample</string>
     <string name="delete_sample">Delete Sample</string>
     <string name="query_sample">Query Sample</string>
+    <string name="run_codes_above">Run codes above</string>
+    <string name="save_sample_codes">Singer singer = new Singer();\nsinger.setName("Taylor Swift");\nsinger.setAge(25);\nsinger.setMale(false);\nsinger.save();</string>
 
 </resources>

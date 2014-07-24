@@ -13,7 +13,9 @@
         android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity android:name="org.litepal.litepalsample.activity.MainActivity" >
+        <activity
+            android:name="org.litepal.litepalsample.activity.MainActivity"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,25 +24,41 @@
         </activity>
         <activity
             android:name="org.litepal.litepalsample.activity.ManageTablesActivity"
-            android:label="@string/manage_table_sample" >
+            android:label="@string/manage_table_sample"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="org.litepal.litepalsample.activity.ModelListActivity"
-            android:label="@string/manage_table_sample" >
+            android:label="@string/manage_table_sample"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="org.litepal.litepalsample.activity.TableListActivity"
-            android:label="@string/manage_table_sample" >
+            android:label="@string/manage_table_sample"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="org.litepal.litepalsample.activity.OperateDatabaseActivity"
-            android:label="@string/manage_table_sample" >
+            android:label="@string/manage_table_sample"
+            android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="org.litepal.litepalsample.activity.ModelStructureActivity" >
+        <activity
+            android:name="org.litepal.litepalsample.activity.ModelStructureActivity"
+            android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="org.litepal.litepalsample.activity.TableStructureActivity" >
+        <activity
+            android:name="org.litepal.litepalsample.activity.TableStructureActivity"
+            android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="org.litepal.litepalsample.activity.CRUDActivity" >
+        <activity
+            android:name="org.litepal.litepalsample.activity.CRUDActivity"
+            android:label="@string/crud_sample"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="org.litepal.litepalsample.activity.SaveSampleActivity"
+            android:label="@string/crud_sample"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 

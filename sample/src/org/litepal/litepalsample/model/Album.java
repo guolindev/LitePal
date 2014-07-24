@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Album {
+import org.litepal.crud.DataSupport;
+
+public class Album extends DataSupport {
 
 	private long id;
 

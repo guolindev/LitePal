@@ -19,16 +19,18 @@ package org.litepal.litepalsample.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Singer {
-	
+import org.litepal.crud.DataSupport;
+
+public class Singer extends DataSupport {
+
 	private long id;
-	
+
 	private String name;
-	
+
 	private int age;
-	
+
 	private boolean isMale;
-	
+
 	private List<Album> albums = new ArrayList<Album>();
 
 	public long getId() {
@@ -70,5 +72,5 @@ public class Singer {
 	public void setAlbums(List<Album> albums) {
 		this.albums = albums;
 	}
-	
+
 }

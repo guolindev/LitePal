@@ -16,12 +16,14 @@
 
 package org.litepal.litepalsample.model;
 
-public class Song {
+import org.litepal.crud.DataSupport;
+
+public class Song extends DataSupport {
 
 	private long id;
 
 	private String name;
-	
+
 	private String lyric;
 
 	private String duration;
@@ -67,5 +69,5 @@ public class Song {
 	public void setAlbum(Album album) {
 		this.album = album;
 	}
-	
+
 }
