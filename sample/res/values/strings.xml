@@ -19,19 +19,28 @@
     <string name="delete_sample">Delete Sample</string>
     <string name="query_sample">Query Sample</string>
     <string name="run_codes_above">Run codes above</string>
-    <string name="save_sample_codes">Singer singer = new Singer&#040;&#041;&#059;\nsinger.setName&#040;\&#034;Taylor Swift\&#034;&#041;&#059;\nsinger.setAge&#040;25&#041;&#059;\nsinger.setMale&#040;false&#041;&#059;\nsinger.save&#040;&#041;&#059;</string>
-    <string name="save_sample_codes_first_line">Singer singer = new Singer&#040;&#041;&#059;</string>
-    <string name="save_sample_codes_second_line_pre">singer.setName&#040;\&#034;</string>
-    <string name="save_sample_codes_second_line_end">\&#034;&#041;&#059;</string>
-    <string name="save_sample_codes_third_line_pre">singer.setAge&#040;</string>
-    <string name="save_sample_codes_third_line_end">&#041;&#059;</string>
-    <string name="save_sample_codes_fourth_line_pre">singer.setMale&#040;</string>
-    <string name="save_sample_codes_fourth_line_end">&#041;&#059;</string>
-    <string name="save_sample_codes_fifth_line">singer.save&#040;&#041;&#059;</string>
+    <string name="sample_codes_first_line">Singer singer = new Singer&#040;&#041;&#059;</string>
+    <string name="sample_codes_second_line_pre">singer.setName&#040;\&#034;</string>
+    <string name="sample_codes_second_line_end">\&#034;&#041;&#059;</string>
+    <string name="sample_codes_third_line_pre">singer.setAge&#040;</string>
+    <string name="sample_codes_third_line_end">&#041;&#059;</string>
+    <string name="sample_codes_fourth_line_pre">singer.setMale&#040;</string>
+    <string name="sample_codes_fourth_line_end">&#041;&#059;</string>
+    <string name="sample_codes_save">singer.save&#040;&#041;&#059;</string>
+    <string name="sample_codes_update_first_line_pre">singer.update&#040;</string>
+    <string name="sample_codes_update_first_line_end">&#041;&#059;</string>
+    <string name="sample_codes_update_second_line">singer.updateAll&#040;\&#034;name=? and age=?\&#034;,</string>
+    <string name="sample_codes_update_third_line_pre">\&#034;</string>
+    <string name="sample_codes_update_third_line_mid">\&#034;, \&#034;</string>
+    <string name="sample_codes_update_third_line_end">\&#034;&#041;&#059;</string>
     <string name="taylor_swift">Taylor Swift</string>
+    <string name="justin_bieber">Justin Bieber</string>
+    <string name="one">1</string>
     <string name="twenty_five">25</string>
+    <string name="twenty">20</string>
     <string name="boolean_false">false</string>
     <string name="boolean_true">true</string>
     <string name="error_param_is_not_valid">Param is not valid.</string>
+    <string name="number_of_rows_affected">%1$s rows affected.</string>
 
 </resources>

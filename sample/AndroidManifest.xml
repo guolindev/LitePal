@@ -60,6 +60,11 @@
             android:label="@string/crud_sample"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="org.litepal.litepalsample.activity.UpdateSampleActivity"
+            android:label="@string/crud_sample"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>

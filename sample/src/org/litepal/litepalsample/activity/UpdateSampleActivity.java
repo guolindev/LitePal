@@ -37,17 +37,23 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-public class SaveSampleActivity extends Activity implements OnClickListener {
+public class UpdateSampleActivity extends Activity implements OnClickListener {
+
+	private EditText mSingerIdEdit;
 
 	private EditText mSingerNameEdit;
 
 	private EditText mSingerAgeEdit;
 
-	private EditText mSingerGenderEdit;
+	private EditText mNameToUpdateEdit;
+
+	private EditText mAgeToUpdateEdit;
 
 	private ProgressBar mProgressBar;
 
-	private Button mSaveBtn;
+	private Button mUpdateBtn1;
+
+	private Button mUpdateBtn2;
 
 	private ListView mDataListView;
 
@@ -56,21 +62,25 @@ public class SaveSampleActivity extends Activity implements OnClickListener {
 	private List<List<String>> mList = new ArrayList<List<String>>();
 
 	public static void actionStart(Context context) {
-		Intent intent = new Intent(context, SaveSampleActivity.class);
+		Intent intent = new Intent(context, UpdateSampleActivity.class);
 		context.startActivity(intent);
 	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.save_sample_layout);
+		setContentView(R.layout.update_sample_layout);
 		mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
+		mSingerIdEdit = (EditText) findViewById(R.id.singer_id_edit);
 		mSingerNameEdit = (EditText) findViewById(R.id.singer_name_edit);
 		mSingerAgeEdit = (EditText) findViewById(R.id.singer_age_edit);
-		mSingerGenderEdit = (EditText) findViewById(R.id.singer_gender_edit);
-		mSaveBtn = (Button) findViewById(R.id.save_btn);
+		mNameToUpdateEdit = (EditText) findViewById(R.id.name_to_update);
+		mAgeToUpdateEdit = (EditText) findViewById(R.id.age_to_update);
+		mUpdateBtn1 = (Button) findViewById(R.id.update_btn1);
+		mUpdateBtn2 = (Button) findViewById(R.id.update_btn2);
 		mDataListView = (ListView) findViewById(R.id.data_list_view);
-		mSaveBtn.setOnClickListener(this);
+		mUpdateBtn1.setOnClickListener(this);
+		mUpdateBtn2.setOnClickListener(this);
 		mAdapter = new DataArrayAdapter(this, 0, mList);
 		mDataListView.setAdapter(mAdapter);
 		populateDataFromDB();
@@ -79,15 +89,36 @@ public class SaveSampleActivity extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.save_btn:
+		case R.id.update_btn1:
 			try {
 				Singer singer = new Singer();
 				singer.setName(mSingerNameEdit.getText().toString());
 				singer.setAge(Integer.parseInt(mSingerAgeEdit.getText().toString()));
-				singer.setMale(Boolean.parseBoolean(mSingerGenderEdit.getText().toString()));
-				singer.save();
-				refreshListView(singer.getId(), singer.getName(), singer.getAge(),
-						singer.isMale() ? 1 : 0);
+				int rowsAffected = singer
+						.update(Long.parseLong(mSingerIdEdit.getText().toString()));
+				Toast.makeText(
+						this,
+						String.format(getString(R.string.number_of_rows_affected),
+								String.valueOf(rowsAffected)), Toast.LENGTH_SHORT).show();
+				populateDataFromDB();
+			} catch (Exception e) {
+				e.printStackTrace();
+				Toast.makeText(this, getString(R.string.error_param_is_not_valid),
+						Toast.LENGTH_SHORT).show();
+			}
+			break;
+		case R.id.update_btn2:
+			try {
+				Singer singer = new Singer();
+				singer.setName(mSingerNameEdit.getText().toString());
+				singer.setAge(Integer.parseInt(mSingerAgeEdit.getText().toString()));
+				int rowsAffected = singer.updateAll("name=? and age=?", mNameToUpdateEdit.getText()
+						.toString(), mAgeToUpdateEdit.getText().toString());
+				Toast.makeText(
+						this,
+						String.format(getString(R.string.number_of_rows_affected),
+								String.valueOf(rowsAffected)), Toast.LENGTH_SHORT).show();
+				populateDataFromDB();
 			} catch (Exception e) {
 				e.printStackTrace();
 				Toast.makeText(this, getString(R.string.error_param_is_not_valid),
@@ -145,17 +176,6 @@ public class SaveSampleActivity extends Activity implements OnClickListener {
 				}
 			}
 		}).start();
-	}
-
-	private void refreshListView(long id, String name, int age, int isMale) {
-		List<String> stringList = new ArrayList<String>();
-		stringList.add(String.valueOf(id));
-		stringList.add(name);
-		stringList.add(String.valueOf(age));
-		stringList.add(String.valueOf(isMale));
-		mList.add(stringList);
-		mAdapter.notifyDataSetChanged();
-		mDataListView.setSelection(mList.size());
 	}
 
 }
