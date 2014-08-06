@@ -65,6 +65,7 @@ public class CRUDActivity extends Activity implements OnClickListener {
 			UpdateSampleActivity.actionStart(this);
 			break;
 		case R.id.delete_sample_btn:
+			DeleteSampleActivity.actionStart(this);
 			break;
 		case R.id.query_sample_btn:
 			break;

@@ -33,6 +33,13 @@
     <string name="sample_codes_update_third_line_pre">\&#034;</string>
     <string name="sample_codes_update_third_line_mid">\&#034;, \&#034;</string>
     <string name="sample_codes_update_third_line_end">\&#034;&#041;&#059;</string>
+    <string name="sample_codes_delete_first_line_pre">DataSupport.delete&#040;Singer.class,&#160;</string>
+    <string name="sample_codes_delete_first_line_end">&#041;&#059;</string>
+    <string name="sample_codes_delete_second_line">DataSupport.deleteAll&#040;Singer.class,</string>
+    <string name="sample_codes_delete_third_line">\&#034;name = ? and age = ?\&#034;,</string>
+    <string name="sample_codes_delete_fourth_line_pre">\&#034;</string>
+    <string name="sample_codes_delete_fourth_line_mid">\&#034;, \&#034;</string>
+    <string name="sample_codes_delete_fourth_line_end">\&#034;&#041;&#059;</string>
     <string name="taylor_swift">Taylor Swift</string>
     <string name="justin_bieber">Justin Bieber</string>
     <string name="one">1</string>
