@@ -40,6 +40,16 @@
     <string name="sample_codes_delete_fourth_line_pre">\&#034;</string>
     <string name="sample_codes_delete_fourth_line_mid">\&#034;, \&#034;</string>
     <string name="sample_codes_delete_fourth_line_end">\&#034;&#041;&#059;</string>
+    <string name="sample_desc_query_first_line">Find singer whose id is 1:</string>
+    <string name="sample_codes_query_first_line">Singer singer = DataSupport.find&#040;\nSinger.class, 1&#041;&#059;</string>
+    <string name="sample_desc_query_second_line">Find all singers:</string>
+    <string name="sample_codes_query_second_line">List&#60;Singer&#62; allSingers =\nDataSupport.findAll&#040;Singer.class&#041;&#059;</string>
+    <string name="sample_desc_query_third_line">Find all singers who are yonger than 20:</string>
+    <string name="sample_codes_query_third_line">List&#60;Singer&#62; singers =\nDataSupport.where&#040;\&#034;age &#60; ?\&#034;, \&#034;20\&#034;&#041;.\nfind&#040;Singer.class&#041;&#059;</string>
+    <string name="sample_desc_query_fourth_line">Find all female singers who are elder than 25:</string>
+    <string name="sample_codes_query_fourth_line">List&#60;Singer&#62; singers =\nDataSupport.where&#040;\n\&#034;age &#60; ? and ismale = ?\&#034;, \&#034;25\&#034;, \&#034;0\&#034;&#041;.\nfind&#040;Singer.class&#041;&#059;</string>
+    <string name="sample_desc_query_fifth_line">Find same records as above by SQL:</string>
+    <string name="sample_codes_query_fifth_line">Cursor cursor =\nDataSupport.findBySQL&#040;\n\&#034;select * from singer where\nage &#60; ? and ismale = ?\&#034;, \&#034;25\&#034;, \&#034;0\&#034;&#041;&#059;</string>
     <string name="taylor_swift">Taylor Swift</string>
     <string name="justin_bieber">Justin Bieber</string>
     <string name="one">1</string>
