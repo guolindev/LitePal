@@ -44,7 +44,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		mManageTableBtn.setOnClickListener(this);
 		mCrudBtn.setOnClickListener(this);
 		mAggregateBtn.setOnClickListener(this);
-		DataSupport.where("age > ?", "23").count(Singer.class);
 	}
 
 	@Override
