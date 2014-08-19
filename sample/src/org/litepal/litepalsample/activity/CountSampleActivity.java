@@ -16,24 +16,15 @@
 
 package org.litepal.litepalsample.activity;
 
-import org.litepal.litepalsample.R;
-
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 
-public class OperateDatabaseActivity extends Activity {
-	
-	public static void actionStart(Context context) {
-		Intent intent = new Intent(context, OperateDatabaseActivity.class);
-		context.startActivity(intent);
-	}
+public class CountSampleActivity extends Activity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.operate_database_layout);
+		
 	}
 	
 }

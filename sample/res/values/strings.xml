@@ -21,6 +21,7 @@
     <string name="manage_table">Manage Tables</string>
     <string name="crud">CRUD</string>
     <string name="aggregate_functions">Aggregate Functions</string>
+    <string name="aggregate_sample">Aggregate Sample</string>
     <string name="table_generation_tip">Tables will be generated automatically depending on the current model structure once you operate database.</string>
     <string name="current_model_structure">Current Model Structure</string>
     <string name="current_table_structure">Current Table Structure</string>
@@ -29,6 +30,7 @@
     <string name="column_name">Column Name</string>
     <string name="column_type">Column Type</string>
     <string name="sample_codes">Sample codes:</string>
+    <string name="result">Result:</string>
     <string name="save_sample">Save Sample</string>
     <string name="update_sample">Update Sample</string>
     <string name="delete_sample">Delete Sample</string>
@@ -70,10 +72,15 @@
     <string name="sample_codes_query_fourth_line">List&#60;Singer&#62; singers =\nDataSupport.where&#040;\n\&#034;age &#60; ? and ismale = ?\&#034;, \&#034;25\&#034;, \&#034;0\&#034;&#041;.\nfind&#040;Singer.class&#041;&#059;</string>
     <string name="sample_desc_query_fifth_line">Find same records as above by SQL:</string>
     <string name="sample_codes_query_fifth_line">Cursor cursor =\nDataSupport.findBySQL&#040;\n\&#034;select * from singer where\nage &#60; ? and ismale = ?\&#034;, \&#034;25\&#034;, \&#034;0\&#034;&#041;&#059;</string>
+    <string name="sample_codes_count_first_line">DataSupport.count&#040;Singer.class&#041;&#059;</string>
+    <string name="sample_codes_count_second_line_pre">DataSupport.where&#040;\&#034;age > ?\&#034;, \&#034;</string>
+    <string name="sample_codes_count_second_line_end">\&#034;&#041;.</string>
+    <string name="sample_codes_count_third_line">count&#040;Singer.class&#041;&#059;</string>
     <string name="taylor_swift">Taylor Swift</string>
     <string name="justin_bieber">Justin Bieber</string>
     <string name="one">1</string>
     <string name="twenty_five">25</string>
+    <string name="twenty_three">23</string>
     <string name="twenty">20</string>
     <string name="boolean_false">false</string>
     <string name="boolean_true">true</string>

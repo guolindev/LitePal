@@ -90,6 +90,16 @@
             android:label="@string/query_sample"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="org.litepal.litepalsample.activity.AggregateActivity"
+            android:label="@string/aggregate_sample"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="org.litepal.litepalsample.activity.CountSampleActivity"
+            android:label="@string/count_sample"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>

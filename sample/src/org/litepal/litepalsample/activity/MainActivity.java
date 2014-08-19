@@ -16,7 +16,9 @@
 
 package org.litepal.litepalsample.activity;
 
+import org.litepal.crud.DataSupport;
 import org.litepal.litepalsample.R;
+import org.litepal.litepalsample.model.Singer;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -42,6 +44,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		mManageTableBtn.setOnClickListener(this);
 		mCrudBtn.setOnClickListener(this);
 		mAggregateBtn.setOnClickListener(this);
+		DataSupport.where("age > ?", "23").count(Singer.class);
 	}
 
 	@Override
@@ -54,6 +57,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			CRUDActivity.actionStart(this);
 			break;
 		case R.id.aggregate_btn:
+			AggregateActivity.actionStart(this);
 			break;
 		default:
 			break;
