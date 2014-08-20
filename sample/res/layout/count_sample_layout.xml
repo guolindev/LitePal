@@ -84,7 +84,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@null"
-                    android:inputType="none"
+                    android:inputType="number"
                     android:singleLine="true"
                     android:text="@string/twenty_three"
                     android:textSize="18sp" />
@@ -116,6 +116,7 @@
         android:text="@string/result" />
 
     <TextView
+        android:id="@+id/result_text"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
         android:background="@drawable/textfield_default"

@@ -63,6 +63,7 @@ public class AggregateActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.count_sample_btn:
+			CountSampleActivity.actionStart(this);
 			break;
 		case R.id.max_sample_btn:
 			break;

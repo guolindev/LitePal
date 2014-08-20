@@ -16,9 +16,7 @@
 
 package org.litepal.litepalsample.activity;
 
-import org.litepal.crud.DataSupport;
 import org.litepal.litepalsample.R;
-import org.litepal.litepalsample.model.Singer;
 
 import android.app.Activity;
 import android.os.Bundle;
