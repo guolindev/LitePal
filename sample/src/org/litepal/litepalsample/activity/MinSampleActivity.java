@@ -32,9 +32,9 @@ import android.widget.TextView;
 
 public class MinSampleActivity extends Activity implements OnClickListener {
 
-	private Button mCountBtn1;
+	private Button mMinBtn1;
 
-	private Button mCountBtn2;
+	private Button mMinBtn2;
 
 	private EditText mAgeEdit;
 
@@ -48,27 +48,27 @@ public class MinSampleActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.count_sample_layout);
-		mCountBtn1 = (Button) findViewById(R.id.count_btn1);
-		mCountBtn2 = (Button) findViewById(R.id.count_btn2);
+		setContentView(R.layout.min_sample_layout);
+		mMinBtn1 = (Button) findViewById(R.id.min_btn1);
+		mMinBtn2 = (Button) findViewById(R.id.min_btn2);
 		mAgeEdit = (EditText) findViewById(R.id.age_edit);
 		mResultText = (TextView) findViewById(R.id.result_text);
-		mCountBtn1.setOnClickListener(this);
-		mCountBtn2.setOnClickListener(this);
+		mMinBtn1.setOnClickListener(this);
+		mMinBtn2.setOnClickListener(this);
 	}
 
 	@Override
 	public void onClick(View view) {
 		int result = 0;
 		switch (view.getId()) {
-		case R.id.count_btn1:
-			result = DataSupport.count(Singer.class);
+		case R.id.min_btn1:
+			result = DataSupport.min(Singer.class, "age", Integer.TYPE);
 			mResultText.setText(String.valueOf(result));
 			break;
-		case R.id.count_btn2:
+		case R.id.min_btn2:
 			try {
-				result = DataSupport.where("age > ?", mAgeEdit.getText().toString()).count(
-						Singer.class);
+				result = DataSupport.where("age > ?", mAgeEdit.getText().toString()).min(
+						Singer.class, "age", Integer.TYPE);
 				mResultText.setText(String.valueOf(result));
 			} catch (Exception e) {
 				e.printStackTrace();

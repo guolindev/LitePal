@@ -44,13 +44,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/sample_codes_max_first_line"
+                android:text="@string/sample_codes_min_first_line"
                 android:textSize="18sp" />
         </LinearLayout>
     </HorizontalScrollView>
 
     <Button
-        android:id="@+id/max_btn1"
+        android:id="@+id/min_btn1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/run_codes_above" />
@@ -76,7 +76,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/sample_codes_max_second_line_pre"
+                    android:text="@string/sample_codes_min_second_line_pre"
                     android:textSize="18sp" />
 
                 <EditText
@@ -92,20 +92,20 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/sample_codes_max_second_line_end"
+                    android:text="@string/sample_codes_min_second_line_end"
                     android:textSize="18sp" />
             </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/sample_codes_max_third_line"
+                android:text="@string/sample_codes_min_third_line"
                 android:textSize="18sp" />
         </LinearLayout>
     </HorizontalScrollView>
 
     <Button
-        android:id="@+id/max_btn2"
+        android:id="@+id/min_btn2"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/run_codes_above" />

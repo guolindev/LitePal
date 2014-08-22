@@ -32,9 +32,9 @@ import android.widget.TextView;
 
 public class MaxSampleActivity extends Activity implements OnClickListener {
 
-	private Button mCountBtn1;
+	private Button mMaxBtn1;
 
-	private Button mCountBtn2;
+	private Button mMaxBtn2;
 
 	private EditText mAgeEdit;
 
@@ -49,23 +49,23 @@ public class MaxSampleActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.max_sample_layout);
-		mCountBtn1 = (Button) findViewById(R.id.count_btn1);
-		mCountBtn2 = (Button) findViewById(R.id.count_btn2);
+		mMaxBtn1 = (Button) findViewById(R.id.max_btn1);
+		mMaxBtn2 = (Button) findViewById(R.id.max_btn2);
 		mAgeEdit = (EditText) findViewById(R.id.age_edit);
 		mResultText = (TextView) findViewById(R.id.result_text);
-		mCountBtn1.setOnClickListener(this);
-		mCountBtn2.setOnClickListener(this);
+		mMaxBtn1.setOnClickListener(this);
+		mMaxBtn2.setOnClickListener(this);
 	}
 
 	@Override
 	public void onClick(View view) {
 		int result = 0;
 		switch (view.getId()) {
-		case R.id.count_btn1:
+		case R.id.max_btn1:
 			result = DataSupport.max(Singer.class, "age", Integer.TYPE);
 			mResultText.setText(String.valueOf(result));
 			break;
-		case R.id.count_btn2:
+		case R.id.max_btn2:
 			try {
 				result = DataSupport.where("age < ?", mAgeEdit.getText().toString()).max(
 						Singer.class, "age", Integer.TYPE);
