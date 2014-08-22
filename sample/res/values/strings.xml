@@ -84,6 +84,10 @@
     <string name="sample_codes_min_second_line_pre">DataSupport.where&#040;\&#034;age &#62; ?\&#034;, \&#034;</string>
     <string name="sample_codes_min_second_line_end">\&#034;&#041;.</string>
     <string name="sample_codes_min_third_line">min&#040;Singer.class, \&#034;age\&#034;,\nInteger.TYPE&#041;&#059;</string>
+    <string name="sample_codes_avg_first_line">DataSupport.average&#040;Singer.class,\n\&#034;age\&#034;&#041;&#059;</string>
+    <string name="sample_codes_avg_second_line_pre">DataSupport.where&#040;\&#034;age &#62; ?\&#034;, \&#034;</string>
+    <string name="sample_codes_avg_second_line_end">\&#034;&#041;.</string>
+    <string name="sample_codes_avg_third_line">average&#040;Singer.class, \&#034;age\&#034;&#041;&#059;</string>
     <string name="taylor_swift">Taylor Swift</string>
     <string name="justin_bieber">Justin Bieber</string>
     <string name="one">1</string>

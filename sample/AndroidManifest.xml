@@ -110,6 +110,11 @@
             android:label="@string/max_sample"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="org.litepal.litepalsample.activity.AverageSampleActivity"
+            android:label="@string/average_sample"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>
