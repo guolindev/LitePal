@@ -115,6 +115,11 @@
             android:label="@string/average_sample"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="org.litepal.litepalsample.activity.SumSampleActivity"
+            android:label="@string/sum_sample"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>
