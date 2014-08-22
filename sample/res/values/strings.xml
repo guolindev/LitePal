@@ -73,9 +73,13 @@
     <string name="sample_desc_query_fifth_line">Find same records as above by SQL:</string>
     <string name="sample_codes_query_fifth_line">Cursor cursor =\nDataSupport.findBySQL&#040;\n\&#034;select * from singer where\nage &#60; ? and ismale = ?\&#034;, \&#034;25\&#034;, \&#034;0\&#034;&#041;&#059;</string>
     <string name="sample_codes_count_first_line">DataSupport.count&#040;Singer.class&#041;&#059;</string>
-    <string name="sample_codes_count_second_line_pre">DataSupport.where&#040;\&#034;age > ?\&#034;, \&#034;</string>
+    <string name="sample_codes_count_second_line_pre">DataSupport.where&#040;\&#034;age &#62; ?\&#034;, \&#034;</string>
     <string name="sample_codes_count_second_line_end">\&#034;&#041;.</string>
     <string name="sample_codes_count_third_line">count&#040;Singer.class&#041;&#059;</string>
+    <string name="sample_codes_max_first_line">DataSupport.max&#040;Singer.class,\n\&#034;age\&#034;, Integer.TYPE&#041;&#059;</string>
+    <string name="sample_codes_max_second_line_pre">DataSupport.where&#040;\&#034;age &#60; ?\&#034;, \&#034;</string>
+    <string name="sample_codes_max_second_line_end">\&#034;&#041;.</string>
+    <string name="sample_codes_max_third_line">max&#040;Singer.class, \&#034;age\&#034;,\nInteger.TYPE&#041;&#059;</string>
     <string name="taylor_swift">Taylor Swift</string>
     <string name="justin_bieber">Justin Bieber</string>
     <string name="one">1</string>

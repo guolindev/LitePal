@@ -66,6 +66,7 @@ public class AggregateActivity extends Activity implements OnClickListener {
 			CountSampleActivity.actionStart(this);
 			break;
 		case R.id.max_sample_btn:
+			MaxSampleActivity.actionStart(this);
 			break;
 		case R.id.min_sample_btn:
 			break;

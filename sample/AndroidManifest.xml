@@ -100,6 +100,11 @@
             android:label="@string/count_sample"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="org.litepal.litepalsample.activity.MaxSampleActivity"
+            android:label="@string/max_sample"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>
