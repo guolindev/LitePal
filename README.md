@@ -3,8 +3,8 @@ LitePal is an Open Source Android library that allows developers to use SQLite d
 Explore the magic right now. Have Fun!!
 
 ## Features
- * ORM patterns.
- * Nearly zero configuration(only one configuration file with few properties).
+ * Using object-relational mapping (ORM) pattern.
+ * Almost zero-configuration(only one configuration file with few properties).
  * Maintains all tables automatically(e.g. create, alter or drop tables).
  * Encapsulated APIs for avoiding writings SQL statements.
  * Alternative choice to use SQL still, but easier and better APIs than the originals.
