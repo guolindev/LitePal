@@ -10,3 +10,6 @@ Explore the magic right now. Have Fun!!
  * Alternative choice to use SQL still, but easier and better APIs than the originals.
  * More for you to explore.
  
+## Latest Downloads
+ * **[litepal-1.1.0.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.1.0.jar)**(library contains *.class files)
+ * **[litepal-1.1.0-src.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.1.0-src.jar)**(library contains *.class files and *.java files)
