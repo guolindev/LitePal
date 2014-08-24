@@ -32,6 +32,31 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
+ * DataSupport connects classes to SQLite database tables to establish an almost
+ * zero-configuration persistence layer for applications. In the context of an
+ * application, these classes are commonly referred to as models. Models can
+ * also be connected to other models.<br>
+ * DataSupport relies heavily on naming in that it uses class and association
+ * names to establish mappings between respective database tables and foreign
+ * key columns.<br>
+ * Automated mapping between classes and tables, attributes and columns.
+ * 
+ * <pre>
+ * public class Person extends DataSupport {
+ * 	private int id;
+ * 	private String name;
+ * 	private int age;
+ * }
+ * 
+ * The Person class is automatically mapped to the table named "person",
+ * which might look like this:
+ * 
+ * CREATE TABLE person (
+ * 	id integer primary key autoincrement,
+ * 	age integer, 
+ * 	name text
+ * );
+ * </pre>
  * 
  * @author Tony Green
  * @since 1.1
