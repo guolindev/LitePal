@@ -1,13 +1,14 @@
 # ![Logo](https://github.com/LitePalFramework/LitePal/blob/master/sample/res/drawable-ldpi/logo.png) LitePal for Android
 LitePal is an Open Source Android library that allows developers to use SQLite database extremely easy. You can finish most of the database operations without writing even a SQL statement, including create or upgrade tables, crud operations, aggregate functions, etc. The setup of LitePal is quite simple as well, you can integrate it into your app in less than 5 minutes. 
 
-Explore the magic right now. Have Fun!!
+Experience the magic right now. Have Fun!!
 
 ## Features
  * Using object-relational mapping (ORM) pattern.
  * Almost zero-configuration(only one configuration file with few properties).
  * Maintains all tables automatically(e.g. create, alter or drop tables).
- * Encapsulated APIs for avoiding writings SQL statements.
+ * Encapsulated APIs for avoiding writing SQL statements.
+ * Awesome cluster query function.
  * Alternative choice to use SQL still, but easier and better APIs than the originals.
  * More for you to explore.
  
@@ -17,7 +18,7 @@ Explore the magic right now. Have Fun!!
  
 ## Quick Setup
 #### 1. Include library
- * Download the latest jar in the above section or browse all the versions **[here](https://github.com/LitePalFramework/LitePal/tree/master/downloads)** to choose the one you want to download.
+ * Download the latest jar in the above section.
  * Put the jar in the **libs** folder of your Android project.
  
 #### 2. Configure litepal.xml
@@ -26,43 +27,35 @@ Create a file in the assets folder of your project and name it as **litepal.xml*
 <?xml version="1.0" encoding="utf-8"?>
 <litepal>
     <!--
-		Define the database file name of your application. 
-		By default each database file name should be end with .db. 
-		If you didn't name your database end with .db, 
-		LitePal would plus the suffix automaticly for you.
-		For example:    
+			Define the database name of your application. 
+			By default each database name should be end with .db. 
+			If you didn't name your database end with .db, 
+			LitePal would plus the suffix automaticly for you.
+			For example:    
     	<dbname value="demo" ></dbname>
-		
-		Note that this tag is necessary.
     -->
     <dbname value="demo" ></dbname>
 
     <!--
-    	Define the version of your codes currently is. Each time you 
-    	want to upgrade your database, the version mark will help
-    	you. Using LitePal to upgrade database is very simple. Modify
-    	the models you defined in the mapping tag, and just make the
-    	value in version mark plus one, the upgrade of database will
-    	be processed automaticly without concern.
-		For example:    
+    	Define the version of your database. Each time you want 
+    	to upgrade your database, the version tag would helps.
+    	Modify the models you defined in the mapping tag, and just 
+    	make the version value plus one, the upgrade of database
+    	will be processed automaticly without concern.
+			For example:    
     	<version value="1" ></version>
-		    	
-    	Note that this tag is necessary.
     -->
     <version value="1" ></version>
 
     <!--
-    	Define your models in the list with mapping tag, LitePal will create
-    	tables for each mapping class with all the supported fields
-    	defined in models into corresponding columns. Remeber to use
-    	the full name of class, or LitePal won't be able to find it.
+    	Define your models in the list with mapping tag, LitePal will
+    	create tables for each mapping class. The supported fields
+    	defined in models will be mapped into columns.
     	For example:    
     	<list>
     		<mapping class="com.test.model.Reader"></mapping>
     		<mapping class="com.test.model.Magazine"></mapping>
     	</list>
-    	
-    	Note that the list tag and mapping tag are necessary.
     -->
     <list>
     </list>
@@ -75,7 +68,7 @@ This is the only configuration file, and the properties are simple.
  * **list** configure the mapping classes.
  
 #### 3. Configure LitePalApplication
-You don't want to pass the Context param all the time. To makes the APIs simple, just configure the LitePalApplication in **AndroidManifest.xml** as below.
+You don't want to pass the Context param all the time. To makes the APIs simple, just configure the LitePalApplication in **AndroidManifest.xml** as below:
 ``` xml
 <manifest>
 	<application

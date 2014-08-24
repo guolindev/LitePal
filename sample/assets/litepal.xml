@@ -1,41 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <litepal>
     <!--
-		Define the database file name of your application. 
-		By default each database file name should be end with .db. 
+		Define the database name of your application. 
+		By default each database name should be end with .db. 
 		If you didn't name your database end with .db, 
 		LitePal would plus the suffix automaticly for you.
 		For example:    
     	<dbname value="demo" ></dbname>
-		
-		Note that this tag is necessary.    -->
+    -->
     <dbname value="sample" ></dbname>
 
     <!--
-    	Define the version of your codes currently is. Each time you 
-    	want to upgrade your database, the version mark will help
-    	you. Using LitePal to upgrade database is very simple. Modify
-    	the models you defined in the mapping tag, and just make the
-    	value in version mark plus one, the upgrade of database will
-    	be processed automaticly without concern.
+    	Define the version of your database. Each time you want 
+    	to upgrade your database, the version tag would helps.
+    	Modify the models you defined in the mapping tag, and just 
+    	make the version value plus one, the upgrade of database
+    	will be processed automaticly without concern.
 		For example:    
     	<version value="1" ></version>
-		    	
-    	Note that this tag is necessary.    -->
+    -->
     <version value="1" ></version>
 
     <!--
-    	Define your models in the list with mapping tag, LitePal will create
-    	tables for each mapping class with all the supported fields
-    	defined in models into corresponding columns. Remeber to use
-    	the full name of class, or LitePal won't be able to find it.
+    	Define your models in the list with mapping tag, LitePal will
+    	create tables for each mapping class. The supported fields
+    	defined in models will be mapped into columns.
     	For example:    
     	<list>
     		<mapping class="com.test.model.Reader"></mapping>
     		<mapping class="com.test.model.Magazine"></mapping>
     	</list>
-    	
-    	Note that the list tag and mapping tag are necessary.    -->
+    -->
     <list>
         <mapping class="org.litepal.litepalsample.model.Album"></mapping>
         <mapping class="org.litepal.litepalsample.model.Song"></mapping>
