@@ -70,9 +70,9 @@ Create a file in the assets folder of your project and name it as **litepal.xml*
 </litepal>
 ```
 This is the only configuration file, and the properties are simple. 
- * **<dbname>** configure the database name of project.
- * **<version>** configure the version of database. Each time you want to upgrade database, plus the value here.
- * **<list>** configure the mapping classes.
+ * **dbname** configure the database name of project.
+ * **version** configure the version of database. Each time you want to upgrade database, plus the value here.
+ * **list** configure the mapping classes.
  
 #### 3. Configure LitePalApplication
 You don't want to pass the Context param all the time. To makes the APIs simple, just configure the LitePalApplication in **AndroidManifest.xml** as below.
