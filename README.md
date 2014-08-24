@@ -135,7 +135,7 @@ Then add these models into the mapping list in **litepal.xml**:
     <mapping class="org.litepal.litepalsample.model.Song"></mapping>
 </list>
 ```
-OK! The tables will be generated next time you operate database. For example, we get the **SQLiteDatabase** with following codes:
+OK! The tables will be generated next time you operate database. For example, gets the **SQLiteDatabase** with following codes:
 ``` java
 SQLiteDatabase db = Connector.getDatabase();
 ```
