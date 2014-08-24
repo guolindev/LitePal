@@ -98,10 +98,10 @@ public class MyOwnApplication extends LitePalApplication {
 This will make all things work without any side effects.
 
 ## Get Started
-After setup, we can experience the powerful function now. Let's see some of them.
+After setup, you can experience the powerful function now.
 
 #### 1. Create tables
-Define the models first. For example we have two models, Album and Song. The models can be defined as below:
+Define the models first. For example you have two models, **Album** and **Song**. The models can be defined as below:
 ``` java
 public class Album extends DataSupport {
 	
@@ -128,14 +128,14 @@ public class Song extends DataSupport {
 	...
 }
 ```
-Then add these models into the mapping list in litepal.xml:
+Then add these models into the mapping list in **litepal.xml**:
 ``` xml
 <list>
     <mapping class="org.litepal.litepalsample.model.Album"></mapping>
     <mapping class="org.litepal.litepalsample.model.Song"></mapping>
 </list>
 ```
-OK! The tables will be generated next time you operate database. For example, we get the SQLiteDatabase with following codes:
+OK! The tables will be generated next time you operate database. For example, we get the **SQLiteDatabase** with following codes:
 ``` java
 SQLiteDatabase db = Connector.getDatabase();
 ```
