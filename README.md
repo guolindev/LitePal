@@ -1,7 +1,7 @@
 # ![Logo](https://github.com/LitePalFramework/LitePal/blob/master/sample/res/drawable-ldpi/logo.png) LitePal for Android
 LitePal is an Open Source Android library that allows developers to use SQLite database extremely easy. You can finish most of the database operations without writing even a SQL statement, including create or upgrade tables, crud operations, aggregate functions, etc. The setup of LitePal is quite simple as well, you can integrate it into your app in less than 5 minutes. 
 
-Experience the magic right now. Have Fun!!
+Experience the magic right now and have fun!
 
 ## Features
  * Using object-relational mapping (ORM) pattern.
@@ -22,16 +22,16 @@ Experience the magic right now. Have Fun!!
  * Put the jar in the **libs** folder of your Android project.
  
 #### 2. Configure litepal.xml
-Create a file in the assets folder of your project and name it as **litepal.xml**. Then copy the following codes into it.
+Create a file in the **assets** folder of your project and name it as **litepal.xml**. Then copy the following codes into it.
 ``` xml
 <?xml version="1.0" encoding="utf-8"?>
 <litepal>
     <!--
-			Define the database name of your application. 
-			By default each database name should be end with .db. 
-			If you didn't name your database end with .db, 
-			LitePal would plus the suffix automaticly for you.
-			For example:    
+    	Define the database name of your application. 
+    	By default each database name should be end with .db. 
+    	If you didn't name your database end with .db, 
+    	LitePal would plus the suffix automaticly for you.
+    	For example:    
     	<dbname value="demo" ></dbname>
     -->
     <dbname value="demo" ></dbname>
@@ -59,7 +59,6 @@ Create a file in the assets folder of your project and name it as **litepal.xml*
     -->
     <list>
     </list>
-
 </litepal>
 ```
 This is the only configuration file, and the properties are simple. 
@@ -97,3 +96,62 @@ public class MyOwnApplication extends LitePalApplication {
 }
 ```
 This will make all things work without any side effects.
+
+## Get Started
+After setup, we can experience the powerful function now. Let's see some of them.
+
+#### 1. Create tables
+Define the models first. For example we have two models, Album and Song. The models can be defined as below:
+``` java
+public class Album extends DataSupport {
+	
+	private String name;
+	
+	private float price;
+	
+	private List<Song> songs = new ArrayList<Song>();
+
+	// generated getters and setters.
+	...
+}
+```
+``` java
+public class Song extends DataSupport {
+	
+	private String name;
+	
+	private int duration;
+	
+	private Album album;
+
+	// generated getters and setters.
+	...
+}
+```
+Then add these models into the mapping list in litepal.xml:
+``` xml
+<list>
+    <mapping class="org.litepal.litepalsample.model.Album"></mapping>
+    <mapping class="org.litepal.litepalsample.model.Song"></mapping>
+</list>
+```
+OK! The tables will be generated next time you operate database. For example, we get the SQLiteDatabase with following codes:
+``` java
+SQLiteDatabase db = Connector.getDatabase();
+```
+Now the tables will be generated automatically with SQLs like this:
+``` sql
+CREATE TABLE album (
+	id integer primary key autoincrement,
+	price real, 
+	name text
+);
+
+CREATE TABLE song (
+	id integer primary key autoincrement,
+	duration integer, 
+	name text, 
+	album_id integer
+);
+```
+
