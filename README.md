@@ -1,4 +1,4 @@
-# ![Logo](https://github.com/LitePalFramework/LitePal/blob/master/sample/res/drawable-ldpi/logo.png) LitePal for Android
+# ![Logo](https://github.com/LitePalFramework/LitePal/blob/master/sample/logo/logo.png) LitePal for Android
 LitePal is an Open Source Android library that allows developers to use SQLite database extremely easy. You can finish most of the database operations without writing even a SQL statement, including create or upgrade tables, crud operations, aggregate functions, etc. The setup of LitePal is quite simple as well, you can integrate it into your app in less than 5 minutes. 
 
 Experience the magic right now and have fun!
