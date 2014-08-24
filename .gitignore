@@ -16,4 +16,5 @@ local.properties
 .loadpath
 *.classpath
 *.project
+README.md~
 note.txt
