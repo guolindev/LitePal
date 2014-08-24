@@ -1,6 +1,2 @@
 # ![Logo](https://github.com/LitePalFramework/LitePal/blob/master/sample/res/drawable-ldpi/logo.png) LitePal for Android
-LitePal uses the ORM concept into android project.
-
-You can use it to manager your tables in database without write even a SQL statement. All you need to do is define your model class, write the fields you need into class and put the class's full into mapping list. Then you can run your application, and everything about tables in database will be done automatically.
-
-This is the magic created by Litepal. Enjoy it!!
+LitePal is an Open Source Android library that allows developers to use SQLite database extremely easy. You can finish most of the database operations without writing even a SQL statement, including create or upgrade tables, crud operations, aggregate functions, etc. The setup of LitePal is quite simple as well, you can integrate it into your app in less than 5 minutes. Explore the magic right now. Have Fun!!
