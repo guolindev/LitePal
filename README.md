@@ -217,6 +217,9 @@ List<Song> songs = DataSupport.where("name like ?", "song%").order("duration").f
 ## Developed By
  * Tony Green - tonygreendev@gmail.com
  
+## Bugs Report
+If you find any bug when using LitePal, please report **[here](https://github.com/LitePalFramework/LitePal/issues/new)**. Thanks for helping us building a better one.
+ 
 ## License
 ```
 Copyright (C)  Tony Green, LitePal Framework Open Source Project
