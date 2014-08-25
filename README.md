@@ -157,3 +157,21 @@ CREATE TABLE song (
 );
 ```
 
+#### 2. Save data
+The saving API is quite object oriented. Each model which inherits from **DataSupport** would have the **save()** method directly.
+``` java
+Album album = new Album();
+album.setName("album");
+album.setPrice(10.99f);
+album.save();
+Song song1 = new Song();
+song1.setName("song1");
+song1.setDuration(320);
+song1.setAlbum(album);
+song1.save();
+Song song2 = new Song();
+song2.setName("song2");;
+song2.setDuration(356);
+song2.setAlbum(album);
+song2.save();
+```
