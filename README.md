@@ -190,7 +190,7 @@ albumToUpdate.setPrice(20.99f); // raise the price
 albumToUpdate.updateAll("name = ?", "album");
 ```
 
-#### 3. Delete data
+#### 4. Delete data
 You can delete a single record using the static **delete()** method in **DataSupport**:
 ``` java
 DataSupport.delete(Song.class, id);
@@ -198,4 +198,18 @@ DataSupport.delete(Song.class, id);
 Or delete multiple records using the static **deleteAll()** method in **DataSupport**:
 ``` java
 DataSupport.deleteAll(Song.class, "duration > ?" , "350");
+```
+
+#### 5. Query data
+Find a single record from song table with specified id:
+``` java
+Song song = DataSupport.find(Song.class, id);
+```
+Find all records from song table:
+``` java
+List<Song> allSongs = DataSupport.findAll(Song.class);
+```
+Constructing complex query with cluster query:
+``` java
+List<Song> songs = DataSupport.where("name like ?", "song%").order("duration").find(Song.class);
 ```
