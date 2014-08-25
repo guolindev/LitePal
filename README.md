@@ -97,7 +97,7 @@ public class MyOwnApplication extends LitePalApplication {
 	...
 }
 ```
-This will make all things work without any side effects.
+This will make all things work without any side effect.
 
 ## Get Started
 After setup, you can experience the powerful function now.
