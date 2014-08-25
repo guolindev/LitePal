@@ -177,15 +177,25 @@ song2.save();
 ```
 
 #### 3. Update data
-Each model which inherits from **DataSupport** would also have **update()** and **updateAll()** method. You can update a single record by a specified id:
+Each model which inherits from **DataSupport** would also have **update()** and **updateAll()** method. You can update a single record with a specified id:
 ``` java
 Album albumToUpdate = new Album();
 albumToUpdate.setPrice(20.99f); // raise the price
 albumToUpdate.update(id);
 ```
-Or you can update multiple records by a where condition:
+Or you can update multiple records with a where condition:
 ``` java
 Album albumToUpdate = new Album();
 albumToUpdate.setPrice(20.99f); // raise the price
 albumToUpdate.updateAll("name = ?", "album");
+```
+
+#### 3. Delete data
+You can delete a single record using the static **delete()** method in **DataSupport**:
+``` java
+DataSupport.delete(Song.class, id);
+```
+Or delete multiple records using the static **deleteAll()** method in **DataSupport**:
+``` java
+DataSupport.deleteAll(Song.class, "duration > ?" , "350");
 ```
