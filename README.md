@@ -18,6 +18,7 @@ Experience the magic right now and have fun!
 The sample app has been published onto Google Play for easy access. 
 
 Get it on:
+
 [![Google Play](http://www.gstatic.com/android/market_images/web/play_logo.png)](https://play.google.com/store/apps/details?id=org.litepal.litepalsample)
  
 ## Latest Downloads
