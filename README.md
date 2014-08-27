@@ -14,13 +14,6 @@ Experience the magic right now and have fun!
  * Alternative choice to use SQL still, but easier and better APIs than the originals.
  * More for you to explore.
  
-## Sample App
-The sample app has been published onto Google Play for easy access. 
-
-Get it on:
-
-[![Google Play](http://www.gstatic.com/android/market_images/web/play_logo.png)](https://play.google.com/store/apps/details?id=org.litepal.litepalsample)
- 
 ## Latest Downloads
  * **[litepal-1.1.0.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.1.0.jar)** (library contains *.class files)
  * **[litepal-1.1.0-src.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.1.0-src.jar)** (library contains *.class files and *.java files)
@@ -225,6 +218,13 @@ List<Song> songs = DataSupport.where("name like ?", "song%").order("duration").f
 ## Developed By
  * Tony Green - tonygreendev@gmail.com
  
+## Sample App
+The sample app has been published onto Google Play for easy access. 
+
+Get it on:
+
+[![Google Play](http://www.gstatic.com/android/market_images/web/play_logo.png)](https://play.google.com/store/apps/details?id=org.litepal.litepalsample)
+
 ## Bugs Report
 If you find any bug when using LitePal, please report **[here](https://github.com/LitePalFramework/LitePal/issues/new)**. Thanks for helping us building a better one.
  
