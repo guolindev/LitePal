@@ -15,8 +15,9 @@ Experience the magic right now and have fun!
  * More for you to explore.
  
 ## Sample App
-The sample app has been published onto Google Play for easy access. Get it on:
-[![Google Play](http://www.gstatic.com/android/market_images/web/play_logo_x2.png)](https://play.google.com/store/apps/details?id=org.litepal.litepalsample)
+The sample app has been published onto Google Play for easy access. 
+Get it on:
+[![Google Play](http://www.gstatic.com/android/market_images/web/play_logo.png)](https://play.google.com/store/apps/details?id=org.litepal.litepalsample)
  
 ## Latest Downloads
  * **[litepal-1.1.0.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.1.0.jar)** (library contains *.class files)
