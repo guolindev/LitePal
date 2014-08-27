@@ -175,6 +175,7 @@ song2.setDuration(356);
 song2.setAlbum(album);
 song2.save();
 ```
+This will insert album, song1 and song2 into database with relations.
 
 #### 3. Update data
 Each model which inherits from **DataSupport** would also have **update()** and **updateAll()** method. You can update a single record with a specified id:
