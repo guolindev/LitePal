@@ -24,16 +24,16 @@ public final class LogUtil {
 	
 	public static final int ERROR = 5;
 	
-	public static final int LEVEL = ERROR;
+	public static int level = ERROR;
 	
 	public static void d(String tagName, String message) {
-		if (LEVEL >= DEBUG) {
+		if (level <= DEBUG) {
 			Log.d(tagName, message);
 		}
 	}
 	
 	public static void e(String tagName, Exception e){
-		if (LEVEL >= ERROR) {
+		if (level <= ERROR) {
 			Log.e(tagName, e.getMessage(), e);
 		}
 	}
