@@ -17,6 +17,7 @@
 package org.litepal.crud;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -60,8 +61,14 @@ class UpdateHandler extends DataHandler {
 	 * @param id
 	 *            Which record to update.
 	 * @return The number of rows affected.
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
+	 * @throws NoSuchMethodException
+	 * @throws IllegalArgumentException
+	 * @throws SecurityException
 	 */
-	int onUpdate(DataSupport baseObj, long id) {
+	int onUpdate(DataSupport baseObj, long id) throws SecurityException, IllegalArgumentException,
+			NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		List<Field> supportedFields = getSupportedFields(baseObj.getClassName());
 		ContentValues values = new ContentValues();
 		putFieldsValue(baseObj, supportedFields, values);
@@ -105,8 +112,15 @@ class UpdateHandler extends DataHandler {
 	 *            A string array representing the WHERE part of an SQL
 	 *            statement.
 	 * @return The number of rows affected.
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
+	 * @throws NoSuchMethodException
+	 * @throws IllegalArgumentException
+	 * @throws SecurityException
 	 */
-	int onUpdateAll(DataSupport baseObj, String... conditions) {
+	int onUpdateAll(DataSupport baseObj, String... conditions) throws SecurityException,
+			IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
+			InvocationTargetException {
 		List<Field> supportedFields = getSupportedFields(baseObj.getClassName());
 		ContentValues values = new ContentValues();
 		putFieldsValue(baseObj, supportedFields, values);

@@ -212,17 +212,18 @@ abstract class DataHandler extends LitePalBase {
 	 *            List of all supported fields.
 	 * @param values
 	 *            To store data of current model for persisting or updating.
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException 
+	 * @throws NoSuchMethodException 
+	 * @throws IllegalArgumentException 
+	 * @throws SecurityException 
 	 */
 	protected void putFieldsValue(DataSupport baseObj, List<Field> supportedFields,
-			ContentValues values) {
-		try {
-			for (Field field : supportedFields) {
-				if (!isIdColumn(field.getName())) {
-					putFieldsValueDependsOnSaveOrUpdate(baseObj, field, values);
-				}
+			ContentValues values) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		for (Field field : supportedFields) {
+			if (!isIdColumn(field.getName())) {
+				putFieldsValueDependsOnSaveOrUpdate(baseObj, field, values);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 
