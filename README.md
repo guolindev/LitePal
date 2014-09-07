@@ -91,7 +91,7 @@ Of course you may have your own Application and has already configured here, lik
 	</application>
 </manifest>
 ```
-That's not problem. Just change the inheritance of **MyOwnApplication** from **Application** to **LitePalApplication**, like:
+That's OK. LitePal can still live with that. Just change the inheritance of **MyOwnApplication** from **Application** to **LitePalApplication**, like:
 ``` java
 public class MyOwnApplication extends LitePalApplication {
 	...
