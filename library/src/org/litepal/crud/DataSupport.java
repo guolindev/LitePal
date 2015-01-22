@@ -912,6 +912,7 @@ public class DataSupport {
 		try {
 			DeleteHandler deleteHandler = new DeleteHandler(db);
 			int rowsAffected = deleteHandler.onDelete(this);
+			baseObjId = 0;
 			db.setTransactionSuccessful();
 			return rowsAffected;
 		} finally {
@@ -1101,7 +1102,7 @@ public class DataSupport {
 	protected long getBaseObjId() {
 		return baseObjId;
 	}
-
+	
 	/**
 	 * Get the full class name of self.
 	 * 
@@ -1118,6 +1119,13 @@ public class DataSupport {
 	 */
 	protected String getTableName() {
 		return BaseUtility.changeCase(getClass().getSimpleName());
+	}
+	
+	/**
+	 * Reset the value of baseObjId. This means the model will become unsaved state.
+	 */
+	void resetBaseObjId() {
+		baseObjId = 0;
 	}
 
 	/**

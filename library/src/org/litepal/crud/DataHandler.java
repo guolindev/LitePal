@@ -338,6 +338,52 @@ abstract class DataHandler extends LitePalBase {
 			throw new DataSupportException(e.getMessage());
 		}
 	}
+	
+	/**
+	 * Get the associated model.
+	 * 
+	 * @param baseObj
+	 *            The instance of self model.
+	 * @param associationInfo
+	 *            To get the associated model.
+	 * @return The associated model of self model by analyzing associationInfo.
+	 * 
+	 * @throws SecurityException
+	 * @throws IllegalArgumentException
+	 * @throws NoSuchMethodException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
+	protected DataSupport getAssociatedModel(DataSupport baseObj, AssociationsInfo associationInfo)
+			throws SecurityException, IllegalArgumentException, NoSuchMethodException,
+			IllegalAccessException, InvocationTargetException {
+		return (DataSupport) takeGetMethodValueByField(baseObj,
+				associationInfo.getAssociateOtherModelFromSelf());
+	}
+
+	/**
+	 * Get the associated models collection. When it comes to many2one or
+	 * many2many association. A model may have lots of associated models.
+	 * 
+	 * @param baseObj
+	 *            The instance of self model.
+	 * @param associationInfo
+	 *            To get the associated models collection.
+	 * @return The associated models collection of self model by analyzing
+	 *         associationInfo.
+	 * @throws SecurityException
+	 * @throws IllegalArgumentException
+	 * @throws NoSuchMethodException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
+	@SuppressWarnings("unchecked")
+	protected Collection<DataSupport> getAssociatedModels(DataSupport baseObj,
+			AssociationsInfo associationInfo) throws SecurityException, IllegalArgumentException,
+			NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		return (Collection<DataSupport>) takeGetMethodValueByField(baseObj,
+				associationInfo.getAssociateOtherModelFromSelf());
+	}
 
 	/**
 	 * Create an empty instance of baseObj if it hasn't created one yet. If
