@@ -38,6 +38,7 @@ import org.litepal.util.DBUtility;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.SparseArray;
 
 /**
  * This is the base class for CRUD component. All the common actions which can
@@ -124,9 +125,7 @@ abstract class DataHandler extends LitePalBase {
 					groupBy, having, orderBy, limit);
 			if (cursor.moveToFirst()) {
 				do {
-					Constructor<?> constructor = findBestSuitConstructor(modelClass);
-					T modelInstance = (T) constructor
-							.newInstance(getConstructorParams(constructor));
+					T modelInstance = (T) createInstanceFromClass(modelClass);
 					giveBaseObjIdValue((DataSupport) modelInstance,
 							cursor.getLong(cursor.getColumnIndexOrThrow("id")));
 					setValueToModel(modelInstance, supportedFields, foreignKeyAssociations, cursor);
@@ -138,6 +137,7 @@ abstract class DataHandler extends LitePalBase {
 			}
 			return dataList;
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new DataSupportException(e.getMessage());
 		} finally {
 			if (cursor != null) {
@@ -583,49 +583,78 @@ abstract class DataHandler extends LitePalBase {
 	protected String getTableName(Class<?> modelClass) {
 		return BaseUtility.changeCase(modelClass.getSimpleName());
 	}
+	
+	/**
+	 * Creates an instance from the passed in class. It will always create an
+	 * instance no matter how the constructor defines in the class file. A best
+	 * suit constructor will be find by calling
+	 * {@link #findBestSuitConstructor(Class)} method.
+	 * 
+	 * @param modelClass
+	 *            The class to create instance.
+	 * @return An instance by the passed in class.
+	 */
+	protected Object createInstanceFromClass(Class<?> modelClass) {
+		try {
+			Constructor<?> constructor = findBestSuitConstructor(modelClass);
+			return constructor.newInstance(getConstructorParams(modelClass, constructor));
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new DataSupportException(e.getMessage());
+		}
+	}
 
 	/**
 	 * Finds the best suit constructor for creating an instance of a class. The
-	 * principle is that constructor with least parameters will be the best suit
-	 * one to create instance. So this method will find the constructor with
-	 * least parameters of the class passed in.
+	 * principle is that the constructor with least parameters and has no self
+	 * type parameter will be the best suit one to create instance.
 	 * 
 	 * @param modelClass
 	 *            To get constructors from.
-	 * @return The best suit constructor with least parameters.
+	 * @return The best suit constructor.
 	 */
 	protected Constructor<?> findBestSuitConstructor(Class<?> modelClass) {
-		Constructor<?> finalConstructor = null;
-		Constructor<?>[] constructors = modelClass.getConstructors();
+		Constructor<?>[] constructors = modelClass.getDeclaredConstructors();
+		SparseArray<Constructor<?>> map = new SparseArray<Constructor<?>>();
+		int minKey = Integer.MAX_VALUE;
 		for (Constructor<?> constructor : constructors) {
-			if (finalConstructor == null) {
-				finalConstructor = constructor;
-			} else {
-				int finalParamLength = finalConstructor.getParameterTypes().length;
-				int newParamLength = constructor.getParameterTypes().length;
-				if (newParamLength < finalParamLength) {
-					finalConstructor = constructor;
+			int key = constructor.getParameterTypes().length;
+			Class<?>[] types = constructor.getParameterTypes();
+			for (Class<?> parameterType : types) {
+				if (parameterType == modelClass) {
+					key = key + 10000;
 				}
 			}
+			if (map.get(key) == null) {
+				map.put(key, constructor);
+			}
+			if (key < minKey) {
+				minKey = key;
+			}
 		}
-		finalConstructor.setAccessible(true);
-		return finalConstructor;
+		Constructor<?> bestSuitConstructor = map.get(minKey);
+		if (bestSuitConstructor != null) {
+			bestSuitConstructor.setAccessible(true);
+		}
+		return bestSuitConstructor;
 	}
 
 	/**
 	 * Depends on the passed in constructor, creating a parameters array with
 	 * initialized values for the constructor.
 	 * 
+	 * @param modelClass
+	 *            The original class the this constructor belongs to.
 	 * @param constructor
 	 *            The constructor to get parameters for it.
 	 * 
 	 * @return A parameters array with initialized values.
 	 */
-	protected Object[] getConstructorParams(Constructor<?> constructor) {
+	protected Object[] getConstructorParams(Class<?> modelClass, Constructor<?> constructor) {
 		Class<?>[] paramTypes = constructor.getParameterTypes();
 		Object[] params = new Object[paramTypes.length];
 		for (int i = 0; i < paramTypes.length; i++) {
-			params[i] = getInitParamValue(paramTypes[i]);
+			params[i] = getInitParamValue(modelClass, paramTypes[i]);
 		}
 		return params;
 	}
@@ -794,11 +823,13 @@ abstract class DataHandler extends LitePalBase {
 	 * basic data type or the corresponding object data type, return the default
 	 * data. Or return null.
 	 * 
+	 * @param modelClass
+	 *            The original class the this constructor belongs to.
 	 * @param paramType
 	 *            Parameter to get initialized value.
 	 * @return Default data of basic data type or null.
 	 */
-	private Object getInitParamValue(Class<?> paramType) {
+	private Object getInitParamValue(Class<?> modelClass, Class<?> paramType) {
 		String paramTypeName = paramType.getName();
 		if ("boolean".equals(paramTypeName) || "java.lang.Boolean".equals(paramTypeName)) {
 			return false;
@@ -824,7 +855,10 @@ abstract class DataHandler extends LitePalBase {
 		if ("java.lang.String".equals(paramTypeName)) {
 			return "";
 		}
-		return null;
+		if (modelClass == paramType) {
+			return null;
+		}
+		return createInstanceFromClass(paramType);
 	}
 
 	/**
@@ -1145,10 +1179,7 @@ abstract class DataHandler extends LitePalBase {
 				}
 				if (cursor.moveToFirst()) {
 					do {
-						Constructor<?> constructor = findBestSuitConstructor(Class
-								.forName(associatedClassName));
-						DataSupport modelInstance = (DataSupport) constructor
-								.newInstance(getConstructorParams(constructor));
+						DataSupport modelInstance = (DataSupport)  createInstanceFromClass(Class.forName(associatedClassName));
 						giveBaseObjIdValue(modelInstance,
 								cursor.getLong(cursor.getColumnIndexOrThrow("id")));
 						setValueToModel(modelInstance, supportedFields, null, cursor);
