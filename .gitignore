@@ -1,20 +1,35 @@
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+bin
+tmp
+gen
+
+#################
+## #IntelliJ IDEA
+#################
+.idea
+*.iml
+*.ipr
+*.iws
+out
+
 #################
 ## Eclipse
 #################
 
 *.pydevproject
 .metadata
-bin/
-tmp/
 *.tmp
 *.bak
 *.swp
 *~.nib
-gen/
 local.properties
 .settings/
 .loadpath
 *.classpath
 *.project
 README.md~
-note.txt
