@@ -705,9 +705,6 @@ public class DataSupport {
 	 * This means that all the records which name is Tom and age is 14 will be
 	 * removed.<br>
 	 * 
-	 * Note that this method won't delete the referenced data in other tables.
-	 * You should remove those values by your own.
-	 * 
 	 * @param modelClass
 	 *            Which table to delete from by class.
 	 * @param conditions

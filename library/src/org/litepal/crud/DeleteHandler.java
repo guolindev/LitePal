@@ -27,7 +27,6 @@ import org.litepal.exceptions.DataSupportException;
 import org.litepal.util.BaseUtility;
 import org.litepal.util.Const;
 import org.litepal.util.DBUtility;
-import org.litepal.util.LogUtil;
 
 import android.database.sqlite.SQLiteDatabase;
 
@@ -209,7 +208,6 @@ public class DeleteHandler extends DataHandler {
 	}
 
 	private int deleteAllCascade(Class<?> modelClass, String... conditions) {
-		LogUtil.d(TAG, "conditions is " + conditions + " length is " + conditions.length);
 		int rowsAffected = 0;
 		for (String associatedTableName : getForeignKeyTableToDelete()) {
 			String tableName = getTableName(modelClass);
