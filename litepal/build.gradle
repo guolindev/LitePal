@@ -22,3 +22,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.3'
 }
+
+if (hasProperty("BINTRAY_KEY")) {
+    apply from: 'https://raw.githubusercontent.com/LitePalFramework/LitePal/master/litepal/bintray.gradle'
+}
