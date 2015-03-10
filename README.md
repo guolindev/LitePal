@@ -22,6 +22,7 @@ Experience the magic right now and have fun!
 ##### Using Eclipse
  * Download the latest jar in the above section. Or browse all versions **[here](https://github.com/LitePalFramework/LitePal/tree/master/downloads)** to choose one to download.
  * Put the jar in the **libs** folder of your Android project.
+ 
 ##### Using Android Studio
 Edit your **build.gradle** file and add below dependency:
 ``` groovy
