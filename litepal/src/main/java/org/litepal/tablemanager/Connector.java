@@ -19,6 +19,7 @@ package org.litepal.tablemanager;
 import org.litepal.exceptions.InvalidAttributesException;
 import org.litepal.parser.LitePalAttr;
 import org.litepal.parser.LitePalParser;
+import org.litepal.tablemanager.DatabaseEventListener;
 
 import android.database.sqlite.SQLiteDatabase;
 
@@ -42,6 +43,8 @@ public class Connector {
 	 * The quote of LitePalHelper.
 	 */
 	private static LitePalOpenHelper mLitePalHelper;
+
+  private static DatabaseEventListener mDatabaseEventListener;
 
 	/**
 	 * Get a writable SQLiteDatabase.
@@ -118,8 +121,14 @@ public class Connector {
 		}
 		if (mLitePalAttr.checkSelfValid()) {
 			if (mLitePalHelper == null) {
-				mLitePalHelper = new LitePalOpenHelper(mLitePalAttr.getDbName(),
-						mLitePalAttr.getVersion());
+        String dbName = mLitePalAttr.getDbName();
+        if (mDatabaseEventListener != null) {
+          String dbNamePrefix = mDatabaseEventListener.getDBNamePrefix();
+          if (dbNamePrefix != null) {
+            dbName =  dbNamePrefix + "_"  + dbName;
+          }
+        }
+				mLitePalHelper = new LitePalOpenHelper(dbName, mLitePalAttr.getVersion(), mDatabaseEventListener);
 			}
 			return mLitePalHelper;
 		} else {
@@ -127,4 +136,19 @@ public class Connector {
 		}
 	}
 
+  public static void closeDatabase() {
+    if (mLitePalHelper != null) {
+      try {
+        mLitePalHelper.close();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+
+      mLitePalHelper = null;
+    }
+  }
+
+  public static void setDatabaseEventListener(DatabaseEventListener listener) {
+    mDatabaseEventListener = listener;
+  }
 }

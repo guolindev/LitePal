@@ -17,6 +17,7 @@
 package org.litepal.tablemanager;
 
 import org.litepal.LitePalApplication;
+import org.litepal.tablemanager.DatabaseEventListener;
 import org.litepal.util.SharedUtil;
 
 import android.content.Context;
@@ -40,6 +41,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 class LitePalOpenHelper extends SQLiteOpenHelper {
 	public static final String TAG = "LitePalHelper";
 
+  private DatabaseEventListener listener;
+
 	/**
 	 * The standard constructor for SQLiteOpenHelper.
 	 * 
@@ -57,8 +60,9 @@ class LitePalOpenHelper extends SQLiteOpenHelper {
 	 *            onDowngrade(SQLiteDatabase, int, int) will be used to
 	 *            downgrade the database
 	 */
-	LitePalOpenHelper(Context context, String name, CursorFactory factory, int version) {
+	LitePalOpenHelper(Context context, String name, CursorFactory factory, int version, DatabaseEventListener listener) {
 		super(context, name, factory, version);
+    this.listener = listener;
 	}
 
 	/**
@@ -75,19 +79,24 @@ class LitePalOpenHelper extends SQLiteOpenHelper {
 	 *            onDowngrade(SQLiteDatabase, int, int) will be used to
 	 *            downgrade the database
 	 */
-	LitePalOpenHelper(String dbName, int version) {
-		this(LitePalApplication.getContext(), dbName, null, version);
+	LitePalOpenHelper(String dbName, int version, DatabaseEventListener listener) {
+		this(LitePalApplication.getContext(), dbName, null, version, listener);
 	}
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		Generator.create(db);
+    if (listener != null) {
+      listener.onCreate(db);
+    }
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		Generator.upgrade(db);
 		SharedUtil.updateVersion(newVersion);
+    if (listener != null) {
+      listener.onUpgrade(db, oldVersion, newVersion);
+    }
 	}
-
 }

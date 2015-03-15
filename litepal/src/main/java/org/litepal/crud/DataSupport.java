@@ -1354,4 +1354,15 @@ public class DataSupport {
 		getListToClearAssociatedFK().clear();
 	}
 
+  public static void execSQL(String sql) {
+    execSQL(sql, null);
+  }
+
+  public static void execSQL(String sql, Object[] bindArgs) {
+    try {
+      Connector.getDatabase().execSQL(sql, bindArgs);
+    } catch(android.database.SQLException e) {
+      e.printStackTrace();
+    }
+  }
 }
