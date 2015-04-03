@@ -37,6 +37,10 @@ public class BooleanOrm extends OrmChange {
 				String[] relations = { columnName, "INTEGER" };
 				return relations;
 			}
+			if (fieldType.equals("[B") || fieldType.equals("[Ljava.lang.Byte;")) {
+				String[] relations = { columnName, "BLOB" };
+				return relations;
+			}
 		}
 		return null;
 	}

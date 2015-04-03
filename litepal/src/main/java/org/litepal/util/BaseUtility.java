@@ -163,7 +163,19 @@ public class BaseUtility {
 	 * @return Supported return true, not supported return false.
 	 */
 	public static boolean isFieldTypeSupported(String fieldType) {
+		if ("int".equals(fieldType) || "java.lang.Integer".equals(fieldType)) {
+			return true;
+		}
+		if ("java.lang.String".equals(fieldType) || "java.util.Date".equals(fieldType)) {
+			return true;
+		}
+		if ("long".equals(fieldType) || "java.lang.Long".equals(fieldType)) {
+			return true;
+		}
 		if ("boolean".equals(fieldType) || "java.lang.Boolean".equals(fieldType)) {
+			return true;
+		}
+		if ("[B".equals(fieldType) || "[Ljava.lang.Byte;".equals(fieldType)) {
 			return true;
 		}
 		if ("float".equals(fieldType) || "java.lang.Float".equals(fieldType)) {
@@ -172,19 +184,10 @@ public class BaseUtility {
 		if ("double".equals(fieldType) || "java.lang.Double".equals(fieldType)) {
 			return true;
 		}
-		if ("int".equals(fieldType) || "java.lang.Integer".equals(fieldType)) {
-			return true;
-		}
-		if ("long".equals(fieldType) || "java.lang.Long".equals(fieldType)) {
-			return true;
-		}
 		if ("short".equals(fieldType) || "java.lang.Short".equals(fieldType)) {
 			return true;
 		}
 		if ("char".equals(fieldType) || "java.lang.Character".equals(fieldType)) {
-			return true;
-		}
-		if ("java.lang.String".equals(fieldType) || "java.util.Date".equals(fieldType)) {
 			return true;
 		}
 		return false;

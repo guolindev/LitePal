@@ -686,6 +686,11 @@ abstract class DataHandler extends LitePalBase {
 			String columnName = isIdColumn(field.getName()) ? "id" : field.getName();
 			int columnIndex = cursor.getColumnIndex(BaseUtility.changeCase(columnName));
 			if (columnIndex != -1) {
+        if (field.getType() == byte[].class || field.getType() == Byte[].class) {
+					putSetMethodValueByField((DataSupport) modelInstance, field, cursor.getBlob(columnIndex));
+          continue;
+        }
+
 				Class<?> cursorClass = cursor.getClass();
 				Method method = cursorClass.getMethod(getMethodName, int.class);
 				Object value = method.invoke(cursor, columnIndex);
