@@ -315,12 +315,10 @@ abstract class DataHandler extends LitePalBase {
 
 	/**
 	 * Find all the associated models of currently model. Then add all the
-	 * associated models into {@link DataSupport#associatedModels} of baseObj.
+	 * associated models into baseObj.
 	 * 
 	 * @param baseObj
 	 *            The class of base object.
-	 * @param foreignKeyId
-	 *            The id value of foreign key.
 	 */
 	protected void analyzeAssociatedModels(DataSupport baseObj,
 			Collection<AssociationsInfo> associationInfos) {

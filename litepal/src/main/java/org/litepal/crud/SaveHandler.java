@@ -124,8 +124,7 @@ class SaveHandler extends DataHandler {
 	}
 
 	/**
-	 * Persisting model class into database happens here. The ultimate way to
-	 * save data calls {@link #saveAssociatedModels(org.litepal.crud.DataSupport)}. But first
+	 * Persisting model class into database happens here. But first
 	 * {@link #beforeSave(org.litepal.crud.DataSupport, java.util.List, android.content.ContentValues)} will be called to
 	 * put the values for ContentValues. When the model is saved,
 	 * {@link #afterSave(org.litepal.crud.DataSupport, java.util.List, long)} will be called to do stuffs
@@ -375,10 +374,6 @@ class SaveHandler extends DataHandler {
 	 * 
 	 * @param values
 	 *            The instance of ContentValues to put foreign key value.
-	 * @param foreignKeyName
-	 *            Foreign key column name.
-	 * @param foreignKeyValue
-	 *            Foreign key column value.
 	 */
 	private void putForeignKeyValue(ContentValues values, DataSupport baseObj) {
 		Map<String, Long> associatedModelMap = baseObj.getAssociatedModelsMapWithoutFK();
