@@ -15,14 +15,22 @@ Experience the magic right now and have fun!
  * More for you to explore.
  
 ## Latest Downloads
- * **[litepal-1.1.1.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.1.1.jar)** (library contains *.class files)
- * **[litepal-1.1.1-src.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.1.1-src.jar)** (library contains *.class files and *.java files)
+ * **[litepal-1.2.0.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.2.0.jar)** (library contains *.class files)
+ * **[litepal-1.2.0-src.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.2.0-src.jar)** (library contains *.class files and *.java files)
  
 ## Quick Setup
 #### 1. Include library
+##### Using Eclipse
  * Download the latest jar in the above section. Or browse all versions **[here](https://github.com/LitePalFramework/LitePal/tree/master/downloads)** to choose one to download.
  * Put the jar in the **libs** folder of your Android project.
  
+##### Using Android Studio
+Edit your **build.gradle** file and add below dependency:
+``` groovy
+dependencies {
+    compile 'org.litepal.android:core:1.2.0'
+}
+```
 #### 2. Configure litepal.xml
 Create a file in the **assets** folder of your project and name it as **litepal.xml**. Then copy the following codes into it.
 ``` xml
