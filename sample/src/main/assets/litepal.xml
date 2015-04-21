@@ -35,21 +35,21 @@
         <mapping class="org.litepal.litepalsample.model.Album"></mapping>
         <mapping class="org.litepal.litepalsample.model.Song"></mapping>
         <mapping class="org.litepal.litepalsample.model.Singer"></mapping>
-        <mapping class="com.litepaltest.model.Classroom"></mapping>
+<!--        <mapping class="com.litepaltest.model.Classroom"></mapping>
         <mapping class="com.litepaltest.model.Teacher" ></mapping>
         <mapping class="com.litepaltest.model.IdCard" ></mapping>
         <mapping class="com.litepaltest.model.Student" ></mapping>
         <mapping class="com.litepaltest.model.Cellphone" ></mapping>
         <mapping class="com.litepaltest.model.Computer"></mapping>
         <mapping class="com.litepaltest.model.Book"></mapping>
-        <mapping class="com.litepaltest.model.Product"></mapping>
+        <mapping class="com.litepaltest.model.Product"></mapping>-->
     </list>
 
     <!--
     	Define the cases of the tables and columns name. Java is a
     	case sensitive language, while database is case insensitive.
     	LitePal will turn all classes names and fields names into lowercase
-    	by default while creating or upgrading database. Users can change
+    	by default while creating or upgrading database. Developers can change
     	this behavior into the styles their like. "keep" will keep the
     	cases of classes and fields. "upper" will turn all classes names
     	and fields names into uppercase. "lower" will act as default.

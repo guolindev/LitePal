@@ -5,7 +5,7 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "org.litepal.sample"
+        applicationId "org.litepal.litepalsample"
         minSdkVersion 10
         targetSdkVersion 21
         versionCode 1

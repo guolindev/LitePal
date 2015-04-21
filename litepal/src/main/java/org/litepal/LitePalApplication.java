@@ -31,7 +31,10 @@ import android.content.Context;
  * need to write your own Application class, LitePal can still live with that.
  * But just remember make your own Application class inherited from
  * LitePalApplication instead of inheriting from Application directly. This can
- * make all things work without side effects.
+ * make all things work without side effects. <br>
+ * Besides if you don't want use the above way, you can also call the LitePalApplication.initialize(Context)
+ * method to do the same job. Just remember call this method as early as possible, in Application's onCreate()
+ * method will be fine.
  * 
  * @author Tony Green
  * @since 1.0
@@ -41,14 +44,18 @@ public class LitePalApplication extends Application {
 	/**
 	 * Global application context.
 	 */
-	private static Context mContext;
+	private static Context sContext;
 
 	/**
 	 * Construct of LitePalApplication. Initialize application context.
 	 */
 	public LitePalApplication() {
-		mContext = this;
+		sContext = this;
 	}
+
+    public static void initialize(Context context) {
+        sContext = context;
+    }
 
 	/**
 	 * Get the global application context.
@@ -57,16 +64,10 @@ public class LitePalApplication extends Application {
 	 * @throws org.litepal.exceptions.GlobalException
 	 */
 	public static Context getContext() {
-		if (mContext == null) {
+		if (sContext == null) {
 			throw new GlobalException(GlobalException.APPLICATION_CONTEXT_IS_NULL);
 		}
-		return mContext;
-	}
-
-	@Override
-	public void onLowMemory() {
-		super.onLowMemory();
-		mContext = getApplicationContext();
+		return sContext;
 	}
 
 }

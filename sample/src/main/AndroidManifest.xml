@@ -23,7 +23,7 @@
         android:targetSdkVersion="19" />
 
     <application
-        android:name="org.litepal.LitePalApplication"
+        android:name="org.litepal.litepalsample.MyApplication"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
