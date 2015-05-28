@@ -105,7 +105,6 @@ public class MyOwnApplication extends LitePalApplication {
 	...
 }
 ```
-This will make all things work without side effects.
 Finally, if it still didn't work for you because you have to inherit from another Application. In this case, you can call **LitePalApplication.initialize(context)** instead of inheritance:
 ```java
 public class MyOwnApplication extends AnotherApplication {
@@ -118,7 +117,7 @@ public class MyOwnApplication extends AnotherApplication {
 	...
 }
 ```
-Just make sure to call this method as early as you can. In the **onCreate()** method of Application will be fine. And always remember to use the application context as parameter. Do not use any intance of Activity or Service as parameter, or the memory leaks might happen.
+Just make sure to call this method as early as you can. In the **onCreate()** method of Application will be fine. And always remember to use the application context as parameter. Do not use any intance of activity or service as parameter, or memory leaks might happen.
 ## Get Started
 After setup, you can experience the powerful function now.
 
