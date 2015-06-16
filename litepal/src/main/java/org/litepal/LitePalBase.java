@@ -103,8 +103,8 @@ public abstract class LitePalBase {
 			String fieldName = field.getName();
 			Class<?> fieldTypeClass = field.getType();
 			String fieldType = fieldTypeClass.getName();
-			String columnName = null;
-			String columnType = null;
+			String columnName;
+			String columnType;
 			for (OrmChange ormChange : typeChangeRules) {
 				String[] relations = ormChange.object2Relation(className, fieldName, fieldType);
 				if (relations != null) {

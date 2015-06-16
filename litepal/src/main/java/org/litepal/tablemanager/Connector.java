@@ -56,7 +56,6 @@ public class Connector {
 	 * @return A writable SQLiteDatabase instance
 	 * 
 	 * @throws org.litepal.exceptions.InvalidAttributesException
-	 * @throws ParseConfigurationFileException
 	 */
 	public synchronized static SQLiteDatabase getWritableDatabase() {
 		LitePalOpenHelper litePalHelper = buildConnection();
@@ -75,7 +74,6 @@ public class Connector {
 	 * @return A readable SQLiteDatabase instance.
 	 * 
 	 * @throws org.litepal.exceptions.InvalidAttributesException
-	 * @throws ParseConfigurationFileException
 	 */
 	public synchronized static SQLiteDatabase getReadableDatabase() {
 		LitePalOpenHelper litePalHelper = buildConnection();
@@ -91,7 +89,6 @@ public class Connector {
 	 * @return A writable SQLiteDatabase instance
 	 * 
 	 * @throws org.litepal.exceptions.InvalidAttributesException
-	 * @throws ParseConfigurationFileException
 	 */
 	public static SQLiteDatabase getDatabase() {
 		return getWritableDatabase();
@@ -109,7 +106,6 @@ public class Connector {
 	 * @return LitePalHelper object.
 	 * 
 	 * @throws org.litepal.exceptions.InvalidAttributesException
-	 * @throws ParseConfigurationFileException
 	 */
 	private static LitePalOpenHelper buildConnection() {
 		if (mLitePalAttr == null) {

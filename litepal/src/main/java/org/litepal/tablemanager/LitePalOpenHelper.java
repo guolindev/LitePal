@@ -64,10 +64,8 @@ class LitePalOpenHelper extends SQLiteOpenHelper {
 	/**
 	 * A simple constructor for SQLiteOpenHelper with null for CursorFactory as
 	 * default.
-	 * 
-	 * @param context
-	 *            To use to open or create the database.
-	 * @param name
+	 *
+	 * @param dbName
 	 *            The database file.
 	 * @param version
 	 *            (SQLiteDatabase, int, int) will be used to upgrade the
