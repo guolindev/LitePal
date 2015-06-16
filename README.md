@@ -15,20 +15,20 @@ Experience the magic right now and have fun!
  * More for you to explore.
  
 ## Latest Downloads
- * **[litepal-1.2.0.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.2.0.jar)** (library contains *.class files)
- * **[litepal-1.2.0-src.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.2.0-src.jar)** (library contains *.class files and *.java files)
+ * **[litepal-1.2.1.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.2.1.jar)** (library contains *.class files)
+ * **[litepal-1.2.1-src.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.2.1-src.jar)** (library contains *.class files and *.java files)
  
 ## Quick Setup
 #### 1. Include library
 ##### Using Eclipse
  * Download the latest jar in the above section. Or browse all versions **[here](https://github.com/LitePalFramework/LitePal/tree/master/downloads)** to choose one to download.
- * Put the jar in the **libs** folder of your Android project.
+ * Put the jar into **libs** folder of your Android project.
  
 ##### Using Android Studio
 Edit your **build.gradle** file and add below dependency:
 ``` groovy
 dependencies {
-    compile 'org.litepal.android:core:1.2.0'
+    compile 'org.litepal.android:core:1.2.1'
 }
 ```
 #### 2. Configure litepal.xml
@@ -105,8 +105,19 @@ public class MyOwnApplication extends LitePalApplication {
 	...
 }
 ```
-This will make all things work without side effects.
+Finally, if it still didn't work for you because you have to inherit from another Application. In this case, you can call **LitePalApplication.initialize(context)** instead of inheritance:
+```java
+public class MyOwnApplication extends AnotherApplication {
 
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		LitePalApplication.initialize(this);
+	}
+	...
+}
+```
+Just make sure to call this method as early as you can. In the **onCreate()** method of Application will be fine. And always remember to use the application context as parameter. Do not use any intance of activity or service as parameter, or memory leaks might happen.
 ## Get Started
 After setup, you can experience the powerful function now.
 
