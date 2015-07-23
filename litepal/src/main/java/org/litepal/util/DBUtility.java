@@ -64,7 +64,7 @@ public class DBUtility {
 					if (annotation != null) {
 						String name = annotation.name();
 						if (!TextUtils.isEmpty(name)) {
-							return BaseUtility.changeCase(name);
+							return name;
 						}
 					}
 					return className.substring(className.lastIndexOf(".") + 1);
