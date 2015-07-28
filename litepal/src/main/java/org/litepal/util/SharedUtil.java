@@ -38,8 +38,7 @@ public class SharedUtil {
 	/**
 	 * Each time database upgrade, the version of database stored in shared
 	 * preference will update.
-	 * 
-	 * @param context
+	 *
 	 * @param newVersion
 	 */
 	public static void updateVersion(int newVersion) {
