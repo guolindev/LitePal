@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.litepal.annotation.Table;
 import org.litepal.crud.DataSupport;
 
+@Table(name = "stu")
 public class Student extends DataSupport {
 	private int id;
 	private String name;

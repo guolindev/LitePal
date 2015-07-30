@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.litepal.crud.DataSupport;
 import org.litepal.exceptions.DataSupportException;
+import org.litepal.util.DBUtility;
 
 import android.database.sqlite.SQLiteException;
 
@@ -33,8 +34,19 @@ public class DeleteTest extends LitePalTestCase {
 	private IdCard johnCard;
 
 	private IdCard mikeCard;
+    
+    private String studentTable;
+    
+    private String teacherTable;
 
-	private void createClassroomStudentsTeachers() {
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        studentTable = DBUtility.getTableNameByClassName(Student.class.getName());
+        teacherTable = DBUtility.getTableNameByClassName(Teacher.class.getName());
+    }
+
+    private void createClassroomStudentsTeachers() {
 		initGameRoom();
 		initRose();
 		initJude();
@@ -256,16 +268,16 @@ public class DeleteTest extends LitePalTestCase {
 		int rowsAffected = jude.delete();
 		assertEquals(2, rowsAffected);
 		assertNull(getStudent(jude.getId()));
-		assertM2MFalse("student", "teacher", jude.getId(), mike.getId());
-		assertM2M("student", "teacher", rose.getId(), mike.getId());
-		assertM2M("student", "teacher", rose.getId(), john.getId());
+		assertM2MFalse(studentTable, teacherTable, jude.getId(), mike.getId());
+		assertM2M(studentTable, teacherTable, rose.getId(), mike.getId());
+		assertM2M(studentTable, teacherTable, rose.getId(), john.getId());
 		createStudentsTeachersWithAssociations();
 		rowsAffected = rose.delete();
 		assertEquals(3, rowsAffected);
 		assertNull(getStudent(rose.getId()));
-		assertM2MFalse("student", "teacher", rose.getId(), mike.getId());
-		assertM2MFalse("student", "teacher", rose.getId(), john.getId());
-		assertM2M("student", "teacher", jude.getId(), mike.getId());
+		assertM2MFalse(studentTable, teacherTable, rose.getId(), mike.getId());
+		assertM2MFalse(studentTable, teacherTable, rose.getId(), john.getId());
+		assertM2M(studentTable, teacherTable, jude.getId(), mike.getId());
 	}
 
 	public void testDeleteCascadeM2MAssociationsById() {
@@ -273,16 +285,16 @@ public class DeleteTest extends LitePalTestCase {
 		int rowsAffected = DataSupport.delete(Teacher.class, john.getId());
 		assertEquals(2, rowsAffected);
 		assertNull(getTeacher(john.getId()));
-		assertM2MFalse("student", "teacher", rose.getId(), john.getId());
-		assertM2M("student", "teacher", rose.getId(), mike.getId());
-		assertM2M("student", "teacher", jude.getId(), mike.getId());
+		assertM2MFalse(studentTable, teacherTable, rose.getId(), john.getId());
+		assertM2M(studentTable, teacherTable, rose.getId(), mike.getId());
+		assertM2M(studentTable, teacherTable, jude.getId(), mike.getId());
 		createStudentsTeachersWithAssociations();
 		rowsAffected = DataSupport.delete(Teacher.class, mike.getId());
 		assertEquals(3, rowsAffected);
 		assertNull(getTeacher(mike.getId()));
-		assertM2MFalse("student", "teacher", rose.getId(), mike.getId());
-		assertM2MFalse("student", "teacher", jude.getId(), mike.getId());
-		assertM2M("student", "teacher", rose.getId(), john.getId());
+		assertM2MFalse(studentTable, teacherTable, rose.getId(), mike.getId());
+		assertM2MFalse(studentTable, teacherTable, jude.getId(), mike.getId());
+		assertM2M(studentTable, teacherTable, rose.getId(), john.getId());
 	}
 	
 	public void testDeleteAllCascadeM2MAssociations() {
@@ -290,16 +302,16 @@ public class DeleteTest extends LitePalTestCase {
 		int rowsAffected = DataSupport.deleteAll(Teacher.class, "id=?", ""+john.getId());
 		assertEquals(2, rowsAffected);
 		assertNull(getTeacher(john.getId()));
-		assertM2MFalse("student", "teacher", rose.getId(), john.getId());
-		assertM2M("student", "teacher", rose.getId(), mike.getId());
-		assertM2M("student", "teacher", jude.getId(), mike.getId());
+		assertM2MFalse(studentTable, teacherTable, rose.getId(), john.getId());
+		assertM2M(studentTable, teacherTable, rose.getId(), mike.getId());
+		assertM2M(studentTable, teacherTable, jude.getId(), mike.getId());
 		createStudentsTeachersWithAssociations();
 		rowsAffected = DataSupport.deleteAll(Teacher.class, "id=?", ""+mike.getId());
 		assertEquals(3, rowsAffected);
 		assertNull(getTeacher(mike.getId()));
-		assertM2MFalse("student", "teacher", rose.getId(), mike.getId());
-		assertM2MFalse("student", "teacher", jude.getId(), mike.getId());
-		assertM2M("student", "teacher", rose.getId(), john.getId());
+		assertM2MFalse(studentTable, teacherTable, rose.getId(), mike.getId());
+		assertM2MFalse(studentTable, teacherTable, jude.getId(), mike.getId());
+		assertM2M(studentTable, teacherTable, rose.getId(), john.getId());
 	}
 	
 	public void testDeleteAllCascadeWithConditions() {
@@ -351,25 +363,25 @@ public class DeleteTest extends LitePalTestCase {
 
 	public void testDeleteAllRows() {
 		createStudentsTeachersWithIdCard();
-		int rowsCount = getRowsCount("teacher");
+		int rowsCount = getRowsCount(teacherTable);
 		int affectedRows = 0;
 		affectedRows = DataSupport.deleteAll(Teacher.class);
 		assertTrue(rowsCount <= affectedRows);
-		rowsCount = getRowsCount("student");
+		rowsCount = getRowsCount(studentTable);
 		affectedRows = DataSupport.deleteAll(Student.class);
 		assertTrue(rowsCount<= affectedRows);
-		rowsCount = getRowsCount("idcard");
+		rowsCount = getRowsCount(DBUtility.getTableNameByClassName(IdCard.class.getName()));
 		affectedRows = DataSupport.deleteAll(IdCard.class);
 		assertTrue(rowsCount<=affectedRows);
 		createStudentsTeachersWithAssociations();
-		rowsCount = getRowsCount("teacher");
+		rowsCount = getRowsCount(teacherTable);
 		affectedRows = DataSupport.deleteAll(Teacher.class);
 		assertTrue(rowsCount<=affectedRows);
-		rowsCount = getRowsCount("student");
+		rowsCount = getRowsCount(studentTable);
 		affectedRows = DataSupport.deleteAll(Student.class);
 		assertTrue(rowsCount<=affectedRows);
-		rowsCount = getRowsCount("student_teacher");
-		affectedRows = DataSupport.deleteAll("student_teacher");
+		rowsCount = getRowsCount(DBUtility.getIntermediateTableName(studentTable, teacherTable));
+		affectedRows = DataSupport.deleteAll(DBUtility.getIntermediateTableName(studentTable, teacherTable));
 		assertTrue(rowsCount<=affectedRows);
 	}
 

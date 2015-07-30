@@ -579,7 +579,7 @@ abstract class DataHandler extends LitePalBase {
 	 * @return The table name of model.
 	 */
 	protected String getTableName(Class<?> modelClass) {
-		return BaseUtility.changeCase(modelClass.getSimpleName());
+		return BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName()));
 	}
 	
 	/**

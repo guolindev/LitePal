@@ -1,6 +1,7 @@
 package com.litepaltest.test.crud.query;
 
 import org.litepal.crud.DataSupport;
+import org.litepal.util.DBUtility;
 
 import com.litepaltest.model.Student;
 
@@ -9,17 +10,25 @@ import android.test.AndroidTestCase;
 
 public class QueryMathTest extends AndroidTestCase {
 
-	public void testCount() {
+    String studentTable;
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        studentTable = DBUtility.getTableNameByClassName(Student.class.getName());
+    }
+
+    public void testCount() {
 		int result = DataSupport.count(Student.class);
 		int realResult = -100;
-		Cursor cursor = DataSupport.findBySQL("select count(1) from student");
+		Cursor cursor = DataSupport.findBySQL("select count(1) from " + studentTable);
 		if (cursor.moveToFirst()) {
 			realResult = cursor.getInt(0);
 		}
 		cursor.close();
 		assertEquals(realResult, result);
-		result = DataSupport.where("id > ?", "99").count("student");
-		cursor = DataSupport.findBySQL("select count(1) from student where id > ?", "99");
+		result = DataSupport.where("id > ?", "99").count(studentTable);
+		cursor = DataSupport.findBySQL("select count(1) from " + studentTable + " where id > ?", "99");
 		if (cursor.moveToFirst()) {
 			realResult = cursor.getInt(0);
 		}
@@ -35,14 +44,14 @@ public class QueryMathTest extends AndroidTestCase {
 	public void testAverage() {
 		double result = DataSupport.average(Student.class, "age");
 		double realResult = -100;
-		Cursor cursor = DataSupport.findBySQL("select avg(age) from student");
+		Cursor cursor = DataSupport.findBySQL("select avg(age) from " + studentTable);
 		if (cursor.moveToFirst()) {
 			realResult = cursor.getDouble(0);
 		}
 		cursor.close();
 		assertEquals(realResult, result);
-		result = DataSupport.where("id > ?", "99").average("student", "age");
-		cursor = DataSupport.findBySQL("select avg(age) from student where id > ?", "99");
+		result = DataSupport.where("id > ?", "99").average(studentTable, "age");
+		cursor = DataSupport.findBySQL("select avg(age) from " + studentTable + " where id > ?", "99");
 		if (cursor.moveToFirst()) {
 			realResult = cursor.getDouble(0);
 		}
@@ -59,14 +68,14 @@ public class QueryMathTest extends AndroidTestCase {
 	public void testMax() {
 		int result = DataSupport.max(Student.class, "age", Integer.TYPE);
 		int realResult = -100;
-		Cursor cursor = DataSupport.findBySQL("select max(age) from student");
+		Cursor cursor = DataSupport.findBySQL("select max(age) from " + studentTable);
 		if (cursor.moveToFirst()) {
 			realResult = cursor.getInt(0);
 		}
 		cursor.close();
 		assertEquals(realResult, result);
-		result = DataSupport.where("age < ?", "20").max("student", "age", Integer.TYPE);
-		cursor = DataSupport.findBySQL("select max(age) from student where age < ?", "20");
+		result = DataSupport.where("age < ?", "20").max(studentTable, "age", Integer.TYPE);
+		cursor = DataSupport.findBySQL("select max(age) from " + studentTable + " where age < ?", "20");
 		if (cursor.moveToFirst()) {
 			realResult = cursor.getInt(0);
 		}
@@ -77,14 +86,14 @@ public class QueryMathTest extends AndroidTestCase {
 	public void testMin() {
 		int result = DataSupport.min(Student.class, "age", Integer.TYPE);
 		int realResult = -100;
-		Cursor cursor = DataSupport.findBySQL("select min(age) from student");
+		Cursor cursor = DataSupport.findBySQL("select min(age) from " + studentTable);
 		if (cursor.moveToFirst()) {
 			realResult = cursor.getInt(0);
 		}
 		cursor.close();
 		assertEquals(realResult, result);
-		result = DataSupport.where("age > ?", "10").min("student", "age", Integer.TYPE);
-		cursor = DataSupport.findBySQL("select min(age) from student where age > ?", "10");
+		result = DataSupport.where("age > ?", "10").min(studentTable, "age", Integer.TYPE);
+		cursor = DataSupport.findBySQL("select min(age) from " + studentTable + " where age > ?", "10");
 		if (cursor.moveToFirst()) {
 			realResult = cursor.getInt(0);
 		}
@@ -95,14 +104,14 @@ public class QueryMathTest extends AndroidTestCase {
 	public void testSum() {
 		int result = DataSupport.sum(Student.class, "age", Integer.TYPE);
 		int realResult = -100;
-		Cursor cursor = DataSupport.findBySQL("select sum(age) from student");
+		Cursor cursor = DataSupport.findBySQL("select sum(age) from " + studentTable);
 		if (cursor.moveToFirst()) {
 			realResult = cursor.getInt(0);
 		}
 		cursor.close();
 		assertEquals(realResult, result);
-		result = DataSupport.where("age > ?", "15").sum("student", "age", Integer.TYPE);
-		cursor = DataSupport.findBySQL("select sum(age) from student where age > ?", "15");
+		result = DataSupport.where("age > ?", "15").sum(studentTable, "age", Integer.TYPE);
+		cursor = DataSupport.findBySQL("select sum(age) from " + studentTable + " where age > ?", "15");
 		if (cursor.moveToFirst()) {
 			realResult = cursor.getInt(0);
 		}

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.litepal.crud.DataSupport;
+import org.litepal.util.DBUtility;
 
 import com.litepaltest.model.Cellphone;
 import com.litepaltest.model.Classroom;
@@ -17,7 +18,18 @@ import android.test.AndroidTestCase;
 
 public class SaveAllTest extends AndroidTestCase {
 
-	public void testSaveAll() {
+    String classroomTable;
+
+    String studentTable;
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        classroomTable = DBUtility.getTableNameByClassName(Classroom.class.getName());
+        studentTable = DBUtility.getTableNameByClassName(Student.class.getName());
+    }
+
+    public void testSaveAll() {
 		List<Cellphone> cellList = new ArrayList<Cellphone>();
 		for (int i = 0; i < 50; i++) {
 			Cellphone cellPhone = new Cellphone();
@@ -42,7 +54,7 @@ public class SaveAllTest extends AndroidTestCase {
 		}
 		DataSupport.saveAll(classroom.getStudentCollection());
 		classroom.save();
-		List<Student> list = DataSupport.where("classroom_id = ?",
+		List<Student> list = DataSupport.where(classroomTable + "_id = ?",
 				String.valueOf(classroom.get_id())).find(Student.class);
 		assertEquals(50, list.size());
 
@@ -61,7 +73,7 @@ public class SaveAllTest extends AndroidTestCase {
 		}
 		DataSupport.saveAll(studentList);
 		classroom.save();
-		List<Student> list = DataSupport.where("classroom_id = ?",
+		List<Student> list = DataSupport.where(classroomTable + "_id = ?",
 				String.valueOf(classroom.get_id())).find(Student.class);
 		assertEquals(50, list.size());
 	}
@@ -83,7 +95,7 @@ public class SaveAllTest extends AndroidTestCase {
 		DataSupport.saveAll(studentList);
 		for (Student student : studentList) {
 			List<IdCard> result = DataSupport
-					.where("student_id=?", String.valueOf(student.getId())).find(IdCard.class);
+					.where(studentTable + "_id=?", String.valueOf(student.getId())).find(IdCard.class);
 			assertEquals(1, result.size());
 		}
 	}
@@ -117,9 +129,12 @@ public class SaveAllTest extends AndroidTestCase {
 		}
 		DataSupport.saveAll(studentList);
 		DataSupport.saveAll(teacherList);
-		for (Student student : studentList) {
+        String studentTable = DBUtility.getTableNameByClassName(Student.class.getName());
+        String teacherTable = DBUtility.getTableNameByClassName(Teacher.class.getName());
+        String tableName = DBUtility.getIntermediateTableName(studentTable, teacherTable);
+        for (Student student : studentList) {
 			Cursor cursor = DataSupport.findBySQL(
-					"select * from student_teacher where student_id=?",
+					"select * from " + tableName + " where " + studentTable + "_id=?",
 					String.valueOf(student.getId()));
 			assertEquals(3, cursor.getCount());
 			cursor.close();

@@ -3,8 +3,10 @@ package com.litepaltest.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.litepal.annotation.Table;
 import org.litepal.crud.DataSupport;
 
+@Table(name = "tea")
 public class Teacher extends DataSupport {
 
 	private int id;

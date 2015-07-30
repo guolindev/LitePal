@@ -1,5 +1,6 @@
 package com.litepaltest.model;
 
+import org.litepal.annotation.Table;
 import org.litepal.crud.DataSupport;
 
 public class Product extends DataSupport{

@@ -6,6 +6,7 @@ import java.util.List;
 import org.litepal.crud.DataSupport;
 import org.litepal.exceptions.DataSupportException;
 import org.litepal.tablemanager.Connector;
+import org.litepal.util.DBUtility;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -39,8 +40,11 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 
 	private Classroom c2;
 
+    private String studentTable;
+
 	@Override
 	protected void setUp() throws Exception {
+        studentTable = DBUtility.getTableNameByClassName(Student.class.getName());
 		init();
 	}
 
@@ -380,15 +384,16 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 	}
 
 	public void testUpdateAllRowsWithStaticUpdate() {
-		int allRows = getRowsCount("student");
+		int allRows = getRowsCount(studentTable);
 		ContentValues values = new ContentValues();
 		values.put("name", "Zuckerburg");
 		int affectedRows = DataSupport.updateAll(Student.class, values);
 		assertEquals(allRows, affectedRows);
-		allRows = getRowsCount("student_teacher");
+        String table = DBUtility.getIntermediateTableName(studentTable, DBUtility.getTableNameByClassName(Teacher.class.getName()));
+		allRows = getRowsCount(table);
 		values.clear();
-		values.putNull("student_id");
-		affectedRows = DataSupport.updateAll("student_teacher", values);
+		values.putNull(studentTable + "_id");
+		affectedRows = DataSupport.updateAll(table, values);
 		assertEquals(allRows, affectedRows);
 	}
 
@@ -446,7 +451,7 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 	}
 
 	public void testUpdateAllRowsWithInstanceUpdate() {
-		Cursor c = Connector.getDatabase().query("Student", null, null, null, null, null, null);
+		Cursor c = Connector.getDatabase().query(studentTable, null, null, null, null, null, null);
 		int allRows = c.getCount();
 		c.close();
 		Student student = new Student();

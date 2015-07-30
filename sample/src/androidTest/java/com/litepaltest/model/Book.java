@@ -2,8 +2,10 @@ package com.litepaltest.model;
 
 import java.io.Serializable;
 
+import org.litepal.annotation.Table;
 import org.litepal.crud.DataSupport;
 
+@Table(name = "Boo")
 public class Book extends DataSupport implements Serializable{
 
 	private static final long serialVersionUID = 9040804172147110007L;

@@ -27,6 +27,7 @@ import java.util.Set;
 import org.litepal.exceptions.DataSupportException;
 import org.litepal.tablemanager.Connector;
 import org.litepal.util.BaseUtility;
+import org.litepal.util.DBUtility;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -234,7 +235,7 @@ public class DataSupport {
 	 * @return Count of the specified table.
 	 */
 	public static synchronized int count(Class<?> modelClass) {
-		return count(BaseUtility.changeCase(modelClass.getSimpleName()));
+		return count(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())));
 	}
 
 	/**
@@ -280,7 +281,7 @@ public class DataSupport {
 	 * @return The average value on a given column.
 	 */
 	public static synchronized double average(Class<?> modelClass, String column) {
-		return average(BaseUtility.changeCase(modelClass.getSimpleName()), column);
+		return average(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), column);
 	}
 
 	/**
@@ -330,7 +331,7 @@ public class DataSupport {
 	 * @return The maximum value on a given column.
 	 */
 	public static synchronized <T> T max(Class<?> modelClass, String columnName, Class<T> columnType) {
-		return max(BaseUtility.changeCase(modelClass.getSimpleName()), columnName, columnType);
+		return max(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
 	}
 
 	/**
@@ -383,7 +384,7 @@ public class DataSupport {
 	 * @return The minimum value on a given column.
 	 */
 	public static synchronized <T> T min(Class<?> modelClass, String columnName, Class<T> columnType) {
-		return min(BaseUtility.changeCase(modelClass.getSimpleName()), columnName, columnType);
+		return min(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
 	}
 
 	/**
@@ -436,7 +437,7 @@ public class DataSupport {
 	 * @return The sum value on a given column.
 	 */
 	public static synchronized <T> T sum(Class<?> modelClass, String columnName, Class<T> columnType) {
-		return sum(BaseUtility.changeCase(modelClass.getSimpleName()), columnName, columnType);
+		return sum(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
 	}
 
 	/**
@@ -811,7 +812,8 @@ public class DataSupport {
 	 */
 	public static synchronized int updateAll(Class<?> modelClass, ContentValues values,
 			String... conditions) {
-		return updateAll(BaseUtility.changeCase(modelClass.getSimpleName()), values, conditions);
+		return updateAll(BaseUtility.changeCase(DBUtility.getTableNameByClassName(
+                modelClass.getName())), values, conditions);
 	}
 
 	/**
@@ -1116,7 +1118,7 @@ public class DataSupport {
 	 * @return The corresponding table name of current model.
 	 */
 	protected String getTableName() {
-		return BaseUtility.changeCase(getClass().getSimpleName());
+		return BaseUtility.changeCase(DBUtility.getTableNameByClassName(getClassName()));
 	}
 	
 	/**

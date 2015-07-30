@@ -79,7 +79,7 @@ public class LitePalTestCase extends AndroidTestCase {
 
 	protected long getForeignKeyValue(String tableWithFK, String tableWithoutFK, long id) {
 		Cursor cursor = Connector.getDatabase().query(tableWithFK, null, "id = ?",
-				new String[] { String.valueOf(id) }, null, null, null);
+                new String[]{String.valueOf(id)}, null, null, null);
 		long foreignKeyId = 0;
 		if (cursor.moveToFirst()) {
 			foreignKeyId = cursor.getLong(cursor.getColumnIndexOrThrow(BaseUtility
@@ -107,8 +107,12 @@ public class LitePalTestCase extends AndroidTestCase {
 	}
 
 	protected String getTableName(Object object) {
-		return object.getClass().getSimpleName();
+		return DBUtility.getTableNameByClassName(object.getClass().getName());
 	}
+
+    protected String getTableName(Class<?> c) {
+        return DBUtility.getTableNameByClassName(c.getName());
+    }
 
 	protected int getRowsCount(String tableName) {
 		int count = 0;
@@ -121,7 +125,7 @@ public class LitePalTestCase extends AndroidTestCase {
 	protected List<Book> getBooks(String[] columns, String selection, String[] selectionArgs,
 			String groupBy, String having, String orderBy, String limit) {
 		List<Book> books = new ArrayList<Book>();
-		Cursor cursor = Connector.getDatabase().query("Book", columns, selection, selectionArgs,
+		Cursor cursor = Connector.getDatabase().query(getTableName(Book.class), columns, selection, selectionArgs,
 				groupBy, having, orderBy, limit);
 		if (cursor.moveToFirst()) {
 			do {
@@ -151,7 +155,7 @@ public class LitePalTestCase extends AndroidTestCase {
 
 	protected Classroom getClassroom(long id) {
 		Classroom c = null;
-		Cursor cursor = Connector.getDatabase().query("Classroom", null, "id = ?",
+		Cursor cursor = Connector.getDatabase().query(getTableName(Classroom.class), null, "id = ?",
 				new String[] { String.valueOf(id) }, null, null, null);
 		if (cursor.moveToFirst()) {
 			c = new Classroom();
@@ -164,7 +168,7 @@ public class LitePalTestCase extends AndroidTestCase {
 
 	protected IdCard getIdCard(long id) {
 		IdCard card = null;
-		Cursor cursor = Connector.getDatabase().query("IdCard", null, "id = ?",
+		Cursor cursor = Connector.getDatabase().query(getTableName(IdCard.class), null, "id = ?",
 				new String[] { String.valueOf(id) }, null, null, null);
 		if (cursor.moveToFirst()) {
 			card = new IdCard();
@@ -179,7 +183,7 @@ public class LitePalTestCase extends AndroidTestCase {
 
 	protected Computer getComputer(long id) {
 		Computer computer = null;
-		Cursor cursor = Connector.getDatabase().query("Computer", null, "id = ?",
+		Cursor cursor = Connector.getDatabase().query(getTableName(Computer.class), null, "id = ?",
 				new String[] { String.valueOf(id) }, null, null, null);
 		if (cursor.moveToFirst()) {
 			computer = new Computer("", 0);
@@ -194,7 +198,7 @@ public class LitePalTestCase extends AndroidTestCase {
 
 	protected Cellphone getCellPhone(long id) {
 		Cellphone cellPhone = null;
-		Cursor cursor = Connector.getDatabase().query("Cellphone", null, "id = ?",
+		Cursor cursor = Connector.getDatabase().query(getTableName(Cellphone.class), null, "id = ?",
 				new String[] { String.valueOf(id) }, null, null, null);
 		if (cursor.moveToFirst()) {
 			cellPhone = new Cellphone();
@@ -211,7 +215,7 @@ public class LitePalTestCase extends AndroidTestCase {
 
 	protected Teacher getTeacher(long id) {
 		Teacher teacher = null;
-		Cursor cursor = Connector.getDatabase().query("Teacher", null, "id = ?",
+		Cursor cursor = Connector.getDatabase().query(getTableName(Teacher.class), null, "id = ?",
 				new String[] { String.valueOf(id) }, null, null, null);
 		if (cursor.moveToFirst()) {
 			teacher = new Teacher();
@@ -234,7 +238,7 @@ public class LitePalTestCase extends AndroidTestCase {
 
 	protected Student getStudent(long id) {
 		Student student = null;
-		Cursor cursor = Connector.getDatabase().query("Student", null, "id = ?",
+		Cursor cursor = Connector.getDatabase().query(getTableName(Student.class), null, "id = ?",
 				new String[] { String.valueOf(id) }, null, null, null);
 		if (cursor.moveToFirst()) {
 			student = new Student();
@@ -249,7 +253,7 @@ public class LitePalTestCase extends AndroidTestCase {
 
 	protected List<Teacher> getTeachers(int[] ids) {
 		List<Teacher> teachers = new ArrayList<Teacher>();
-		Cursor cursor = Connector.getDatabase().query("Teacher", null, getWhere(ids), null, null,
+		Cursor cursor = Connector.getDatabase().query(getTableName(Teacher.class), null, getWhere(ids), null, null,
 				null, null);
 		if (cursor.moveToFirst()) {
 			Teacher t = new Teacher();
@@ -273,7 +277,7 @@ public class LitePalTestCase extends AndroidTestCase {
 
 	protected List<Student> getStudents(int[] ids) {
 		List<Student> students = new ArrayList<Student>();
-		Cursor cursor = Connector.getDatabase().query("Student", null, getWhere(ids), null, null,
+		Cursor cursor = Connector.getDatabase().query(getTableName(Student.class), null, getWhere(ids), null, null,
 				null, null);
 		if (cursor.moveToFirst()) {
 			Student s = new Student();

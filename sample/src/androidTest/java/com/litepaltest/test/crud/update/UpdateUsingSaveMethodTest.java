@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.litepal.crud.DataSupport;
+import org.litepal.util.DBUtility;
 
 import com.litepaltest.model.Cellphone;
 import com.litepaltest.model.Classroom;
@@ -15,6 +16,14 @@ import com.litepaltest.model.Teacher;
 import com.litepaltest.test.LitePalTestCase;
 
 public class UpdateUsingSaveMethodTest extends LitePalTestCase {
+    
+    String classroomTable;
+    
+    String studentTable;
+    
+    String teacherTable;
+    
+    String idcardTable;
 
 	private Classroom c1;
 
@@ -32,7 +41,16 @@ public class UpdateUsingSaveMethodTest extends LitePalTestCase {
 
 	private Teacher t2;
 
-	private void init() {
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        classroomTable = DBUtility.getTableNameByClassName(Classroom.class.getName());
+        studentTable = DBUtility.getTableNameByClassName(Student.class.getName());
+        teacherTable = DBUtility.getTableNameByClassName(Teacher.class.getName());
+        idcardTable = DBUtility.getTableNameByClassName(IdCard.class.getName());
+    }
+
+    private void init() {
 		Calendar calendar = Calendar.getInstance();
 		c1 = new Classroom();
 		c1.setName("Working room");
@@ -95,8 +113,8 @@ public class UpdateUsingSaveMethodTest extends LitePalTestCase {
 		s2.setBirthday(calendar.getTime());
 		assertTrue(s1.save());
 		assertTrue(s2.save());
-		assertEquals(c2.get_id(), getForeignKeyValue("student", "classroom", s1.getId()));
-		assertEquals(c2.get_id(), getForeignKeyValue("student", "classroom", s2.getId()));
+		assertEquals(c2.get_id(), getForeignKeyValue(studentTable, classroomTable, s1.getId()));
+		assertEquals(c2.get_id(), getForeignKeyValue(studentTable, classroomTable, s2.getId()));
 		Student student2 = DataSupport.find(Student.class, s2.getId());
 		calendar.clear();
 		calendar.set(1989, 7, 7, 0, 0, 0);
@@ -114,8 +132,8 @@ public class UpdateUsingSaveMethodTest extends LitePalTestCase {
 		c2.getStudentCollection().add(s1);
 		c2.getStudentCollection().add(s2);
 		assertTrue(c2.save());
-		assertEquals(c2.get_id(), getForeignKeyValue("student", "classroom", s1.getId()));
-		assertEquals(c2.get_id(), getForeignKeyValue("student", "classroom", s2.getId()));
+		assertEquals(c2.get_id(), getForeignKeyValue(studentTable, classroomTable, s1.getId()));
+		assertEquals(c2.get_id(), getForeignKeyValue(studentTable, classroomTable, s2.getId()));
 	}
 
 	public void testUpdateM2OAssociationsOnMSideWithNotSavedModel() {
@@ -129,8 +147,8 @@ public class UpdateUsingSaveMethodTest extends LitePalTestCase {
 		s2.setClassroom(c2);
 		assertTrue(s1.save());
 		assertTrue(s2.save());
-		assertEquals(c1.get_id(), getForeignKeyValue("student", "classroom", s1.getId()));
-		assertEquals(c1.get_id(), getForeignKeyValue("student", "classroom", s2.getId()));
+		assertEquals(c1.get_id(), getForeignKeyValue(studentTable, classroomTable, s1.getId()));
+		assertEquals(c1.get_id(), getForeignKeyValue(studentTable, classroomTable, s2.getId()));
 	}
 
 	public void testUpdateM2OAssociationsOnOSideWithNotSavedModel() {
@@ -143,7 +161,7 @@ public class UpdateUsingSaveMethodTest extends LitePalTestCase {
 		c2.getStudentCollection().add(s1);
 		c2.getStudentCollection().add(s2);
 		assertTrue(c2.save());
-		assertEquals(c2.get_id(), getForeignKeyValue("student", "classroom", s1.getId()));
+		assertEquals(c2.get_id(), getForeignKeyValue(studentTable, classroomTable, s1.getId()));
 	}
 
 	public void testUpdateM2OAssociationsOnMSideWithNull() {
@@ -157,8 +175,8 @@ public class UpdateUsingSaveMethodTest extends LitePalTestCase {
 		s2.setClassroom(null);
 		assertTrue(s1.save());
 		assertTrue(s2.save());
-		assertEquals(0, getForeignKeyValue("student", "classroom", s1.getId()));
-		assertEquals(0, getForeignKeyValue("student", "classroom", s2.getId()));
+		assertEquals(0, getForeignKeyValue(studentTable, classroomTable, s1.getId()));
+		assertEquals(0, getForeignKeyValue(studentTable, classroomTable, s2.getId()));
 	}
 
 	public void testUpdateM2OAssociationsOnOSideWithNull() {
@@ -170,8 +188,8 @@ public class UpdateUsingSaveMethodTest extends LitePalTestCase {
 		assertTrue(s2.save());
 		c1.setStudentCollection(null);
 		assertTrue(c1.save());
-		assertEquals(0, getForeignKeyValue("student", "classroom", s1.getId()));
-		assertEquals(0, getForeignKeyValue("student", "classroom", s2.getId()));
+		assertEquals(0, getForeignKeyValue(studentTable, classroomTable, s1.getId()));
+		assertEquals(0, getForeignKeyValue(studentTable, classroomTable, s2.getId()));
 	}
 
 	public void testUpdateM2OAssociationsOnOSideWithEmptyCollection() {
@@ -183,8 +201,8 @@ public class UpdateUsingSaveMethodTest extends LitePalTestCase {
 		assertTrue(s2.save());
 		c1.getStudentCollection().clear();
 		assertTrue(c1.save());
-		assertEquals(0, getForeignKeyValue("student", "classroom", s1.getId()));
-		assertEquals(0, getForeignKeyValue("student", "classroom", s2.getId()));
+		assertEquals(0, getForeignKeyValue(studentTable, classroomTable, s1.getId()));
+		assertEquals(0, getForeignKeyValue(studentTable, classroomTable, s2.getId()));
 	}
 
 	public void testUpdateO2OAssociations() {
@@ -195,8 +213,8 @@ public class UpdateUsingSaveMethodTest extends LitePalTestCase {
 		id1.setStudent(s3);
 		assertTrue(s3.save());
 		assertTrue(id1.save());
-		assertEquals(s3.getId(), getForeignKeyValue("idcard", "student", id1.getId()));
-		assertEquals(id1.getId(), getForeignKeyValue("student", "idcard", s3.getId()));
+		assertEquals(s3.getId(), getForeignKeyValue(idcardTable, studentTable, id1.getId()));
+		assertEquals(id1.getId(), getForeignKeyValue(studentTable, idcardTable, s3.getId()));
 	}
 
 	public void testUpdateO2OAssociationsWithNull() {
@@ -209,8 +227,8 @@ public class UpdateUsingSaveMethodTest extends LitePalTestCase {
 		id1.setStudent(null);
 		assertTrue(s3.save());
 		assertTrue(id1.save());
-		assertEquals(0, getForeignKeyValue("idcard", "student", id1.getId()));
-		assertEquals(0, getForeignKeyValue("student", "idcard", s3.getId()));
+		assertEquals(0, getForeignKeyValue(idcardTable, studentTable, id1.getId()));
+		assertEquals(0, getForeignKeyValue(studentTable, idcardTable, s3.getId()));
 	}
 
 	public void testUpdateM2MAssociations() {
