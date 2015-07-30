@@ -33,7 +33,24 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Column {
-    String name() default "";
+
+    /**
+     * Set the specified column name.
+     */
+    String name();
+
+    /**
+     * Set nullable constraint for the column.
+     */
     boolean nullable() default true;
+
+    /**
+     * Set unique constraint for the column.
+     */
     boolean unique() default false;
+
+    /**
+     * Ignore to map this field into a column.
+     */
+    boolean ignore() default false;
 }
