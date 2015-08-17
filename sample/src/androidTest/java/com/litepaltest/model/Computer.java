@@ -1,9 +1,7 @@
 package com.litepaltest.model;
 
-import org.litepal.annotation.Table;
 import org.litepal.crud.DataSupport;
 
-@Table(name = "compu")
 public class Computer extends DataSupport {
 	
 	private long id;

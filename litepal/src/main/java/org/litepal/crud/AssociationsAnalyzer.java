@@ -147,9 +147,8 @@ abstract class AssociationsAnalyzer extends DataHandler {
 	 * 
 	 * @param baseObj
 	 *            The baseObj currently want to persist.
-	 * @param associationInfo
-	 *            The associated info analyzed by
-	 *            {@link LitePalBase#getRelatedInfo}.
+	 * @param associatedModel
+	 *            The associated model.
 	 */
 	protected void dealsAssociationsOnTheSideWithoutFK(DataSupport baseObj,
 			DataSupport associatedModel) {
@@ -172,9 +171,9 @@ abstract class AssociationsAnalyzer extends DataHandler {
 	 * 
 	 * @param baseObj
 	 *            The baseObj currently want to persist or update.
-	 * @param associatedInfo
+	 * @param associationInfo
 	 *            The associated info analyzed by
-	 *            {@link LitePalBase#getRelatedInfo}.
+	 *            {@link LitePalBase#getAssociationInfo(String)}.
 	 */
 	protected void mightClearFKValue(DataSupport baseObj, AssociationsInfo associationInfo) {
 		baseObj.addFKNameToClearSelf(getForeignKeyName(associationInfo));

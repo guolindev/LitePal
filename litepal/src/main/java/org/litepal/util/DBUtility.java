@@ -1,5 +1,5 @@
 /*
- * Copyright (C)  Tony Green, Litepal Framework Open Source Project
+ * Copyright (C)  Tony Green, LitePal Framework Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.litepal.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.litepal.annotation.Table;
 import org.litepal.exceptions.DatabaseGenerateException;
 import org.litepal.tablemanager.model.TableModel;
 
@@ -58,20 +57,7 @@ public class DBUtility {
 			if ('.' == className.charAt(className.length() - 1)) {
 				return null;
 			} else {
-				try {
-					Class<?> clazz = Class.forName(className);
-					Table annotation = clazz.getAnnotation(Table.class);
-					if (annotation != null) {
-						String name = annotation.name();
-						if (!TextUtils.isEmpty(name)) {
-							return name;
-						}
-					}
-					return className.substring(className.lastIndexOf(".") + 1);
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-					return null;
-				}
+                return className.substring(className.lastIndexOf(".") + 1);
 			}
 		}
 		return null;

@@ -5,10 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.litepal.annotation.Table;
 import org.litepal.crud.DataSupport;
 
-@Table(name = "class_room")
 public class Classroom extends DataSupport {
 	private int _id;
 

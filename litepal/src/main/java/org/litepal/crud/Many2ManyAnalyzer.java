@@ -1,5 +1,5 @@
 /*
- * Copyright (C)  Tony Green, Litepal Framework Open Source Project
+ * Copyright (C)  Tony Green, LitePal Framework Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ public class Many2ManyAnalyzer extends AssociationsAnalyzer {
 	 *            The baseObj currently want to persist or update.
 	 * @param associationInfo
 	 *            The associated info analyzed by
-	 *            {@link LitePalBase#getRelatedInfo}.
+	 *            {@link LitePalBase#getAssociationInfo(String)}.
 	 * @throws SecurityException
 	 * @throws IllegalArgumentException
 	 * @throws NoSuchMethodException
@@ -77,8 +77,8 @@ public class Many2ManyAnalyzer extends AssociationsAnalyzer {
 	}
 
 	/**
-	 * This add an empty set for {@link org.litepal.crud.DataSupport#associatedIdsM2M}. Might use
-	 * for updating intermediate join table.
+	 * This add an empty set for {@link org.litepal.crud.DataSupport#associatedModelsMapForJoinTable}.
+     * Might use for updating intermediate join table.
 	 * 
 	 * @param baseObj
 	 *            The baseObj currently want to persist or update.
@@ -109,8 +109,8 @@ public class Many2ManyAnalyzer extends AssociationsAnalyzer {
 	/**
 	 * First of all the associated model need to be saved already, or nothing
 	 * will be executed below. Then add the id of associated model into
-	 * {@link org.litepal.crud.DataSupport#associatedIdsM2M} for inserting value into
-	 * intermediate join table after baseObj is saved.
+	 * {@link org.litepal.crud.DataSupport#associatedModelsMapForJoinTable} for
+     * inserting value into intermediate join table after baseObj is saved.
 	 * 
 	 * @param baseObj
 	 *            The baseObj currently want to persist or update.

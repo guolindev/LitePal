@@ -1,5 +1,5 @@
 /*
- * Copyright (C)  Tony Green, Litepal Framework Open Source Project
+ * Copyright (C)  Tony Green, LitePal Framework Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,9 +43,9 @@ public class One2OneAnalyzer extends AssociationsAnalyzer {
 	 * 
 	 * @param baseObj
 	 *            The baseObj currently want to persist or update.
-	 * @param associatedInfo
+	 * @param associationInfo
 	 *            The associated info analyzed by
-	 *            {@link LitePalBase#getRelatedInfo}.
+	 *            {@link LitePalBase#getAssociationInfo(String)}.
 	 * @throws SecurityException
 	 * @throws IllegalArgumentException
 	 * @throws NoSuchMethodException
@@ -78,7 +78,7 @@ public class One2OneAnalyzer extends AssociationsAnalyzer {
 	 *            The associated model of baseObj.
 	 * @param associationInfo
 	 *            The associated info analyzed by
-	 *            {@link LitePalBase#getRelatedInfo}.
+	 *            {@link LitePalBase#getAssociationInfo(String)}.
 	 */
 	private void dealAssociatedModel(DataSupport baseObj, DataSupport associatedModel,
 			AssociationsInfo associationInfo) {

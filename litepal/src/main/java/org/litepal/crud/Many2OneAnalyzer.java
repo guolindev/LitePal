@@ -1,5 +1,5 @@
 /*
- * Copyright (C)  Tony Green, Litepal Framework Open Source Project
+ * Copyright (C)  Tony Green, LitePal Framework Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ class Many2OneAnalyzer extends AssociationsAnalyzer {
 	 *            The baseObj currently want to persist.
 	 * @param associationInfo
 	 *            The associated info analyzed by
-	 *            {@link LitePalBase#getRelatedInfo}.
+	 *            {@link LitePalBase#getAssociationInfo(String)}.
 	 * @throws SecurityException
 	 * @throws IllegalArgumentException
 	 * @throws NoSuchMethodException
@@ -76,7 +76,7 @@ class Many2OneAnalyzer extends AssociationsAnalyzer {
 	 *            The baseObj currently want to persist or update.
 	 * @param associationInfo
 	 *            The associated info analyzed by
-	 *            {@link LitePalBase#getRelatedInfo}.
+	 *            {@link LitePalBase#getAssociationInfo(String)}.
 	 * @throws SecurityException
 	 * @throws IllegalArgumentException
 	 * @throws NoSuchMethodException
@@ -112,7 +112,7 @@ class Many2OneAnalyzer extends AssociationsAnalyzer {
 	 *            The baseObj currently want to persist.
 	 * @param associationInfo
 	 *            The associated info analyzed by
-	 *            {@link LitePalBase#getRelatedInfo}.
+	 *            {@link LitePalBase#getAssociationInfo(String)}.
 	 * @throws SecurityException
 	 * @throws IllegalArgumentException
 	 * @throws NoSuchMethodException
@@ -145,9 +145,9 @@ class Many2OneAnalyzer extends AssociationsAnalyzer {
 	 *            The associated model collection.
 	 * @param baseObj
 	 *            The baseObj currently want to persist.
-	 * @param associationInfo
+	 * @param associatedModel
 	 *            The associated info analyzed by
-	 *            {@link LitePalBase#getRelatedInfo}.
+	 *            {@link LitePalBase#getAssociationInfo(String)}.
 	 */
 	private void dealAssociatedModelOnManySide(Collection<DataSupport> associatedModels,
 			DataSupport baseObj, DataSupport associatedModel) {
@@ -165,9 +165,9 @@ class Many2OneAnalyzer extends AssociationsAnalyzer {
 	 * 
 	 * @param baseObj
 	 *            The baseObj currently want to persist.
-	 * @param associationInfo
+	 * @param associatedModel
 	 *            The associated info analyzed by
-	 *            {@link LitePalBase#getRelatedInfo}.
+	 *            {@link LitePalBase#getAssociationInfo(String)}.
 	 */
 	private void dealAssociatedModelOnOneSide(DataSupport baseObj, DataSupport associatedModel) {
 		dealsAssociationsOnTheSideWithoutFK(baseObj, associatedModel);

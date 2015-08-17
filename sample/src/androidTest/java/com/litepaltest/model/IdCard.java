@@ -1,9 +1,7 @@
 package com.litepaltest.model;
 
-import org.litepal.annotation.Table;
 import org.litepal.crud.DataSupport;
 
-@Table(name = "ic_card")
 public class IdCard extends DataSupport {
 	private int id;
 	private String number;
