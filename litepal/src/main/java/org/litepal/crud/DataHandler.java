@@ -567,7 +567,7 @@ abstract class DataHandler extends LitePalBase {
 	 */
 	protected String getIntermediateTableName(DataSupport baseObj, String associatedTableName) {
 		return changeCase(DBUtility.getIntermediateTableName(baseObj.getTableName(),
-				associatedTableName));
+                associatedTableName));
 	}
 
 	/**
@@ -915,7 +915,10 @@ abstract class DataHandler extends LitePalBase {
 				putContentValues(baseObj, field, values);
 			}
 		} else if (isSaving()) {
-			putContentValues(baseObj, field, values);
+            Object value = takeGetMethodValueByField(baseObj, field);
+            if (value != null) {
+                putContentValues(baseObj, field, values);
+            }
 		}
 	}
 
@@ -1050,7 +1053,7 @@ abstract class DataHandler extends LitePalBase {
 		String methodName = "get" + typeName;
 		if ("getBoolean".equals(methodName)) {
 			methodName = "getInt";
-		} else if ("getChar".equals(methodName)) {
+		} else if ("getChar".equals(methodName) || "getCharacter".equals(methodName)) {
 			methodName = "getString";
 		} else if ("getDate".equals(methodName)) {
 			methodName = "getLong";
