@@ -24,5 +24,5 @@ dependencies {
 }
 
 if (hasProperty("BINTRAY_KEY")) {
-    apply from: 'https://raw.githubusercontent.com/LitePalFramework/LitePal/master/litepal/bintray.gradle'
+    apply from: 'bintray.gradle'
 }

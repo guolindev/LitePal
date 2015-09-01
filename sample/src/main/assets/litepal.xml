@@ -35,14 +35,14 @@
         <mapping class="org.litepal.litepalsample.model.Album"></mapping>
         <mapping class="org.litepal.litepalsample.model.Song"></mapping>
         <mapping class="org.litepal.litepalsample.model.Singer"></mapping>
-<!--        <mapping class="com.litepaltest.model.Classroom"></mapping>
-        <mapping class="com.litepaltest.model.Teacher" ></mapping>
-        <mapping class="com.litepaltest.model.IdCard" ></mapping>
-        <mapping class="com.litepaltest.model.Student" ></mapping>
-        <mapping class="com.litepaltest.model.Cellphone" ></mapping>
-        <mapping class="com.litepaltest.model.Computer"></mapping>
-        <mapping class="com.litepaltest.model.Book"></mapping>
-        <mapping class="com.litepaltest.model.Product"></mapping>-->
+        <!--      <mapping class="com.litepaltest.model.Classroom"></mapping>
+              <mapping class="com.litepaltest.model.Teacher" ></mapping>
+              <mapping class="com.litepaltest.model.IdCard" ></mapping>
+              <mapping class="com.litepaltest.model.Student" ></mapping>
+              <mapping class="com.litepaltest.model.Cellphone" ></mapping>
+              <mapping class="com.litepaltest.model.Computer"></mapping>
+              <mapping class="com.litepaltest.model.Book"></mapping>
+              <mapping class="com.litepaltest.model.Product"></mapping>-->
     </list>
 
     <!--

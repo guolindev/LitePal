@@ -29,17 +29,11 @@ public abstract class OrmChange {
 
 	/**
 	 * Subclasses implement this method to do their own logic to change types.
-	 * 
-	 * @param className
-	 *            The class name passed in.
-	 * @param fieldName
-	 *            The field name passed in.
+	 *
 	 * @param fieldType
 	 *            The field type passed in.
-	 * @return A String array contains the data after changing. First element is
-	 *         column name, second element is column type.
+	 * @return Column type.
 	 */
-	public abstract String[] object2Relation(String className,
-			String fieldName, String fieldType);
+	public abstract String object2Relation(String fieldType);
 
 }

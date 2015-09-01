@@ -18,11 +18,10 @@ package org.litepal.litepalsample.activity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.litepal.litepalsample.R;
 import org.litepal.tablemanager.Connector;
+import org.litepal.tablemanager.model.ColumnModel;
 import org.litepal.tablemanager.model.TableModel;
 import org.litepal.util.DBUtility;
 
@@ -44,11 +43,11 @@ public class TableStructureActivity extends Activity {
 
 	private ListView mTableStructureListView;
 
-	private ArrayAdapter<Entry<String, String>> mAdapter;
+	private ArrayAdapter<ColumnModel> mAdapter;
 
 	private String mTableName;
 
-	private List<Entry<String, String>> mList = new ArrayList<Entry<String, String>>();
+	private List<ColumnModel> mList = new ArrayList<ColumnModel>();
 
 	public static void actionStart(Context context, String tableName) {
 		Intent intent = new Intent(context, TableStructureActivity.class);
@@ -70,26 +69,27 @@ public class TableStructureActivity extends Activity {
 
 	private void analyzeTableStructure() {
 		TableModel tableMode = DBUtility.findPragmaTableInfo(mTableName, Connector.getDatabase());
-		Map<String, String> columnsMap = tableMode.getColumns();
-		for (Entry<String, String> entry : columnsMap.entrySet()) {
-			mList.add(entry);
-		}
+		List<ColumnModel> columnModelList = tableMode.getColumnModels();
+        mList.addAll(columnModelList);
 	}
 
-	class MyArrayAdapter extends ArrayAdapter<Entry<String, String>> {
+	class MyArrayAdapter extends ArrayAdapter<ColumnModel> {
 
-		public MyArrayAdapter(Context context, int textViewResourceId, List<Entry<String, String>> objects) {
+		public MyArrayAdapter(Context context, int textViewResourceId, List<ColumnModel> objects) {
 			super(context, textViewResourceId, objects);
 		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View view;
-			Entry<String, String> entry = getItem(position);
-			String columnName = entry.getKey();
-			String columnType = entry.getValue();
+            ColumnModel columnModel = getItem(position);
+			String columnName = columnModel.getColumnName();
+			String columnType = columnModel.getColumnType();
+            boolean nullable = columnModel.isNullable();
+            boolean unique = columnModel.isUnique();
+            String defaultValue = columnModel.getDefaultValue();
 			if (convertView == null) {
-				view = LayoutInflater.from(getContext()).inflate(R.layout.structure_item, null);
+				view = LayoutInflater.from(getContext()).inflate(R.layout.table_structure_item, null);
 			} else {
 				view = convertView;
 			}
@@ -97,6 +97,12 @@ public class TableStructureActivity extends Activity {
 			text1.setText(columnName);
 			TextView text2 = (TextView) view.findViewById(R.id.text_2);
 			text2.setText(columnType);
+            TextView text3 = (TextView) view.findViewById(R.id.text_3);
+            text3.setText(String.valueOf(nullable));
+            TextView text4 = (TextView) view.findViewById(R.id.text_4);
+            text4.setText(String.valueOf(unique));
+            TextView text5 = (TextView) view.findViewById(R.id.text_5);
+            text5.setText(defaultValue);
 			return view;
 		}
 

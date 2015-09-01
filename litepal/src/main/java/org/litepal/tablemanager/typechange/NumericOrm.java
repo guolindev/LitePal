@@ -26,25 +26,19 @@ public class NumericOrm extends OrmChange {
 
 	/**
 	 * If the field type passed in is int, long or short, it will change it into
-	 * integer as column type. Column name will be same as field name. Then return
-	 * an array of the combination.
+	 * integer as column type.
 	 */
 	@Override
-	public String[] object2Relation(String className, String fieldName, String fieldType) {
-		if (fieldName != null && fieldType != null) {
-			String[] relations = new String[2];
-			relations[0] = fieldName;
+	public String object2Relation(String fieldType) {
+		if (fieldType != null) {
 			if (fieldType.equals("int") || fieldType.equals("java.lang.Integer")) {
-				relations[1] = "INTEGER";
-				return relations;
+				return "integer";
 			}
 			if (fieldType.equals("long") || fieldType.equals("java.lang.Long")) {
-				relations[1] = "INTEGER";
-				return relations;
+				return "integer";
 			}
 			if (fieldType.equals("short") || fieldType.equals("java.lang.Short")) {
-				relations[1] = "INTEGER";
-				return relations;
+				return "integer";
 			}
 		}
 		return null;

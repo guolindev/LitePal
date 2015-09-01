@@ -44,6 +44,36 @@
             android:paddingLeft="6dip"
             android:text="@string/column_type"
             android:textColor="#fff" />
+
+        <TextView
+            android:id="@+id/text_3"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:paddingLeft="6dip"
+            android:text="@string/column_nullable"
+            android:textColor="#fff" />
+
+        <TextView
+            android:id="@+id/text_4"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:paddingLeft="6dip"
+            android:text="@string/column_unique"
+            android:textColor="#fff" />
+
+        <TextView
+            android:id="@+id/text_5"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:paddingLeft="6dip"
+            android:text="@string/column_default"
+            android:textColor="#fff" />
     </LinearLayout>
 
     <ListView

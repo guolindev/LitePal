@@ -26,16 +26,13 @@ public class BooleanOrm extends OrmChange {
 
 	/**
 	 * If the field type passed in is boolean, it will change it into integer as
-	 * column type. Column name will be same as field name. Then return an array
-	 * of the combination.
+	 * column type.
 	 */
 	@Override
-	public String[] object2Relation(String className, String fieldName, String fieldType) {
-		if (fieldName != null && fieldType != null) {
-			String columnName = fieldName;
+	public String object2Relation(String fieldType) {
+		if (fieldType != null) {
 			if (fieldType.equals("boolean") || fieldType.equals("java.lang.Boolean")) {
-				String[] relations = { columnName, "INTEGER" };
-				return relations;
+				return "integer";
 			}
 		}
 		return null;

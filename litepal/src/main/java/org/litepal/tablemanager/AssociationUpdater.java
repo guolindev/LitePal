@@ -19,10 +19,10 @@ package org.litepal.tablemanager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.litepal.parser.LitePalAttr;
 import org.litepal.tablemanager.model.AssociationsModel;
+import org.litepal.tablemanager.model.ColumnModel;
 import org.litepal.tablemanager.model.TableModel;
 import org.litepal.util.Const;
 import org.litepal.util.DBUtility;
@@ -85,15 +85,15 @@ public abstract class AssociationUpdater extends Creator {
 	 */
 	protected List<String> getForeignKeyColumns(TableModel tableModel) {
 		List<String> foreignKeyColumns = new ArrayList<String>();
-		Set<String> columnNamesDB = getTableModelFromDB(tableModel.getTableName()).getColumnNames();
-		for (String columnNameDB : columnNamesDB) {
-			if (isForeignKeyColumnFormat(columnNameDB)) {
-				if (!BaseUtility.containsIgnoreCases(tableModel.getColumnNames(), columnNameDB)) {
-					// Now this is a foreign key column.
-					LogUtil.d(TAG, "getForeignKeyColumnNames >> foreign key column is "
-							+ columnNameDB);
-					foreignKeyColumns.add(columnNameDB);
-				}
+        List<ColumnModel> columnModelList = getTableModelFromDB(tableModel.getTableName()).getColumnModels();
+		for (ColumnModel columnModel : columnModelList) {
+            String columnName = columnModel.getColumnName();
+			if (isForeignKeyColumnFormat(columnModel.getColumnName())) {
+                if (!tableModel.containsColumn(columnName)) {
+                    // Now this is a foreign key column.
+                    LogUtil.d(TAG, "getForeignKeyColumnNames >> foreign key column is " + columnName);
+                    foreignKeyColumns.add(columnName);
+                }
 			}
 		}
 		return foreignKeyColumns;
@@ -284,7 +284,7 @@ public abstract class AssociationUpdater extends Creator {
 	 *            The table name use to alter to temporary table.
 	 * @return SQL to rename table.
 	 */
-	private String generateAlterToTempTableSQL(String tableName) {
+	protected String generateAlterToTempTableSQL(String tableName) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("alter table ").append(tableName).append(" rename to ")
 				.append(getTempTableName(tableName));
@@ -297,54 +297,47 @@ public abstract class AssociationUpdater extends Creator {
 	 * 
 	 * @param removeColumnNames
 	 *            The column names need to remove.
-	 * @param tableName
-	 *            The table name use to create new table.
+	 * @param tableModel
+	 *            Which contains table name use to create new table.
 	 * @return SQL to create new table.
 	 */
-	private String generateCreateNewTableSQL(Collection<String> removeColumnNames, String tableName) {
-		TableModel tableModelDB = getTableModelFromDB(tableName);
+	private String generateCreateNewTableSQL(Collection<String> removeColumnNames, TableModel tableModel) {
 		for (String removeColumnName : removeColumnNames) {
-			tableModelDB.removeColumnIgnoreCases(removeColumnName);
+            tableModel.removeColumnModelByName(removeColumnName);
 		}
-		return generateCreateTableSQL(tableModelDB);
+		return generateCreateTableSQL(tableModel);
 	}
 
 	/**
 	 * Generate a SQL to do the data migration job to avoid losing data.
-	 * 
-	 * @param removeColumnNames
-	 *            The column names need to remove.
-	 * @param tableName
-	 *            The table name use to migrate data.
+	 *
+	 * @param tableModel
+	 *            Which contains table name use to migrate data.
 	 * @return SQL to migrate data.
 	 */
-	private String generateDataMigrationSQL(Collection<String> removeColumnNames, String tableName) {
-		List<String> columnNames = new ArrayList<String>();
-		for (String columnName : getTableModelFromDB(tableName).getColumnNames()) {
-			if (!BaseUtility.containsIgnoreCases(removeColumnNames, columnName)) {
-				columnNames.add(columnName);
-			}
-		}
-		if (!columnNames.isEmpty()) {
+	protected String generateDataMigrationSQL(TableModel tableModel) {
+        String tableName = tableModel.getTableName();
+		List<ColumnModel> columnModels = tableModel.getColumnModels();
+		if (!columnModels.isEmpty()) {
 			StringBuilder sql = new StringBuilder();
 			sql.append("insert into ").append(tableName).append("(");
 			boolean needComma = false;
-			for (String columnName : columnNames) {
+			for (ColumnModel columnModel : columnModels) {
 				if (needComma) {
 					sql.append(", ");
 				}
 				needComma = true;
-				sql.append(columnName);
+				sql.append(columnModel.getColumnName());
 			}
 			sql.append(") ");
 			sql.append("select ");
 			needComma = false;
-			for (String columnName : columnNames) {
+			for (ColumnModel columnModel : columnModels) {
 				if (needComma) {
 					sql.append(", ");
 				}
 				needComma = true;
-				sql.append(columnName);
+				sql.append(columnModel.getColumnName());
 			}
 			sql.append(" from ").append(getTempTableName(tableName));
 			return sql.toString();
@@ -360,7 +353,7 @@ public abstract class AssociationUpdater extends Creator {
 	 *            The table name use to drop temporary table.
 	 * @return SQL to drop the temporary table.
 	 */
-	private String generateDropTempTableSQL(String tableName) {
+	protected String generateDropTempTableSQL(String tableName) {
 		return generateDropTableSQL(getTempTableName(tableName));
 	}
 
@@ -387,11 +380,12 @@ public abstract class AssociationUpdater extends Creator {
 	 *         migrate data and drop temporary table.
 	 */
 	private String[] getRemoveColumnSQLs(Collection<String> removeColumnNames, String tableName) {
+        TableModel tableModelFromDB = getTableModelFromDB(tableName);
 		String alterToTempTableSQL = generateAlterToTempTableSQL(tableName);
 		LogUtil.d(TAG, "generateRemoveColumnSQL >> " + alterToTempTableSQL);
-		String createNewTableSQL = generateCreateNewTableSQL(removeColumnNames, tableName);
+		String createNewTableSQL = generateCreateNewTableSQL(removeColumnNames, tableModelFromDB);
 		LogUtil.d(TAG, "generateRemoveColumnSQL >> " + createNewTableSQL);
-		String dataMigrationSQL = generateDataMigrationSQL(removeColumnNames, tableName);
+		String dataMigrationSQL = generateDataMigrationSQL(tableModelFromDB);
 		LogUtil.d(TAG, "generateRemoveColumnSQL >> " + dataMigrationSQL);
 		String dropTempTableSQL = generateDropTempTableSQL(tableName);
 		LogUtil.d(TAG, "generateRemoveColumnSQL >> " + dropTempTableSQL);

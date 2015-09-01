@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.litepal.exceptions.DatabaseGenerateException;
+import org.litepal.tablemanager.model.ColumnModel;
 import org.litepal.tablemanager.model.TableModel;
 
 import android.database.Cursor;
@@ -204,13 +205,27 @@ public class DBUtility {
 			return false;
 		}
 		boolean exist = false;
+        Cursor cursor = null;
 		try {
-			exist = BaseUtility.containsIgnoreCases(findPragmaTableInfo(tableName, db)
-					.getColumnNames(), columnName);
+            String checkingColumnSQL = "pragma table_info(" + tableName + ")";
+            cursor = db.rawQuery(checkingColumnSQL, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                    if (columnName.equalsIgnoreCase(name)) {
+                        exist = true;
+                        break;
+                    }
+                } while (cursor.moveToNext());
+            }
 		} catch (Exception e) {
-			e.printStackTrace();
-			exist = false;
-		}
+            e.printStackTrace();
+            exist = false;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
 		return exist;
 	}
 
@@ -262,6 +277,7 @@ public class DBUtility {
 	 */
 	public static TableModel findPragmaTableInfo(String tableName, SQLiteDatabase db) {
 		if (isTableExists(tableName, db)) {
+            List<String> uniqueColumns = findUniqueColumns(tableName, db);
 			TableModel tableModelDB = new TableModel();
 			tableModelDB.setTableName(tableName);
 			String checkingColumnSQL = "pragma table_info(" + tableName + ")";
@@ -270,9 +286,18 @@ public class DBUtility {
 				cursor = db.rawQuery(checkingColumnSQL, null);
 				if (cursor.moveToFirst()) {
 					do {
-						String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
-						String type = cursor.getString(cursor.getColumnIndexOrThrow("type"));
-						tableModelDB.addColumn(name, type);
+                        ColumnModel columnModel = new ColumnModel();
+                        String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                        String type = cursor.getString(cursor.getColumnIndexOrThrow("type"));
+                        boolean nullable = cursor.getInt(cursor.getColumnIndexOrThrow("notnull")) == 1 ? false : true;
+                        boolean unique = uniqueColumns.contains(name);
+                        String defaultValue = cursor.getString(cursor.getColumnIndexOrThrow("dflt_value"));
+                        columnModel.setColumnName(name);
+                        columnModel.setColumnType(type);
+                        columnModel.setIsNullable(nullable);
+                        columnModel.setIsUnique(unique);
+                        columnModel.setDefaultValue(defaultValue == null ? "" : defaultValue);
+						tableModelDB.addColumnModel(columnModel);
 					} while (cursor.moveToNext());
 				}
 			} catch (Exception e) {
@@ -289,4 +314,46 @@ public class DBUtility {
 					DatabaseGenerateException.TABLE_DOES_NOT_EXIST_WHEN_EXECUTING + tableName);
 		}
 	}
+
+    /**
+     * Find all unique column names of specified table.
+     * @param tableName
+     *          The table to find unique columns.
+     * @param db
+     *          Instance of SQLiteDatabase.
+     * @return A list with all unique column names of specified table.
+     */
+    public static List<String> findUniqueColumns(String tableName, SQLiteDatabase db) {
+        List<String> columns = new ArrayList<String>();
+        Cursor cursor = null;
+        Cursor innerCursor = null;
+        try {
+            cursor = db.rawQuery("pragma index_list(" + tableName +")", null);
+            if (cursor.moveToFirst()) {
+                do {
+                    int unique = cursor.getInt(cursor.getColumnIndexOrThrow("unique"));
+                    if (unique == 1) {
+                        String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                        innerCursor = db.rawQuery("pragma index_info(" + name + ")", null);
+                        if (innerCursor.moveToFirst()) {
+                            String columnName = innerCursor.getString(innerCursor.getColumnIndexOrThrow("name"));
+                            columns.add(columnName);
+                        }
+                    }
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new DatabaseGenerateException(e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (innerCursor != null) {
+                innerCursor.close();
+            }
+        }
+        return columns;
+    }
+
 }

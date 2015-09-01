@@ -26,21 +26,16 @@ public class TextOrm extends OrmChange {
 
 	/**
 	 * If the field type passed in is char or String, it will change it into
-	 * text as column type. Column name will be same as field name. Then return
-	 * an array of the combination.
+	 * text as column type.
 	 */
 	@Override
-	public String[] object2Relation(String className, String fieldName, String fieldType) {
-		if (fieldName != null && fieldType != null) {
-			String[] relations = new String[2];
-			relations[0] = fieldName;
+	public String object2Relation(String fieldType) {
+		if (fieldType != null) {
 			if (fieldType.equals("char") || fieldType.equals("java.lang.Character")) {
-				relations[1] = "TEXT";
-				return relations;
+				return "text";
 			}
 			if (fieldType.equals("java.lang.String")) {
-				relations[1] = "TEXT";
-				return relations;
+				return "text";
 			}
 		}
 		return null;

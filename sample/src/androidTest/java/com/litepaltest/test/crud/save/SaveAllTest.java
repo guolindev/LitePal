@@ -3,6 +3,7 @@ package com.litepaltest.test.crud.save;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import org.litepal.crud.DataSupport;
 import org.litepal.util.DBUtility;
@@ -35,6 +36,7 @@ public class SaveAllTest extends AndroidTestCase {
 			Cellphone cellPhone = new Cellphone();
 			cellPhone.setBrand("Samsung unique");
 			cellPhone.setPrice(Math.random());
+            cellPhone.setSerial(UUID.randomUUID().toString());
 			cellList.add(cellPhone);
 		}
 		DataSupport.saveAll(cellList);

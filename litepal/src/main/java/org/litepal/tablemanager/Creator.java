@@ -43,10 +43,14 @@ class Creator extends AssociationCreator {
 	@Override
 	protected void createOrUpgradeTable(SQLiteDatabase db, boolean force) {
 		for (TableModel tableModel : getAllTableModels()) {
-			execute(getCreateTableSQLs(tableModel, db, force), db);
-			giveTableSchemaACopy(tableModel.getTableName(), Const.TableSchema.NORMAL_TABLE, db);
+			createOrUpgradeTable(tableModel, db, force);
 		}
 	}
+
+    protected void createOrUpgradeTable(TableModel tableModel, SQLiteDatabase db, boolean force) {
+        execute(getCreateTableSQLs(tableModel, db, force), db);
+        giveTableSchemaACopy(tableModel.getTableName(), Const.TableSchema.NORMAL_TABLE, db);
+    }
 
 	/**
 	 * When creating a new table, it should always try to drop the same name
@@ -97,7 +101,7 @@ class Creator extends AssociationCreator {
 	 * @return A generated create table SQL.
 	 */
 	protected String generateCreateTableSQL(TableModel tableModel) {
-		return generateCreateTableSQL(tableModel.getTableName(), tableModel.getColumns(), true);
+		return generateCreateTableSQL(tableModel.getTableName(), tableModel.getColumnModels(), true);
 	}
 
 }

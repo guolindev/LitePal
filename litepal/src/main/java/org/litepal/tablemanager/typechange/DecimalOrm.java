@@ -26,21 +26,16 @@ public class DecimalOrm extends OrmChange {
 
 	/**
 	 * If the field type passed in is float or double, it will change it into
-	 * real as column type. Column name will be same as field name. Then return
-	 * an array of the combination.
+	 * real as column type.
 	 */
 	@Override
-	public String[] object2Relation(String className, String fieldName, String fieldType) {
-		if (fieldName != null && fieldType != null) {
-			String[] relations = new String[2];
-			relations[0] = fieldName;
+	public String object2Relation(String fieldType) {
+		if (fieldType != null) {
 			if (fieldType.equals("float") || fieldType.equals("java.lang.Float")) {
-				relations[1] = "REAL";
-				return relations;
+				return "real";
 			}
 			if (fieldType.equals("double") || fieldType.equals("java.lang.Double")) {
-				relations[1] = "REAL";
-				return relations;
+				return "real";
 			}
 		}
 		return null;

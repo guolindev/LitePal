@@ -14,6 +14,8 @@ import com.litepaltest.model.Student;
 import com.litepaltest.model.Teacher;
 import com.litepaltest.test.LitePalTestCase;
 
+import java.util.UUID;
+
 public class SaveTest extends LitePalTestCase {
 
 	public void testSave() {
@@ -21,6 +23,7 @@ public class SaveTest extends LitePalTestCase {
 		cell.setBrand("iPhone");
 		cell.setPrice(4998.01);
 		cell.setInStock('Y');
+        cell.setSerial(UUID.randomUUID().toString());
 		Assert.assertTrue(cell.save());
 		Assert.assertTrue(isDataExists(getTableName(cell), cell.getId()));
 	}
@@ -47,6 +50,7 @@ public class SaveTest extends LitePalTestCase {
 		cell.setBrand("iPhone");
 		cell.setPrice(4998.01);
 		cell.setInStock('Y');
+        cell.setSerial(UUID.randomUUID().toString());
 		Assert.assertTrue(cell.save());
 		Assert.assertTrue(isDataExists(getTableName(cell), cell.getId()));
 		assertTrue(cell.delete() > 0);

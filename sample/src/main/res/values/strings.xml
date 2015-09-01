@@ -27,8 +27,11 @@
     <string name="current_table_structure">Current Table Structure</string>
     <string name="field_name">Field Name</string>
     <string name="field_type">Field Type</string>
-    <string name="column_name">Column Name</string>
-    <string name="column_type">Column Type</string>
+    <string name="column_name">Name</string>
+    <string name="column_type">Type</string>
+    <string name="column_nullable">Nullable</string>
+    <string name="column_unique">Unique</string>
+    <string name="column_default">Default</string>
     <string name="sample_codes">Sample codes:</string>
     <string name="result">Result:</string>
     <string name="save_sample">Save Sample</string>

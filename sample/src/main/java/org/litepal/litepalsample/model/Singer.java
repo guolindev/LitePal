@@ -19,6 +19,7 @@ package org.litepal.litepalsample.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.litepal.annotation.Column;
 import org.litepal.crud.DataSupport;
 
 public class Singer extends DataSupport {
@@ -73,4 +74,7 @@ public class Singer extends DataSupport {
 		this.albums = albums;
 	}
 
+    public void setIsMale(boolean isMale) {
+        this.isMale = isMale;
+    }
 }

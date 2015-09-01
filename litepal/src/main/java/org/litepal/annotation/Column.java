@@ -42,7 +42,13 @@ public @interface Column {
     boolean unique() default false;
 
     /**
+     * Set default value with String type for the column regardless of what column type is.
+     */
+    String defaultValue() default "";
+
+    /**
      * Ignore to map this field into a column.
      */
     boolean ignore() default false;
+
 }

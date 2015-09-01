@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import org.litepal.crud.DataSupport;
 import org.litepal.util.DBUtility;
@@ -86,6 +87,7 @@ public class UpdateUsingSaveMethodTest extends LitePalTestCase {
 		cell.setBrand("SamSung");
 		cell.setPrice(3988.12);
 		cell.setInStock('Y');
+        cell.setSerial(UUID.randomUUID().toString());
 		assertTrue(cell.save());
 		assertTrue(isDataExists(getTableName(cell), cell.getId()));
 		// reduce price, sold out.

@@ -16,9 +16,10 @@
 
 package org.litepal.tablemanager.model;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import android.text.TextUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is a model class for tables. It stores a table name and a HashMap for
@@ -34,14 +35,13 @@ public class TableModel {
 	 */
 	private String tableName;
 
-	/**
-	 * Column name is key, and column type is value.
-	 */
-	private Map<String, String> columnsMap = new HashMap<String, String>();
+    /**
+     * A list contains all column models with column name, type and constraints.
+     */
+    private List<ColumnModel> columnModels = new ArrayList<ColumnModel>();
 
 	/**
-	 * Class name for the table name. This value might be null. Don't rely on
-	 * it.
+	 * Class name for the table name. This value might be null. Don't rely on it.
 	 */
 	private String className;
 
@@ -83,61 +83,75 @@ public class TableModel {
 		this.className = className;
 	}
 
-	/**
-	 * Find all the column names of a table.
-	 * 
-	 * @return Return a set of column names.
-	 */
-	public Set<String> getColumnNames() {
-		return columnsMap.keySet();
-	}
+    /**
+     * Add a column model into the table model.
+     *
+     * @param columnModel
+     *            A column model contains name, type and constraints.
+     */
+    public void addColumnModel(ColumnModel columnModel) {
+        columnModels.add(columnModel);
+    }
 
-	/**
-	 * Add a column into the table model.
-	 * 
-	 * @param columnName
-	 *            The name of column.
-	 * @param columnType
-	 *            The data type of column.
-	 */
-	public void addColumn(String columnName, String columnType) {
-		columnsMap.put(columnName, columnType);
-	}
+    /**
+     * Find all the column models of the current table model.
+     * @return A list contains all column models.
+     */
+    public List<ColumnModel> getColumnModels() {
+        return columnModels;
+    }
 
-	/**
-	 * Find all the columns with their names and data types.
-	 * 
-	 * @return A map contains all columns with column name as key and column
-	 *         type as value.
-	 */
-	public Map<String, String> getColumns() {
-		return columnsMap;
-	}
+    /**
+     * Find the ColumnModel which can map the column name passed in.
+     * @param columnName
+     *          Name of column.
+     * @return A ColumnModel which can map the column name passed in. Or null.
+     */
+    public ColumnModel getColumnModelByName(String columnName) {
+        for (ColumnModel columnModel : columnModels) {
+            if (columnModel.getColumnName().equalsIgnoreCase(columnName)) {
+                return columnModel;
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * Remove a column from table model.
-	 * 
-	 * @param columnNameToRemove
-	 *            The column name that need to remove.
-	 */
-	public void removeColumn(String columnNameToRemove) {
-		columnsMap.remove(columnNameToRemove);
-	}
+    /**
+     * Remove a column model by the specified column name.
+     * @param columnName
+     *          Name of the column to remove.
+     */
+    public void removeColumnModelByName(String columnName) {
+        if (TextUtils.isEmpty(columnName)) {
+            return;
+        }
+        int indexToRemove = -1;
+        for (int i = 0; i < columnModels.size(); i++) {
+            ColumnModel columnModel = columnModels.get(i);
+            if (columnName.equalsIgnoreCase(columnModel.getColumnName())) {
+                indexToRemove = i;
+                break;
+            }
+        }
+        if (indexToRemove != -1) {
+            columnModels.remove(indexToRemove);
+        }
+    }
 
-	/**
-	 * Remove a column from table model. The case of the passed in column name
-	 * is ignored.
-	 * 
-	 * @param columnNameToRemove
-	 *            The column name that need to remove.
-	 */
-	public void removeColumnIgnoreCases(String columnNameToRemove) {
-		for (String columnName : getColumnNames()) {
-			if (columnName.equalsIgnoreCase(columnNameToRemove)) {
-				columnsMap.remove(columnName);
-				return;
-			}
-		}
-	}
+    /**
+     * Judge the table model has such a column or not.
+     * @param columnName
+     *          The name of column to check.
+     * @return True if matches a column in the table model. False otherwise.
+     */
+    public boolean containsColumn(String columnName) {
+        for (int i = 0; i < columnModels.size(); i++) {
+            ColumnModel columnModel = columnModels.get(i);
+            if (columnName.equalsIgnoreCase(columnModel.getColumnName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

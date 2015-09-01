@@ -20,18 +20,29 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.litepal.annotation.Column;
 import org.litepal.crud.DataSupport;
 
 public class Album extends DataSupport {
 
 	private long id;
 
+    @Column(ignore = false, unique = false)
+    private int sales;
+
+    @Column(defaultValue = "Unknown")
 	private String name;
 
+    @Column(ignore = true, nullable = false)
 	private String publisher;
 
+    @Column(nullable = false, ignore = false)
 	private double price;
 
+    @Column(unique = true)
+    private String serial;
+
+    @Column(ignore = false, nullable = false, defaultValue = "100")
 	private Date release;
 
 	private Singer singer;
@@ -93,5 +104,21 @@ public class Album extends DataSupport {
 	public void setSongs(List<Song> songs) {
 		this.songs = songs;
 	}
+
+    public String getSerial() {
+        return serial;
+    }
+
+    public void setSerial(String serial) {
+        this.serial = serial;
+    }
+
+    public int getSales() {
+        return sales;
+    }
+
+    public void setSales(int sales) {
+        this.sales = sales;
+    }
 
 }

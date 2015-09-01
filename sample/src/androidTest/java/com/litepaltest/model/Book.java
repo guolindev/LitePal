@@ -2,6 +2,7 @@ package com.litepaltest.model;
 
 import java.io.Serializable;
 
+import org.litepal.annotation.Column;
 import org.litepal.crud.DataSupport;
 
 public class Book extends DataSupport implements Serializable{

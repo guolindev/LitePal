@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.litepal.exceptions.DatabaseGenerateException;
 import org.litepal.tablemanager.model.AssociationsModel;
+import org.litepal.tablemanager.model.ColumnModel;
 import org.litepal.util.BaseUtility;
 import org.litepal.util.Const;
 import org.litepal.util.DBUtility;
@@ -69,36 +70,46 @@ public abstract class AssociationCreator extends Generator {
 	 * 
 	 * @param tableName
 	 *            The table name.
-	 * @param columnsMap
-	 *            A map with column name as key and column type as value.
+	 * @param columnModels
+	 *            A list contains all column models with column info.
 	 * @param autoIncrementId
-	 *            Generate an auto increment id or not.
+	 *            Generate an auto increment id or not. Only intermediate join table doesn't need
+     *            an auto increment id.
 	 * @return A generated create table SQL.
 	 */
-	protected String generateCreateTableSQL(String tableName, Map<String, String> columnsMap,
+	protected String generateCreateTableSQL(String tableName, List<ColumnModel> columnModels,
 			boolean autoIncrementId) {
-		Set<String> columnNames = columnsMap.keySet();
-		removeId(columnNames);
 		StringBuilder createTableSQL = new StringBuilder("create table ");
 		createTableSQL.append(tableName).append(" (");
 		if (autoIncrementId) {
 			createTableSQL.append("id integer primary key autoincrement,");
 		}
-		Iterator<String> i = columnNames.iterator();
-		if (!i.hasNext()) {
+		if (columnModels.size() == 0) {
 			createTableSQL.deleteCharAt(createTableSQL.length() - 1);
 		}
 		boolean needSeparator = false;
-		while (i.hasNext()) {
-			if (needSeparator) {
-				createTableSQL.append(", ");
-			}
-			needSeparator = true;
-			String columnName = i.next();
-			createTableSQL.append(columnName).append(" ").append(columnsMap.get(columnName));
-		}
+        for (ColumnModel columnModel : columnModels) {
+            if (columnModel.isIdColumn()) {
+                continue;
+            }
+            if (needSeparator) {
+                createTableSQL.append(", ");
+            }
+            needSeparator = true;
+            createTableSQL.append(columnModel.getColumnName()).append(" ").append(columnModel.getColumnType());
+            if (!columnModel.isNullable()) {
+                createTableSQL.append(" not null");
+            }
+            if (columnModel.isUnique()) {
+                createTableSQL.append(" unique");
+            }
+            String defaultValue = columnModel.getDefaultValue();
+            if (!TextUtils.isEmpty(defaultValue)) {
+                createTableSQL.append(" default ").append(defaultValue);
+            }
+        }
 		createTableSQL.append(")");
-		LogUtil.d(TAG, "add column sql is >> " + createTableSQL);
+		LogUtil.d(TAG, "create table sql is >> " + createTableSQL);
 		return createTableSQL.toString();
 	}
 
@@ -115,17 +126,38 @@ public abstract class AssociationCreator extends Generator {
 
 	/**
 	 * Generate a SQL for add new column into the existing table.
-	 * 
-	 * @param columnName
-	 *            The new column name.
-	 * @param columnType
-	 *            The new column type.
+	 * @param tableName
+     *          The table which want to add a column
+	 * @param columnModel
+	 *          Which contains column info
 	 * @return A SQL to add new column.
 	 */
-	protected String generateAddColumnSQL(String tableName, String columnName, String columnType) {
+	protected String generateAddColumnSQL(String tableName, ColumnModel columnModel) {
 		StringBuilder addColumnSQL = new StringBuilder();
-		addColumnSQL.append("alter table ").append(tableName).append(" add column ")
-				.append(columnName).append(" ").append(columnType);
+		addColumnSQL.append("alter table ").append(tableName);
+        addColumnSQL.append(" add column ").append(columnModel.getColumnName());
+        addColumnSQL.append(" ").append(columnModel.getColumnType());
+        if (!columnModel.isNullable()) {
+            addColumnSQL.append(" not null");
+        }
+        if (columnModel.isUnique()) {
+            addColumnSQL.append(" unique");
+        }
+        String defaultValue = columnModel.getDefaultValue();
+        if (!TextUtils.isEmpty(defaultValue)) {
+            addColumnSQL.append(" default ").append(defaultValue);
+        } else {
+            if (!columnModel.isNullable()) {
+                if ("integer".equalsIgnoreCase(columnModel.getColumnType())) {
+                    defaultValue = "0";
+                } else if ("text".equalsIgnoreCase(columnModel.getColumnType())) {
+                    defaultValue = "''";
+                } else if ("real".equalsIgnoreCase(columnModel.getColumnType())) {
+                    defaultValue = "0.0";
+                }
+                addColumnSQL.append(" default ").append(defaultValue);
+            }
+        }
 		LogUtil.d(TAG, "add column sql is >> " + addColumnSQL);
 		return addColumnSQL.toString();
 	}
@@ -279,19 +311,25 @@ public abstract class AssociationCreator extends Generator {
 	 */
 	private void createIntermediateTable(String tableName, String associatedTableName,
 			SQLiteDatabase db, boolean force) {
-		Map<String, String> columnsMap = new HashMap<String, String>();
-		columnsMap.put(tableName + "_id", "integer");
-		columnsMap.put(associatedTableName + "_id", "integer");
+        List<ColumnModel> columnModelList = new ArrayList<ColumnModel>();
+        ColumnModel column1 = new ColumnModel();
+        column1.setColumnName(tableName + "_id");
+        column1.setColumnType("integer");
+        ColumnModel column2 = new ColumnModel();
+        column2.setColumnName(associatedTableName + "_id");
+        column2.setColumnType("integer");
+        columnModelList.add(column1);
+        columnModelList.add(column2);
 		String intermediateTableName = DBUtility.getIntermediateTableName(tableName,
 				associatedTableName);
 		List<String> sqls = new ArrayList<String>();
 		if (DBUtility.isTableExists(intermediateTableName, db)) {
 			if (force) {
 				sqls.add(generateDropTableSQL(intermediateTableName));
-				sqls.add(generateCreateTableSQL(intermediateTableName, columnsMap, false));
+				sqls.add(generateCreateTableSQL(intermediateTableName, columnModelList, false));
 			}
 		} else {
-			sqls.add(generateCreateTableSQL(intermediateTableName, columnsMap, false));
+			sqls.add(generateCreateTableSQL(intermediateTableName, columnModelList, false));
 		}
 		execute(sqls.toArray(new String[0]), db);
 		giveTableSchemaACopy(intermediateTableName, Const.TableSchema.INTERMEDIATE_JOIN_TABLE, db);
@@ -314,7 +352,7 @@ public abstract class AssociationCreator extends Generator {
 	 * 
 	 * @throws org.litepal.exceptions.DatabaseGenerateException
 	 */
-	private void addForeignKeyColumn(String tableName, String associatedTableName,
+	protected void addForeignKeyColumn(String tableName, String associatedTableName,
 			String tableHoldsForeignKey, SQLiteDatabase db) {
 		if (DBUtility.isTableExists(tableName, db)) {
 			if (DBUtility.isTableExists(associatedTableName, db)) {
@@ -325,8 +363,10 @@ public abstract class AssociationCreator extends Generator {
 					foreignKeyColumn = getForeignKeyColumnName(tableName);
 				}
 				if (!DBUtility.isColumnExists(foreignKeyColumn, tableHoldsForeignKey, db)) {
-					String[] sqls = { generateAddColumnSQL(tableHoldsForeignKey, foreignKeyColumn,
-							"integer") };
+                    ColumnModel columnModel = new ColumnModel();
+                    columnModel.setColumnName(foreignKeyColumn);
+                    columnModel.setColumnType("integer");
+					String[] sqls = { generateAddColumnSQL(tableHoldsForeignKey, columnModel) };
 					execute(sqls, db);
 				} else {
 					LogUtil.d(TAG, "column " + foreignKeyColumn
@@ -339,25 +379,6 @@ public abstract class AssociationCreator extends Generator {
 		} else {
 			throw new DatabaseGenerateException(DatabaseGenerateException.TABLE_DOES_NOT_EXIST
 					+ tableName);
-		}
-	}
-
-	/**
-	 * After getting the id name, the id column must be removed from column
-	 * names collection. Avoid to generate two id columns.
-	 * 
-	 * @param columnNames
-	 */
-	private void removeId(Set<String> columnNames) {
-		String idName = "";
-		for (String columnName : columnNames) {
-			if (isIdColumn(columnName)) {
-				idName = columnName;
-				break;
-			}
-		}
-		if (!TextUtils.isEmpty(idName)) {
-			columnNames.remove(idName);
 		}
 	}
 

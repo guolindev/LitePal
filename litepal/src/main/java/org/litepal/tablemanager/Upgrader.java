@@ -17,16 +17,18 @@
 package org.litepal.tablemanager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
+import org.litepal.crud.model.AssociationsInfo;
+import org.litepal.tablemanager.model.ColumnModel;
 import org.litepal.tablemanager.model.TableModel;
-import org.litepal.util.BaseUtility;
+import org.litepal.util.Const;
+import org.litepal.util.DBUtility;
 import org.litepal.util.LogUtil;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 
 /**
  * Upgrade the database. The first step is to remove the columns that can not
@@ -43,6 +45,16 @@ public class Upgrader extends AssociationUpdater {
 	 */
 	protected TableModel mTableModel;
 
+    /**
+     * Model class for table from database.
+     */
+    protected TableModel mTableModelDB;
+
+    /**
+     * Indicates that column constraints has changed or not.
+     */
+    private boolean hasConstraintChanged;
+
 	/**
 	 * Analyzing the table model, them remove the dump columns and add new
 	 * columns of a table.
@@ -52,48 +64,74 @@ public class Upgrader extends AssociationUpdater {
 		mDb = db;
 		for (TableModel tableModel : getAllTableModels()) {
 			mTableModel = tableModel;
+            mTableModelDB = getTableModelFromDB(tableModel.getTableName());
 			upgradeTable();
 		}
 	}
 
 	/**
 	 * Upgrade table actions. Include remove dump columns, add new columns and
-	 * change column types. All the actions above will be done by the
-	 * description order.
+	 * change column types. All the actions above will be done by the description
+     * order.
 	 */
 	private void upgradeTable() {
-		removeColumns(findColumnsToRemove(), mTableModel.getTableName());
-		addColumn(findColumnsToAdd());
-		changeColumnsType(findColumnTypesToChange());
+        if (hasAddUniqueColumn()) {
+            // Need to drop the table and create new one. Cause unique column can not be added.
+            createOrUpgradeTable(mTableModel, mDb, true);
+            // add foreign keys of the table.
+            Collection<AssociationsInfo> associationsInfo = getAssociationInfo(mTableModel.getClassName());
+            for (AssociationsInfo info : associationsInfo) {
+                if (info.getAssociationType() == Const.Model.MANY_TO_ONE
+                        || info.getAssociationType() == Const.Model.ONE_TO_ONE) {
+                    if (info.getClassHoldsForeignKey().equalsIgnoreCase(mTableModel.getClassName())) {
+                        String associatedTableName = DBUtility.getTableNameByClassName(info.getAssociatedClassName());
+                        addForeignKeyColumn(mTableModel.getTableName(), associatedTableName, mTableModel.getTableName(), mDb);
+                    }
+                }
+            }
+        } else {
+            hasConstraintChanged = false;
+            removeColumns(findColumnsToRemove());
+            addColumns(findColumnsToAdd());
+            changeColumnsType(findColumnTypesToChange());
+            changeColumnsConstraints();
+        }
 	}
+
+    /**
+     * Judge the current model has add or upgrade an unique column or not.
+     * @return True if add or upgrade an unique column. False otherwise.
+     */
+    private boolean hasAddUniqueColumn() {
+        List<ColumnModel> columnModelList = mTableModel.getColumnModels();
+        for (ColumnModel columnModel : columnModelList) {
+            if (columnModel.isUnique()) {
+                ColumnModel columnModel1DB = mTableModelDB.getColumnModelByName(columnModel.getColumnName());
+                if (columnModel1DB == null || !columnModel1DB.isUnique()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
 	/**
 	 * It will find the difference between class model and table model. If
 	 * there's a field in the class without a corresponding column in the table,
 	 * this field is a new added column. This method find all new added columns.
 	 * 
-	 * @return A map contains all new columns with column name as key and column
-	 *         type as value.
+	 * @return List with ColumnModel contains information of new columns.
 	 */
-	private Map<String, String> findColumnsToAdd() {
-		Map<String, String> newColumnsMap = new HashMap<String, String>();
-		for (String columnName : mTableModel.getColumnNames()) {
-			boolean isNewColumn = true;
-			for (String dbColumnName : getTableModelFromDB(mTableModel.getTableName())
-					.getColumnNames()) {
-				if (columnName.equalsIgnoreCase(dbColumnName)) {
-					isNewColumn = false;
-					break;
-				}
-			}
-			if (isNewColumn) {
-				// add column action
-				if (!isIdColumn(columnName)) {
-					newColumnsMap.put(columnName, mTableModel.getColumns().get(columnName));
-				}
-			}
-		}
-		return newColumnsMap;
+	private List<ColumnModel> findColumnsToAdd() {
+        List<ColumnModel> columnsToAdd = new ArrayList<ColumnModel>();
+        for (ColumnModel columnModel : mTableModel.getColumnModels()) {
+            String columnName = columnModel.getColumnName();
+            if (!mTableModelDB.containsColumn(columnName)) {
+                // add column action
+                columnsToAdd.add(columnModel);
+            }
+        }
+		return columnsToAdd;
 	}
 
 	/**
@@ -108,18 +146,16 @@ public class Upgrader extends AssociationUpdater {
 	 * @return A list with column names need to remove.
 	 */
 	private List<String> findColumnsToRemove() {
-		TableModel tableModelDB = getTableModelFromDB(mTableModel.getTableName());
+        String tableName = mTableModel.getTableName();
 		List<String> removeColumns = new ArrayList<String>();
-		Map<String, String> dbColumnsMap = tableModelDB.getColumns();
-		Set<String> dbColumnNames = dbColumnsMap.keySet();
-		for (String dbColumnName : dbColumnNames) {
-			if (isNeedToRemove(dbColumnName)) {
-				removeColumns.add(dbColumnName);
-			}
-		}
-		for (String removeColumn : removeColumns) {
-			LogUtil.d(TAG, "remove column is >> " + removeColumn);
-		}
+        List<ColumnModel> columnModelList = mTableModelDB.getColumnModels();
+        for (ColumnModel columnModel : columnModelList) {
+            String dbColumnName = columnModel.getColumnName();
+            if (isNeedToRemove(dbColumnName)) {
+                removeColumns.add(dbColumnName);
+            }
+        }
+        LogUtil.d(TAG, "remove columns from " + tableName + " >> " + removeColumns);
 		return removeColumns;
 	}
 
@@ -128,26 +164,30 @@ public class Upgrader extends AssociationUpdater {
 	 * field is changed or not by comparing with the types in table columns. If
 	 * there's a column have same name as a field in class but with different
 	 * type, then it's a type changed column.
-	 * 
-	 * @return A map contains all type changed columns with column name as key
-	 *         and column type as value.
+	 *
+	 * @return A list contains all ColumnModel which type are changed from database.
 	 */
-	private Map<String, String> findColumnTypesToChange() {
-		Map<String, String> changeTypeColumns = new HashMap<String, String>();
-		TableModel tableModelDB = getTableModelFromDB(mTableModel.getTableName());
-		for (String columnNameDB : tableModelDB.getColumnNames()) {
-			for (String columnName : mTableModel.getColumnNames()) {
-				if (columnNameDB.equalsIgnoreCase(columnName)) {
-					String columnTypeDB = tableModelDB.getColumns().get(columnNameDB);
-					String columnType = mTableModel.getColumns().get(columnName);
-					if (!columnTypeDB.equalsIgnoreCase(columnType)) {
-						// column type is changed
-						changeTypeColumns.put(columnName, columnType);
-					}
-				}
-			}
-		}
-		return changeTypeColumns;
+	private List<ColumnModel> findColumnTypesToChange() {
+        List<ColumnModel> columnsToChangeType = new ArrayList<ColumnModel>();
+        for (ColumnModel columnModelDB : mTableModelDB.getColumnModels()) {
+            for (ColumnModel columnModel : mTableModel.getColumnModels()) {
+                if (columnModelDB.getColumnName().equalsIgnoreCase(columnModel.getColumnName())) {
+                    if (!columnModelDB.getColumnType().equalsIgnoreCase(columnModel.getColumnType())) {
+                        // column type is changed
+                        columnsToChangeType.add(columnModel);
+                    }
+                    if (!hasConstraintChanged) {
+                        // for reducing loops, check column constraints change here.
+                        if (columnModelDB.isNullable() != columnModel.isNullable() ||
+                            columnModelDB.getDefaultValue().equalsIgnoreCase(columnModel.getDefaultValue()) ||
+                            (columnModelDB.isUnique() && !columnModel.isUnique())) { // unique constraint can not be added
+                            hasConstraintChanged = true;
+                        }
+                    }
+                }
+            }
+        }
+		return columnsToChangeType;
 	}
 
 	/**
@@ -175,61 +215,166 @@ public class Upgrader extends AssociationUpdater {
 	 * @return If it's removed return true, or return false.
 	 */
 	private boolean isRemovedFromClass(String columnName) {
-		return !BaseUtility.containsIgnoreCases(mTableModel.getColumnNames(), columnName);
+        return !mTableModel.containsColumn(columnName);
 	}
 
 	/**
 	 * Generate a SQL for add new column into the existing table.
 	 * 
-	 * @param columnName
-	 *            The new column name.
-	 * @param columnType
-	 *            The new column type.
+	 * @param columnModel
+	 *            Which contains column info.
 	 * @return A SQL to add new column.
 	 */
-	private String generateAddColumnSQL(String columnName, String columnType) {
-		return generateAddColumnSQL(mTableModel.getTableName(), columnName, columnType);
+	private String generateAddColumnSQL(ColumnModel columnModel) {
+		return generateAddColumnSQL(mTableModel.getTableName(), columnModel);
 	}
 
 	/**
 	 * This method create a SQL array for the all new columns to add them into
 	 * table.
 	 * 
-	 * @param newColumnsMap
-	 *            A column map with column name as key and column type as value.
+	 * @param columnModelList
+	 *            List with ColumnModel to add new column.
 	 * @return A SQL array contains add all new columns job.
 	 */
-	private String[] getAddColumnSQLs(Map<String, String> newColumnsMap) {
+	private String[] getAddColumnSQLs(List<ColumnModel> columnModelList) {
 		List<String> sqls = new ArrayList<String>();
-		for (String columnName : newColumnsMap.keySet()) {
-			sqls.add(generateAddColumnSQL(columnName, newColumnsMap.get(columnName)));
+		for (ColumnModel columnModel : columnModelList) {
+			sqls.add(generateAddColumnSQL(columnModel));
 		}
 		return sqls.toArray(new String[0]);
 	}
+
+    /**
+     * When some fields are removed from class, the table should synchronize the
+     * changes by removing the corresponding columns.
+     *
+     * @param removeColumnNames
+     *            The column names that need to remove.
+     */
+    private void removeColumns(List<String> removeColumnNames) {
+        LogUtil.d(TAG, "do addColumn");
+        removeColumns(removeColumnNames, mTableModel.getTableName());
+        for (String columnName : removeColumnNames) {
+            mTableModelDB.removeColumnModelByName(columnName);
+        }
+    }
 
 	/**
 	 * When some fields are added into the class after last upgrade, the table
 	 * should synchronize the changes by adding the corresponding columns.
 	 * 
-	 * @param columnsMap
-	 *            A map contains all the new columns need to add with column
-	 *            names as key and column types as value.
+	 * @param columnModelList
+	 *            List with ColumnModel to add new column.
 	 */
-	private void addColumn(Map<String, String> columnsMap) {
-		execute(getAddColumnSQLs(columnsMap), mDb);
+	private void addColumns(List<ColumnModel> columnModelList) {
+        LogUtil.d(TAG, "do addColumn");
+		execute(getAddColumnSQLs(columnModelList), mDb);
+        for (ColumnModel columnModel : columnModelList) {
+            mTableModelDB.addColumnModel(columnModel);
+        }
 	}
 
 	/**
 	 * When some fields type are changed in class, the table should drop the
 	 * before columns and create new columns with same name but new types.
 	 * 
-	 * @param changeTypeColumns
-	 *            A map contains all the columns need to change type with column
-	 *            names as key and column types as value.
+	 * @param columnModelList
+	 *            List with ColumnModel to change column type.
 	 */
-	private void changeColumnsType(Map<String, String> changeTypeColumns) {
-		removeColumns(changeTypeColumns.keySet(), mTableModel.getTableName());
-		addColumn(changeTypeColumns);
+	private void changeColumnsType(List<ColumnModel> columnModelList) {
+        LogUtil.d(TAG, "do changeColumnsType");
+        List<String> columnNames = new ArrayList<String>();
+        if (columnModelList != null && !columnModelList.isEmpty()) {
+            for (ColumnModel columnModel : columnModelList) {
+                columnNames.add(columnModel.getColumnName());
+            }
+        }
+		removeColumns(columnNames);
+		addColumns(columnModelList);
 	}
+
+    /**
+     * When fields annotation changed in class, table should change the corresponding constraints
+     * make them sync to the fields annotation.
+     */
+    private void changeColumnsConstraints() {
+        if (hasConstraintChanged) {
+            LogUtil.d(TAG, "do changeColumnsConstraints");
+            execute(getChangeColumnsConstraintsSQL(), mDb);
+        }
+    }
+
+    /**
+     * This method create a SQL array for the whole changing column constraints job.
+     * @return A SQL array contains create temporary table, create new table, add foreign keys,
+     *         migrate data and drop temporary table.
+     */
+    private String[] getChangeColumnsConstraintsSQL() {
+        String alterToTempTableSQL = generateAlterToTempTableSQL(mTableModelDB.getTableName());
+        LogUtil.d(TAG, "generateChangeConstraintSQL >> " + alterToTempTableSQL);
+        String createNewTableSQL = generateCreateNewTableSQL();
+        LogUtil.d(TAG, "generateChangeConstraintSQL >> " + createNewTableSQL);
+        List<String> addForeignKeySQLs = generateAddForeignKeySQL();
+        LogUtil.d(TAG, "generateChangeConstraintSQL >> " + addForeignKeySQLs);
+        String dataMigrationSQL = generateDataMigrationSQL(mTableModelDB);
+        LogUtil.d(TAG, "generateChangeConstraintSQL >> " + dataMigrationSQL);
+        String dropTempTableSQL = generateDropTempTableSQL(mTableModelDB.getTableName());
+        LogUtil.d(TAG, "generateChangeConstraintSQL >> " + dropTempTableSQL);
+        List<String> sqls = new ArrayList<String>();
+        sqls.add(alterToTempTableSQL);
+        sqls.add(createNewTableSQL);
+        sqls.addAll(addForeignKeySQLs);
+        sqls.add(dataMigrationSQL);
+        sqls.add(dropTempTableSQL);
+        return sqls.toArray(new String[0]);
+    }
+
+    /**
+     * Generate a SQL to create new table by the table model. When find adding not null columns,
+     * give them a default value depends on their types.
+     * @return SQL to create new table.
+     */
+    private String generateCreateNewTableSQL() {
+        for (ColumnModel columnModel : mTableModel.getColumnModels()) {
+            ColumnModel columnModelDB = mTableModelDB.getColumnModelByName(columnModel.getColumnName());
+            if (columnModelDB != null) {
+                if (!columnModel.isNullable() && columnModelDB.isNullable()) {
+                    if (TextUtils.isEmpty(columnModel.getDefaultValue())) {
+                        String defaultValue = null;
+                        if ("integer".equalsIgnoreCase(columnModel.getColumnType())) {
+                            defaultValue = "0";
+                        } else if ("text".equalsIgnoreCase(columnModel.getColumnType())) {
+                            defaultValue = "''";
+                        } else if ("real".equalsIgnoreCase(columnModel.getColumnType())) {
+                            defaultValue = "0.0";
+                        }
+                        columnModel.setDefaultValue(defaultValue);
+                    }
+                }
+            }
+        }
+        return generateCreateTableSQL(mTableModel.getTableName(), mTableModel.getColumnModels(), true);
+    }
+
+    /**
+     * Generate a SQL List for adding foreign keys. Changing constraints job should remain all the
+     * existing columns including foreign keys. This method add origin foreign keys after creating
+     * table.
+     * @return A SQL List for adding foreign keys.
+     */
+    private List<String> generateAddForeignKeySQL() {
+        List<String> addForeignKeySQLs = new ArrayList<String>();
+        List<String> foreignKeyColumns = getForeignKeyColumns(mTableModel);
+        for (String foreignKeyColumn : foreignKeyColumns) {
+            if (!mTableModel.containsColumn(foreignKeyColumn)) {
+                ColumnModel columnModel = new ColumnModel();
+                columnModel.setColumnName(foreignKeyColumn);
+                columnModel.setColumnType("integer");
+                addForeignKeySQLs.add(generateAddColumnSQL(mTableModel.getTableName(), columnModel));
+            }
+        }
+        return addForeignKeySQLs;
+    }
 
 }
