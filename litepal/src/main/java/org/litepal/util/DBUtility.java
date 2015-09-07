@@ -289,14 +289,19 @@ public class DBUtility {
                         ColumnModel columnModel = new ColumnModel();
                         String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
                         String type = cursor.getString(cursor.getColumnIndexOrThrow("type"));
-                        boolean nullable = cursor.getInt(cursor.getColumnIndexOrThrow("notnull")) == 1 ? false : true;
+                        boolean nullable = cursor.getInt(cursor.getColumnIndexOrThrow("notnull")) != 1;
                         boolean unique = uniqueColumns.contains(name);
                         String defaultValue = cursor.getString(cursor.getColumnIndexOrThrow("dflt_value"));
                         columnModel.setColumnName(name);
                         columnModel.setColumnType(type);
                         columnModel.setIsNullable(nullable);
                         columnModel.setIsUnique(unique);
-                        columnModel.setDefaultValue(defaultValue == null ? "" : defaultValue);
+                        if (defaultValue != null) {
+                            defaultValue = defaultValue.replace("'", "");
+                        } else {
+                            defaultValue = "";
+                        }
+                        columnModel.setDefaultValue(defaultValue);
 						tableModelDB.addColumnModel(columnModel);
 					} while (cursor.moveToNext());
 				}

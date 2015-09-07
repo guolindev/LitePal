@@ -916,6 +916,7 @@ abstract class DataHandler extends LitePalBase {
 			}
 		} else if (isSaving()) {
             Object value = takeGetMethodValueByField(baseObj, field);
+            // put content value only when value is not null. this allows to use defaultValue declared in annotation.
             if (value != null) {
                 putContentValues(baseObj, field, values);
             }

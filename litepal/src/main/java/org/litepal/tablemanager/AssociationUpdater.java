@@ -365,7 +365,7 @@ public abstract class AssociationUpdater extends Creator {
 	 *            The table name use to generate temporary table name.
 	 * @return Temporary table name
 	 */
-	private String getTempTableName(String tableName) {
+	protected String getTempTableName(String tableName) {
 		return tableName + "_temp";
 	}
 

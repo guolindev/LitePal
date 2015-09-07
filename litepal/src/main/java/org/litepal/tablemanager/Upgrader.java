@@ -75,8 +75,8 @@ public class Upgrader extends AssociationUpdater {
      * order.
 	 */
 	private void upgradeTable() {
-        if (hasAddUniqueColumn()) {
-            // Need to drop the table and create new one. Cause unique column can not be added.
+        if (hasNewUniqueOrNotNullColumn()) {
+            // Need to drop the table and create new one. Cause unique column can not be added, and null data can not be migrated.
             createOrUpgradeTable(mTableModel, mDb, true);
             // add foreign keys of the table.
             Collection<AssociationsInfo> associationsInfo = getAssociationInfo(mTableModel.getClassName());
@@ -99,17 +99,20 @@ public class Upgrader extends AssociationUpdater {
 	}
 
     /**
-     * Judge the current model has add or upgrade an unique column or not.
-     * @return True if add or upgrade an unique column. False otherwise.
+     * Check if the current model add or upgrade an unique or not null column.
+     * @return True if has new unique or not null column. False otherwise.
      */
-    private boolean hasAddUniqueColumn() {
+    private boolean hasNewUniqueOrNotNullColumn() {
         List<ColumnModel> columnModelList = mTableModel.getColumnModels();
         for (ColumnModel columnModel : columnModelList) {
+            ColumnModel columnModelDB = mTableModelDB.getColumnModelByName(columnModel.getColumnName());
             if (columnModel.isUnique()) {
-                ColumnModel columnModel1DB = mTableModelDB.getColumnModelByName(columnModel.getColumnName());
-                if (columnModel1DB == null || !columnModel1DB.isUnique()) {
+                if (columnModelDB == null || !columnModelDB.isUnique()) {
                     return true;
                 }
+            }
+            if (columnModelDB != null && !columnModel.isNullable() && columnModelDB.isNullable()) {
+                return true;
             }
         }
         return false;
@@ -178,8 +181,9 @@ public class Upgrader extends AssociationUpdater {
                     }
                     if (!hasConstraintChanged) {
                         // for reducing loops, check column constraints change here.
+                        LogUtil.d(TAG, "default value db is:" + columnModelDB.getDefaultValue() + ", default value is:" + columnModel.getDefaultValue());
                         if (columnModelDB.isNullable() != columnModel.isNullable() ||
-                            columnModelDB.getDefaultValue().equalsIgnoreCase(columnModel.getDefaultValue()) ||
+                            !columnModelDB.getDefaultValue().equalsIgnoreCase(columnModel.getDefaultValue()) ||
                             (columnModelDB.isUnique() && !columnModel.isUnique())) { // unique constraint can not be added
                             hasConstraintChanged = true;
                         }
@@ -311,50 +315,23 @@ public class Upgrader extends AssociationUpdater {
      *         migrate data and drop temporary table.
      */
     private String[] getChangeColumnsConstraintsSQL() {
-        String alterToTempTableSQL = generateAlterToTempTableSQL(mTableModelDB.getTableName());
-        LogUtil.d(TAG, "generateChangeConstraintSQL >> " + alterToTempTableSQL);
-        String createNewTableSQL = generateCreateNewTableSQL();
-        LogUtil.d(TAG, "generateChangeConstraintSQL >> " + createNewTableSQL);
+        String alterToTempTableSQL = generateAlterToTempTableSQL(mTableModel.getTableName());
+        String createNewTableSQL = generateCreateTableSQL(mTableModel);
         List<String> addForeignKeySQLs = generateAddForeignKeySQL();
-        LogUtil.d(TAG, "generateChangeConstraintSQL >> " + addForeignKeySQLs);
         String dataMigrationSQL = generateDataMigrationSQL(mTableModelDB);
-        LogUtil.d(TAG, "generateChangeConstraintSQL >> " + dataMigrationSQL);
-        String dropTempTableSQL = generateDropTempTableSQL(mTableModelDB.getTableName());
-        LogUtil.d(TAG, "generateChangeConstraintSQL >> " + dropTempTableSQL);
+        String dropTempTableSQL = generateDropTempTableSQL(mTableModel.getTableName());
         List<String> sqls = new ArrayList<String>();
         sqls.add(alterToTempTableSQL);
         sqls.add(createNewTableSQL);
         sqls.addAll(addForeignKeySQLs);
         sqls.add(dataMigrationSQL);
         sqls.add(dropTempTableSQL);
-        return sqls.toArray(new String[0]);
-    }
-
-    /**
-     * Generate a SQL to create new table by the table model. When find adding not null columns,
-     * give them a default value depends on their types.
-     * @return SQL to create new table.
-     */
-    private String generateCreateNewTableSQL() {
-        for (ColumnModel columnModel : mTableModel.getColumnModels()) {
-            ColumnModel columnModelDB = mTableModelDB.getColumnModelByName(columnModel.getColumnName());
-            if (columnModelDB != null) {
-                if (!columnModel.isNullable() && columnModelDB.isNullable()) {
-                    if (TextUtils.isEmpty(columnModel.getDefaultValue())) {
-                        String defaultValue = null;
-                        if ("integer".equalsIgnoreCase(columnModel.getColumnType())) {
-                            defaultValue = "0";
-                        } else if ("text".equalsIgnoreCase(columnModel.getColumnType())) {
-                            defaultValue = "''";
-                        } else if ("real".equalsIgnoreCase(columnModel.getColumnType())) {
-                            defaultValue = "0.0";
-                        }
-                        columnModel.setDefaultValue(defaultValue);
-                    }
-                }
-            }
+        LogUtil.d(TAG, "generateChangeConstraintSQL >> ");
+        for (String sql : sqls) {
+            LogUtil.d(TAG, sql);
         }
-        return generateCreateTableSQL(mTableModel.getTableName(), mTableModel.getColumnModels(), true);
+        LogUtil.d(TAG, "<< generateChangeConstraintSQL");
+        return sqls.toArray(new String[0]);
     }
 
     /**
