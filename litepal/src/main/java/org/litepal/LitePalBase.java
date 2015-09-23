@@ -316,7 +316,7 @@ public abstract class LitePalBase {
 			// class.
 			for (int i = 0; i < reverseFields.length; i++) {
 				Field reverseField = reverseFields[i];
-				if (Modifier.isPrivate(reverseField.getModifiers())) {
+				if (!Modifier.isStatic(reverseField.getModifiers())) {
 					Class<?> reverseFieldTypeClass = reverseField.getType();
 					// If there's the from class name in the
 					// defined class, they are one2one bidirectional
@@ -347,19 +347,19 @@ public abstract class LitePalBase {
 							reverseAssociations = true;
 						}
 					}
-					// If there's no from class in the defined class, they are
-					// one2one unidirectional associations.
-					if ((i == reverseFields.length - 1) && !reverseAssociations) {
-						if (action == GET_ASSOCIATIONS_ACTION) {
-							addIntoAssociationModelCollection(className, fieldTypeClass.getName(),
-									fieldTypeClass.getName(), Const.Model.ONE_TO_ONE);
-						} else if (action == GET_ASSOCIATION_INFO_ACTION) {
-							addIntoAssociationInfoCollection(className, fieldTypeClass.getName(),
-									fieldTypeClass.getName(), field, null, Const.Model.ONE_TO_ONE);
-						}
-					}
 				}
 			}
+            // If there's no from class in the defined class, they are
+            // one2one unidirectional associations.
+            if (!reverseAssociations) {
+                if (action == GET_ASSOCIATIONS_ACTION) {
+                    addIntoAssociationModelCollection(className, fieldTypeClass.getName(),
+                            fieldTypeClass.getName(), Const.Model.ONE_TO_ONE);
+                } else if (action == GET_ASSOCIATION_INFO_ACTION) {
+                    addIntoAssociationInfoCollection(className, fieldTypeClass.getName(),
+                            fieldTypeClass.getName(), field, null, Const.Model.ONE_TO_ONE);
+                }
+            }
 		}
 	}
 
@@ -403,7 +403,7 @@ public abstract class LitePalBase {
 				for (int i = 0; i < reverseFields.length; i++) {
 					Field reverseField = reverseFields[i];
 					// Only map private fields
-					if (Modifier.isPrivate(reverseField.getModifiers())) {
+					if (!Modifier.isStatic(reverseField.getModifiers())) {
 						Class<?> reverseFieldTypeClass = reverseField.getType();
 						// If there's a from class name defined in the reverse
 						// class, they are many2one bidirectional
@@ -434,19 +434,20 @@ public abstract class LitePalBase {
 								reverseAssociations = true;
 							}
 						}
-						// If there's no from class in the defined class, they
-						// are many2one unidirectional associations.
-						if ((i == reverseFields.length - 1) && !reverseAssociations) {
-							if (action == GET_ASSOCIATIONS_ACTION) {
-								addIntoAssociationModelCollection(className, genericTypeName,
-										genericTypeName, Const.Model.MANY_TO_ONE);
-							} else if (action == GET_ASSOCIATION_INFO_ACTION) {
-								addIntoAssociationInfoCollection(className, genericTypeName, genericTypeName,
-										field, null, Const.Model.MANY_TO_ONE);
-							}
-						}
+
 					}
 				}
+                // If there's no from class in the defined class, they
+                // are many2one unidirectional associations.
+                if (!reverseAssociations) {
+                    if (action == GET_ASSOCIATIONS_ACTION) {
+                        addIntoAssociationModelCollection(className, genericTypeName,
+                                genericTypeName, Const.Model.MANY_TO_ONE);
+                    } else if (action == GET_ASSOCIATION_INFO_ACTION) {
+                        addIntoAssociationInfoCollection(className, genericTypeName, genericTypeName,
+                                field, null, Const.Model.MANY_TO_ONE);
+                    }
+                }
 			}
 		}
 	}
