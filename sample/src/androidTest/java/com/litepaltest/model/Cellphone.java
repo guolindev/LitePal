@@ -7,14 +7,14 @@ public class Cellphone extends DataSupport {
 
 	private Long id;
 
-	private String brand;
+	public String brand;
 
 	private Character inStock;
 
-	private Double price;
+	protected Double price;
 
     @Column(unique = true, nullable = false)
-    private String serial;
+    String serial;
 
     @Column(nullable = true, defaultValue = "0.0.0.0")
     private String mac;

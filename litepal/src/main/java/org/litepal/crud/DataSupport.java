@@ -891,6 +891,19 @@ public class DataSupport {
 		}
 	}
 
+    /**
+     * Provide a way to mark all models in collection as deleted. This means these models' save
+     * state is no longer exist anymore. If save them again, they will be treated as inserting new
+     * data instead of updating the exist one.
+     * @param collection
+     *          Collection of models which want to mark as deleted and clear their save state.
+     */
+    public static <T extends DataSupport> void markAsDeleted(Collection<T> collection) {
+        for (T t : collection) {
+            t.clearSavedState();
+        }
+    }
+
 	/**
 	 * Deletes the record in the database. The record must be saved already.<br>
 	 * The data in other tables which is referenced with the record will be
@@ -1074,6 +1087,13 @@ public class DataSupport {
 		return baseObjId > 0;
 	}
 
+    /**
+     * It model is saved, clear the saved state and model becomes unsaved. Otherwise nothing will happen.
+     */
+    public void clearSavedState() {
+        baseObjId = 0;
+    }
+
 	/**
 	 * When updating database with {@link org.litepal.crud.DataSupport#update(long)}, you must
 	 * use this method to update a field into default value. Use setXxx with
@@ -1119,13 +1139,6 @@ public class DataSupport {
 	 */
 	protected String getTableName() {
 		return BaseUtility.changeCase(DBUtility.getTableNameByClassName(getClassName()));
-	}
-	
-	/**
-	 * Reset the value of baseObjId. This means the model will become unsaved state.
-	 */
-	void resetBaseObjId() {
-		baseObjId = 0;
 	}
 
 	/**

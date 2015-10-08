@@ -1,6 +1,8 @@
 package com.litepaltest.test.crud.delete;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.litepal.crud.DataSupport;
@@ -250,15 +252,15 @@ public class DeleteTest extends LitePalTestCase {
 		assertEquals(2, affectedRows);
 		assertNull(getStudent(jude.getId()));
 		assertNull(getIdCard(judeCard.getId()));
-		affectedRows = DataSupport.deleteAll(IdCard.class, "id = ?", roseCard.getId()+"");
+		affectedRows = DataSupport.deleteAll(IdCard.class, "id = ?", roseCard.getId() + "");
 		assertEquals(2, affectedRows);
 		assertNull(getStudent(rose.getId()));
 		assertNull(getIdCard(roseCard.getId()));
-		affectedRows = DataSupport.deleteAll(Teacher.class, "id = ?", ""+john.getId());
+		affectedRows = DataSupport.deleteAll(Teacher.class, "id = ?", "" + john.getId());
 		assertEquals(2, affectedRows);
 		assertNull(getTeacher(john.getId()));
 		assertNull(getIdCard(johnCard.getId()));
-		affectedRows = DataSupport.deleteAll(IdCard.class, "id=?", ""+mikeCard.getId());
+		affectedRows = DataSupport.deleteAll(IdCard.class, "id=?", "" + mikeCard.getId());
 		assertEquals(1, affectedRows);
 		assertNull(getIdCard(mikeCard.getId()));
 	}
@@ -299,14 +301,14 @@ public class DeleteTest extends LitePalTestCase {
 	
 	public void testDeleteAllCascadeM2MAssociations() {
 		createStudentsTeachersWithAssociations();
-		int rowsAffected = DataSupport.deleteAll(Teacher.class, "id=?", ""+john.getId());
+		int rowsAffected = DataSupport.deleteAll(Teacher.class, "id=?", "" + john.getId());
 		assertEquals(2, rowsAffected);
 		assertNull(getTeacher(john.getId()));
 		assertM2MFalse(studentTable, teacherTable, rose.getId(), john.getId());
 		assertM2M(studentTable, teacherTable, rose.getId(), mike.getId());
 		assertM2M(studentTable, teacherTable, jude.getId(), mike.getId());
 		createStudentsTeachersWithAssociations();
-		rowsAffected = DataSupport.deleteAll(Teacher.class, "id=?", ""+mike.getId());
+		rowsAffected = DataSupport.deleteAll(Teacher.class, "id=?", "" + mike.getId());
 		assertEquals(3, rowsAffected);
 		assertNull(getTeacher(mike.getId()));
 		assertM2MFalse(studentTable, teacherTable, rose.getId(), mike.getId());
@@ -384,6 +386,29 @@ public class DeleteTest extends LitePalTestCase {
 		affectedRows = DataSupport.deleteAll(DBUtility.getIntermediateTableName(studentTable, teacherTable));
 		assertTrue(rowsCount<=affectedRows);
 	}
+
+    public void testMarkAsDeleted() {
+        List<Student> students = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            Student s = new Student();
+            s.setName("Dusting");
+            s.setAge(i + 10);
+            students.add(s);
+        }
+        DataSupport.saveAll(students);
+        List<Student> list = DataSupport.where("name=?", "Dusting").find(Student.class);
+        assertTrue(list.size() >= 5);
+        DataSupport.deleteAll(Student.class, "name=?", "Dusting");
+        list = DataSupport.where("name=?", "Dusting").find(Student.class);
+        assertEquals(0, list.size());
+        DataSupport.saveAll(students);
+        list = DataSupport.where("name=?", "Dusting").find(Student.class);
+        assertEquals(0, list.size());
+        DataSupport.markAsDeleted(students);
+        DataSupport.saveAll(students);
+        list = DataSupport.where("name=?", "Dusting").find(Student.class);
+        assertEquals(5, list.size());
+    }
 
 	public void testDeleteAllWithWrongConditions() {
 		try {
