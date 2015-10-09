@@ -1106,6 +1106,15 @@ public class DataSupport {
 		getFieldsToSetToDefault().add(fieldName);
 	}
 
+    /**
+     * Assigns value to baseObjId. This will override the original value. <b>Never call this method
+     * unless you know exactly what you are doing.</b>
+     * @param baseObjId
+     */
+    public void assignBaseObjId(int baseObjId) {
+        this.baseObjId = baseObjId;
+    }
+
 	/**
 	 * Disable developers to create instance of DataSupport directly. They
 	 * should inherit this class with subclasses and operate on them.
