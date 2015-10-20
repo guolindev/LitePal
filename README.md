@@ -28,7 +28,7 @@ Experience the magic right now and have fun!
 Edit your **build.gradle** file and add below dependency:
 ``` groovy
 dependencies {
-    compile 'org.litepal.android:core:1.2.1'
+    compile 'org.litepal.android:core:1.3.0'
 }
 ```
 #### 2. Configure litepal.xml
@@ -126,6 +126,7 @@ Define the models first. For example you have two models, **Album** and **Song**
 ``` java
 public class Album extends DataSupport {
 	
+	@Column(unique = true, defaultValue = "unknown")
 	private String name;
 	
 	private float price;
@@ -139,9 +140,13 @@ public class Album extends DataSupport {
 ``` java
 public class Song extends DataSupport {
 	
+	@Column(nullable = false)
 	private String name;
 	
 	private int duration;
+	
+	@Column(ignore = true)
+	private String uselessField;
 	
 	private Album album;
 
@@ -164,19 +169,61 @@ Now the tables will be generated automatically with SQLs like this:
 ``` sql
 CREATE TABLE album (
 	id integer primary key autoincrement,
-	price real, 
-	name text
+	name text unique default 'unknown',
+	price real 
 );
 
 CREATE TABLE song (
 	id integer primary key autoincrement,
-	duration integer, 
-	name text, 
+	name text not null,
+	duration integer,
 	album_id integer
 );
 ```
 
-#### 2. Save data
+#### 2. Upgrade tables
+Upgrade tables in LitePal is extremely easy. Just modify your models everyway you want:
+```java
+public class Album extends DataSupport {
+	
+	@Column(unique = true, defaultValue = "unknown")
+	private String name;
+	
+	@Column(ignore = true)
+	private float price;
+	
+	private Date releaseDate;
+	
+	private List<Song> songs = new ArrayList<Song>();
+
+	// generated getters and setters.
+	...
+}
+```
+A **releaseDate** field was added and **price** field was annotated to ignore.
+Then increase the version number in **litepal.xml**:
+```xml
+<!--
+    Define the version of your database. Each time you want 
+    to upgrade your database, the version tag would helps.
+    Modify the models you defined in the mapping tag, and just 
+    make the version value plus one, the upgrade of database
+    will be processed automaticly without concern.
+    For example:    
+    <version value="1" ></version>
+-->
+<version value="2" ></version>
+```
+The tables will be upgraded next time you operate database. A **releasedate** column will be added into **album** table and the original **price** column will be removed. All the data in **album** table except those removed columns will be retained.
+
+But there are some upgrading conditions that LitePal can't handle and all data in the upgrading table will be cleaned:
+ * Add a field which annotated as `unique = true`.
+ * Change a field's annoation into `unique = true`.
+ * Change a field's annoation into `nullable = false`.
+
+Be careful of the above conditions which will cause losing data.
+
+#### 3. Save data
 The saving API is quite object oriented. Each model which inherits from **DataSupport** would have the **save()** method directly.
 ``` java
 Album album = new Album();
@@ -196,7 +243,7 @@ song2.save();
 ```
 This will insert album, song1 and song2 into database with relations.
 
-#### 3. Update data
+#### 4. Update data
 Each model which inherits from **DataSupport** would also have **update()** and **updateAll()** method. You can update a single record with a specified id:
 ``` java
 Album albumToUpdate = new Album();
@@ -210,7 +257,7 @@ albumToUpdate.setPrice(20.99f); // raise the price
 albumToUpdate.updateAll("name = ?", "album");
 ```
 
-#### 4. Delete data
+#### 5. Delete data
 You can delete a single record using the static **delete()** method in **DataSupport**:
 ``` java
 DataSupport.delete(Song.class, id);
@@ -220,7 +267,7 @@ Or delete multiple records using the static **deleteAll()** method in **DataSupp
 DataSupport.deleteAll(Song.class, "duration > ?" , "350");
 ```
 
-#### 5. Query data
+#### 6. Query data
 Find a single record from song table with specified id:
 ``` java
 Song song = DataSupport.find(Song.class, id);
@@ -246,6 +293,14 @@ Get it on:
 
 ## Bugs Report
 If you find any bug when using LitePal, please report **[here](https://github.com/LitePalFramework/LitePal/issues/new)**. Thanks for helping us building a better one.
+
+## Change logs
+### 1.3.0
+ * Add annotation functions to decalre **unique**, **not null** and **default** constraints.
+ * Remove the trick of ignore mapping fields with non-private modifier.
+ * Support to use annotation to ignore mapping fields with `ignore = true`
+ * Add some magical methods in DataSupport for those who understand LitePal deeper.
+ * Fix known bugs.
  
 ## License
 ```
