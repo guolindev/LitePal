@@ -215,6 +215,7 @@ Then increase the version number in **litepal.xml**:
 <version value="2" ></version>
 ```
 The tables will be upgraded next time you operate database. A **releasedate** column will be added into **album** table and the original **price** column will be removed. All the data in **album** table except those removed columns will be retained.
+
 But there are some upgrading conditions that LitePal can't handle and all data in the upgrading table will be cleaned:
  * Add a field which annotated as `unique = true`.
  * Change a field's annoation into `unique = true`.
