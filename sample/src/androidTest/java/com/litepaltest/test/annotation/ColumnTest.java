@@ -51,10 +51,27 @@ public class ColumnTest extends LitePalTestCase {
         cellphone.setPrice(1949.99);
         cellphone.setSerial(UUID.randomUUID().toString());
         assertTrue(cellphone.save());
+        final long id = cellphone.getId();
         assertEquals("0.0.0.0", DataSupport.find(Cellphone.class, cellphone.getId()).getMac());
+//        assertEquals(1.0, DataSupport.find(Cellphone.class, cellphone.getId()).getDiscount(), 0.01);
         cellphone.setMac("192.168.0.1");
+        cellphone.setDiscount(0.9);
         assertTrue(cellphone.save());
+        assertEquals(id, (long) cellphone.getId());
         assertEquals("192.168.0.1", DataSupport.find(Cellphone.class, cellphone.getId()).getMac());
+        assertEquals(0.9, DataSupport.find(Cellphone.class, cellphone.getId()).getDiscount(), 0.01);
+        cellphone.setMac("0.0.0.0");
+        cellphone.setDiscount(0.0);
+        assertTrue(cellphone.save());
+        assertEquals(id, (long) cellphone.getId());
+        assertEquals("0.0.0.0", DataSupport.find(Cellphone.class, cellphone.getId()).getMac());
+        assertEquals(0.0, DataSupport.find(Cellphone.class, cellphone.getId()).getDiscount(), 0.01);
+        cellphone.setToDefault("mac");
+        cellphone.setToDefault("discount");
+        assertTrue(cellphone.update(cellphone.getId()) > 0);
+        assertEquals(id, (long) cellphone.getId());
+        assertEquals("0.0.0.0", DataSupport.find(Cellphone.class, cellphone.getId()).getMac());
+        assertEquals(1.0, DataSupport.find(Cellphone.class, cellphone.getId()).getDiscount(), 0.01);
     }
 
 }

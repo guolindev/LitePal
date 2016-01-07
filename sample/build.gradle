@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    compileSdkVersion rootProject.ext.targetSdkVersion
+    buildToolsVersion "$rootProject.ext.buildToolsVersion"
 
     defaultConfig {
         applicationId "org.litepal.litepalsample"
         minSdkVersion 10
-        targetSdkVersion 21
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
     }
@@ -21,6 +21,6 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile "com.android.support:appcompat-v7:$rootProject.ext.supportLibraryVersion"
     compile project(':litepal')
 }
