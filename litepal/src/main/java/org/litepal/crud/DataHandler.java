@@ -16,7 +16,19 @@
 
 package org.litepal.crud;
 
-import static org.litepal.util.BaseUtility.changeCase;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.SparseArray;
+
+import org.litepal.LitePalBase;
+import org.litepal.annotation.Column;
+import org.litepal.crud.model.AssociationsInfo;
+import org.litepal.exceptions.DataSupportException;
+import org.litepal.exceptions.DatabaseGenerateException;
+import org.litepal.util.BaseUtility;
+import org.litepal.util.Const;
+import org.litepal.util.DBUtility;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -27,18 +39,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import org.litepal.LitePalBase;
-import org.litepal.crud.model.AssociationsInfo;
-import org.litepal.exceptions.DataSupportException;
-import org.litepal.exceptions.DatabaseGenerateException;
-import org.litepal.util.BaseUtility;
-import org.litepal.util.Const;
-import org.litepal.util.DBUtility;
-
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.SparseArray;
+import static org.litepal.util.BaseUtility.changeCase;
 
 /**
  * This is the base class for CRUD component. All the common actions which can
@@ -227,6 +228,33 @@ abstract class DataHandler extends LitePalBase {
 		}
 	}
 
+    /**
+     * Iterate all the fields that need to set to default value. If the field is id, ignore it. Or
+     * put the default value of field into ContentValues.
+     *
+     * @param baseObj Which table to update by model instance.
+     * @param values  To store data of current model for persisting or updating.
+     */
+    protected void putFieldsToDefaultValue(DataSupport baseObj, ContentValues values) {
+        String fieldName = null;
+        try {
+            DataSupport emptyModel = getEmptyModel(baseObj);
+            Class<?> emptyModelClass = emptyModel.getClass();
+            for (String name : baseObj.getFieldsToSetToDefault()) {
+                if (!isIdColumn(name)) {
+                    fieldName = name;
+                    Field field = emptyModelClass.getDeclaredField(fieldName);
+                    putContentValues(emptyModel, field, values);
+                }
+            }
+        } catch (NoSuchFieldException e) {
+            throw new DataSupportException(DataSupportException.noSuchFieldExceptioin(
+                    baseObj.getClassName(), fieldName));
+        } catch (Exception e) {
+            throw new DataSupportException(e.getMessage());
+        }
+    }
+
 	/**
 	 * This method deals with the putting values job into ContentValues. The
 	 * ContentValues has <b>put</b> method to set data. But we do not know we
@@ -400,15 +428,53 @@ abstract class DataHandler extends LitePalBase {
 		try {
 			className = baseObj.getClassName();
 			Class<?> modelClass = Class.forName(className);
-			tempEmptyModel = (DataSupport) modelClass.newInstance();
-			return tempEmptyModel;
-		} catch (ClassNotFoundException e) {
+//			tempEmptyModel = (DataSupport) modelClass.newInstance();
+            tempEmptyModel = (DataSupport) createInstanceFromClass(modelClass);
+            // TODO: fill default value in Column annotation into field
+            List<Field> supportedFields = getSupportedFields(className);
+            for (Field field : supportedFields) {
+                if (field.isAnnotationPresent(Column.class)) {
+                    Column annotation = field.getAnnotation(Column.class);
+                    String defaultValue = annotation.defaultValue();
+                    if (!defaultValue.equals("")) {
+                        Class<?> typeClass = field.getType();
+                        String typeName = typeClass.getName();
+                        field.setAccessible(true);
+                        if ("boolean".equals(typeName) || "java.lang.Boolean".equals(typeName)) {
+                            field.set(tempEmptyModel, Boolean.parseBoolean(defaultValue));
+                        }
+                        if ("float".equals(typeName) || "java.lang.Float".equals(typeName)) {
+                            field.set(tempEmptyModel, Float.parseFloat(defaultValue));
+                        }
+                        if ("double".equals(typeName) || "java.lang.Double".equals(typeName)) {
+                            field.set(tempEmptyModel, Double.parseDouble(defaultValue));
+                        }
+                        if ("int".equals(typeName) || "java.lang.Integer".equals(typeName)) {
+                            field.set(tempEmptyModel, Integer.parseInt(defaultValue));
+                        }
+                        if ("long".equals(typeName) || "java.lang.Long".equals(typeName)) {
+                            field.set(tempEmptyModel, Long.parseLong(defaultValue));
+                        }
+                        if ("short".equals(typeName) || "java.lang.Short".equals(typeName)) {
+                            field.set(tempEmptyModel, Short.parseShort(defaultValue));
+                        }
+                        if ("char".equals(typeName) || "java.lang.Character".equals(typeName)) {
+                            field.set(tempEmptyModel, defaultValue.charAt(0));
+                        }
+                        if ("java.lang.String".equals(typeName)) {
+                            field.set(tempEmptyModel, new String(defaultValue));
+                        }
+                    }
+                }
+            }
+            return tempEmptyModel;
+        } catch (ClassNotFoundException e) {
 			throw new DatabaseGenerateException(DatabaseGenerateException.CLASS_NOT_FOUND
 					+ className);
-		} catch (InstantiationException e) {
-			throw new DataSupportException(className + DataSupportException.INSTANTIATION_EXCEPTION);
-		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage());
+//		} catch (InstantiationException e) {
+//			throw new DataSupportException(className + DataSupportException.INSTANTIATION_EXCEPTION);
+        } catch (Exception e) {
+            throw new DataSupportException(e.getMessage());
 		}
 	}
 
@@ -462,14 +528,11 @@ abstract class DataHandler extends LitePalBase {
 	 * @return Affect all lines or not.
 	 */
 	protected boolean isAffectAllLines(Object... conditions) {
-		if (conditions != null && conditions.length == 0) {
-			return true;
-		}
-		return false;
-	}
+        return conditions != null && conditions.length == 0;
+    }
 
-	/**
-	 * Get the where clause by the passed in id collection to apply multiple
+    /**
+     * Get the where clause by the passed in id collection to apply multiple
 	 * rows.
 	 * 
 	 * @param ids
@@ -828,7 +891,8 @@ abstract class DataHandler extends LitePalBase {
 	 * @return Default data of basic data type or null.
 	 */
 	private Object getInitParamValue(Class<?> modelClass, Class<?> paramType) {
-		String paramTypeName = paramType.getName();
+        // TODO Bookmark
+        String paramTypeName = paramType.getName();
 		if ("boolean".equals(paramTypeName) || "java.lang.Boolean".equals(paramTypeName)) {
 			return false;
 		}
@@ -883,14 +947,11 @@ abstract class DataHandler extends LitePalBase {
 	 */
 	private boolean isPrimitiveBooleanType(Field field) {
 		Class<?> fieldType = field.getType();
-		if ("boolean".equals(fieldType.getName())) {
-			return true;
-		}
-		return false;
-	}
+        return "boolean".equals(fieldType.getName());
+    }
 
-	/**
-	 * Put the value of field into ContentValues if current action is saving.
+    /**
+     * Put the value of field into ContentValues if current action is saving.
 	 * Check the value of field is default value or not if current action is
 	 * updating. If it's not default value, put it into ContentValues. Otherwise
 	 * ignore it.
@@ -916,7 +977,7 @@ abstract class DataHandler extends LitePalBase {
 			}
 		} else if (isSaving()) {
             Object value = takeGetMethodValueByField(baseObj, field);
-            // put content value only when value is not null. this allows to use defaultValue declared in annotation.
+            // TODO: put content value only when value is not null. this allows to use defaultValue declared in annotation.
             if (value != null) {
                 putContentValues(baseObj, field, values);
             }

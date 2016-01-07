@@ -16,19 +16,19 @@
 
 package org.litepal.crud;
 
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
+
+import org.litepal.crud.model.AssociationsInfo;
+import org.litepal.exceptions.DataSupportException;
+import org.litepal.util.BaseUtility;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.litepal.crud.model.AssociationsInfo;
-import org.litepal.exceptions.DataSupportException;
-import org.litepal.util.BaseUtility;
-
-import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
 
 /**
  * This is a component under DataSupport. It deals with the updating stuff as
@@ -170,35 +170,6 @@ class UpdateHandler extends DataHandler {
 					getWhereArgs(conditions));
 		}
 		return 0;
-	}
-
-	/**
-	 * Iterate all the fields that need to set to default value. If the field is
-	 * id, ignore it. Or put the default value of field into ContentValues.
-	 * 
-	 * @param baseObj
-	 *            Which table to update by model instance.
-	 * @param values
-	 *            To store data of current model for persisting or updating.
-	 */
-	private void putFieldsToDefaultValue(DataSupport baseObj, ContentValues values) {
-		String fieldName = null;
-		try {
-			DataSupport emptyModel = getEmptyModel(baseObj);
-			Class<?> emptyModelClass = emptyModel.getClass();
-			for (String name : baseObj.getFieldsToSetToDefault()) {
-				if (!isIdColumn(name)) {
-					fieldName = name;
-					Field field = emptyModelClass.getDeclaredField(fieldName);
-					putContentValues(emptyModel, field, values);
-				}
-			}
-		} catch (NoSuchFieldException e) {
-			throw new DataSupportException(DataSupportException.noSuchFieldExceptioin(
-					baseObj.getClassName(), fieldName));
-		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage());
-		}
 	}
 
 	/**

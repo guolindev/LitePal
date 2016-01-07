@@ -13,6 +13,9 @@ public class Cellphone extends DataSupport {
 
 	protected Double price;
 
+    @Column(defaultValue = "1.0")
+    private double discount;
+
     @Column(unique = true, nullable = false)
     String serial;
 
@@ -53,6 +56,14 @@ public class Cellphone extends DataSupport {
 	public void setPrice(Double price) {
 		this.price = price;
 	}
+
+    public double getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(double discount) {
+        this.discount = discount;
+    }
 
     public String getSerial() {
         return serial;

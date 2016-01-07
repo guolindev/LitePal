@@ -43,6 +43,7 @@
               <mapping class="com.litepaltest.model.Computer"></mapping>
               <mapping class="com.litepaltest.model.Book"></mapping>
               <mapping class="com.litepaltest.model.Product"></mapping>-->
+        <mapping class="com.litepaltest.model.Cellphone" />
     </list>
 
     <!--
