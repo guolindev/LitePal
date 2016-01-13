@@ -244,6 +244,12 @@ song2.save();
 This will insert album, song1 and song2 into database with relations.
 
 #### 4. Update data
+The simplest way, use **save()** method to update a record found by **find()**:
+``` java
+Album albumToUpdate = DataSupport.find(Album.class, 1);
+albumToUpdate.setPrice(20.99f); // raise the price
+albumToUpdate.save();
+```java
 Each model which inherits from **DataSupport** would also have **update()** and **updateAll()** method. You can update a single record with a specified id:
 ``` java
 Album albumToUpdate = new Album();
