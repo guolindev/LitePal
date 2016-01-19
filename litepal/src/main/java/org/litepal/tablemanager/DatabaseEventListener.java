@@ -14,32 +14,15 @@
  * limitations under the License.
  */
 
-package org.litepal.tablemanager.typechange;
+package org.litepal.tablemanager;
+
+import android.database.sqlite.SQLiteDatabase;
 
 /**
- * This class deals with boolean type.
- * 
- * @author Tony Green
- * @since 1.0
+ * @author neevek <i@neevek.net>
  */
-public class BooleanOrm extends OrmChange {
-
-	/**
-	 * If the field type passed in is boolean, it will change it into integer as
-	 * column type.
-	 */
-	@Override
-	public String object2Relation(String fieldType) {
-		if (fieldType != null) {
-			if (fieldType.equals("boolean") || fieldType.equals("java.lang.Boolean")) {
-				return "integer";
-			}
-			if (fieldType.equals("[B") || fieldType.equals("[Ljava.lang.Byte;")) {
-				String[] relations = { columnName, "BLOB" };
-				return relations;
-			}
-		}
-		return null;
-	}
-
+public interface DatabaseEventListener {
+  String getDBNamePrefix();
+  void onCreate(SQLiteDatabase db);
+  void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion);
 }
