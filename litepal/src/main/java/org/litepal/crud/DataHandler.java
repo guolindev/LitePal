@@ -16,7 +16,18 @@
 
 package org.litepal.crud;
 
-import static org.litepal.util.BaseUtility.changeCase;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.SparseArray;
+
+import org.litepal.LitePalBase;
+import org.litepal.crud.model.AssociationsInfo;
+import org.litepal.exceptions.DataSupportException;
+import org.litepal.exceptions.DatabaseGenerateException;
+import org.litepal.util.BaseUtility;
+import org.litepal.util.Const;
+import org.litepal.util.DBUtility;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -27,18 +38,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import org.litepal.LitePalBase;
-import org.litepal.crud.model.AssociationsInfo;
-import org.litepal.exceptions.DataSupportException;
-import org.litepal.exceptions.DatabaseGenerateException;
-import org.litepal.util.BaseUtility;
-import org.litepal.util.Const;
-import org.litepal.util.DBUtility;
-
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.SparseArray;
+import static org.litepal.util.BaseUtility.changeCase;
 
 /**
  * This is the base class for CRUD component. All the common actions which can
@@ -850,6 +850,9 @@ abstract class DataHandler extends LitePalBase {
 		if ("char".equals(paramTypeName) || "java.lang.Character".equals(paramTypeName)) {
 			return ' ';
 		}
+        if ("[B".equals(paramTypeName) || "[Ljava.lang.Byte;".equals(paramTypeName)) {
+            return new byte[0];
+        }
 		if ("java.lang.String".equals(paramTypeName)) {
 			return "";
 		}
@@ -1048,9 +1051,9 @@ abstract class DataHandler extends LitePalBase {
 		String typeName;
 		if (fieldType.isPrimitive()) {
 			typeName = BaseUtility.capitalize(fieldType.getName());
-		} else {
-			typeName = fieldType.getSimpleName();
-		}
+        } else {
+            typeName = fieldType.getSimpleName();
+        }
 		String methodName = "get" + typeName;
 		if ("getBoolean".equals(methodName)) {
 			methodName = "getInt";
@@ -1060,7 +1063,9 @@ abstract class DataHandler extends LitePalBase {
 			methodName = "getLong";
 		} else if ("getInteger".equals(methodName)) {
 			methodName = "getInt";
-		}
+		} else if ("getbyte[]".equalsIgnoreCase(methodName)) {
+            methodName = "getBlob";
+        }
 		return methodName;
 	}
 

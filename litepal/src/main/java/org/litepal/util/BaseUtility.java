@@ -184,6 +184,9 @@ public class BaseUtility {
 		if ("char".equals(fieldType) || "java.lang.Character".equals(fieldType)) {
 			return true;
 		}
+		if ("[B".equals(fieldType) || "[Ljava.lang.Byte;".equals(fieldType)) {
+			return true;
+		}
 		if ("java.lang.String".equals(fieldType) || "java.util.Date".equals(fieldType)) {
 			return true;
 		}

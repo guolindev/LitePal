@@ -23,6 +23,7 @@ import org.litepal.parser.LitePalAttr;
 import org.litepal.tablemanager.model.AssociationsModel;
 import org.litepal.tablemanager.model.ColumnModel;
 import org.litepal.tablemanager.model.TableModel;
+import org.litepal.tablemanager.typechange.BlobOrm;
 import org.litepal.tablemanager.typechange.BooleanOrm;
 import org.litepal.tablemanager.typechange.DateOrm;
 import org.litepal.tablemanager.typechange.DecimalOrm;
@@ -39,8 +40,10 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -69,7 +72,12 @@ public abstract class LitePalBase {
 	 * All the supporting mapping types currently in the array.
 	 */
 	private OrmChange[] typeChangeRules = { new NumericOrm(), new TextOrm(), new BooleanOrm(),
-			new DecimalOrm(), new DateOrm() };
+			new DecimalOrm(), new DateOrm(), new BlobOrm()};
+
+    /**
+     * This is map of class name to fields list. Indicates that each class has which fields.
+     */
+    private Map<String, List<Field>> classFieldsMap = new HashMap<String, List<Field>>();
 
 	/**
 	 * The collection contains all association models.
@@ -154,29 +162,34 @@ public abstract class LitePalBase {
 	 * @return A list of supported fields
 	 */
 	protected List<Field> getSupportedFields(String className) {
-		List<Field> supportedFields = new ArrayList<Field>();
-		Class<?> dynamicClass;
-		try {
-			dynamicClass = Class.forName(className);
-		} catch (ClassNotFoundException e) {
-			throw new DatabaseGenerateException(DatabaseGenerateException.CLASS_NOT_FOUND + className);
-		}
-		Field[] fields = dynamicClass.getDeclaredFields();
-		for (Field field : fields) {
-            Column annotation = field.getAnnotation(Column.class);
-            if (annotation != null && annotation.ignore()) {
-                continue;
+        List<Field> fieldList = classFieldsMap.get(className);
+        if (fieldList == null) {
+            List<Field> supportedFields = new ArrayList<Field>();
+            Class<?> dynamicClass;
+            try {
+                dynamicClass = Class.forName(className);
+            } catch (ClassNotFoundException e) {
+                throw new DatabaseGenerateException(DatabaseGenerateException.CLASS_NOT_FOUND + className);
             }
-			int modifiers = field.getModifiers();
-			if (!Modifier.isStatic(modifiers)) {
-				Class<?> fieldTypeClass = field.getType();
-				String fieldType = fieldTypeClass.getName();
-				if (BaseUtility.isFieldTypeSupported(fieldType)) {
-					supportedFields.add(field);
-				}
-			}
-		}
-		return supportedFields;
+            Field[] fields = dynamicClass.getDeclaredFields();
+            for (Field field : fields) {
+                Column annotation = field.getAnnotation(Column.class);
+                if (annotation != null && annotation.ignore()) {
+                    continue;
+                }
+                int modifiers = field.getModifiers();
+                if (!Modifier.isStatic(modifiers)) {
+                    Class<?> fieldTypeClass = field.getType();
+                    String fieldType = fieldTypeClass.getName();
+                    if (BaseUtility.isFieldTypeSupported(fieldType)) {
+                        supportedFields.add(field);
+                    }
+                }
+            }
+            classFieldsMap.put(className, supportedFields);
+            return supportedFields;
+        }
+        return fieldList;
 	}
 
 	/**
