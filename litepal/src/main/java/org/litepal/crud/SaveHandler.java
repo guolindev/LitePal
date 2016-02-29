@@ -42,6 +42,11 @@ import android.database.sqlite.SQLiteDatabase;
  */
 class SaveHandler extends DataHandler {
 
+    /**
+     * indicates that associations can be ignored while saving.
+     */
+    boolean ignoreAssociations = false;
+
 	/**
 	 * Initialize {@link org.litepal.crud.DataHandler#mDatabase} for operating database. Do not
 	 * allow to create instance of SaveHandler out of CRUD package.
@@ -75,14 +80,40 @@ class SaveHandler extends DataHandler {
 		List<Field> supportedFields = getSupportedFields(className);
 		Collection<AssociationsInfo> associationInfos = getAssociationInfo(className);
 		if (!baseObj.isSaved()) {
-			analyzeAssociatedModels(baseObj, associationInfos);
+            if (!ignoreAssociations) {
+                analyzeAssociatedModels(baseObj, associationInfos);
+            }
 			doSaveAction(baseObj, supportedFields);
-			analyzeAssociatedModels(baseObj, associationInfos);
+            if (!ignoreAssociations) {
+                analyzeAssociatedModels(baseObj, associationInfos);
+            }
 		} else {
-			analyzeAssociatedModels(baseObj, associationInfos);
+            if (!ignoreAssociations) {
+                analyzeAssociatedModels(baseObj, associationInfos);
+            }
 			doUpdateAction(baseObj, supportedFields);
 		}
 	}
+
+    /**
+     * The open interface for other classes in CRUD package to save a model. It
+     * is called when a model class calls the save method. This method will only
+     * save the baseObj into database without analyzing any association, so that
+     * the saving process will be faster.
+     *
+     * @param baseObj
+     *            Current model to persist.
+     * @throws java.lang.reflect.InvocationTargetException
+     * @throws IllegalAccessException
+     * @throws NoSuchMethodException
+     * @throws IllegalArgumentException
+     * @throws SecurityException
+     */
+    void onSaveFast(DataSupport baseObj) throws SecurityException, IllegalArgumentException,
+            NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        ignoreAssociations = true;
+        onSave(baseObj);
+    }
 
 	/**
 	 * The open interface for other classes in CRUD package to save a model
@@ -172,7 +203,9 @@ class SaveHandler extends DataHandler {
 			throws SecurityException, IllegalArgumentException, NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException {
 		putFieldsValue(baseObj, supportedFields, values);
-		putForeignKeyValue(values, baseObj);
+        if (!ignoreAssociations) {
+            putForeignKeyValue(values, baseObj);
+        }
 	}
 
 	/**
@@ -202,8 +235,10 @@ class SaveHandler extends DataHandler {
 	private void afterSave(DataSupport baseObj, List<Field> supportedFields, long id) {
 		throwIfSaveFailed(id);
 		assignIdValue(baseObj, getIdField(supportedFields), id);
-		updateAssociatedTableWithFK(baseObj);
-		insertIntermediateJoinTableValue(baseObj, false);
+        if (!ignoreAssociations) {
+            updateAssociatedTableWithFK(baseObj);
+            insertIntermediateJoinTableValue(baseObj, false);
+        }
 	}
 
 	/**
@@ -248,10 +283,12 @@ class SaveHandler extends DataHandler {
 			throws SecurityException, IllegalArgumentException, NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException {
 		putFieldsValue(baseObj, supportedFields, values);
-		putForeignKeyValue(values, baseObj);
-		for (String fkName : baseObj.getListToClearSelfFK()) {
-			values.putNull(fkName);
-		}
+        if (!ignoreAssociations) {
+            putForeignKeyValue(values, baseObj);
+            for (String fkName : baseObj.getListToClearSelfFK()) {
+                values.putNull(fkName);
+            }
+        }
 	}
 
 	/**
@@ -276,9 +313,11 @@ class SaveHandler extends DataHandler {
 	 *            Current model that is updated.
 	 */
 	private void afterUpdate(DataSupport baseObj) {
-		updateAssociatedTableWithFK(baseObj);
-		insertIntermediateJoinTableValue(baseObj, true);
-		clearFKValueInAssociatedTable(baseObj);
+        if (!ignoreAssociations) {
+            updateAssociatedTableWithFK(baseObj);
+            insertIntermediateJoinTableValue(baseObj, true);
+            clearFKValueInAssociatedTable(baseObj);
+        }
 	}
 
 	/**
@@ -356,7 +395,7 @@ class SaveHandler extends DataHandler {
 			throws SecurityException, NoSuchFieldException, IllegalArgumentException,
 			IllegalAccessException {
 		if (shouldGiveModelIdValue(idName, idType, id)) {
-			Object value = null;
+			Object value;
 			if (idType == int.class || idType == Integer.class) {
 				value = (int) id;
 			} else if (idType == long.class || idType == Long.class) {
