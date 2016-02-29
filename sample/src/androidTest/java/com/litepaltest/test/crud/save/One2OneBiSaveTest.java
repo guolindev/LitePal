@@ -65,6 +65,18 @@ public class One2OneBiSaveTest extends LitePalTestCase {
 		assertFK(s, i);
 	}
 
+    public void testSaveFast() {
+        init();
+        s.setIdcard(i);
+        i.setStudent(s);
+        i.saveFast();
+        s.saveFast();
+        isDataExists(getTableName(s), s.getId());
+        isDataExists(getTableName(i), i.getId());
+        Assert.assertFalse(isFKInsertCorrect(getTableName(s), getTableName(i), s.getId(), i.getId()));
+        Assert.assertFalse(isFKInsertCorrect(getTableName(i), getTableName(s), i.getId(), s.getId()));
+    }
+
 	private void assertFK(Student s, IdCard i) {
 		Assert.assertTrue(isFKInsertCorrect(getTableName(s), getTableName(i), s.getId(), i.getId()));
 		Assert.assertTrue(isFKInsertCorrect(getTableName(i), getTableName(s), i.getId(), s.getId()));

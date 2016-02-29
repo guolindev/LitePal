@@ -12,6 +12,7 @@ import org.litepal.util.DBUtility;
 import com.litepaltest.model.Cellphone;
 import com.litepaltest.model.Classroom;
 import com.litepaltest.model.IdCard;
+import com.litepaltest.model.Product;
 import com.litepaltest.model.Student;
 import com.litepaltest.model.Teacher;
 import com.litepaltest.test.LitePalTestCase;
@@ -98,6 +99,30 @@ public class UpdateUsingSaveMethodTest extends LitePalTestCase {
 		assertEquals(2899.88, updatedCell.getPrice());
 		assertTrue('N' == updatedCell.getInStock());
 	}
+
+    public void testUpdateBlobValues() {
+        byte[] b = new byte[10];
+        for (int i = 0; i < b.length; i++) {
+            b[i] = (byte)i;
+        }
+        Product product = new Product();
+        product.setBrand("Android");
+        product.setPrice(2899.69);
+        product.setPic(b);
+        assertTrue(product.saveFast());
+        for (int i = 0; i < b.length; i++) {
+            b[i] = (byte) (b.length - i);
+        }
+        product.setPic(b);
+        assertTrue(product.saveFast());
+        Product p = DataSupport.find(Product.class, product.getId());
+        byte[] pic = p.getPic();
+        assertEquals(b.length, pic.length);
+        for (int i = 0; i < b.length; i++) {
+            byte a = (byte) (b.length - i);
+            assertEquals(a, pic[i]);
+        }
+    }
 
 	public void testUpdateM2OAssociationsOnMSide() {
 		init();

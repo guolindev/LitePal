@@ -14,6 +14,7 @@ import android.database.sqlite.SQLiteException;
 
 import com.litepaltest.model.Classroom;
 import com.litepaltest.model.Computer;
+import com.litepaltest.model.Product;
 import com.litepaltest.model.Student;
 import com.litepaltest.model.Teacher;
 import com.litepaltest.test.LitePalTestCase;
@@ -105,6 +106,32 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 		assertEquals(15, getStudent(student.getId()).getAge());
 	}
 
+    public void testUpdateBlobWithStaticUpdate() {
+        byte[] b = new byte[10];
+        for (int i = 0; i < b.length; i++) {
+            b[i] = (byte)i;
+        }
+        Product product = new Product();
+        product.setBrand("Android");
+        product.setPrice(2899.69);
+        product.setPic(b);
+        assertTrue(product.saveFast());
+        for (int i = 0; i < b.length; i++) {
+            b[i] = (byte) (b.length - i);
+        }
+        ContentValues values = new ContentValues();
+        values.put("pic", b);
+        int rows = DataSupport.update(Product.class, values, product.getId());
+        assertEquals(1, rows);
+        Product p = DataSupport.find(Product.class, product.getId());
+        byte[] pic = p.getPic();
+        assertEquals(b.length, pic.length);
+        for (int i = 0; i < b.length; i++) {
+            byte a = (byte) (b.length - i);
+            assertEquals(a, pic[i]);
+        }
+    }
+
 	public void testUpdateWithStaticUpdateButWrongClass() {
 		ContentValues values = new ContentValues();
 		values.put("TEACHERNAME", "Toy");
@@ -144,6 +171,32 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 		assertEquals(33, newTeacher.getTeachYears());
 		assertEquals(66, newTeacher.getAge());
 	}
+
+    public void testUpdateBlobWithInstanceUpdate() {
+        byte[] b = new byte[10];
+        for (int i = 0; i < b.length; i++) {
+            b[i] = (byte)i;
+        }
+        Product product = new Product();
+        product.setBrand("Android");
+        product.setPrice(2899.69);
+        product.setPic(b);
+        assertTrue(product.saveFast());
+        for (int i = 0; i < b.length; i++) {
+            b[i] = (byte) (b.length - i);
+        }
+        Product pro = new Product();
+        pro.setPic(b);
+        int rows = pro.update(product.getId());
+        assertEquals(1, rows);
+        Product p = DataSupport.find(Product.class, product.getId());
+        byte[] pic = p.getPic();
+        assertEquals(b.length, pic.length);
+        for (int i = 0; i < b.length; i++) {
+            byte a = (byte) (b.length - i);
+            assertEquals(a, pic[i]);
+        }
+    }
 
 	public void testUpdateWithDefaultValueWithInstanceUpdate() {
 		Teacher t = new Teacher();

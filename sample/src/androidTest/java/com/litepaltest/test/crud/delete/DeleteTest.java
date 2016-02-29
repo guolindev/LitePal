@@ -351,14 +351,14 @@ public class DeleteTest extends LitePalTestCase {
 		for (int i = 0; i < 5; i++) {
 			s = new Student();
 			s.setName("Dusting");
-			s.setAge(i + 10);
+			s.setAge(i + 10086);
 			s.save();
 			ids[i] = s.getId();
 		}
 		int affectedRows = DataSupport.deleteAll(Student.class, "name = ? and age = ?", "Dusting",
-				"13");
+				"10088");
 		assertEquals(1, affectedRows);
-		assertNull(getStudent(ids[3]));
+		assertNull(getStudent(ids[2]));
 		affectedRows = DataSupport.deleteAll(Student.class, "name = 'Dusting'");
 		assertEquals(4, affectedRows);
 	}

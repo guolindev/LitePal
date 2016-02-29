@@ -1,8 +1,11 @@
 package com.litepaltest.test.crud.save;
 
 import org.litepal.crud.DataSupport;
+import org.litepal.litepalsample.model.Singer;
 
 import junit.framework.Assert;
+
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.litepaltest.model.Cellphone;
@@ -14,6 +17,7 @@ import com.litepaltest.model.Student;
 import com.litepaltest.model.Teacher;
 import com.litepaltest.test.LitePalTestCase;
 
+import java.io.ByteArrayOutputStream;
 import java.util.UUID;
 
 public class SaveTest extends LitePalTestCase {
@@ -27,6 +31,16 @@ public class SaveTest extends LitePalTestCase {
 		Assert.assertTrue(cell.save());
 		Assert.assertTrue(isDataExists(getTableName(cell), cell.getId()));
 	}
+
+    public void testSaveFast() {
+        Cellphone cell = new Cellphone();
+        cell.setBrand("iPhone");
+        cell.setPrice(4998.01);
+        cell.setInStock('Y');
+        cell.setSerial(UUID.randomUUID().toString());
+        Assert.assertTrue(cell.saveFast());
+        Assert.assertTrue(isDataExists(getTableName(cell), cell.getId()));
+    }
 	
 	public void testSaveWithConstructors() {
 		Computer computer = new Computer("asus", 699.00);
@@ -44,6 +58,23 @@ public class SaveTest extends LitePalTestCase {
 		p.save();
 		Product.find(Product.class, p.getId());
 	}
+
+    public void testSaveFastWithConstructors() {
+        Computer computer = new Computer("asus", 699.00);
+        assertTrue(computer.saveFast());
+        Assert.assertTrue(isDataExists(getTableName(computer), computer.getId()));
+        Computer c = getComputer(computer.getId());
+        assertEquals("asus", c.getBrand());
+        assertEquals(699.00, c.getPrice());
+        Computer cc = DataSupport.find(Computer.class, computer.getId());
+        assertEquals("asus", cc.getBrand());
+        assertEquals(699.00, cc.getPrice());
+        Product p = new Product(null);
+        p.setBrand("apple");
+        p.setPrice(1222.33);
+        p.saveFast();
+        Product.find(Product.class, p.getId());
+    }
 	
 	public void testSaveAfterDelete() {
 		Cellphone cell = new Cellphone();
@@ -129,5 +160,36 @@ public class SaveTest extends LitePalTestCase {
 		Assert.assertTrue(isDataExists(getTableName(s), s.getId()));
 		Assert.assertTrue(isDataExists(getTableName(s), s2.getId()));
 	}
+
+    public void testSaveFastAfterDelete() {
+        Cellphone cell = new Cellphone();
+        cell.setBrand("iPhone");
+        cell.setPrice(4998.01);
+        cell.setInStock('Y');
+        cell.setSerial(UUID.randomUUID().toString());
+        Assert.assertTrue(cell.saveFast());
+        Assert.assertTrue(isDataExists(getTableName(cell), cell.getId()));
+        assertTrue(cell.delete() > 0);
+        assertTrue(cell.saveFast());
+        Assert.assertTrue(isDataExists(getTableName(cell), cell.getId()));
+    }
+
+    public void testSaveWithBlob() {
+        byte[] b = new byte[10];
+        for (int i = 0; i < b.length; i++) {
+            b[i] = (byte)i;
+        }
+        Product product = new Product();
+        product.setBrand("Android");
+        product.setPrice(2899.69);
+        product.setPic(b);
+        assertTrue(product.saveFast());
+        Product p = DataSupport.find(Product.class, product.getId());
+        byte[] pic = p.getPic();
+        assertEquals(b.length, pic.length);
+        for (int i = 0; i < b.length; i++) {
+            assertEquals(i, pic[i]);
+        }
+    }
 
 }

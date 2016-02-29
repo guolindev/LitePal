@@ -9,6 +9,8 @@ public class Product extends DataSupport{
 	private String brand;
 
 	private double price;
+
+    private byte[] pic;
 	
 	public Product() {
 	}
@@ -39,5 +41,12 @@ public class Product extends DataSupport{
 	public void setPrice(double price) {
 		this.price = price;
 	}
-	
+
+    public byte[] getPic() {
+        return pic;
+    }
+
+    public void setPic(byte[] pic) {
+        this.pic = pic;
+    }
 }
