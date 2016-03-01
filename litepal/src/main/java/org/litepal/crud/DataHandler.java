@@ -124,7 +124,7 @@ abstract class DataHandler extends LitePalBase {
 			cursor = mDatabase.query(tableName, customizedColumns, selection, selectionArgs,
 					groupBy, having, orderBy, limit);
 			if (cursor.moveToFirst()) {
-                SparseArray<QueryInfoCache> queryInfoCacheSparseArray = new SparseArray<>();
+                SparseArray<QueryInfoCache> queryInfoCacheSparseArray = new SparseArray<QueryInfoCache>();
 				do {
 					T modelInstance = (T) createInstanceFromClass(modelClass);
 					giveBaseObjIdValue((DataSupport) modelInstance,
@@ -1119,12 +1119,12 @@ abstract class DataHandler extends LitePalBase {
 	private void analyzeAssociations(String className) {
 		Collection<AssociationsInfo> associationInfos = getAssociationInfo(className);
 		if (fkInCurrentModel == null) {
-			fkInCurrentModel = new ArrayList<>();
+			fkInCurrentModel = new ArrayList<AssociationsInfo>();
 		} else {
 			fkInCurrentModel.clear();
 		}
 		if (fkInOtherModel == null) {
-			fkInOtherModel = new ArrayList<>();
+			fkInOtherModel = new ArrayList<AssociationsInfo>();
 		} else {
 			fkInOtherModel.clear();
 		}
@@ -1183,7 +1183,7 @@ abstract class DataHandler extends LitePalBase {
 							null, null);
 				}
 				if (cursor != null && cursor.moveToFirst()) {
-                    SparseArray<QueryInfoCache> queryInfoCacheSparseArray = new SparseArray<>();
+                    SparseArray<QueryInfoCache> queryInfoCacheSparseArray = new SparseArray<QueryInfoCache>();
 					do {
 						DataSupport modelInstance = (DataSupport) createInstanceFromClass(Class.forName(associatedClassName));
 						giveBaseObjIdValue(modelInstance,
