@@ -15,8 +15,8 @@ Experience the magic right now and have fun!
  * More for you to explore.
  
 ## Latest Downloads
- * **[litepal-1.3.0.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.3.0.jar)** (library contains *.class files)
- * **[litepal-1.3.0-src.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.3.0-src.jar)** (library contains *.class files and *.java files)
+ * **[litepal-1.3.1.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.3.1.jar)** (library contains *.class files)
+ * **[litepal-1.3.1-src.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.3.1-src.jar)** (library contains *.class files and *.java files)
  
 ## Quick Setup
 #### 1. Include library
@@ -28,7 +28,7 @@ Experience the magic right now and have fun!
 Edit your **build.gradle** file and add below dependency:
 ``` groovy
 dependencies {
-    compile 'org.litepal.android:core:1.3.0'
+    compile 'org.litepal.android:core:1.3.1'
 }
 ```
 #### 2. Configure litepal.xml
@@ -131,6 +131,8 @@ public class Album extends DataSupport {
 	
 	private float price;
 	
+	private byte[] cover;
+	
 	private List<Song> songs = new ArrayList<Song>();
 
 	// generated getters and setters.
@@ -170,7 +172,8 @@ Now the tables will be generated automatically with SQLs like this:
 CREATE TABLE album (
 	id integer primary key autoincrement,
 	name text unique default 'unknown',
-	price real 
+	price real,
+	cover blob
 );
 
 CREATE TABLE song (
@@ -191,6 +194,8 @@ public class Album extends DataSupport {
 	
 	@Column(ignore = true)
 	private float price;
+	
+	private byte[] cover;
 	
 	private Date releaseDate;
 	
@@ -229,6 +234,7 @@ The saving API is quite object oriented. Each model which inherits from **DataSu
 Album album = new Album();
 album.setName("album");
 album.setPrice(10.99f);
+album.setCover(getCoverImageBytes());
 album.save();
 Song song1 = new Song();
 song1.setName("song1");
@@ -301,6 +307,10 @@ Get it on:
 If you find any bug when using LitePal, please report **[here](https://github.com/LitePalFramework/LitePal/issues/new)**. Thanks for helping us building a better one.
 
 ## Change logs
+### 1.3.1
+ * Support storing binary data. Byte array field will be mapped into database as blob type.
+ * Add **saveFast()** method in DataSupport. If your model has no associations to handle, use **saveFast()** method will be much more efficient.
+ * Improve query speed with optimized algorithm.
 ### 1.3.0
  * Add annotation functions to decalre **unique**, **not null** and **default** constraints.
  * Remove the trick of ignore mapping fields with non-private modifier.
