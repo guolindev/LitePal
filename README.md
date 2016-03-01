@@ -311,6 +311,7 @@ If you find any bug when using LitePal, please report **[here](https://github.co
  * Support storing binary data. Byte array field will be mapped into database as blob type.
  * Add **saveFast()** method in DataSupport. If your model has no associations to handle, use **saveFast()** method will be much more efficient.
  * Improve query speed with optimized algorithm.
+ 
 ### 1.3.0
  * Add annotation functions to decalre **unique**, **not null** and **default** constraints.
  * Remove the trick of ignore mapping fields with non-private modifier.
