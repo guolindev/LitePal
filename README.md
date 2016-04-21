@@ -247,7 +247,7 @@ song2.setDuration(356);
 song2.setAlbum(album);
 song2.save();
 ```
-This will insert album, song1 and song2 into database with relations.
+This will insert album, song1 and song2 into database with associations.
 
 #### 4. Update data
 The simplest way, use **save()** method to update a record found by **find()**:
