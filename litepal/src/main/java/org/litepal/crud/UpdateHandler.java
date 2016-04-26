@@ -190,7 +190,7 @@ class UpdateHandler extends DataHandler {
 				if (!isIdColumn(name)) {
 					fieldName = name;
 					Field field = emptyModelClass.getDeclaredField(fieldName);
-					putContentValues(emptyModel, field, values);
+					putContentValues(emptyModel, field, null, values);
 				}
 			}
 		} catch (NoSuchFieldException e) {

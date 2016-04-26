@@ -240,6 +240,8 @@ abstract class DataHandler extends LitePalBase {
 	 *            The class of base object.
 	 * @param field
 	 *            Field to put into ContentValues.
+     * @oaran fieldValue
+     *            The value of the field.
 	 * @param values
 	 *            To store data of current model for persisting or updating.
 	 * @throws SecurityException
@@ -248,17 +250,19 @@ abstract class DataHandler extends LitePalBase {
 	 * @throws IllegalAccessException
 	 * @throws java.lang.reflect.InvocationTargetException
 	 */
-	protected void putContentValues(DataSupport baseObj, Field field, ContentValues values)
+	protected void putContentValues(DataSupport baseObj, Field field, Object fieldValue, ContentValues values)
 			throws SecurityException, IllegalArgumentException, NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException {
-		Object fieldValue = takeGetMethodValueByField(baseObj, field);
-		if ("java.util.Date".equals(field.getType().getName()) && fieldValue != null) {
-			Date date = (Date) fieldValue;
-			fieldValue = date.getTime();
-		}
-		Object[] parameters = new Object[] { changeCase(field.getName()), fieldValue };
-		Class<?>[] parameterTypes = getParameterTypes(field, fieldValue, parameters);
-		DynamicExecutor.send(values, "put", parameters, values.getClass(), parameterTypes);
+        if (fieldValue == null) {
+            fieldValue = DynamicExecutor.getField(baseObj, field.getName(), baseObj.getClass());
+        }
+        if ("java.util.Date".equals(field.getType().getName()) && fieldValue != null) {
+            Date date = (Date) fieldValue;
+            fieldValue = date.getTime();
+        }
+        Object[] parameters = new Object[] { changeCase(field.getName()), fieldValue };
+        Class<?>[] parameterTypes = getParameterTypes(field, fieldValue, parameters);
+        DynamicExecutor.send(values, "put", parameters, values.getClass(), parameterTypes);
 	}
 
 	/**
@@ -910,14 +914,11 @@ abstract class DataHandler extends LitePalBase {
 			NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		if (isUpdating()) {
 			if (!isFieldWithDefaultValue(baseObj, field)) {
-				putContentValues(baseObj, field, values);
+				putContentValues(baseObj, field, null, values);
 			}
 		} else if (isSaving()) {
-            Object value = takeGetMethodValueByField(baseObj, field);
-            // put content value only when value is not null. this allows to use defaultValue declared in annotation.
-            if (value != null) {
-                putContentValues(baseObj, field, values);
-            }
+            Object fieldValue = DynamicExecutor.getField(baseObj, field.getName(), baseObj.getClass());
+            putContentValues(baseObj, field, fieldValue, values);
 		}
 	}
 
@@ -1215,28 +1216,24 @@ abstract class DataHandler extends LitePalBase {
         Class<?> cursorClass = cursor.getClass();
         Method method = cursorClass.getMethod(getMethodName, int.class);
         Object value = method.invoke(cursor, columnIndex);
-        if (isIdColumn(field.getName())) {
-            DynamicExecutor.setField(modelInstance, field.getName(), value,
-                    modelInstance.getClass());
-        } else {
-            if (field.getType() == boolean.class || field.getType() == Boolean.class) {
-                if ("0".equals(String.valueOf(value))) {
-                    value = false;
-                } else if ("1".equals(String.valueOf(value))) {
-                    value = true;
-                }
-            } else if (field.getType() == char.class || field.getType() == Character.class) {
-                value = ((String) value).charAt(0);
-            } else if (field.getType() == Date.class) {
-                long date = (Long) value;
-                if (date <= 0) {
-                    value = null;
-                } else {
-                    value = new Date(date);
-                }
+        if (field.getType() == boolean.class || field.getType() == Boolean.class) {
+            if ("0".equals(String.valueOf(value))) {
+                value = false;
+            } else if ("1".equals(String.valueOf(value))) {
+                value = true;
             }
-            putSetMethodValueByField((DataSupport) modelInstance, field, value);
+        } else if (field.getType() == char.class || field.getType() == Character.class) {
+            value = ((String) value).charAt(0);
+        } else if (field.getType() == Date.class) {
+            long date = (Long) value;
+            if (date <= 0) {
+                value = null;
+            } else {
+                value = new Date(date);
+            }
         }
+        DynamicExecutor.setField(modelInstance, field.getName(), value,
+                modelInstance.getClass());
     }
 
     /**
