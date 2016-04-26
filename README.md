@@ -229,7 +229,7 @@ But there are some upgrading conditions that LitePal can't handle and all data i
 Be careful of the above conditions which will cause losing data.
 
 #### 3. Save data
-The saving API is quite object oriented. Each model which inherits from **DataSupport** would have the **save()** method directly.
+The saving API is quite object oriented. Each model which inherits from **DataSupport** would have the **save()** method for free:
 ``` java
 Album album = new Album();
 album.setName("album");
@@ -247,7 +247,7 @@ song2.setDuration(356);
 song2.setAlbum(album);
 song2.save();
 ```
-This will insert album, song1 and song2 into database with relations.
+This will insert album, song1 and song2 into database with associations.
 
 #### 4. Update data
 The simplest way, use **save()** method to update a record found by **find()**:
@@ -288,7 +288,7 @@ Find all records from song table:
 ``` java
 List<Song> allSongs = DataSupport.findAll(Song.class);
 ```
-Constructing complex query with cluster query:
+Constructing complex query with fluent query:
 ``` java
 List<Song> songs = DataSupport.where("name like ?", "song%").order("duration").find(Song.class);
 ```
