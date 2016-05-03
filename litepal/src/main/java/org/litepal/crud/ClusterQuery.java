@@ -212,6 +212,85 @@ public class ClusterQuery {
 		return queryHandler.onFind(modelClass, mColumns, mConditions, mOrderBy, limit, isEager);
 	}
 
+    /**
+     * Finds the first record by the cluster parameters. You can use the below
+     * way to finish a complicated query:
+     *
+     * <pre>
+     * DataSupport.select(&quot;name&quot;).where(&quot;age &gt; ?&quot;, &quot;14&quot;).order(&quot;age&quot;).limit(1).offset(2)
+     * 		.findFirst(Person.class);
+     * </pre>
+     *
+     * Note that the associated models won't be loaded by default considering
+     * the efficiency, but you can do that by using
+     * {@link org.litepal.crud.ClusterQuery#findFirst(Class, boolean)}.
+     *
+     * @param modelClass
+     *            Which table to query and the object type to return.
+     * @return An object with founded data from database, or null.
+     */
+    public <T> T findFirst(Class<T> modelClass) {
+        return findFirst(modelClass, false);
+    }
+
+    /**
+     * It is mostly same as {@link org.litepal.crud.ClusterQuery#findFirst(Class)} but an isEager
+     * parameter. If set true the associated models will be loaded as well.
+     *
+     * @param modelClass
+     *            Which table to query and the object type to return.
+     * @param isEager
+     *            True to load the associated models, false not.
+     * @return An object with founded data from database, or null.
+     */
+    public <T> T findFirst(Class<T> modelClass, boolean isEager) {
+        List<T> list = find(modelClass, isEager);
+        if (list.size() > 0) {
+            return list.get(0);
+        }
+        return null;
+    }
+
+    /**
+     * Finds the last record by the cluster parameters. You can use the below
+     * way to finish a complicated query:
+     *
+     * <pre>
+     * DataSupport.select(&quot;name&quot;).where(&quot;age &gt; ?&quot;, &quot;14&quot;).order(&quot;age&quot;).limit(1).offset(2)
+     * 		.findLast(Person.class);
+     * </pre>
+     *
+     * Note that the associated models won't be loaded by default considering
+     * the efficiency, but you can do that by using
+     * {@link org.litepal.crud.ClusterQuery#findLast(Class, boolean)}.
+     *
+     * @param modelClass
+     *            Which table to query and the object type to return.
+     * @return An object with founded data from database, or null.
+     */
+    public <T> T findLast(Class<T> modelClass) {
+        return findLast(modelClass, false);
+    }
+
+    /**
+     * It is mostly same as {@link org.litepal.crud.ClusterQuery#findLast(Class)} but an isEager
+     * parameter. If set true the associated models will be loaded as well.
+     *
+     * @param modelClass
+     *            Which table to query and the object type to return.
+     * @param isEager
+     *            True to load the associated models, false not.
+     * @return An object with founded data from database, or null.
+     */
+    public <T> T findLast(Class<T> modelClass, boolean isEager) {
+        List<T> list = find(modelClass, isEager);
+        int size = list.size();
+        if (size > 0) {
+            return list.get(size - 1);
+        }
+        return null;
+    }
+
 	/**
 	 * Count the records.
 	 * 
