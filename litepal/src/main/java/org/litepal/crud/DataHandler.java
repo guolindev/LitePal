@@ -841,7 +841,7 @@ abstract class DataHandler extends LitePalBase {
 			return 0;
 		}
 		if ("long".equals(paramTypeName) || "java.lang.Long".equals(paramTypeName)) {
-			return 0l;
+			return 0L;
 		}
 		if ("short".equals(paramTypeName) || "java.lang.Short".equals(paramTypeName)) {
 			return 0;

@@ -904,6 +904,23 @@ public class DataSupport {
         }
     }
 
+    /**
+     * Check if the specified conditions data already exists in the table.
+     * @param modelClass
+     *          Which table to check by class.
+     * @param conditions
+     *          A filter declaring which data to check. Exactly same use as
+     *          {@link DataSupport#where(String...)}, except null conditions will result in false.
+     * @return Return true if the specified conditions data already exists in the table.
+     *         False otherwise. Null conditions will result in false.
+     */
+    public static <T> boolean isExist(Class<T> modelClass, String... conditions) {
+        if (conditions == null) {
+            return false;
+        }
+        return where(conditions).find(modelClass).size() > 0;
+    }
+
 	/**
 	 * Deletes the record in the database. The record must be saved already.<br>
 	 * The data in other tables which is referenced with the record will be
