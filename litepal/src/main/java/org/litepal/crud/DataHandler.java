@@ -240,8 +240,6 @@ abstract class DataHandler extends LitePalBase {
 	 *            The class of base object.
 	 * @param field
 	 *            Field to put into ContentValues.
-     * @oaran fieldValue
-     *            The value of the field.
 	 * @param values
 	 *            To store data of current model for persisting or updating.
 	 * @throws SecurityException
@@ -250,12 +248,47 @@ abstract class DataHandler extends LitePalBase {
 	 * @throws IllegalAccessException
 	 * @throws java.lang.reflect.InvocationTargetException
 	 */
-	protected void putContentValues(DataSupport baseObj, Field field, Object fieldValue, ContentValues values)
+	protected void putContentValuesForSave(DataSupport baseObj, Field field, ContentValues values)
 			throws SecurityException, IllegalArgumentException, NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException {
-        if (fieldValue == null) {
-            fieldValue = DynamicExecutor.getField(baseObj, field.getName(), baseObj.getClass());
+        Object fieldValue = DynamicExecutor.getField(baseObj, field.getName(), baseObj.getClass());
+        if (fieldValue != null) {
+            // put content value only when value is not null. this allows to use defaultValue declared in annotation.
+            if ("java.util.Date".equals(field.getType().getName())) {
+                Date date = (Date) fieldValue;
+                fieldValue = date.getTime();
+            }
+            Object[] parameters = new Object[] { changeCase(field.getName()), fieldValue };
+            Class<?>[] parameterTypes = getParameterTypes(field, fieldValue, parameters);
+            DynamicExecutor.send(values, "put", parameters, values.getClass(), parameterTypes);
         }
+	}
+
+    /**
+     * This method deals with the putting values job into ContentValues. The
+     * ContentValues has <b>put</b> method to set data. But we do not know we
+     * should use which <b>put</b> method cause the field type isn't clear. So
+     * the reflection API is necessary here to put values into ContentValues
+     * with dynamically getting field type to put value.
+     *
+     * @param baseObj
+     *            The class of base object.
+     * @param field
+     *            Field to put into ContentValues.
+     * @oaran fieldValue
+     *            The value of the field.
+     * @param values
+     *            To store data of current model for persisting or updating.
+     * @throws SecurityException
+     * @throws NoSuchMethodException
+     * @throws IllegalArgumentException
+     * @throws IllegalAccessException
+     * @throws java.lang.reflect.InvocationTargetException
+     */
+    protected void putContentValuesForUpdate(DataSupport baseObj, Field field, ContentValues values)
+            throws SecurityException, IllegalArgumentException, NoSuchMethodException,
+            IllegalAccessException, InvocationTargetException {
+        Object fieldValue = takeGetMethodValueByField(baseObj, field);
         if ("java.util.Date".equals(field.getType().getName()) && fieldValue != null) {
             Date date = (Date) fieldValue;
             fieldValue = date.getTime();
@@ -263,7 +296,7 @@ abstract class DataHandler extends LitePalBase {
         Object[] parameters = new Object[] { changeCase(field.getName()), fieldValue };
         Class<?>[] parameterTypes = getParameterTypes(field, fieldValue, parameters);
         DynamicExecutor.send(values, "put", parameters, values.getClass(), parameterTypes);
-	}
+    }
 
 	/**
 	 * It finds the getter method by the field. For example, field name is age,
@@ -914,11 +947,10 @@ abstract class DataHandler extends LitePalBase {
 			NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		if (isUpdating()) {
 			if (!isFieldWithDefaultValue(baseObj, field)) {
-				putContentValues(baseObj, field, null, values);
+				putContentValuesForUpdate(baseObj, field, values);
 			}
 		} else if (isSaving()) {
-            Object fieldValue = DynamicExecutor.getField(baseObj, field.getName(), baseObj.getClass());
-            putContentValues(baseObj, field, fieldValue, values);
+            putContentValuesForSave(baseObj, field, values);
 		}
 	}
 
