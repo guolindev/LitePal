@@ -13,6 +13,9 @@ public class QueryClusterTest extends LitePalTestCase {
 		List<Book> expectedBooks = getBooks(null, null, null, null, null, null, null);
 		List<Book> books = DataSupport.select("bookname", "price").find(Book.class);
 		assertEquals(expectedBooks.size(), books.size());
+        Book firstBook = DataSupport.select("bookname", "price").findFirst(Book.class);
+        Book lastBook = DataSupport.select("bookname", "price").findLast(Book.class);
+        assertNotNull(firstBook);
 		for (int i = 0; i < books.size(); i++) {
 			Book book = books.get(i);
 			assertTrue(book.isSaved());
@@ -24,12 +27,37 @@ public class QueryClusterTest extends LitePalTestCase {
 			assertEquals(0, book.getIsbn());
 			assertEquals(0, book.getLevel());
 			assertEquals(expectedBooks.get(i).getId(), book.getId());
+            if (i == 0) {
+                assertEquals(firstBook.isSaved(), book.isSaved());
+                assertEquals(firstBook.getBookName(), book.getBookName());
+                assertEquals(firstBook.getPages(), book.getPages());
+                assertEquals(firstBook.isPublished(), book.isPublished());
+                assertEquals(firstBook.getPrice(), book.getPrice());
+                assertEquals(firstBook.getArea(), book.getArea());
+                assertEquals(firstBook.getIsbn(), book.getIsbn());
+                assertEquals(firstBook.getLevel(), book.getLevel());
+                assertEquals(firstBook.getId(), book.getId());
+            }
+            if (i == books.size() - 1) {
+                assertEquals(lastBook.isSaved(), book.isSaved());
+                assertEquals(lastBook.getBookName(), book.getBookName());
+                assertEquals(lastBook.getPages(), book.getPages());
+                assertEquals(lastBook.isPublished(), book.isPublished());
+                assertEquals(lastBook.getPrice(), book.getPrice());
+                assertEquals(lastBook.getArea(), book.getArea());
+                assertEquals(lastBook.getIsbn(), book.getIsbn());
+                assertEquals(lastBook.getLevel(), book.getLevel());
+                assertEquals(lastBook.getId(), book.getId());
+            }
 		}
 	}
 
 	public void testWhere() {
 		List<Book> books = DataSupport.where("bookname = ?", "Android First Line").find(Book.class);
-		for (Book book : books) {
+        Book firstBook = DataSupport.where("bookname = ?", "Android First Line").findFirst(Book.class);
+        Book lastBook = DataSupport.where("bookname = ?", "Android First Line").findLast(Book.class);
+		for (int i = 0; i < books.size(); i++) {
+            Book book = books.get(i);
 			assertTrue(book.isSaved());
 			assertEquals("Android First Line", book.getBookName());
 			assertTrue(450 == book.getPages());
@@ -37,6 +65,28 @@ public class QueryClusterTest extends LitePalTestCase {
 			assertEquals(false, book.isPublished());
 			assertEquals('A', book.getLevel());
 			assertEquals(10.5f, book.getArea());
+            if (i == 0) {
+                assertEquals(firstBook.isSaved(), book.isSaved());
+                assertEquals(firstBook.getBookName(), book.getBookName());
+                assertEquals(firstBook.getPages(), book.getPages());
+                assertEquals(firstBook.isPublished(), book.isPublished());
+                assertEquals(firstBook.getPrice(), book.getPrice());
+                assertEquals(firstBook.getArea(), book.getArea());
+                assertEquals(firstBook.getIsbn(), book.getIsbn());
+                assertEquals(firstBook.getLevel(), book.getLevel());
+                assertEquals(firstBook.getId(), book.getId());
+            }
+            if (i == books.size() - 1) {
+                assertEquals(lastBook.isSaved(), book.isSaved());
+                assertEquals(lastBook.getBookName(), book.getBookName());
+                assertEquals(lastBook.getPages(), book.getPages());
+                assertEquals(lastBook.isPublished(), book.isPublished());
+                assertEquals(lastBook.getPrice(), book.getPrice());
+                assertEquals(lastBook.getArea(), book.getArea());
+                assertEquals(lastBook.getIsbn(), book.getIsbn());
+                assertEquals(lastBook.getLevel(), book.getLevel());
+                assertEquals(lastBook.getId(), book.getId());
+            }
 		}
 		List<Book> expectedBooks = getBooks(null, "bookname like ?",
 				new String[] { "Android%Line" }, null, null, null, null);
@@ -47,24 +97,72 @@ public class QueryClusterTest extends LitePalTestCase {
 
 	public void testOrder() {
 		List<Book> books = DataSupport.order("ID").find(Book.class);
-		Book lastBook = null;
+		Book firstBook = DataSupport.order("ID").findFirst(Book.class);
+		Book lastBook = DataSupport.order("ID").findLast(Book.class);
+        Book preBook = null;
 		for (int i = 0; i < books.size(); i++) {
 			Book book = books.get(i);
 			assertTrue(book.isSaved());
-			if (lastBook != null) {
-				assertTrue(book.getId() > lastBook.getId());
+			if (preBook != null) {
+				assertTrue(book.getId() > preBook.getId());
 			}
-			lastBook = book;
+            preBook = book;
+            if (i == 0) {
+                assertEquals(firstBook.isSaved(), book.isSaved());
+                assertEquals(firstBook.getBookName(), book.getBookName());
+                assertEquals(firstBook.getPages(), book.getPages());
+                assertEquals(firstBook.isPublished(), book.isPublished());
+                assertEquals(firstBook.getPrice(), book.getPrice());
+                assertEquals(firstBook.getArea(), book.getArea());
+                assertEquals(firstBook.getIsbn(), book.getIsbn());
+                assertEquals(firstBook.getLevel(), book.getLevel());
+                assertEquals(firstBook.getId(), book.getId());
+            }
+            if (i == books.size() - 1) {
+                assertEquals(lastBook.isSaved(), book.isSaved());
+                assertEquals(lastBook.getBookName(), book.getBookName());
+                assertEquals(lastBook.getPages(), book.getPages());
+                assertEquals(lastBook.isPublished(), book.isPublished());
+                assertEquals(lastBook.getPrice(), book.getPrice());
+                assertEquals(lastBook.getArea(), book.getArea());
+                assertEquals(lastBook.getIsbn(), book.getIsbn());
+                assertEquals(lastBook.getLevel(), book.getLevel());
+                assertEquals(lastBook.getId(), book.getId());
+            }
 		}
 		List<Book> inverseBooks = DataSupport.order("ID desc").find(Book.class);
-		Book inverselastBook = null;
+        Book inverseFirstBook = DataSupport.order("ID desc").findFirst(Book.class);
+        Book inverseLastBook = DataSupport.order("ID desc").findLast(Book.class);
+		Book inversePreBook = null;
 		for (int i = 0; i < inverseBooks.size(); i++) {
 			Book book = inverseBooks.get(i);
 			assertTrue(book.isSaved());
-			if (inverselastBook != null) {
-				assertTrue(book.getId() < inverselastBook.getId());
+			if (inversePreBook != null) {
+				assertTrue(book.getId() < inversePreBook.getId());
 			}
-			inverselastBook = book;
+            inversePreBook = book;
+            if (i == 0) {
+                assertEquals(inverseFirstBook.isSaved(), book.isSaved());
+                assertEquals(inverseFirstBook.getBookName(), book.getBookName());
+                assertEquals(inverseFirstBook.getPages(), book.getPages());
+                assertEquals(inverseFirstBook.isPublished(), book.isPublished());
+                assertEquals(inverseFirstBook.getPrice(), book.getPrice());
+                assertEquals(inverseFirstBook.getArea(), book.getArea());
+                assertEquals(inverseFirstBook.getIsbn(), book.getIsbn());
+                assertEquals(inverseFirstBook.getLevel(), book.getLevel());
+                assertEquals(inverseFirstBook.getId(), book.getId());
+            }
+            if (i == books.size() - 1) {
+                assertEquals(inverseLastBook.isSaved(), book.isSaved());
+                assertEquals(inverseLastBook.getBookName(), book.getBookName());
+                assertEquals(inverseLastBook.getPages(), book.getPages());
+                assertEquals(inverseLastBook.isPublished(), book.isPublished());
+                assertEquals(inverseLastBook.getPrice(), book.getPrice());
+                assertEquals(inverseLastBook.getArea(), book.getArea());
+                assertEquals(inverseLastBook.getIsbn(), book.getIsbn());
+                assertEquals(inverseLastBook.getLevel(), book.getLevel());
+                assertEquals(inverseLastBook.getId(), book.getId());
+            }
 		}
 	}
 
@@ -132,6 +230,14 @@ public class QueryClusterTest extends LitePalTestCase {
 				.select("pages", "isPublished")
 				.where("id=? or id=? or id=?", String.valueOf(ids[0]), String.valueOf(ids[1]),
 						String.valueOf(ids[2])).order("id").limit(2).offset(1).find(Book.class);
+        Book firstBook = DataSupport
+				.select("pages", "isPublished")
+				.where("id=? or id=? or id=?", String.valueOf(ids[0]), String.valueOf(ids[1]),
+						String.valueOf(ids[2])).order("id").limit(2).offset(1).findFirst(Book.class);
+        Book lastBook = DataSupport
+                .select("pages", "isPublished")
+                .where("id=? or id=? or id=?", String.valueOf(ids[0]), String.valueOf(ids[1]),
+                        String.valueOf(ids[2])).order("id").limit(2).offset(1).findLast(Book.class);
 		assertEquals(2, books.size());
 		assertTrue(books.get(0).getId() < books.get(1).getId());
 		for (int i = 0; i < 2; i++) {
@@ -145,6 +251,28 @@ public class QueryClusterTest extends LitePalTestCase {
 			assertEquals(0.0, b.getPrice());
 			assertEquals(0, b.getIsbn());
 			assertEquals(0, b.getLevel());
+            if (i == 0) {
+                assertEquals(firstBook.isSaved(), b.isSaved());
+                assertEquals(firstBook.getBookName(), b.getBookName());
+                assertEquals(firstBook.getPages(), b.getPages());
+                assertEquals(firstBook.isPublished(), b.isPublished());
+                assertEquals(firstBook.getPrice(), b.getPrice());
+                assertEquals(firstBook.getArea(), b.getArea());
+                assertEquals(firstBook.getIsbn(), b.getIsbn());
+                assertEquals(firstBook.getLevel(), b.getLevel());
+                assertEquals(firstBook.getId(), b.getId());
+            }
+            if (i == books.size() - 1) {
+                assertEquals(lastBook.isSaved(), b.isSaved());
+                assertEquals(lastBook.getBookName(), b.getBookName());
+                assertEquals(lastBook.getPages(), b.getPages());
+                assertEquals(lastBook.isPublished(), b.isPublished());
+                assertEquals(lastBook.getPrice(), b.getPrice());
+                assertEquals(lastBook.getArea(), b.getArea());
+                assertEquals(lastBook.getIsbn(), b.getIsbn());
+                assertEquals(lastBook.getLevel(), b.getLevel());
+                assertEquals(lastBook.getId(), b.getId());
+            }
 		}
 	}
 

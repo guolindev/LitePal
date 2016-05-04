@@ -130,4 +130,27 @@ public class QueryBasicTest extends LitePalTestCase {
 		assertTrue(realLastBook.isSaved());
 	}
 
+    public void testIsExist() {
+        Book book = new Book();
+        book.setArea(10.5f);
+        book.setBookName("Android Third Line");
+        book.setPages(556);
+        book.setPrice(49.99);
+        book.setPublished(false);
+        book.save();
+
+        Book book2 = new Book();
+        book2.setArea(10.5f);
+        book2.setBookName("Android Fourth Line");
+        book2.setPages(818);
+        book2.setPrice(59.99);
+        book2.setPublished(false);
+        book2.save();
+
+        assertTrue(DataSupport.isExist(Book.class, "bookname = ? and pages = ?", "Android Third Line", "556"));
+        assertFalse(DataSupport.isExist(Book.class, "bookname = ? and pages = ?", "Android Third Lines", "556"));
+        assertTrue(DataSupport.isExist(Book.class, "bookname = ? and pages = ?", "Android Fourth Line", "818"));
+        assertFalse(DataSupport.isExist(Book.class, "bookname = ? and pages = ?", "Android Fourth Line", "813"));
+    }
+
 }
