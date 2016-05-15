@@ -373,7 +373,7 @@ class SaveHandler extends DataHandler {
 				giveModelIdValue(baseObj, idField.getName(), idField.getType(), id);
 			}
 		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage());
+			throw new DataSupportException(e.getMessage(), e);
 		}
 	}
 

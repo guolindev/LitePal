@@ -885,7 +885,7 @@ public class DataSupport {
 			saveHandler.onSaveAll(collection);
 			db.setTransactionSuccessful();
 		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage());
+			throw new DataSupportException(e.getMessage(), e);
 		} finally {
 			db.endTransaction();
 		}
@@ -978,7 +978,7 @@ public class DataSupport {
 			getFieldsToSetToDefault().clear();
 			return rowsAffected;
 		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage());
+			throw new DataSupportException(e.getMessage(), e);
 		}
 	}
 
@@ -1018,7 +1018,7 @@ public class DataSupport {
 			getFieldsToSetToDefault().clear();
 			return rowsAffected;
 		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage());
+			throw new DataSupportException(e.getMessage(), e);
 		}
 	}
 
@@ -1089,7 +1089,7 @@ public class DataSupport {
 			clearAssociatedData();
 			db.setTransactionSuccessful();
 		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage());
+			throw new DataSupportException(e.getMessage(), e);
 		} finally {
 			db.endTransaction();
 		}

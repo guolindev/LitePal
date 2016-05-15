@@ -73,7 +73,7 @@ class DynamicExecutor {
 			return method.invoke(object, parameters);
 		} catch (NoSuchMethodException e) {
 			throw new DataSupportException(DataSupportException.noSuchMethodException(
-					objectClass.getSimpleName(), methodName));
+					objectClass.getSimpleName(), methodName), e);
 		}
 	}
 
@@ -102,7 +102,7 @@ class DynamicExecutor {
 			objectField.set(object, value);
 		} catch (NoSuchFieldException e) {
 			throw new DataSupportException(DataSupportException.noSuchFieldExceptioin(
-					objectClass.getSimpleName(), fieldName));
+					objectClass.getSimpleName(), fieldName), e);
 		}
 	}
 
@@ -130,7 +130,7 @@ class DynamicExecutor {
 			return objectField.get(object);
 		} catch (NoSuchFieldException e) {
 			throw new DataSupportException(DataSupportException.noSuchFieldExceptioin(
-					objectClass.getSimpleName(), fieldName));
+					objectClass.getSimpleName(), fieldName), e);
 		}
 	}
 

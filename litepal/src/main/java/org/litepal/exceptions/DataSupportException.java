@@ -68,6 +68,18 @@ public class DataSupportException extends RuntimeException {
 		super(errorMessage);
 	}
 
+    /**
+     * Constructor of DataSupportException.
+     *
+     * @param errorMessage
+     *            the description of this exception.
+     * @param throwable
+     *            the cause of this exception.
+     */
+    public DataSupportException(String errorMessage, Throwable throwable) {
+        super(errorMessage, throwable);
+    }
+
 	/**
 	 * Thrown when the VM notices that a program tries to reference, on a class
 	 * or object, a method that does not exist.

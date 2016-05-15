@@ -229,7 +229,7 @@ public class DeleteHandler extends DataHandler {
 			analyzeAssociatedModels(baseObj, associationInfos);
 			return associationInfos;
 		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage());
+			throw new DataSupportException(e.getMessage(), e);
 		}
 	}
 
@@ -268,7 +268,7 @@ public class DeleteHandler extends DataHandler {
 				}
 			}
 		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage());
+			throw new DataSupportException(e.getMessage(), e);
 		}
 	}
 

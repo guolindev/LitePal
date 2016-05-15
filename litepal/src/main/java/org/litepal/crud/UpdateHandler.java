@@ -195,9 +195,9 @@ class UpdateHandler extends DataHandler {
 			}
 		} catch (NoSuchFieldException e) {
 			throw new DataSupportException(DataSupportException.noSuchFieldExceptioin(
-					baseObj.getClassName(), fieldName));
+					baseObj.getClassName(), fieldName), e);
 		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage());
+			throw new DataSupportException(e.getMessage(), e);
 		}
 	}
 
@@ -227,7 +227,7 @@ class UpdateHandler extends DataHandler {
 					.getClassName());
 			analyzeAssociatedModels(baseObj, associationInfos);
 		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage());
+			throw new DataSupportException(e.getMessage(), e);
 		}
 	}
 

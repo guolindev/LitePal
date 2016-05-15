@@ -139,8 +139,7 @@ abstract class DataHandler extends LitePalBase {
 			}
 			return dataList;
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw new DataSupportException(e.getMessage());
+			throw new DataSupportException(e.getMessage(), e);
 		} finally {
 			if (cursor != null) {
 				cursor.close();
@@ -178,7 +177,7 @@ abstract class DataHandler extends LitePalBase {
 				result = (T) method.invoke(cursor, 0);
 			}
 		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage());
+			throw new DataSupportException(e.getMessage(), e);
 		} finally {
 			if (cursor != null) {
 				cursor.close();
@@ -372,7 +371,7 @@ abstract class DataHandler extends LitePalBase {
 				}
 			}
 		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage());
+			throw new DataSupportException(e.getMessage(), e);
 		}
 	}
 	
@@ -445,9 +444,9 @@ abstract class DataHandler extends LitePalBase {
 			throw new DatabaseGenerateException(DatabaseGenerateException.CLASS_NOT_FOUND
 					+ className);
 		} catch (InstantiationException e) {
-			throw new DataSupportException(className + DataSupportException.INSTANTIATION_EXCEPTION);
+			throw new DataSupportException(className + DataSupportException.INSTANTIATION_EXCEPTION, e);
 		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage());
+			throw new DataSupportException(e.getMessage(), e);
 		}
 	}
 
@@ -636,8 +635,7 @@ abstract class DataHandler extends LitePalBase {
 			Constructor<?> constructor = findBestSuitConstructor(modelClass);
 			return constructor.newInstance(getConstructorParams(modelClass, constructor));
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw new DataSupportException(e.getMessage());
+			throw new DataSupportException(e.getMessage(), e);
 		}
 	}
 
@@ -1234,7 +1232,7 @@ abstract class DataHandler extends LitePalBase {
                     queryInfoCacheSparseArray.clear();
 				}
 			} catch (Exception e) {
-				throw new DataSupportException(e.getMessage());
+				throw new DataSupportException(e.getMessage(), e);
 			} finally {
 				if (cursor != null) {
 					cursor.close();
