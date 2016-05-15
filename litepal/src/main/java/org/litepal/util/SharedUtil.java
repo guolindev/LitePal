@@ -40,12 +40,13 @@ public class SharedUtil {
 	 * preference will update.
 	 *
 	 * @param newVersion
+     *          new version of database
 	 */
 	public static void updateVersion(int newVersion) {
 		SharedPreferences.Editor sEditor = LitePalApplication.getContext()
 				.getSharedPreferences(LITEPAL_PREPS, Context.MODE_PRIVATE).edit();
 		sEditor.putInt(VERSION, newVersion);
-		sEditor.commit();
+		sEditor.apply();
 	}
 
 	/**
@@ -56,8 +57,7 @@ public class SharedUtil {
 	public static int getLastVersion() {
 		SharedPreferences sPref = LitePalApplication.getContext().getSharedPreferences(
 				LITEPAL_PREPS, Context.MODE_PRIVATE);
-		int version = sPref.getInt(VERSION, 0);
-		return version;
+		return sPref.getInt(VERSION, 0);
 	}
 
 }
