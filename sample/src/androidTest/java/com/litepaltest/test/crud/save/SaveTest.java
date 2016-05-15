@@ -1,13 +1,5 @@
 package com.litepaltest.test.crud.save;
 
-import org.litepal.crud.DataSupport;
-import org.litepal.litepalsample.model.Singer;
-
-import junit.framework.Assert;
-
-import android.graphics.BitmapFactory;
-import android.util.Log;
-
 import com.litepaltest.model.Cellphone;
 import com.litepaltest.model.Classroom;
 import com.litepaltest.model.Computer;
@@ -17,7 +9,11 @@ import com.litepaltest.model.Student;
 import com.litepaltest.model.Teacher;
 import com.litepaltest.test.LitePalTestCase;
 
-import java.io.ByteArrayOutputStream;
+import junit.framework.Assert;
+
+import org.litepal.crud.DataSupport;
+
+import java.util.List;
 import java.util.UUID;
 
 public class SaveTest extends LitePalTestCase {
@@ -190,6 +186,24 @@ public class SaveTest extends LitePalTestCase {
         for (int i = 0; i < b.length; i++) {
             assertEquals(i, pic[i]);
         }
+    }
+
+    public void testSaveIfExists() {
+        String serial = UUID.randomUUID().toString();
+        Cellphone cell = new Cellphone();
+        cell.setBrand("iPhone");
+        cell.setPrice(4998.01);
+        cell.setInStock('Y');
+        cell.setSerial(serial);
+        assertTrue(cell.saveIfNotExist("serial = ?", serial));
+        Cellphone cell2 = new Cellphone();
+        cell2.setBrand("Android");
+        cell2.setPrice(1998.01);
+        cell2.setInStock('Y');
+        cell2.setSerial(serial);
+        assertFalse(cell.saveIfNotExist("serial = ?", serial));
+        List<Cellphone> cellphoneList = DataSupport.where("serial = ?", serial).find(Cellphone.class);
+        assertEquals(1, cellphoneList.size());
     }
 
 }
