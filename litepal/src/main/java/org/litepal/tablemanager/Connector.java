@@ -16,6 +16,7 @@
 
 package org.litepal.tablemanager;
 
+import org.litepal.LitePalApplication;
 import org.litepal.exceptions.InvalidAttributesException;
 import org.litepal.parser.LitePalAttr;
 import org.litepal.parser.LitePalParser;
@@ -114,8 +115,11 @@ public class Connector {
 		}
 		if (mLitePalAttr.checkSelfValid()) {
 			if (mLitePalHelper == null) {
-				mLitePalHelper = new LitePalOpenHelper(mLitePalAttr.getDbName(),
-						mLitePalAttr.getVersion());
+                String dbName = mLitePalAttr.getDbName();
+                if ("external".equalsIgnoreCase(mLitePalAttr.getStorage())) {
+                    dbName = LitePalApplication.getContext().getExternalFilesDir("") + "/databases/" + dbName;
+                }
+				mLitePalHelper = new LitePalOpenHelper(dbName, mLitePalAttr.getVersion());
 			}
 			return mLitePalHelper;
 		} else {

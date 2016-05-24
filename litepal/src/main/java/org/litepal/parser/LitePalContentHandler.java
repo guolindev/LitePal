@@ -97,7 +97,13 @@ public class LitePalContentHandler extends DefaultHandler {
 					litePalAttr.setCases(attributes.getValue(i).trim());
 				}
 			}
-		}
+		} else if (LitePalParser.NODE_STORAGE.equalsIgnoreCase(localName)) {
+            for (int i = 0; i < attributes.getLength(); i++) {
+                if (LitePalParser.ATTR_VALUE.equalsIgnoreCase(attributes.getLocalName(i))) {
+                    litePalAttr.setStorage(attributes.getValue(i).trim());
+                }
+            }
+        }
 	}
 
 }

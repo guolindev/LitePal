@@ -55,6 +55,11 @@ public final class LitePalAttr {
 	 */
 	private String cases;
 
+    /**
+     * Define where the .db file should be. Option values: internal external.
+     */
+    private String storage;
+
 	/**
 	 * All the model classes that want to map in the database. Each class should
 	 * be given the full name including package name.
@@ -98,6 +103,14 @@ public final class LitePalAttr {
 	void setDbName(String dbName) {
 		this.dbName = dbName;
 	}
+
+    public String getStorage() {
+        return storage;
+    }
+
+    void setStorage(String storage) {
+        this.storage = storage;
+    }
 
 	/**
 	 * Get the class name list. Always add table_schema as a value.

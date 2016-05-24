@@ -70,6 +70,11 @@ public class LitePalParser {
 	 */
 	static final String NODE_CASES = "cases";
 
+    /**
+     * Node name column storage.
+     */
+    static final String NODE_STORAGE = "storage";
+
 	/**
 	 * Attribute name value, for dbname and version node.
 	 */
@@ -107,14 +112,13 @@ public class LitePalParser {
 	 * application may be crash.
 	 */
 	void useSAXParser() {
-		LitePalContentHandler handler = null;
+		LitePalContentHandler handler;
 		try {
 			SAXParserFactory factory = SAXParserFactory.newInstance();
 			XMLReader xmlReader = factory.newSAXParser().getXMLReader();
 			handler = new LitePalContentHandler();
 			xmlReader.setContentHandler(handler);
 			xmlReader.parse(new InputSource(getConfigInputStream()));
-			return;
 		} catch (NotFoundException e) {
 			throw new ParseConfigurationFileException(
 					ParseConfigurationFileException.CAN_NOT_FIND_LITEPAL_FILE);
