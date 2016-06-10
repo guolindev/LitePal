@@ -70,6 +70,17 @@ Create a file in the **assets** folder of your project and name it as **litepal.
     <list>
     </list>
     
+    <!--
+        Define where the .db file should be. "internal" means the .db file
+        will be stored in the database folder of internal storage which no
+        one can access. "external" means the .db file will be stored in the
+        path to the directory on the primary external storage device where
+        the application can place persistent files it owns which everyone
+        can access. "internal" will act as default.
+        For example:
+        <storage value="external"></storage>
+    -->
+    
 </litepal>
 ```
 This is the only configuration file, and the properties are simple. 
@@ -309,7 +320,7 @@ If you find any bug when using LitePal, please report **[here](https://github.co
 
 ## Change logs
 ### 1.3.2
- * Improve query and save speed quite a lot.
+ * Improve an outstanding speed up of querying and saving.
  * Support to store the database in external storage.
  * Support to mapping fields which inherit from superclass.
  * Add **findFirst()** and **findLast()** in fluent query.
