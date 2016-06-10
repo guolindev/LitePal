@@ -87,6 +87,7 @@ This is the only configuration file, and the properties are simple.
  * **dbname** configure the database name of project.
  * **version** configure the version of database. Each time you want to upgrade database, plus the value here.
  * **list** configure the mapping classes.
+ * **storage** configure where the database file should be stored. **internal** and **external** are the only valid options.
  
 #### 3. Configure LitePalApplication
 You don't want to pass the Context param all the time. To makes the APIs simple, just configure the LitePalApplication in **AndroidManifest.xml** as below:
@@ -321,7 +322,7 @@ If you find any bug when using LitePal, please report **[here](https://github.co
 ## Change logs
 ### 1.3.2
  * Improve an outstanding speed up of querying and saving.
- * Support to store the database in external storage.
+ * Support to store database file in external storage.
  * Support to mapping fields which inherit from superclass.
  * Add **findFirst()** and **findLast()** in fluent query.
  * Add **isExist()** and **saveIfNotExist()** method in DataSupport.
