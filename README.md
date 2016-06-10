@@ -15,8 +15,8 @@ Experience the magic right now and have fun!
  * More for you to explore.
  
 ## Latest Downloads
- * **[litepal-1.3.1.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.3.1.jar)** (library contains *.class files)
- * **[litepal-1.3.1-src.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.3.1-src.jar)** (library contains *.class files and *.java files)
+ * **[litepal-1.3.2.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.3.2.jar)** (library contains *.class files)
+ * **[litepal-1.3.2-src.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.3.2-src.jar)** (library contains *.class files and *.java files)
  
 ## Quick Setup
 #### 1. Include library
@@ -28,7 +28,7 @@ Experience the magic right now and have fun!
 Edit your **build.gradle** file and add below dependency:
 ``` groovy
 dependencies {
-    compile 'org.litepal.android:core:1.3.1'
+    compile 'org.litepal.android:core:1.3.2'
 }
 ```
 #### 2. Configure litepal.xml
@@ -69,6 +69,7 @@ Create a file in the **assets** folder of your project and name it as **litepal.
     -->
     <list>
     </list>
+    
 </litepal>
 ```
 This is the only configuration file, and the properties are simple. 
@@ -307,6 +308,13 @@ Get it on:
 If you find any bug when using LitePal, please report **[here](https://github.com/LitePalFramework/LitePal/issues/new)**. Thanks for helping us building a better one.
 
 ## Change logs
+### 1.3.2
+ * Improve query and save speed quite a lot.
+ * Support to store the database in external storage.
+ * Support to mapping fields which inherit from superclass.
+ * Add **findFirst()** and **findLast()** in fluent query.
+ * Add **isExist()** and **saveIfNotExist()** method in DataSupport.
+
 ### 1.3.1
  * Support storing binary data. Byte array field will be mapped into database as blob type.
  * Add **saveFast()** method in DataSupport. If your model has no associations to handle, use **saveFast()** method will be much more efficient.
