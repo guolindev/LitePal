@@ -918,7 +918,7 @@ public class DataSupport {
         if (conditions == null) {
             return false;
         }
-        return where(conditions).find(modelClass).size() > 0;
+        return where(conditions).count(modelClass) > 0;
     }
 
 	/**

@@ -7,6 +7,8 @@ import com.litepaltest.model.IdCard;
 import com.litepaltest.model.Product;
 import com.litepaltest.model.Student;
 import com.litepaltest.model.Teacher;
+import com.litepaltest.model.WeChatMessage;
+import com.litepaltest.model.WeiboMessage;
 import com.litepaltest.test.LitePalTestCase;
 
 import junit.framework.Assert;
@@ -204,6 +206,71 @@ public class SaveTest extends LitePalTestCase {
         assertFalse(cell.saveIfNotExist("serial = ?", serial));
         List<Cellphone> cellphoneList = DataSupport.where("serial = ?", serial).find(Cellphone.class);
         assertEquals(1, cellphoneList.size());
+    }
+
+    public void testSaveInheritModels() {
+        WeChatMessage weChatMessage = new WeChatMessage();
+        weChatMessage.setFriend("Tom");
+        weChatMessage.setContent("Hello nice to meet you");
+        weChatMessage.setTitle("Greeting message");
+        weChatMessage.setType(1);
+        assertTrue(weChatMessage.save());
+        assertTrue(weChatMessage.getId() > 0);
+        WeChatMessage message1 = DataSupport.find(WeChatMessage.class, weChatMessage.getId());
+        assertEquals("Tom", message1.getFriend());
+        assertEquals("Hello nice to meet you", message1.getContent());
+        assertNull(message1.getTitle());
+        assertEquals(1, message1.getType());
+
+        WeiboMessage weiboMessage = new WeiboMessage();
+        weiboMessage.setType(2);
+        weiboMessage.setTitle("Following message");
+        weiboMessage.setContent("Something big happens");
+        weiboMessage.setFollower("Jimmy");
+        weiboMessage.setNumber(123456);
+        assertTrue(weiboMessage.saveFast());
+        assertTrue(weiboMessage.getId() > 0);
+    }
+
+    public void testSaveInheritModelsWithAssociations() {
+        Cellphone cellphone = new Cellphone();
+        cellphone.setBrand("iPhone 7");
+        cellphone.setInStock('N');
+        cellphone.setPrice(6999.99);
+        cellphone.setSerial(UUID.randomUUID().toString());
+        cellphone.setMac("ff:3d:4a:99:76");
+        cellphone.save();
+
+        WeChatMessage weChatMessage = new WeChatMessage();
+        weChatMessage.setFriend("Tom");
+        weChatMessage.setContent("Hello nice to meet you");
+        weChatMessage.setTitle("Greeting message");
+        weChatMessage.setType(1);
+        assertTrue(weChatMessage.save());
+        assertTrue(weChatMessage.getId() > 0);
+        WeChatMessage message1 = DataSupport.find(WeChatMessage.class, weChatMessage.getId());
+        assertEquals("Tom", message1.getFriend());
+        assertEquals("Hello nice to meet you", message1.getContent());
+        assertNull(message1.getTitle());
+        assertEquals(1, message1.getType());
+
+        WeiboMessage weiboMessage = new WeiboMessage();
+        weiboMessage.setType(2);
+        weiboMessage.setTitle("Following message");
+        weiboMessage.setContent("Something big happens");
+        weiboMessage.setFollower("Jimmy");
+        weiboMessage.setNumber(123456);
+        weiboMessage.setCellphone(cellphone);
+        assertTrue(weiboMessage.save());
+        assertTrue(weiboMessage.getId() > 0);
+        WeiboMessage message2 = DataSupport.find(WeiboMessage.class, weiboMessage.getId(), true);
+        Cellphone result = message2.getCellphone();
+        assertEquals(cellphone.getId(), result.getId());
+        assertEquals(cellphone.getBrand(), result.getBrand());
+        assertEquals(cellphone.getInStock(), result.getInStock());
+        assertEquals(cellphone.getPrice(), result.getPrice());
+        assertEquals(cellphone.getSerial(), result.getSerial());
+        assertEquals(cellphone.getMac(), result.getMac());
     }
 
 }

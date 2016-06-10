@@ -198,7 +198,7 @@ abstract class DataHandler extends LitePalBase {
 	protected void giveBaseObjIdValue(DataSupport baseObj, long id) throws SecurityException,
 			NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
 		if (id > 0) {
-			DynamicExecutor.setField(baseObj, "baseObjId", id, DataSupport.class);
+			DynamicExecutor.set(baseObj, "baseObjId", id, DataSupport.class);
 		}
 	}
 

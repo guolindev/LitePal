@@ -17,6 +17,7 @@
 package org.litepal;
 
 import org.litepal.annotation.Column;
+import org.litepal.crud.DataSupport;
 import org.litepal.crud.model.AssociationsInfo;
 import org.litepal.exceptions.DatabaseGenerateException;
 import org.litepal.parser.LitePalAttr;
@@ -165,27 +166,13 @@ public abstract class LitePalBase {
         List<Field> fieldList = classFieldsMap.get(className);
         if (fieldList == null) {
             List<Field> supportedFields = new ArrayList<Field>();
-            Class<?> dynamicClass;
+            Class<?> clazz;
             try {
-                dynamicClass = Class.forName(className);
+                clazz = Class.forName(className);
             } catch (ClassNotFoundException e) {
                 throw new DatabaseGenerateException(DatabaseGenerateException.CLASS_NOT_FOUND + className);
             }
-            Field[] fields = dynamicClass.getDeclaredFields();
-            for (Field field : fields) {
-                Column annotation = field.getAnnotation(Column.class);
-                if (annotation != null && annotation.ignore()) {
-                    continue;
-                }
-                int modifiers = field.getModifiers();
-                if (!Modifier.isStatic(modifiers)) {
-                    Class<?> fieldTypeClass = field.getType();
-                    String fieldType = fieldTypeClass.getName();
-                    if (BaseUtility.isFieldTypeSupported(fieldType)) {
-                        supportedFields.add(field);
-                    }
-                }
-            }
+            recursiveSupportedFields(clazz, supportedFields);
             classFieldsMap.put(className, supportedFields);
             return supportedFields;
         }
@@ -249,6 +236,30 @@ public abstract class LitePalBase {
 	protected String getForeignKeyColumnName(String associatedTableName) {
 		return BaseUtility.changeCase(associatedTableName + "_id");
 	}
+
+    private void recursiveSupportedFields(Class<?> clazz, List<Field> supportedFields) {
+        if (clazz == DataSupport.class || clazz == Object.class) {
+            return;
+        }
+        Field[] fields = clazz.getDeclaredFields();
+        if (fields != null && fields.length > 0) {
+            for (Field field : fields) {
+                Column annotation = field.getAnnotation(Column.class);
+                if (annotation != null && annotation.ignore()) {
+                    continue;
+                }
+                int modifiers = field.getModifiers();
+                if (!Modifier.isStatic(modifiers)) {
+                    Class<?> fieldTypeClass = field.getType();
+                    String fieldType = fieldTypeClass.getName();
+                    if (BaseUtility.isFieldTypeSupported(fieldType)) {
+                        supportedFields.add(field);
+                    }
+                }
+            }
+        }
+        recursiveSupportedFields(clazz.getSuperclass(), supportedFields);
+    }
 
 	/**
 	 * Introspection of the passed in class. Analyze the fields of current class
