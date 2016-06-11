@@ -10,7 +10,7 @@ Experience the magic right now and have fun!
  * Almost zero-configuration(only one configuration file with few properties).
  * Maintains all tables automatically(e.g. create, alter or drop tables).
  * Encapsulated APIs for avoiding writing SQL statements.
- * Awesome cluster query function.
+ * Awesome fluent query API.
  * Alternative choice to use SQL still, but easier and better APIs than the originals.
  * More for you to explore.
  
