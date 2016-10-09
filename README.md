@@ -307,7 +307,7 @@ List<Song> songs = DataSupport.where("name like ?", "song%").order("duration").f
 ```
 
 ## Developed By
- * Tony Green - tonygreendev@gmail.com
+ * Tony Green
  
 ## Sample App
 The sample app has been published onto Google Play for easy access. 
