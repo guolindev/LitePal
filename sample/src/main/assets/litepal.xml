@@ -4,7 +4,7 @@
 		Define the database name of your application. 
 		By default each database name should be end with .db. 
 		If you didn't name your database end with .db, 
-		LitePal would plus the suffix automaticly for you.
+		LitePal would plus the suffix automatically for you.
 		For example:    
     	<dbname value="demo" ></dbname>
     -->
@@ -15,7 +15,7 @@
     	to upgrade your database, the version tag would helps.
     	Modify the models you defined in the mapping tag, and just 
     	make the version value plus one, the upgrade of database
-    	will be processed automaticly without concern.
+    	will be processed automatically without concern.
 		For example:    
     	<version value="1" ></version>
     -->
