@@ -35,11 +35,6 @@ import android.database.sqlite.SQLiteDatabase;
 public class Connector {
 
 	/**
-	 * LitePalAttr model.
-	 */
-	private static LitePalAttr mLitePalAttr;
-
-	/**
 	 * The quote of LitePalHelper.
 	 */
 	private static LitePalOpenHelper mLitePalHelper;
@@ -103,17 +98,17 @@ public class Connector {
 	 * @throws org.litepal.exceptions.InvalidAttributesException
 	 */
 	private static LitePalOpenHelper buildConnection() {
-		if (mLitePalAttr == null) {
+		if (!LitePalAttr.hasInstance()) {
 			LitePalParser.parseLitePalConfiguration();
-			mLitePalAttr = LitePalAttr.getInstance();
 		}
-		mLitePalAttr.checkSelfValid();
+		LitePalAttr litePalAttr = LitePalAttr.getInstance();
+		litePalAttr.checkSelfValid();
 		if (mLitePalHelper == null) {
-			String dbName = mLitePalAttr.getDbName();
-			if ("external".equalsIgnoreCase(mLitePalAttr.getStorage())) {
+			String dbName = litePalAttr.getDbName();
+			if ("external".equalsIgnoreCase(litePalAttr.getStorage())) {
 				dbName = LitePalApplication.getContext().getExternalFilesDir("") + "/databases/" + dbName;
 			}
-			mLitePalHelper = new LitePalOpenHelper(dbName, mLitePalAttr.getVersion());
+			mLitePalHelper = new LitePalOpenHelper(dbName, litePalAttr.getVersion());
 		}
 		return mLitePalHelper;
 	}
