@@ -149,14 +149,12 @@ public final class LitePalAttr {
 	 * Before application build the connection with database, check the fields
 	 * in LitePalAttr. If all of the fields are passed, the connection will be
 	 * continued.If anyone of them doesn't pass, an exception will be thrown.
-	 * 
-	 * @return If all of the fields are passed, return true. If dbname is
-	 *         undefined, or version is less than 1, or version is earlier than
-	 *         current version, throw InvalidAttributesException
+	 * If dbname is undefined, or version is less than 1, or version is earlier
+	 * than current version, throw InvalidAttributesException.
 	 * 
 	 * @throws org.litepal.exceptions.InvalidAttributesException
 	 */
-	public boolean checkSelfValid() {
+	public void checkSelfValid() {
 		if (TextUtils.isEmpty(dbName)) {
 			throw new InvalidAttributesException(
 					InvalidAttributesException.DBNAME_IS_EMPTY_OR_NOT_DEFINED);
@@ -182,7 +180,6 @@ public final class LitePalAttr {
 						+ InvalidAttributesException.CASES_VALUE_IS_INVALID);
 			}
 		}
-		return true;
 	}
 
 }

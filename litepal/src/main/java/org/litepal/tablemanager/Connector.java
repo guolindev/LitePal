@@ -55,8 +55,6 @@ public class Connector {
 	 * operation. It will be improved in the future.
 	 * 
 	 * @return A writable SQLiteDatabase instance
-	 * 
-	 * @throws org.litepal.exceptions.InvalidAttributesException
 	 */
 	public synchronized static SQLiteDatabase getWritableDatabase() {
 		LitePalOpenHelper litePalHelper = buildConnection();
@@ -73,8 +71,6 @@ public class Connector {
 	 * query. It will be improved in the future.
 	 * 
 	 * @return A readable SQLiteDatabase instance.
-	 * 
-	 * @throws org.litepal.exceptions.InvalidAttributesException
 	 */
 	public synchronized static SQLiteDatabase getReadableDatabase() {
 		LitePalOpenHelper litePalHelper = buildConnection();
@@ -88,8 +84,6 @@ public class Connector {
 	 * This is method is alias of getWritableDatabase.
 	 * 
 	 * @return A writable SQLiteDatabase instance
-	 * 
-	 * @throws org.litepal.exceptions.InvalidAttributesException
 	 */
 	public static SQLiteDatabase getDatabase() {
 		return getWritableDatabase();
@@ -113,18 +107,15 @@ public class Connector {
 			LitePalParser.parseLitePalConfiguration();
 			mLitePalAttr = LitePalAttr.getInstance();
 		}
-		if (mLitePalAttr.checkSelfValid()) {
-			if (mLitePalHelper == null) {
-                String dbName = mLitePalAttr.getDbName();
-                if ("external".equalsIgnoreCase(mLitePalAttr.getStorage())) {
-                    dbName = LitePalApplication.getContext().getExternalFilesDir("") + "/databases/" + dbName;
-                }
-				mLitePalHelper = new LitePalOpenHelper(dbName, mLitePalAttr.getVersion());
+		mLitePalAttr.checkSelfValid();
+		if (mLitePalHelper == null) {
+			String dbName = mLitePalAttr.getDbName();
+			if ("external".equalsIgnoreCase(mLitePalAttr.getStorage())) {
+				dbName = LitePalApplication.getContext().getExternalFilesDir("") + "/databases/" + dbName;
 			}
-			return mLitePalHelper;
-		} else {
-			throw new InvalidAttributesException("Uncaught invalid attributes exception happened");
+			mLitePalHelper = new LitePalOpenHelper(dbName, mLitePalAttr.getVersion());
 		}
+		return mLitePalHelper;
 	}
 
 }
