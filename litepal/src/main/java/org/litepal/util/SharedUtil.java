@@ -20,6 +20,7 @@ import org.litepal.LitePalApplication;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 
 /**
  * LitePal used shared preferences a lot for storing versions and a lot of other
@@ -38,26 +39,36 @@ public class SharedUtil {
 	/**
 	 * Each time database upgrade, the version of database stored in shared
 	 * preference will update.
-	 *
+	 * @param extraKeyName
+	 * 			Pass the name of the using database usually. Pass null if it's default database.
 	 * @param newVersion
      *          new version of database
 	 */
-	public static void updateVersion(int newVersion) {
+	public static void updateVersion(String extraKeyName, int newVersion) {
 		SharedPreferences.Editor sEditor = LitePalApplication.getContext()
 				.getSharedPreferences(LITEPAL_PREPS, Context.MODE_PRIVATE).edit();
-		sEditor.putInt(VERSION, newVersion);
+		if (TextUtils.isEmpty(extraKeyName)) {
+			sEditor.putInt(VERSION, newVersion);
+		} else {
+			sEditor.putInt(VERSION + extraKeyName, newVersion);
+		}
 		sEditor.apply();
 	}
 
 	/**
 	 * Get the last database version.
-	 * 
+	 * @param extraKeyName
+	 * 			Pass the name of the using database usually. Pass null if it's default database.
 	 * @return the last database version
 	 */
-	public static int getLastVersion() {
+	public static int getLastVersion(String extraKeyName) {
 		SharedPreferences sPref = LitePalApplication.getContext().getSharedPreferences(
 				LITEPAL_PREPS, Context.MODE_PRIVATE);
-		return sPref.getInt(VERSION, 0);
+		if (TextUtils.isEmpty(extraKeyName)) {
+			return sPref.getInt(VERSION, 0);
+		} else {
+			return sPref.getInt(VERSION + extraKeyName, 0);
+		}
 	}
 
 }

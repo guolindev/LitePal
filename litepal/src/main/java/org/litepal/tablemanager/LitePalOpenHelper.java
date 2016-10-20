@@ -16,13 +16,14 @@
 
 package org.litepal.tablemanager;
 
-import org.litepal.LitePalApplication;
-import org.litepal.util.SharedUtil;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import org.litepal.LitePalApplication;
+import org.litepal.parser.LitePalAttr;
+import org.litepal.util.SharedUtil;
 
 /**
  * The database helper to generate and manage the tables. It will automate
@@ -85,7 +86,7 @@ class LitePalOpenHelper extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		Generator.upgrade(db);
-		SharedUtil.updateVersion(newVersion);
+		SharedUtil.updateVersion(LitePalAttr.getInstance().getExtraKeyName(), newVersion);
 	}
 
 }

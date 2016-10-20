@@ -66,6 +66,11 @@ public final class LitePalAttr {
 	 */
 	private List<String> classNames;
 
+    /**
+     * Extra name as key for saving the database version in SharedUtil.
+     */
+	private String extraKeyName;
+
 	/**
 	 * Do not allow new a LitePalAttr object. Makes it a singleton class.
 	 */
@@ -96,9 +101,9 @@ public final class LitePalAttr {
 	}
 
 	/**
-	 * Clean the instance of LitePalAttr.
+	 * Clear the instance of LitePalAttr.
 	 */
-	public static void cleanInstance() {
+	public static void clearInstance() {
 		litePalAttr = null;
 	}
 
@@ -126,7 +131,15 @@ public final class LitePalAttr {
         this.storage = storage;
     }
 
-	/**
+    public String getExtraKeyName() {
+        return extraKeyName;
+    }
+
+    public void setExtraKeyName(String extraKeyName) {
+        this.extraKeyName = extraKeyName;
+    }
+
+    /**
 	 * Get the class name list. Always add table_schema as a value.
 	 * 
 	 * @return The class name list.
@@ -184,7 +197,7 @@ public final class LitePalAttr {
 			throw new InvalidAttributesException(
 					InvalidAttributesException.VERSION_OF_DATABASE_LESS_THAN_ONE);
 		}
-		if (version < SharedUtil.getLastVersion()) {
+		if (version < SharedUtil.getLastVersion(extraKeyName)) {
 			throw new InvalidAttributesException(
 					InvalidAttributesException.VERSION_IS_EARLIER_THAN_CURRENT);
 		}

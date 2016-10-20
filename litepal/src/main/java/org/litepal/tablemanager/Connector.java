@@ -113,4 +113,11 @@ public class Connector {
 		return mLitePalHelper;
 	}
 
+	/**
+	 * Never call this method. This is only used by internal.
+	 */
+	public static void clearLitePalOpenHelperInstance() {
+		mLitePalHelper = null;
+	}
+
 }

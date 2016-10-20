@@ -2,12 +2,9 @@ package org.litepal;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.text.TextUtils;
 
 import org.litepal.parser.LitePalAttr;
 import org.litepal.tablemanager.Connector;
-
-import java.util.List;
 
 /**
  * @author Tony Green
@@ -43,11 +40,14 @@ public class LitePal {
         litePalAttr.setVersion(litePalDB.getVersion());
         litePalAttr.setStorage(litePalDB.isExternalStorage() ? "external" : "internal");
         litePalAttr.setClassNames(litePalDB.getClassNames());
+        litePalAttr.setExtraKeyName(litePalDB.getDbName());
         litePalAttr.setCases("lower");
+        Connector.clearLitePalOpenHelperInstance();
     }
 
     public static void useDefault() {
-        LitePalAttr.cleanInstance();
+        LitePalAttr.clearInstance();
+        Connector.clearLitePalOpenHelperInstance();
     }
 
 }
