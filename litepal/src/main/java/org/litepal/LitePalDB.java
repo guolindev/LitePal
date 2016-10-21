@@ -1,9 +1,16 @@
 package org.litepal;
 
+import org.litepal.parser.LitePalAttr;
+import org.litepal.parser.LitePalParser;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Configuration of LitePal database. It's similar to litepal.xml configuration, but allows to
+ * configure database details at runtime. This is very important when comes to support multiple
+ * databases functionality.
+ *
  * @author Tony Green
  * @since 1.4
  */
@@ -30,10 +37,29 @@ public class LitePalDB {
      */
     private List<String> classNames;
 
-    public static void fromDefault(String dbName) {
-
+    /**
+     * Construct a LitePalDB instance from the default configuration by litepal.xml. But database
+     * name must be different than the default.
+     * @param dbName
+     *          Name of database.
+     * @return A LitePalDB instance which used the default configuration in litepal.xml but with a specified database name.
+     */
+    public static LitePalDB fromDefault(String dbName) {
+        LitePalParser.parseLitePalConfiguration();
+        LitePalAttr attr = LitePalAttr.getInstance();
+        LitePalDB litePalDB = new LitePalDB(dbName, attr.getVersion());
+        litePalDB.setExternalStorage("external".equals(attr.getStorage()));
+        litePalDB.setClassNames(attr.getClassNames());
+        return litePalDB;
     }
 
+    /**
+     * Construct a LitePalDB instance. Database name and version are necessary fields.
+     * @param dbName
+     *          Name of database.
+     * @param version
+     *          Version of database.
+     */
     public LitePalDB(String dbName, int version) {
         this.dbName = dbName;
         this.version = version;
@@ -43,16 +69,8 @@ public class LitePalDB {
         return version;
     }
 
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
     public String getDbName() {
         return dbName;
-    }
-
-    public void setDbName(String dbName) {
-        this.dbName = dbName;
     }
 
     public boolean isExternalStorage() {
@@ -86,6 +104,10 @@ public class LitePalDB {
      */
     public void addClassName(String className) {
         getClassNames().add(className);
+    }
+
+    void setClassNames(List<String> className) {
+        this.classNames = className;
     }
 
 }

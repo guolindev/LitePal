@@ -32,7 +32,7 @@ import android.content.Context;
  * But just remember make your own Application class inherited from
  * LitePalApplication instead of inheriting from Application directly. This can
  * make all things work without side effects. <br>
- * Besides if you don't want use the above way, you can also call the LitePalApplication.initialize(Context)
+ * Besides if you don't want use the above way, you can also call the LitePal.initialize(Context)
  * method to do the same job. Just remember call this method as early as possible, in Application's onCreate()
  * method will be fine.
  * 
