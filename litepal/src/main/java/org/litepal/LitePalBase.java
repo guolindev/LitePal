@@ -23,6 +23,7 @@ import org.litepal.exceptions.DatabaseGenerateException;
 import org.litepal.parser.LitePalAttr;
 import org.litepal.tablemanager.model.AssociationsModel;
 import org.litepal.tablemanager.model.ColumnModel;
+import org.litepal.tablemanager.model.GenericModel;
 import org.litepal.tablemanager.model.TableModel;
 import org.litepal.tablemanager.typechange.BlobOrm;
 import org.litepal.tablemanager.typechange.BooleanOrm;
@@ -90,6 +91,11 @@ public abstract class LitePalBase {
 	 */
 	private Collection<AssociationsInfo> mAssociationInfos;
 
+    /**
+     * The collection contains all generic models.
+     */
+    private Collection<GenericModel> mGenericModels;
+
 	/**
 	 * This method is used to get the table model by the class name passed
 	 * in. The principle to generate table model is that each field in the class
@@ -129,12 +135,24 @@ public abstract class LitePalBase {
 		if (mAssociationModels == null) {
 			mAssociationModels = new HashSet<AssociationsModel>();
 		}
+        if (mGenericModels == null) {
+            mGenericModels = new HashSet<GenericModel>();
+        }
 		mAssociationModels.clear();
+        mGenericModels.clear();
 		for (String className : classNames) {
 			analyzeClassFields(className, GET_ASSOCIATIONS_ACTION);
 		}
 		return mAssociationModels;
 	}
+
+    /**
+     * Get all generic models for create generic tables.
+     * @return All generic models.
+     */
+    protected Collection<GenericModel> getGenericModels() {
+        return mGenericModels;
+    }
 
 	/**
 	 * Get the association info model by the class name.
@@ -236,6 +254,23 @@ public abstract class LitePalBase {
 	protected String getForeignKeyColumnName(String associatedTableName) {
 		return BaseUtility.changeCase(associatedTableName + "_id");
 	}
+
+    /**
+     * Get the column type for creating table by field type.
+     * @param fieldType
+     *          Type of field.
+     * @return The column type for creating table.
+     */
+    protected String getColumnType(String fieldType) {
+        String columnType;
+        for (OrmChange ormChange : typeChangeRules) {
+            columnType = ormChange.object2Relation(fieldType);
+            if (columnType != null) {
+                return columnType;
+            }
+        }
+        return null;
+    }
 
     private void recursiveSupportedFields(Class<?> clazz, List<Field> supportedFields) {
         if (clazz == DataSupport.class || clazz == Object.class) {
@@ -471,7 +506,14 @@ public abstract class LitePalBase {
                                 field, null, Const.Model.MANY_TO_ONE);
                     }
                 }
-			}
+			} else if(BaseUtility.isGenericTypeSupported(genericTypeName)) {
+                GenericModel genericModel = new GenericModel();
+                genericModel.setTableName(DBUtility.getGenericTableName(className, field.getName()));
+                genericModel.setValueColumnName(field.getName());
+                genericModel.setValueColumnType(getColumnType(genericTypeName));
+                genericModel.setValueIdColumnName(DBUtility.getGenericValueIdColumnName(className));
+                mGenericModels.add(genericModel);
+            }
 		}
 	}
 
@@ -558,14 +600,8 @@ public abstract class LitePalBase {
      * @return ColumnModel instance contains column information.
      */
     private ColumnModel convertFieldToColumnModel(Field field) {
-        String columnType = null;
         String fieldType = field.getType().getName();
-        for (OrmChange ormChange : typeChangeRules) {
-            columnType = ormChange.object2Relation(fieldType);
-            if (columnType != null) {
-                break;
-            }
-        }
+        String columnType = getColumnType(fieldType);
         boolean nullable = true;
         boolean unique = false;
         String defaultValue = "";

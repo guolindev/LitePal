@@ -87,6 +87,11 @@ public interface Const {
 		 * Constant for intermediate join table.
 		 */
 		public static final int INTERMEDIATE_JOIN_TABLE = 1;
+
+        /**
+         * Constant for generic table.
+         */
+        public static final int GENERIC_TABLE = 2;
 	}
 
 }

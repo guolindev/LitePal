@@ -115,7 +115,7 @@ public class DBUtility {
 	 */
 	public static String getIntermediateTableName(String tableName, String associatedTableName) {
 		if (!(TextUtils.isEmpty(tableName) || TextUtils.isEmpty(associatedTableName))) {
-			String intermediateTableName = null;
+			String intermediateTableName;
 			if (tableName.toLowerCase().compareTo(associatedTableName.toLowerCase()) <= 0) {
 				intermediateTableName = tableName + "_" + associatedTableName;
 			} else {
@@ -125,6 +125,31 @@ public class DBUtility {
 		}
 		return null;
 	}
+
+    /**
+     * Create generic table name by the concatenation of the class model's table name and simple
+     * generic type name with underline in the middle.
+     * @param className
+     *          Name of the class model.
+     * @param fieldName
+     *          Name of the generic type field.
+     * @return Table name by the concatenation of the class model's table name and simple
+     *         generic type name with underline in the middle.
+     */
+    public static String getGenericTableName(String className, String fieldName) {
+        String tableName = getTableNameByClassName(className);
+        return tableName + "_" + fieldName;
+    }
+
+    /**
+     * The column name for referenced id in generic table.
+     * @param className
+     *          Name of the class model.
+     * @return The column name for referenced id in generic table.
+     */
+    public static String getGenericValueIdColumnName(String className) {
+        return getTableNameByClassName(className) + "_id";
+    }
 
 	/**
 	 * Judge the table name is an intermediate table or not.
@@ -166,6 +191,47 @@ public class DBUtility {
 		}
 		return false;
 	}
+
+    /**
+     * Judge the table name is an generic table or not.
+     *
+     * @param tableName
+     *            Table name in database.
+     * @return Return true if the table name is an generic table. Otherwise
+     *         return false.
+     */
+    public static boolean isGenericTable(String tableName, SQLiteDatabase db) {
+        if (!TextUtils.isEmpty(tableName)) {
+            if (tableName.matches("[0-9a-zA-Z]+_[0-9a-zA-Z]+")) {
+                Cursor cursor = null;
+                try {
+                    cursor = db.query(Const.TableSchema.TABLE_NAME, null, null, null, null, null,
+                            null);
+                    if (cursor.moveToFirst()) {
+                        do {
+                            String tableNameDB = cursor.getString(cursor
+                                    .getColumnIndexOrThrow(Const.TableSchema.COLUMN_NAME));
+                            if (tableName.equalsIgnoreCase(tableNameDB)) {
+                                int tableType = cursor.getInt(cursor
+                                        .getColumnIndexOrThrow(Const.TableSchema.COLUMN_TYPE));
+                                if (tableType == Const.TableSchema.GENERIC_TABLE) {
+                                    return true;
+                                }
+                                break;
+                            }
+                        } while (cursor.moveToNext());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (cursor != null) {
+                        cursor.close();
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
 	/**
 	 * Test if the table name passed in exists in the database. Cases are

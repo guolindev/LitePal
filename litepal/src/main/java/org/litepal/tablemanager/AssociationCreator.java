@@ -16,26 +16,23 @@
 
 package org.litepal.tablemanager;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 
 import org.litepal.exceptions.DatabaseGenerateException;
 import org.litepal.tablemanager.model.AssociationsModel;
 import org.litepal.tablemanager.model.ColumnModel;
+import org.litepal.tablemanager.model.GenericModel;
 import org.litepal.util.BaseUtility;
 import org.litepal.util.Const;
 import org.litepal.util.DBUtility;
 import org.litepal.util.LogUtil;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.text.TextUtils;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * When models have associations such as one2one, many2one or many2many, tables
@@ -292,6 +289,9 @@ public abstract class AssociationCreator extends Generator {
 						associationModel.getAssociatedTableName(), db, force);
 			}
 		}
+        for (GenericModel genericModel : getGenericModels()) {
+            createGenericTable(genericModel, db, force);
+        }
 	}
 
 	/**
@@ -334,6 +334,44 @@ public abstract class AssociationCreator extends Generator {
 		execute(sqls.toArray(new String[0]), db);
 		giveTableSchemaACopy(intermediateTableName, Const.TableSchema.INTERMEDIATE_JOIN_TABLE, db);
 	}
+
+    /**
+     * When declared generic collection fields in model class. Database need to create
+     * generic tables for mapping these fields. This method helps create such a table.
+     *
+     * @param genericModel
+     *          The GenericModel instance.
+     * @param db
+     *          Instance of SQLiteDatabase.
+     * @param force
+     *          Drop the table first if it already exists.
+     */
+    private void createGenericTable(GenericModel genericModel, SQLiteDatabase db, boolean force) {
+        String tableName = genericModel.getTableName();
+        String valueColumnName = genericModel.getValueColumnName();
+        String valueColumnType = genericModel.getValueColumnType();
+        String valueIdColumnName = genericModel.getValueIdColumnName();
+        List<ColumnModel> columnModelList = new ArrayList<ColumnModel>();
+        ColumnModel column1 = new ColumnModel();
+        column1.setColumnName(valueColumnName);
+        column1.setColumnType(valueColumnType);
+        ColumnModel column2 = new ColumnModel();
+        column2.setColumnName(valueIdColumnName);
+        column2.setColumnType("integer");
+        columnModelList.add(column1);
+        columnModelList.add(column2);
+        List<String> sqls = new ArrayList<String>();
+        if (DBUtility.isTableExists(tableName, db)) {
+            if (force) {
+                sqls.add(generateDropTableSQL(tableName));
+                sqls.add(generateCreateTableSQL(tableName, columnModelList, false));
+            }
+        } else {
+            sqls.add(generateCreateTableSQL(tableName, columnModelList, false));
+        }
+        execute(sqls.toArray(new String[0]), db);
+        giveTableSchemaACopy(tableName, Const.TableSchema.GENERIC_TABLE, db);
+    }
 
 	/**
 	 * This method is used to add many to one association or one to one
