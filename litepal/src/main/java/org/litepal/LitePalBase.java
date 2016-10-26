@@ -77,9 +77,14 @@ public abstract class LitePalBase {
 			new DecimalOrm(), new DateOrm(), new BlobOrm()};
 
     /**
-     * This is map of class name to fields list. Indicates that each class has which fields.
+     * This is map of class name to fields list. Indicates that each class has which supported fields.
      */
     private Map<String, List<Field>> classFieldsMap = new HashMap<String, List<Field>>();
+
+	/**
+	 * This is map of class name to generic fields list. Indicates that each class has which supported generic fields.
+	 */
+    private Map<String, List<Field>> classGenericFieldsMap = new HashMap<String, List<Field>>();
 
 	/**
 	 * The collection contains all association models.
@@ -197,6 +202,23 @@ public abstract class LitePalBase {
         return fieldList;
 	}
 
+	protected List<Field> getSupportedGenericFields(String className) {
+        List<Field> genericFieldList = classGenericFieldsMap.get(className);
+        if (genericFieldList == null) {
+            List<Field> supportedGenericFields = new ArrayList<Field>();
+            Class<?> clazz;
+            try {
+                clazz = Class.forName(className);
+            } catch (ClassNotFoundException e) {
+                throw new DatabaseGenerateException(DatabaseGenerateException.CLASS_NOT_FOUND + className);
+            }
+            recursiveSupportedGenericFields(clazz, supportedGenericFields);
+            classGenericFieldsMap.put(className, supportedGenericFields);
+            return supportedGenericFields;
+        }
+        return genericFieldList;
+	}
+
 	/**
 	 * If the field type implements from List or Set, regard it as a collection.
 	 * 
@@ -294,6 +316,29 @@ public abstract class LitePalBase {
             }
         }
         recursiveSupportedFields(clazz.getSuperclass(), supportedFields);
+    }
+
+    private void recursiveSupportedGenericFields(Class<?> clazz, List<Field> supportedGenericFields) {
+        if (clazz == DataSupport.class || clazz == Object.class) {
+            return;
+        }
+        Field[] fields = clazz.getDeclaredFields();
+        if (fields != null && fields.length > 0) {
+            for (Field field : fields) {
+                Column annotation = field.getAnnotation(Column.class);
+                if (annotation != null && annotation.ignore()) {
+                    continue;
+                }
+                int modifiers = field.getModifiers();
+                if (!Modifier.isStatic(modifiers) && isCollection(field.getType())) {
+                    String genericTypeName = getGenericTypeName(field);
+                    if (BaseUtility.isGenericTypeSupported(genericTypeName)) {
+                        supportedGenericFields.add(field);
+                    }
+                }
+            }
+        }
+        recursiveSupportedGenericFields(clazz.getSuperclass(), supportedGenericFields);
     }
 
 	/**
@@ -506,7 +551,7 @@ public abstract class LitePalBase {
                                 field, null, Const.Model.MANY_TO_ONE);
                     }
                 }
-			} else if(BaseUtility.isGenericTypeSupported(genericTypeName)) {
+			} else if(BaseUtility.isGenericTypeSupported(genericTypeName) && action == GET_ASSOCIATIONS_ACTION) {
                 GenericModel genericModel = new GenericModel();
                 genericModel.setTableName(DBUtility.getGenericTableName(className, field.getName()));
                 genericModel.setValueColumnName(field.getName());

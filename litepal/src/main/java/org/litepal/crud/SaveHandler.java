@@ -81,12 +81,13 @@ class SaveHandler extends DataHandler {
 			NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		String className = baseObj.getClassName();
 		List<Field> supportedFields = getSupportedFields(className);
+        List<Field> supportedGenericFields = getSupportedGenericFields(className);
 		Collection<AssociationsInfo> associationInfos = getAssociationInfo(className);
 		if (!baseObj.isSaved()) {
             if (!ignoreAssociations) {
                 analyzeAssociatedModels(baseObj, associationInfos);
             }
-			doSaveAction(baseObj, supportedFields);
+			doSaveAction(baseObj, supportedFields, supportedGenericFields);
             if (!ignoreAssociations) {
                 analyzeAssociatedModels(baseObj, associationInfos);
             }
@@ -142,11 +143,12 @@ class SaveHandler extends DataHandler {
 			DataSupport firstObj = array[0];
 			String className = firstObj.getClassName();
 			List<Field> supportedFields = getSupportedFields(className);
+            List<Field> supportedGenericFields = getSupportedGenericFields(className);
 			Collection<AssociationsInfo> associationInfos = getAssociationInfo(className);
 			for (DataSupport baseObj : array) {
 				if (!baseObj.isSaved()) {
 					analyzeAssociatedModels(baseObj, associationInfos);
-					doSaveAction(baseObj, supportedFields);
+					doSaveAction(baseObj, supportedFields, supportedGenericFields);
 					analyzeAssociatedModels(baseObj, associationInfos);
 				} else {
 					analyzeAssociatedModels(baseObj, associationInfos);
@@ -176,7 +178,7 @@ class SaveHandler extends DataHandler {
 	 * @throws IllegalArgumentException
 	 * @throws SecurityException
 	 */
-	private void doSaveAction(DataSupport baseObj, List<Field> supportedFields)
+	private void doSaveAction(DataSupport baseObj, List<Field> supportedFields, List<Field> supportedGenericFields)
 			throws SecurityException, IllegalArgumentException, NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException {
 		values.clear();

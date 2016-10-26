@@ -80,8 +80,6 @@ public abstract class Generator extends LitePalBase {
 	 * mapping list of litepal.xml file.
 	 * 
 	 * @return Collection of RelationModel for all the mapping classes.
-	 * 
-	 * @throws org.litepal.exceptions.DatabaseGenerateException
 	 */
 	protected Collection<AssociationsModel> getAllAssociations() {
 		if (mAllRelationModels == null || mAllRelationModels.isEmpty()) {
