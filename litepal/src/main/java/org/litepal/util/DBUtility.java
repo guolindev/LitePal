@@ -138,7 +138,7 @@ public class DBUtility {
      */
     public static String getGenericTableName(String className, String fieldName) {
         String tableName = getTableNameByClassName(className);
-        return tableName + "_" + fieldName;
+        return BaseUtility.changeCase(tableName + "_" + fieldName);
     }
 
     /**
@@ -148,7 +148,7 @@ public class DBUtility {
      * @return The column name for referenced id in generic table.
      */
     public static String getGenericValueIdColumnName(String className) {
-        return getTableNameByClassName(className) + "_id";
+        return BaseUtility.changeCase(getTableNameByClassName(className) + "_id");
     }
 
 	/**

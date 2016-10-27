@@ -294,6 +294,25 @@ public abstract class LitePalBase {
         return null;
     }
 
+    /**
+     * Get the generic type class of List or Set. If there's no generic type of
+     * List or Set return null.
+     *
+     * @param field
+     *            A generic type field.
+     * @return The name of generic type of List of Set.
+     */
+    protected Class<?> getGenericTypeClass(Field field) {
+        Type genericType = field.getGenericType();
+        if (genericType != null) {
+            if (genericType instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType) genericType;
+                return (Class<?>) parameterizedType.getActualTypeArguments()[0];
+            }
+        }
+        return null;
+    }
+
     private void recursiveSupportedFields(Class<?> clazz, List<Field> supportedFields) {
         if (clazz == DataSupport.class || clazz == Object.class) {
             return;
@@ -626,15 +645,11 @@ public abstract class LitePalBase {
 	 * @return The name of generic type of List of Set.
 	 */
 	private String getGenericTypeName(Field field) {
-		Type genericType = field.getGenericType();
-		if (genericType != null) {
-			if (genericType instanceof ParameterizedType) {
-				ParameterizedType parameterizedType = (ParameterizedType) genericType;
-				Class<?> genericArg = (Class<?>) parameterizedType.getActualTypeArguments()[0];
-				return genericArg.getName();
-			}
-		}
-		return null;
+		Class<?> genericTypeClass = getGenericTypeClass(field);
+        if (genericTypeClass != null) {
+            return genericTypeClass.getName();
+        }
+        return null;
 	}
 
     /**
