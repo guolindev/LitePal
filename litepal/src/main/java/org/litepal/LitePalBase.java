@@ -183,7 +183,7 @@ public abstract class LitePalBase {
 	 * 
 	 * @param className
 	 *            The full name of the class.
-	 * @return A list of supported fields
+	 * @return A list of supported fields.
 	 */
 	protected List<Field> getSupportedFields(String className) {
         List<Field> fieldList = classFieldsMap.get(className);
@@ -202,6 +202,12 @@ public abstract class LitePalBase {
         return fieldList;
 	}
 
+    /**
+     * Find all supported generic fields in the class. Supporting rule is in {@link BaseUtility#isGenericTypeSupported(String)}.
+     * @param className
+     *           The full name of the class.
+     * @return A list of supported generic fields.
+     */
 	protected List<Field> getSupportedGenericFields(String className) {
         List<Field> genericFieldList = classGenericFieldsMap.get(className);
         if (genericFieldList == null) {

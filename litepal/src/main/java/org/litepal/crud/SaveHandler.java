@@ -48,7 +48,7 @@ class SaveHandler extends DataHandler {
     /**
      * indicates that associations can be ignored while saving.
      */
-    boolean ignoreAssociations = false;
+    private boolean ignoreAssociations = false;
 
     private ContentValues values;
 
@@ -98,7 +98,7 @@ class SaveHandler extends DataHandler {
             if (!ignoreAssociations) {
                 analyzeAssociatedModels(baseObj, associationInfos);
             }
-			doUpdateAction(baseObj, supportedFields);
+			doUpdateAction(baseObj, supportedFields, supportedGenericFields);
 		}
 	}
 
@@ -155,7 +155,7 @@ class SaveHandler extends DataHandler {
 					analyzeAssociatedModels(baseObj, associationInfos);
 				} else {
 					analyzeAssociatedModels(baseObj, associationInfos);
-					doUpdateAction(baseObj, supportedFields);
+					doUpdateAction(baseObj, supportedFields, supportedGenericFields);
 				}
 				baseObj.clearAssociatedData();
 			}
@@ -175,6 +175,8 @@ class SaveHandler extends DataHandler {
 	 *            Current model to persist.
 	 * @param supportedFields
 	 *            List of all supported fields.
+     * @param  supportedGenericFields
+     *            List of all supported generic fields.
 	 * @throws java.lang.reflect.InvocationTargetException
 	 * @throws IllegalAccessException
 	 * @throws NoSuchMethodException
@@ -237,6 +239,8 @@ class SaveHandler extends DataHandler {
 	 *            Current model that is persisted.
 	 * @param supportedFields
 	 *            List of all supported fields.
+     * @param  supportedGenericFields
+     *            List of all supported generic fields.
 	 * @param id
 	 *            The current model's id.
 	 */
@@ -244,23 +248,7 @@ class SaveHandler extends DataHandler {
                            List<Field> supportedGenericFields, long id) throws IllegalAccessException, InvocationTargetException {
 		throwIfSaveFailed(id);
 		assignIdValue(baseObj, getIdField(supportedFields), id);
-        for (Field field : supportedGenericFields) {
-            field.setAccessible(true);
-            Collection<?> collection = (Collection<?>) field.get(baseObj);
-            if (collection != null) {
-                String tableName = DBUtility.getGenericTableName(baseObj.getClassName(), field.getName());
-                String genericValueIdColumnName = DBUtility.getGenericValueIdColumnName(baseObj.getClassName());
-                mDatabase.delete(tableName, genericValueIdColumnName + " = ?", new String[] {String.valueOf(id)});
-                for (Object object : collection) {
-                    ContentValues values = new ContentValues();
-                    values.put(genericValueIdColumnName, id);
-                    Object[] parameters = new Object[] { changeCase(field.getName()), object };
-                    Class<?>[] parameterTypes = new Class[] { String.class, getGenericTypeClass(field) };
-                    DynamicExecutor.send(values, "put", parameters, values.getClass(), parameterTypes);
-                    mDatabase.insert(tableName, null, values);
-                }
-            }
-        }
+        updateGenericTables(baseObj, supportedGenericFields, id);
         if (!ignoreAssociations) {
             updateAssociatedTableWithFK(baseObj);
             insertIntermediateJoinTableValue(baseObj, false);
@@ -272,19 +260,23 @@ class SaveHandler extends DataHandler {
 	 * 
 	 * @param baseObj
 	 *            The class of base object.
+     * @param supportedFields
+     *            List of all supported fields.
+     * @param  supportedGenericFields
+     *            List of all supported generic fields.
 	 * @throws java.lang.reflect.InvocationTargetException
 	 * @throws IllegalAccessException
 	 * @throws NoSuchMethodException
 	 * @throws IllegalArgumentException
 	 * @throws SecurityException
 	 */
-	private void doUpdateAction(DataSupport baseObj, List<Field> supportedFields)
+	private void doUpdateAction(DataSupport baseObj, List<Field> supportedFields, List<Field> supportedGenericFields)
 			throws SecurityException, IllegalArgumentException, NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException {
 		values.clear();
 		beforeUpdate(baseObj, supportedFields, values);
 		updating(baseObj, values);
-		afterUpdate(baseObj);
+		afterUpdate(baseObj, supportedGenericFields);
 	}
 
 	/**
@@ -337,8 +329,12 @@ class SaveHandler extends DataHandler {
 	 * 
 	 * @param baseObj
 	 *            Current model that is updated.
+     * @param  supportedGenericFields
+     *            List of all supported generic fields.
 	 */
-	private void afterUpdate(DataSupport baseObj) {
+	private void afterUpdate(DataSupport baseObj, List<Field> supportedGenericFields)
+            throws InvocationTargetException, IllegalAccessException {
+        updateGenericTables(baseObj, supportedGenericFields, baseObj.getBaseObjId());
         if (!ignoreAssociations) {
             updateAssociatedTableWithFK(baseObj);
             insertIntermediateJoinTableValue(baseObj, true);
@@ -546,4 +542,38 @@ class SaveHandler extends DataHandler {
 	private boolean shouldGiveModelIdValue(String idName, Class<?> idType, long id) {
 		return idName != null && idType != null && id > 0;
 	}
+
+    /**
+     * Update the generic data in generic tables. Need to delete the related generic data before
+     * saving, because generic data has no id.
+     * @param baseObj
+     *          Current model that is persisted.
+     *@param  supportedGenericFields
+     *            List of all supported generic fields.
+     * @param id
+     *          The id of current model.
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
+    private void updateGenericTables(DataSupport baseObj, List<Field> supportedGenericFields,
+                                     long id) throws IllegalAccessException, InvocationTargetException {
+        for (Field field : supportedGenericFields) {
+            field.setAccessible(true);
+            Collection<?> collection = (Collection<?>) field.get(baseObj);
+            if (collection != null) {
+                String tableName = DBUtility.getGenericTableName(baseObj.getClassName(), field.getName());
+                String genericValueIdColumnName = DBUtility.getGenericValueIdColumnName(baseObj.getClassName());
+                mDatabase.delete(tableName, genericValueIdColumnName + " = ?", new String[] {String.valueOf(id)});
+                for (Object object : collection) {
+                    ContentValues values = new ContentValues();
+                    values.put(genericValueIdColumnName, id);
+                    Object[] parameters = new Object[] { changeCase(field.getName()), object };
+                    Class<?>[] parameterTypes = new Class[] { String.class, getGenericTypeClass(field) };
+                    DynamicExecutor.send(values, "put", parameters, values.getClass(), parameterTypes);
+                    mDatabase.insert(tableName, null, values);
+                }
+            }
+        }
+    }
+
 }
