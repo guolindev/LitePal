@@ -598,6 +598,10 @@ public abstract class LitePalBase {
                     }
                 }
 			} else if(BaseUtility.isGenericTypeSupported(genericTypeName) && action == GET_ASSOCIATIONS_ACTION) {
+                Column annotation = field.getAnnotation(Column.class);
+                if (annotation != null && annotation.ignore()) {
+                    return;
+                }
                 GenericModel genericModel = new GenericModel();
                 genericModel.setTableName(DBUtility.getGenericTableName(className, field.getName()));
                 genericModel.setValueColumnName(field.getName());
