@@ -35,7 +35,7 @@ public interface Const {
 		public static final int MANY_TO_MANY = 3;
 	}
 
-	public interface LitePal {
+	public interface Config {
 		/**
 		 * The suffix for each database file.
 		 */

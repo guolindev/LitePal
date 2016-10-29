@@ -675,7 +675,7 @@ public abstract class LitePalBase {
 	 *            A generic type field.
 	 * @return The name of generic type of List of Set.
 	 */
-	private String getGenericTypeName(Field field) {
+	protected String getGenericTypeName(Field field) {
 		Class<?> genericTypeClass = getGenericTypeClass(field);
         if (genericTypeClass != null) {
             return genericTypeClass.getName();

@@ -190,8 +190,8 @@ public final class LitePalAttr {
 			throw new InvalidAttributesException(
 					InvalidAttributesException.DBNAME_IS_EMPTY_OR_NOT_DEFINED);
 		}
-		if (!dbName.endsWith(Const.LitePal.DB_NAME_SUFFIX)) {
-			dbName = dbName + Const.LitePal.DB_NAME_SUFFIX;
+		if (!dbName.endsWith(Const.Config.DB_NAME_SUFFIX)) {
+			dbName = dbName + Const.Config.DB_NAME_SUFFIX;
 		}
 		if (version < 1) {
 			throw new InvalidAttributesException(
@@ -202,11 +202,11 @@ public final class LitePalAttr {
 					InvalidAttributesException.VERSION_IS_EARLIER_THAN_CURRENT);
 		}
 		if (TextUtils.isEmpty(cases)) {
-			cases = Const.LitePal.CASES_LOWER;
+			cases = Const.Config.CASES_LOWER;
 		} else {
-			if (!cases.equals(Const.LitePal.CASES_UPPER)
-					&& !cases.equals(Const.LitePal.CASES_LOWER)
-					&& !cases.equals(Const.LitePal.CASES_KEEP)) {
+			if (!cases.equals(Const.Config.CASES_UPPER)
+					&& !cases.equals(Const.Config.CASES_LOWER)
+					&& !cases.equals(Const.Config.CASES_KEEP)) {
 				throw new InvalidAttributesException(cases
 						+ InvalidAttributesException.CASES_VALUE_IS_INVALID);
 			}

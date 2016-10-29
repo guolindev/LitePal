@@ -26,9 +26,12 @@ import java.util.Set;
 import org.litepal.crud.model.AssociationsInfo;
 import org.litepal.exceptions.DataSupportException;
 import org.litepal.util.BaseUtility;
+import org.litepal.util.DBUtility;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+
+import static org.litepal.util.BaseUtility.changeCase;
 
 /**
  * This is a component under DataSupport. It deals with the updating stuff as
@@ -70,9 +73,11 @@ class UpdateHandler extends DataHandler {
 	int onUpdate(DataSupport baseObj, long id) throws SecurityException, IllegalArgumentException,
 			NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		List<Field> supportedFields = getSupportedFields(baseObj.getClassName());
+		List<Field> supportedGenericFields = getSupportedGenericFields();
+        updateGenericTables(baseObj, supportedGenericFields, id);
 		ContentValues values = new ContentValues();
 		putFieldsValue(baseObj, supportedFields, values);
-		putFieldsToDefaultValue(baseObj, values);
+		putFieldsToDefaultValue(baseObj, values, id);
 		if (values.size() > 0) {
 			return mDatabase.update(baseObj.getTableName(), values, "id = " + id, null);
 		}
@@ -122,9 +127,22 @@ class UpdateHandler extends DataHandler {
 			IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
 			InvocationTargetException {
 		List<Field> supportedFields = getSupportedFields(baseObj.getClassName());
-		ContentValues values = new ContentValues();
+        List<Field> supportedGenericFields = getSupportedGenericFields();
+        long[] ids = null;
+        if (!supportedGenericFields.isEmpty()) {
+            List<DataSupport> list = (List<DataSupport>) DataSupport.select("id").where(conditions).find(baseObj.getClass());
+            if (list.size() > 0) {
+                ids = new long[list.size()];
+                for (int i = 0; i < ids.length; i++) {
+                    DataSupport dataSupport = list.get(i);
+                    ids[i] = dataSupport.getBaseObjId();
+                }
+                updateGenericTables(baseObj, supportedGenericFields, ids);
+            }
+        }
+        ContentValues values = new ContentValues();
 		putFieldsValue(baseObj, supportedFields, values);
-		putFieldsToDefaultValue(baseObj, values);
+		putFieldsToDefaultValue(baseObj, values, ids);
 		return doUpdateAllAction(baseObj.getTableName(), values, conditions);
 	}
 
@@ -180,8 +198,10 @@ class UpdateHandler extends DataHandler {
 	 *            Which table to update by model instance.
 	 * @param values
 	 *            To store data of current model for persisting or updating.
+     * @param ids
+     *          The id array of query result.
 	 */
-	private void putFieldsToDefaultValue(DataSupport baseObj, ContentValues values) {
+	private void putFieldsToDefaultValue(DataSupport baseObj, ContentValues values, long... ids) {
 		String fieldName = null;
 		try {
 			DataSupport emptyModel = getEmptyModel(baseObj);
@@ -190,7 +210,18 @@ class UpdateHandler extends DataHandler {
 				if (!isIdColumn(name)) {
 					fieldName = name;
 					Field field = emptyModelClass.getDeclaredField(fieldName);
-					putContentValuesForUpdate(emptyModel, field, values);
+                    if (ids != null && ids.length > 0 && isCollection(field.getType())) {
+                        String genericTypeName = getGenericTypeName(field);
+                        if (BaseUtility.isGenericTypeSupported(genericTypeName)) {
+                            String tableName = DBUtility.getGenericTableName(baseObj.getClassName(), field.getName());
+                            String genericValueIdColumnName = DBUtility.getGenericValueIdColumnName(baseObj.getClassName());
+                            for (long id : ids) {
+                                mDatabase.delete(tableName, genericValueIdColumnName + " = ?", new String[] {String.valueOf(id)});
+                            }
+                        }
+                    } else {
+					    putContentValuesForUpdate(emptyModel, field, values);
+                    }
 				}
 			}
 		} catch (NoSuchFieldException e) {
@@ -259,5 +290,44 @@ class UpdateHandler extends DataHandler {
 		}
 		return 0;
 	}
+
+    /**
+     * Update the generic data in generic tables. Need to delete the related generic data before
+     * saving, because generic data has no id. If generic collection is null or empty, the operation
+     * will be abort. Clear generic collection data while updating should use {@link DataSupport#setToDefault(String)}
+     * method.
+     * @param baseObj
+     *          Current model that is persisted.
+     *@param  supportedGenericFields
+     *            List of all supported generic fields.
+     * @param ids
+     *          The id array of models.
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
+    private void updateGenericTables(DataSupport baseObj, List<Field> supportedGenericFields,
+                                     long... ids) throws IllegalAccessException, InvocationTargetException {
+        if (ids != null && ids.length > 0) {
+            for (Field field : supportedGenericFields) {
+                field.setAccessible(true);
+                Collection<?> collection = (Collection<?>) field.get(baseObj);
+                if (collection != null && !collection.isEmpty()) {
+                    String tableName = DBUtility.getGenericTableName(baseObj.getClassName(), field.getName());
+                    String genericValueIdColumnName = DBUtility.getGenericValueIdColumnName(baseObj.getClassName());
+                    for (long id : ids) {
+                        mDatabase.delete(tableName, genericValueIdColumnName + " = ?", new String[] {String.valueOf(id)});
+                        for (Object object : collection) {
+                            ContentValues values = new ContentValues();
+                            values.put(genericValueIdColumnName, id);
+                            Object[] parameters = new Object[] { changeCase(field.getName()), object };
+                            Class<?>[] parameterTypes = new Class[] { String.class, getGenericTypeClass(field) };
+                            DynamicExecutor.send(values, "put", parameters, values.getClass(), parameterTypes);
+                            mDatabase.insert(tableName, null, values);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 }

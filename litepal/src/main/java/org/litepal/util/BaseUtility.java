@@ -53,9 +53,9 @@ public class BaseUtility {
 		if (string != null) {
 			LitePalAttr litePalAttr = LitePalAttr.getInstance();
 			String cases = litePalAttr.getCases();
-			if (Const.LitePal.CASES_KEEP.equals(cases)) {
+			if (Const.Config.CASES_KEEP.equals(cases)) {
 				return string;
-			} else if (Const.LitePal.CASES_UPPER.equals(cases)) {
+			} else if (Const.Config.CASES_UPPER.equals(cases)) {
 				return string.toUpperCase(Locale.US);
 			}
 			return string.toLowerCase(Locale.US);
