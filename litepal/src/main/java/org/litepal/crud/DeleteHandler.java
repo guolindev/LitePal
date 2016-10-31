@@ -127,7 +127,8 @@ public class DeleteHandler extends DataHandler {
 		return mDatabase.delete(tableName, getWhereClause(conditions),
 				getWhereArgs(conditions));
 	}
-	
+
+    @SuppressWarnings("unchecked")
 	int onDeleteAll(Class<?> modelClass, String... conditions) {
 		BaseUtility.checkConditionsCorrect(conditions);
         List<Field> supportedGenericFields = getSupportedGenericFields(modelClass.getName());
