@@ -103,7 +103,7 @@ public class ModelListActivity extends Activity {
 		String[] fileNames = assetManager.list("");
 		if (fileNames != null && fileNames.length > 0) {
 			for (String fileName : fileNames) {
-				if (Const.LitePal.CONFIGURATION_FILE_NAME.equalsIgnoreCase(fileName)) {
+				if (Const.Config.CONFIGURATION_FILE_NAME.equalsIgnoreCase(fileName)) {
 					return assetManager.open(fileName, AssetManager.ACCESS_BUFFER);
 				}
 			}

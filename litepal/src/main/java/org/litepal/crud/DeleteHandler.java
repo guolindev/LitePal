@@ -16,6 +16,7 @@
 
 package org.litepal.crud;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -73,6 +74,8 @@ public class DeleteHandler extends DataHandler {
 	 */
 	int onDelete(DataSupport baseObj) {
 		if (baseObj.isSaved()) {
+            List<Field> supportedGenericFields = getSupportedGenericFields(baseObj.getClassName());
+            deleteGenericData(baseObj.getClass(), supportedGenericFields, baseObj.getBaseObjId());
 			Collection<AssociationsInfo> associationInfos = analyzeAssociations(baseObj);
 			int rowsAffected = deleteCascade(baseObj);
 			rowsAffected += mDatabase.delete(baseObj.getTableName(), "id = "
@@ -97,6 +100,8 @@ public class DeleteHandler extends DataHandler {
 	 * @return The number of rows affected. Including cascade delete rows.
 	 */
 	int onDelete(Class<?> modelClass, long id) {
+        List<Field> supportedGenericFields = getSupportedGenericFields(modelClass.getName());
+        deleteGenericData(modelClass, supportedGenericFields, id);
 		analyzeAssociations(modelClass);
 		int rowsAffected = deleteCascade(modelClass, id);
 		rowsAffected += mDatabase.delete(getTableName(modelClass),
@@ -125,6 +130,18 @@ public class DeleteHandler extends DataHandler {
 	
 	int onDeleteAll(Class<?> modelClass, String... conditions) {
 		BaseUtility.checkConditionsCorrect(conditions);
+        List<Field> supportedGenericFields = getSupportedGenericFields(modelClass.getName());
+        if (!supportedGenericFields.isEmpty()) {
+            List<DataSupport> list = (List<DataSupport>) DataSupport.select("id").where(conditions).find(modelClass);
+            if (list.size() > 0) {
+                long[] ids = new long[list.size()];
+                for (int i = 0; i < ids.length; i++) {
+                    DataSupport dataSupport = list.get(i);
+                    ids[i] = dataSupport.getBaseObjId();
+                }
+                deleteGenericData(modelClass, supportedGenericFields, ids);
+            }
+        }
 		analyzeAssociations(modelClass);
 		int rowsAffected = deleteAllCascade(modelClass, conditions);
 		rowsAffected += mDatabase.delete(getTableName(modelClass), getWhereClause(conditions),
@@ -346,4 +363,29 @@ public class DeleteHandler extends DataHandler {
 		return foreignKeyTableToDelete;
 	}
 
+    /**
+     * Delete the generic data in generic tables while main data was deleted.
+     * @param modelClass
+     *          Used to get the generic table name and value id column.
+     * @param supportedGenericFields
+     *          List of all supported generic fields.
+     * @param ids
+     *          The id array of models.
+     */
+    private void deleteGenericData(Class<?> modelClass, List<Field> supportedGenericFields, long... ids) {
+        for (Field field : supportedGenericFields) {
+            String tableName = DBUtility.getGenericTableName(modelClass.getName(), field.getName());
+            String genericValueIdColumnName = DBUtility.getGenericValueIdColumnName(modelClass.getName());
+            StringBuilder whereClause = new StringBuilder();
+            boolean needOr = false;
+            for (long id : ids) {
+                if (needOr) {
+                    whereClause.append(" or ");
+                }
+                whereClause.append(genericValueIdColumnName).append(" = ").append(id);
+                needOr = true;
+            }
+            mDatabase.delete(tableName, whereClause.toString(), null);
+        }
+    }
 }
