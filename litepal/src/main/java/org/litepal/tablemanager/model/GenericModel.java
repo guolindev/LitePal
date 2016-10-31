@@ -30,6 +30,11 @@ public class GenericModel {
      */
     private String valueIdColumnName;
 
+    /**
+     * Only used when query generic data. This is cache fields for improving performance.
+     */
+    private String getMethodName;
+
     public String getTableName() {
         return tableName;
     }
@@ -62,4 +67,11 @@ public class GenericModel {
         this.valueIdColumnName = valueIdColumnName;
     }
 
+    public String getGetMethodName() {
+        return getMethodName;
+    }
+
+    public void setGetMethodName(String getMethodName) {
+        this.getMethodName = getMethodName;
+    }
 }

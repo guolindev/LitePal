@@ -322,7 +322,7 @@ public abstract class LitePalBase {
      *
      * @param field
      *            A generic type field.
-     * @return The name of generic type of List of Set.
+     * @return The generic type of List or Set.
      */
     protected Class<?> getGenericTypeClass(Field field) {
         Type genericType = field.getGenericType();
