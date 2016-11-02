@@ -604,7 +604,7 @@ public abstract class LitePalBase {
                 }
                 GenericModel genericModel = new GenericModel();
                 genericModel.setTableName(DBUtility.getGenericTableName(className, field.getName()));
-                genericModel.setValueColumnName(field.getName());
+                genericModel.setValueColumnName(DBUtility.convertFieldNameToColumnName(field.getName()));
                 genericModel.setValueColumnType(getColumnType(genericTypeName));
                 genericModel.setValueIdColumnName(DBUtility.getGenericValueIdColumnName(className));
                 mGenericModels.add(genericModel);
@@ -703,7 +703,7 @@ public abstract class LitePalBase {
             defaultValue = annotation.defaultValue();
         }
         ColumnModel columnModel = new ColumnModel();
-        columnModel.setColumnName(field.getName());
+        columnModel.setColumnName(DBUtility.convertFieldNameToColumnName(field.getName()));
         columnModel.setColumnType(columnType);
         columnModel.setIsNullable(nullable);
         columnModel.setIsUnique(unique);

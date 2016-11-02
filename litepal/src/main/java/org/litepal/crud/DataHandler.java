@@ -40,6 +40,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.litepal.util.BaseUtility.changeCase;
 
@@ -264,7 +266,7 @@ abstract class DataHandler extends LitePalBase {
                 Date date = (Date) fieldValue;
                 fieldValue = date.getTime();
             }
-            Object[] parameters = new Object[] { changeCase(field.getName()), fieldValue };
+            Object[] parameters = new Object[] { changeCase(DBUtility.convertFieldNameToColumnName(field.getName())), fieldValue };
             Class<?>[] parameterTypes = getParameterTypes(field, fieldValue, parameters);
             DynamicExecutor.send(values, "put", parameters, values.getClass(), parameterTypes);
         }
@@ -299,7 +301,7 @@ abstract class DataHandler extends LitePalBase {
             Date date = (Date) fieldValue;
             fieldValue = date.getTime();
         }
-        Object[] parameters = new Object[] { changeCase(field.getName()), fieldValue };
+        Object[] parameters = new Object[] { changeCase(DBUtility.convertFieldNameToColumnName(field.getName())), fieldValue };
         Class<?>[] parameterTypes = getParameterTypes(field, fieldValue, parameters);
         DynamicExecutor.send(values, "put", parameters, values.getClass(), parameterTypes);
     }
@@ -872,6 +874,19 @@ abstract class DataHandler extends LitePalBase {
 		}
 		return parameterTypes;
 	}
+
+    protected void convertConditions(String... conditions) {
+        if (conditions != null && conditions.length > 0) {
+            String whereClause = conditions[0];
+            Pattern p = Pattern.compile("(\\w+\\s*(=|!=|<>|<|>)|\\w+\\s+(not\\s+)?(like|between)\\s+|\\w+\\s+(not\\s+)?(in|exists)\\s*\\()");
+            Matcher m = p.matcher(whereClause);
+            while (m.find()) {
+                System.out.println(m.group());
+                String result = m.group().replaceAll("(\\s*(=|!=|<>|<|>)|\\s+(not\\s+)?(like|between)\\s+|\\s+(not\\s+)?(in|exists)\\s*\\()", "");
+                System.out.println(result);
+            }
+        }
+    }
 
 	/**
 	 * Each primitive type has a corresponding object type. For example int and
