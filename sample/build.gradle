@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "org.litepal.litepalsample"
-        minSdkVersion 10
+        minSdkVersion 11
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
