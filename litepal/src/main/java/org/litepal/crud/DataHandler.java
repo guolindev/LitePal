@@ -875,19 +875,6 @@ abstract class DataHandler extends LitePalBase {
 		return parameterTypes;
 	}
 
-    protected void convertConditions(String... conditions) {
-        if (conditions != null && conditions.length > 0) {
-            String whereClause = conditions[0];
-            Pattern p = Pattern.compile("(\\w+\\s*(=|!=|<>|<|>)|\\w+\\s+(not\\s+)?(like|between)\\s+|\\w+\\s+(not\\s+)?(in|exists)\\s*\\()");
-            Matcher m = p.matcher(whereClause);
-            while (m.find()) {
-                System.out.println(m.group());
-                String result = m.group().replaceAll("(\\s*(=|!=|<>|<|>)|\\s+(not\\s+)?(like|between)\\s+|\\s+(not\\s+)?(in|exists)\\s*\\()", "");
-                System.out.println(result);
-            }
-        }
-    }
-
 	/**
 	 * Each primitive type has a corresponding object type. For example int and
 	 * Integer, boolean and Boolean. This method gives a way to turn primitive

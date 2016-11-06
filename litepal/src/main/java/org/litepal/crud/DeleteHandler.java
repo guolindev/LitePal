@@ -41,7 +41,7 @@ import android.database.sqlite.SQLiteDatabase;
  * @author Tony Green
  * @since 1.1
  */
-public class DeleteHandler extends DataHandler {
+class DeleteHandler extends DataHandler {
 
 	/**
 	 * To store associated tables of current model's table. Only used while
@@ -124,6 +124,9 @@ public class DeleteHandler extends DataHandler {
 	 */
 	int onDeleteAll(String tableName, String... conditions) {
 		BaseUtility.checkConditionsCorrect(conditions);
+        if (conditions != null && conditions.length > 0) {
+            conditions[0] = DBUtility.convertWhereClauseToColumnName(conditions[0]);
+        }
 		return mDatabase.delete(tableName, getWhereClause(conditions),
 				getWhereArgs(conditions));
 	}
@@ -131,6 +134,9 @@ public class DeleteHandler extends DataHandler {
     @SuppressWarnings("unchecked")
 	int onDeleteAll(Class<?> modelClass, String... conditions) {
 		BaseUtility.checkConditionsCorrect(conditions);
+        if (conditions != null && conditions.length > 0) {
+            conditions[0] = DBUtility.convertWhereClauseToColumnName(conditions[0]);
+        }
         List<Field> supportedGenericFields = getSupportedGenericFields(modelClass.getName());
         if (!supportedGenericFields.isEmpty()) {
             List<DataSupport> list = (List<DataSupport>) DataSupport.select("id").where(conditions).find(modelClass);
