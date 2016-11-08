@@ -567,7 +567,7 @@ class SaveHandler extends DataHandler {
                 for (Object object : collection) {
                     ContentValues values = new ContentValues();
                     values.put(genericValueIdColumnName, id);
-                    Object[] parameters = new Object[] { changeCase(DBUtility.convertFieldNameToColumnName(field.getName())), object };
+                    Object[] parameters = new Object[] { changeCase(DBUtility.convertToValidColumnName(field.getName())), object };
                     Class<?>[] parameterTypes = new Class[] { String.class, getGenericTypeClass(field) };
                     DynamicExecutor.send(values, "put", parameters, values.getClass(), parameterTypes);
                     mDatabase.insert(tableName, null, values);

@@ -340,7 +340,7 @@ class UpdateHandler extends DataHandler {
                         for (Object object : collection) {
                             ContentValues values = new ContentValues();
                             values.put(genericValueIdColumnName, id);
-                            Object[] parameters = new Object[] { DBUtility.convertFieldNameToColumnName(changeCase(field.getName())), object };
+                            Object[] parameters = new Object[] { DBUtility.convertToValidColumnName(changeCase(field.getName())), object };
                             Class<?>[] parameterTypes = new Class[] { String.class, getGenericTypeClass(field) };
                             DynamicExecutor.send(values, "put", parameters, values.getClass(), parameterTypes);
                             mDatabase.insert(tableName, null, values);
@@ -367,7 +367,7 @@ class UpdateHandler extends DataHandler {
             }
         }
         for (String key : valuesToConvert.keySet()) {
-            String convertedKey = DBUtility.convertFieldNameToColumnName(key);
+            String convertedKey = DBUtility.convertToValidColumnName(key);
             Object object = values.get(key);
             values.remove(key);
             if (object == null) {

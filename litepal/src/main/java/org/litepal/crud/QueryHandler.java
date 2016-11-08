@@ -19,6 +19,7 @@ package org.litepal.crud;
 import java.util.List;
 
 import org.litepal.util.BaseUtility;
+import org.litepal.util.DBUtility;
 
 import android.database.sqlite.SQLiteDatabase;
 
@@ -151,6 +152,11 @@ class QueryHandler extends DataHandler {
 	<T> List<T> onFind(Class<T> modelClass, String[] columns, String[] conditions, String orderBy,
 			String limit, boolean isEager) {
 		BaseUtility.checkConditionsCorrect(conditions);
+        if (conditions != null && conditions.length > 0) {
+            conditions[0] = DBUtility.convertWhereClauseToColumnName(conditions[0]);
+        }
+        columns = DBUtility.convertSelectClauseToValidNames(columns);
+        orderBy = DBUtility.convertOrderByClauseToValidName(orderBy);
 		return query(modelClass, columns, getWhereClause(conditions),
                 getWhereArgs(conditions), null, null, orderBy, limit,
                 getForeignKeyAssociations(modelClass.getName(), isEager));
@@ -168,6 +174,10 @@ class QueryHandler extends DataHandler {
 	 * @return Count of the specified table.
 	 */
 	int onCount(String tableName, String[] conditions) {
+        BaseUtility.checkConditionsCorrect(conditions);
+        if (conditions != null && conditions.length > 0) {
+            conditions[0] = DBUtility.convertWhereClauseToColumnName(conditions[0]);
+        }
 		return mathQuery(tableName, new String[] { "count(1)" }, conditions, int.class);
 	}
 
@@ -185,6 +195,10 @@ class QueryHandler extends DataHandler {
 	 * @return The average value on a given column.
 	 */
 	double onAverage(String tableName, String column, String[] conditions) {
+        BaseUtility.checkConditionsCorrect(conditions);
+        if (conditions != null && conditions.length > 0) {
+            conditions[0] = DBUtility.convertWhereClauseToColumnName(conditions[0]);
+        }
 		return mathQuery(tableName, new String[] { "avg(" + column + ")" }, conditions,
 				double.class);
 	}
@@ -205,6 +219,10 @@ class QueryHandler extends DataHandler {
 	 * @return The maximum value on a given column.
 	 */
 	<T> T onMax(String tableName, String column, String[] conditions, Class<T> type) {
+        BaseUtility.checkConditionsCorrect(conditions);
+        if (conditions != null && conditions.length > 0) {
+            conditions[0] = DBUtility.convertWhereClauseToColumnName(conditions[0]);
+        }
 		return mathQuery(tableName, new String[] { "max(" + column + ")" }, conditions, type);
 	}
 
@@ -224,6 +242,10 @@ class QueryHandler extends DataHandler {
 	 * @return The minimum value on a given column.
 	 */
 	<T> T onMin(String tableName, String column, String[] conditions, Class<T> type) {
+        BaseUtility.checkConditionsCorrect(conditions);
+        if (conditions != null && conditions.length > 0) {
+            conditions[0] = DBUtility.convertWhereClauseToColumnName(conditions[0]);
+        }
 		return mathQuery(tableName, new String[] { "min(" + column + ")" }, conditions, type);
 	}
 
@@ -243,6 +265,10 @@ class QueryHandler extends DataHandler {
 	 * @return The sum value on a given column.
 	 */
 	<T> T onSum(String tableName, String column, String[] conditions, Class<T> type) {
+        BaseUtility.checkConditionsCorrect(conditions);
+        if (conditions != null && conditions.length > 0) {
+            conditions[0] = DBUtility.convertWhereClauseToColumnName(conditions[0]);
+        }
 		return mathQuery(tableName, new String[] { "sum(" + column + ")" }, conditions, type);
 	}
 

@@ -40,8 +40,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.litepal.util.BaseUtility.changeCase;
 
@@ -266,7 +264,7 @@ abstract class DataHandler extends LitePalBase {
                 Date date = (Date) fieldValue;
                 fieldValue = date.getTime();
             }
-            Object[] parameters = new Object[] { changeCase(DBUtility.convertFieldNameToColumnName(field.getName())), fieldValue };
+            Object[] parameters = new Object[] { changeCase(DBUtility.convertToValidColumnName(field.getName())), fieldValue };
             Class<?>[] parameterTypes = getParameterTypes(field, fieldValue, parameters);
             DynamicExecutor.send(values, "put", parameters, values.getClass(), parameterTypes);
         }
@@ -301,7 +299,7 @@ abstract class DataHandler extends LitePalBase {
             Date date = (Date) fieldValue;
             fieldValue = date.getTime();
         }
-        Object[] parameters = new Object[] { changeCase(DBUtility.convertFieldNameToColumnName(field.getName())), fieldValue };
+        Object[] parameters = new Object[] { changeCase(DBUtility.convertToValidColumnName(field.getName())), fieldValue };
         Class<?>[] parameterTypes = getParameterTypes(field, fieldValue, parameters);
         DynamicExecutor.send(values, "put", parameters, values.getClass(), parameterTypes);
     }
@@ -737,7 +735,7 @@ abstract class DataHandler extends LitePalBase {
         } else {
             for (Field field : supportedFields) {
                 String getMethodName = genGetColumnMethod(field);
-                String columnName = isIdColumn(field.getName()) ? "id" : DBUtility.convertFieldNameToColumnName(field.getName());
+                String columnName = isIdColumn(field.getName()) ? "id" : DBUtility.convertToValidColumnName(field.getName());
                 int columnIndex = cursor.getColumnIndex(BaseUtility.changeCase(columnName));
                 if (columnIndex != -1) {
                     setToModelByReflection(modelInstance, field, columnIndex, getMethodName, cursor);
@@ -793,7 +791,7 @@ abstract class DataHandler extends LitePalBase {
             GenericModel genericModel = genericModelMap.get(field);
             if (genericModel == null) {
                 tableName = DBUtility.getGenericTableName(baseObj.getClassName(), field.getName());
-                genericValueColumnName = DBUtility.convertFieldNameToColumnName(field.getName());
+                genericValueColumnName = DBUtility.convertToValidColumnName(field.getName());
                 genericValueIdColumnName = DBUtility.getGenericValueIdColumnName(baseObj.getClassName());
                 getMethodName = genGetColumnMethod(field);
                 GenericModel model = new GenericModel();
