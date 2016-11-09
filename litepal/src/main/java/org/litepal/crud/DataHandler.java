@@ -35,6 +35,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -121,10 +122,10 @@ abstract class DataHandler extends LitePalBase {
 		List<T> dataList = new ArrayList<T>();
 		Cursor cursor = null;
 		try {
-			List<Field> supportedFields = getSupportedFields(modelClass.getName());
-            List<Field> supportedGenericFields = getSupportedGenericFields();
-			String tableName = getTableName(modelClass);
-			String[] customizedColumns = getCustomizedColumns(columns, foreignKeyAssociations);
+            List<Field> supportedFields = getSupportedFields(modelClass.getName());
+            List<Field> supportedGenericFields = getSupportedGenericFields(modelClass.getName());
+            String[] customizedColumns = DBUtility.convertSelectClauseToValidNames(getCustomizedColumns(columns, supportedGenericFields, foreignKeyAssociations));
+            String tableName = getTableName(modelClass);
 			cursor = mDatabase.query(tableName, customizedColumns, selection, selectionArgs,
 					groupBy, having, orderBy, limit);
 			if (cursor.moveToFirst()) {
@@ -1169,7 +1170,8 @@ abstract class DataHandler extends LitePalBase {
 	/**
 	 * Customize the passed in columns. If the columns contains an id column
 	 * already, just return it. If contains an _id column, rename it to id. If
-	 * not, an add id column then return.
+	 * not, an add id column then return. If it contains generic columns them
+     * from query and use them in supported generic fields.
 	 * 
 	 * @param columns
 	 *            The original columns that passed in.
@@ -1178,32 +1180,62 @@ abstract class DataHandler extends LitePalBase {
 	 *            model's table.
 	 * @return Customized columns with id column always.
 	 */
-	private String[] getCustomizedColumns(String[] columns, List<AssociationsInfo> foreignKeyAssociations) {
-		if (columns != null) {
-			if (foreignKeyAssociations != null && foreignKeyAssociations.size() > 0) {
-				String[] tempColumns = new String[columns.length + foreignKeyAssociations.size()];
-				System.arraycopy(columns, 0, tempColumns, 0, columns.length);
+	private String[] getCustomizedColumns(String[] columns, List<Field> supportedGenericFields, List<AssociationsInfo> foreignKeyAssociations) {
+		if (columns != null && columns.length > 0) {
+            boolean columnsContainsId = false;
+            List<String> convertList = Arrays.asList(columns);
+            List<String> columnList = new ArrayList<String>(convertList);
+            List<String> supportedGenericFieldNames = new ArrayList<String>();
+            List<Integer> columnToRemove = new ArrayList<Integer>();
+            List<String> genericColumnsForQuery = new ArrayList<String>();
+            List<Field> tempSupportedGenericFields = new ArrayList<Field>();
+
+            for (Field supportedGenericField : supportedGenericFields) {
+                supportedGenericFieldNames.add(supportedGenericField.getName());
+            }
+
+            for (int i = 0; i < columnList.size(); i++) {
+                String columnName = columnList.get(i);
+                // find out all generic columns.
+                if (BaseUtility.containsIgnoreCases(supportedGenericFieldNames, columnName)) {
+                    columnToRemove.add(i);
+                } else if (isIdColumn(columnName)) {
+                    columnsContainsId = true;
+                    if ("_id".equalsIgnoreCase(columnName)) {
+                        columnList.set(i, BaseUtility.changeCase("id"));
+                    }
+                }
+            }
+
+            // remove generic columns cause they can't be used for query
+            for (int i = columnToRemove.size() - 1; i >= 0 ; i--) {
+                int index = columnToRemove.get(i);
+                String genericColumn = columnList.remove(index);
+                genericColumnsForQuery.add(genericColumn);
+            }
+
+            for (Field supportedGenericField : supportedGenericFields) {
+                String fieldName = supportedGenericField.getName();
+                if (BaseUtility.containsIgnoreCases(genericColumnsForQuery, fieldName)) {
+                    tempSupportedGenericFields.add(supportedGenericField);
+                }
+            }
+
+            supportedGenericFields.clear();
+            supportedGenericFields.addAll(tempSupportedGenericFields);
+
+            if (foreignKeyAssociations != null && foreignKeyAssociations.size() > 0) {
 				for (int i = 0; i < foreignKeyAssociations.size(); i++) {
 					String associatedTable = DBUtility
 							.getTableNameByClassName(foreignKeyAssociations.get(i)
 									.getAssociatedClassName());
-					tempColumns[columns.length + i] = getForeignKeyColumnName(associatedTable);
-				}
-				columns = tempColumns;
-			}
-			for (int i = 0; i < columns.length; i++) {
-				String columnName = columns[i];
-				if (isIdColumn(columnName)) {
-					if ("_id".equalsIgnoreCase(columnName)) {
-						columns[i] = BaseUtility.changeCase("id");
-					}
-					return columns;
+                    columnList.add(getForeignKeyColumnName(associatedTable));
 				}
 			}
-			String[] customizedColumns = new String[columns.length + 1];
-			System.arraycopy(columns, 0, customizedColumns, 0, columns.length);
-			customizedColumns[columns.length] = BaseUtility.changeCase("id");
-			return customizedColumns;
+            if (!columnsContainsId) {
+                columnList.add(BaseUtility.changeCase("id"));
+            }
+			return columnList.toArray(new String[columnList.size()]);
 		}
 		return null;
 	}

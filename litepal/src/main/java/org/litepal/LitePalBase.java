@@ -86,11 +86,6 @@ public abstract class LitePalBase {
 	 */
     private Map<String, List<Field>> classGenericFieldsMap = new HashMap<String, List<Field>>();
 
-    /**
-     * List contains all supported generic fields after called {@link #getSupportedFields(String)}.
-     */
-    private List<Field> supportedGenericFields = new ArrayList<Field>();
-
 	/**
 	 * The collection contains all association models.
 	 */
@@ -200,23 +195,12 @@ public abstract class LitePalBase {
             } catch (ClassNotFoundException e) {
                 throw new DatabaseGenerateException(DatabaseGenerateException.CLASS_NOT_FOUND + className);
             }
-            supportedGenericFields.clear();
             recursiveSupportedFields(clazz, supportedFields);
             classFieldsMap.put(className, supportedFields);
             return supportedFields;
         }
         return fieldList;
 	}
-
-    /**
-     * Find all supported generic fields in the class. Supporting rule is in {@link BaseUtility#isGenericTypeSupported(String)}.
-     * Remember always call this method after calling {@link #getSupportedFields(String)}, or an empty list will be return.
-     * If you want to get supported generic fields besides {@link #getSupportedFields(String)}, call {@link #getSupportedGenericFields(String)} instead.
-     * @return A list of supported generic fields.
-     */
-    protected List<Field> getSupportedGenericFields() {
-        return supportedGenericFields;
-    }
 
     /**
      * Find all supported generic fields in the class. Supporting rule is in {@link BaseUtility#isGenericTypeSupported(String)}.
@@ -352,11 +336,6 @@ public abstract class LitePalBase {
                     String fieldType = fieldTypeClass.getName();
                     if (BaseUtility.isFieldTypeSupported(fieldType)) {
                         supportedFields.add(field);
-                    } else if (isCollection(field.getType())) {
-                        String genericTypeName = getGenericTypeName(field);
-                        if (BaseUtility.isGenericTypeSupported(genericTypeName)) {
-                            supportedGenericFields.add(field);
-                        }
                     }
                 }
             }

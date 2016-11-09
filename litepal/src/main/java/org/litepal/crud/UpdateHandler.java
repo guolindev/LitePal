@@ -74,7 +74,7 @@ class UpdateHandler extends DataHandler {
 	int onUpdate(DataSupport baseObj, long id) throws SecurityException, IllegalArgumentException,
 			NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		List<Field> supportedFields = getSupportedFields(baseObj.getClassName());
-		List<Field> supportedGenericFields = getSupportedGenericFields();
+		List<Field> supportedGenericFields = getSupportedGenericFields(baseObj.getClassName());
         updateGenericTables(baseObj, supportedGenericFields, id);
 		ContentValues values = new ContentValues();
 		putFieldsValue(baseObj, supportedFields, values);
@@ -134,7 +134,7 @@ class UpdateHandler extends DataHandler {
             conditions[0] = DBUtility.convertWhereClauseToColumnName(conditions[0]);
         }
 		List<Field> supportedFields = getSupportedFields(baseObj.getClassName());
-        List<Field> supportedGenericFields = getSupportedGenericFields();
+        List<Field> supportedGenericFields = getSupportedGenericFields(baseObj.getClassName());
         long[] ids = null;
         if (!supportedGenericFields.isEmpty()) {
             List<DataSupport> list = (List<DataSupport>) DataSupport.select("id").where(conditions).find(baseObj.getClass());
