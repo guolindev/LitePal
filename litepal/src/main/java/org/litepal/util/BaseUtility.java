@@ -16,13 +16,16 @@
 
 package org.litepal.util;
 
-import java.util.Collection;
-import java.util.Locale;
+import android.content.res.AssetManager;
+import android.text.TextUtils;
 
+import org.litepal.LitePalApplication;
 import org.litepal.exceptions.DataSupportException;
 import org.litepal.parser.LitePalAttr;
 
-import android.text.TextUtils;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Locale;
 
 /**
  * A utility class to help LitePal with some base actions that might through any
@@ -218,6 +221,26 @@ public class BaseUtility {
             return true;
         } else if ("java.lang.Character".equals(genericType)) {
             return true;
+        }
+        return false;
+    }
+
+    /**
+     * If the litepal.xml configuration file exists.
+     * @return True if exists, false otherwise.
+     */
+    public static boolean isLitePalXMLExists() {
+        try {
+            AssetManager assetManager = LitePalApplication.getContext().getAssets();
+            String[] fileNames = assetManager.list("");
+            if (fileNames != null && fileNames.length > 0) {
+                for (String fileName : fileNames) {
+                    if (Const.Config.CONFIGURATION_FILE_NAME.equalsIgnoreCase(fileName)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (IOException e) {
         }
         return false;
     }
