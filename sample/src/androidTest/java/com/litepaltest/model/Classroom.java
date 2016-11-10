@@ -12,6 +12,10 @@ public class Classroom extends DataSupport {
 
 	private String name;
 
+    private List<String> news = new ArrayList<>();
+
+    private List<Integer> numbers = new ArrayList<>();
+
 	private Set<Student> studentCollection = new HashSet<Student>();
 
 	private List<Teacher> teachers = new ArrayList<Teacher>();
@@ -62,4 +66,19 @@ public class Classroom extends DataSupport {
 		this.teachers = teachers;
 	}
 
+    public List<String> getNews() {
+        return news;
+    }
+
+    public void setNews(List<String> news) {
+        this.news = news;
+    }
+
+    public List<Integer> getNumbers() {
+        return numbers;
+    }
+
+    public void setNumbers(List<Integer> numbers) {
+        this.numbers = numbers;
+    }
 }

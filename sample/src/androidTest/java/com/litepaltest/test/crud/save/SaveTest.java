@@ -15,6 +15,7 @@ import junit.framework.Assert;
 
 import org.litepal.crud.DataSupport;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -271,6 +272,31 @@ public class SaveTest extends LitePalTestCase {
         assertEquals(cellphone.getPrice(), result.getPrice());
         assertEquals(cellphone.getSerial(), result.getSerial());
         assertEquals(cellphone.getMac(), result.getMac());
+    }
+
+    public void testSaveGenericData() {
+        Classroom classroom = new Classroom();
+        classroom.setName("classroom1");
+        classroom.getNews().add("news1");
+        classroom.getNews().add("news2");
+        classroom.getNews().add("news3");
+        List<Integer> numbers = new ArrayList<>();
+        numbers.add(1);
+        numbers.add(2);
+        numbers.add(3);
+        numbers.add(4);
+        classroom.setNumbers(numbers);
+        classroom.save();
+        Classroom c = DataSupport.find(Classroom.class, classroom.get_id());
+        assertEquals("classroom1", c.getName());
+        assertEquals(3, c.getNews().size());
+        assertEquals(4, c.getNumbers().size());
+        for (String news : c.getNews()) {
+            assertTrue(news.equals("news1") || news.equals("news2") || news.equals("news3"));
+        }
+        for (int number : c.getNumbers()) {
+            assertTrue(number == 1 || number == 2 || number == 3 || number == 4);
+        }
     }
 
 }

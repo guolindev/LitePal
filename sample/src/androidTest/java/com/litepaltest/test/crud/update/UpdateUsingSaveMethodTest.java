@@ -100,6 +100,31 @@ public class UpdateUsingSaveMethodTest extends LitePalTestCase {
 		assertTrue('N' == updatedCell.getInStock());
 	}
 
+    public void testUpdateGenericData() {
+        Classroom classroom = new Classroom();
+        classroom.setName("Classroom origin");
+        classroom.getNews().add("n");
+        classroom.getNews().add("e");
+        classroom.getNews().add("w");
+        classroom.getNumbers().add(1);
+        classroom.getNumbers().add(2);
+        classroom.getNumbers().add(3);
+        classroom.save();
+        classroom.setName("Classroom update");
+        classroom.getNews().add("s");
+        classroom.getNumbers().clear();
+        classroom.save();
+        Classroom c = DataSupport.find(Classroom.class, classroom.get_id());
+        assertEquals("Classroom update", c.getName());
+        assertEquals(4, classroom.getNews().size());
+        assertEquals(0, classroom.getNumbers().size());
+        StringBuilder builder = new StringBuilder();
+        for (String s : classroom.getNews()) {
+            builder.append(s);
+        }
+        assertEquals("news", builder.toString());
+    }
+
     public void testUpdateBlobValues() {
         byte[] b = new byte[10];
         for (int i = 0; i < b.length; i++) {

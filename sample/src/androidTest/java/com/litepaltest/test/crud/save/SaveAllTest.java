@@ -143,4 +143,28 @@ public class SaveAllTest extends AndroidTestCase {
 		}
 	}
 
+    public void testSaveAllGenericData() {
+        List<Classroom> classroomList = new ArrayList<Classroom>();
+        for (int i = 0; i < 50; i++) {
+            Classroom classroom = new Classroom();
+            classroom.setName("classroom " + i);
+            for (int j = 0; j < 20; j++) {
+                classroom.getNews().add("news " + i);
+            }
+            for (int k = 0; k < 13; k++) {
+                classroom.getNumbers().add(k);
+            }
+            classroomList.add(classroom);
+        }
+        DataSupport.saveAll(classroomList);
+        assertEquals(50, classroomList.size());
+        for (Classroom classroom : classroomList) {
+            assertTrue(classroom.isSaved());
+            Classroom c = DataSupport.find(Classroom.class, classroom.get_id());
+            assertTrue(c.getName().startsWith("classroom"));
+            assertEquals(20, c.getNews().size());
+            assertEquals(13, c.getNumbers().size());
+        }
+    }
+
 }

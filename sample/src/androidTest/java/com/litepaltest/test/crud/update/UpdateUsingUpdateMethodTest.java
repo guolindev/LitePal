@@ -52,6 +52,10 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 	private void init() {
 		classroom = new Classroom();
 		classroom.setName("English room");
+        classroom.getNews().add("hello");
+        classroom.getNews().add("world");
+        classroom.getNumbers().add(123);
+        classroom.getNumbers().add(456);
 		teacher = new Teacher();
 		teacher.setTeacherName("Tony");
 		teacher.setTeachYears(3);
@@ -597,5 +601,28 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 		} catch (Exception e) {
 		}
 	}
+
+    public void testUpdateGenericData() {
+        Classroom c = new Classroom();
+        c.setName("Math room");
+        c.getNews().add("news");
+        c.getNews().add("paper");
+        c.update(classroom.get_id());
+        Classroom result = DataSupport.find(Classroom.class, classroom.get_id());
+        assertEquals("Math room", result.getName());
+        StringBuilder builder = new StringBuilder();
+        for (String s : result.getNews()) {
+            builder.append(s);
+        }
+        assertEquals("newspaper", builder.toString());
+        assertEquals(2, result.getNumbers().size());
+        Classroom c2 = new Classroom();
+        c2.setToDefault("numbers");
+        c2.update(classroom.get_id());
+        result = DataSupport.find(Classroom.class, classroom.get_id());
+        assertEquals("Math room", result.getName());
+        assertEquals(2, result.getNews().size());
+        assertEquals(0, result.getNumbers().size());
+    }
 
 }
