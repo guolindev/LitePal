@@ -1259,6 +1259,7 @@ abstract class DataHandler extends LitePalBase {
 			boolean isM2M = info.getAssociationType() == Const.Model.MANY_TO_MANY;
 			try {
 				List<Field> supportedFields = getSupportedFields(associatedClassName);
+                List<Field> supportedGenericFields = getSupportedGenericFields(associatedClassName);
 				if (isM2M) {
 					String tableName = baseObj.getTableName();
 					String associatedTableName = DBUtility
@@ -1284,11 +1285,13 @@ abstract class DataHandler extends LitePalBase {
 				}
 				if (cursor != null && cursor.moveToFirst()) {
                     SparseArray<QueryInfoCache> queryInfoCacheSparseArray = new SparseArray<QueryInfoCache>();
+                    Map<Field, GenericModel> genericModelMap = new HashMap<Field, GenericModel>();
 					do {
 						DataSupport modelInstance = (DataSupport) createInstanceFromClass(Class.forName(associatedClassName));
 						giveBaseObjIdValue(modelInstance,
 								cursor.getLong(cursor.getColumnIndexOrThrow("id")));
 						setValueToModel(modelInstance, supportedFields, null, cursor, queryInfoCacheSparseArray);
+                        setGenericValueToModel(modelInstance, supportedGenericFields, genericModelMap);
 						if (info.getAssociationType() == Const.Model.MANY_TO_ONE || isM2M) {
 							Collection collection = (Collection) takeGetMethodValueByField(baseObj,
 									info.getAssociateOtherModelFromSelf());
@@ -1299,6 +1302,7 @@ abstract class DataHandler extends LitePalBase {
 						}
 					} while (cursor.moveToNext());
                     queryInfoCacheSparseArray.clear();
+                    genericModelMap.clear();
 				}
 			} catch (Exception e) {
 				throw new DataSupportException(e.getMessage(), e);
