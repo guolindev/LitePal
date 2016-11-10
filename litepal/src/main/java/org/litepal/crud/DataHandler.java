@@ -557,36 +557,6 @@ abstract class DataHandler extends LitePalBase {
 	}
 
 	/**
-	 * Do not suggest use this method to find DataSupport class from hierarchy.
-	 * Try to use DataSupport.class directly.
-	 * 
-	 * Detect the baseObj is an instance of DataSupport or not. If true, return
-	 * the class of DataSupport. Otherwise throw an exception of
-	 * DataSupportException to tell user baseObj is not an instance of
-	 * DataSupport.
-	 * 
-	 * @param baseObj
-	 *            The base object model.
-	 * @return The class of DataSupport or throw DataSupportException.
-	 * @throws DataSupportException
-	 */
-	@Deprecated
-	protected Class<?> findDataSupportClass(DataSupport baseObj) {
-		Class<?> superClass = null;
-		while (true) {
-			superClass = baseObj.getClass().getSuperclass();
-			if (superClass == null || DataSupport.class == superClass) {
-				break;
-			}
-		}
-		if (superClass == null) {
-			throw new DataSupportException(baseObj.getClass().getName()
-					+ DataSupportException.MODEL_IS_NOT_AN_INSTANCE_OF_DATA_SUPPORT);
-		}
-		return superClass;
-	}
-
-	/**
 	 * When executing {@link #takeGetMethodValueByField(DataSupport, java.lang.reflect.Field)} or
 	 * {@link #putSetMethodValueByField(DataSupport, java.lang.reflect.Field, Object)}, the
 	 * dataSupport and field passed in should be protected from null value.
