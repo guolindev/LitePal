@@ -361,7 +361,7 @@ public class DeleteTest extends LitePalTestCase {
 				"10088");
 		assertEquals(1, affectedRows);
 		assertNull(getStudent(ids[2]));
-		affectedRows = DataSupport.deleteAll(Student.class, "name = 'Dusting'");
+		affectedRows = DataSupport.deleteAll(Student.class, "name = ? and age > ? and age < ?", "Dusting", "10085", "10092");
 		assertEquals(4, affectedRows);
 	}
 
