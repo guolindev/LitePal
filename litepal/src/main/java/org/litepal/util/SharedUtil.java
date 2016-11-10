@@ -50,7 +50,7 @@ public class SharedUtil {
 		if (TextUtils.isEmpty(extraKeyName)) {
 			sEditor.putInt(VERSION, newVersion);
 		} else {
-			sEditor.putInt(VERSION + extraKeyName, newVersion);
+			sEditor.putInt(VERSION + "_" + extraKeyName, newVersion);
 		}
 		sEditor.apply();
 	}
@@ -67,7 +67,7 @@ public class SharedUtil {
 		if (TextUtils.isEmpty(extraKeyName)) {
 			return sPref.getInt(VERSION, 0);
 		} else {
-			return sPref.getInt(VERSION + extraKeyName, 0);
+			return sPref.getInt(VERSION + "_" + extraKeyName, 0);
 		}
 	}
 
