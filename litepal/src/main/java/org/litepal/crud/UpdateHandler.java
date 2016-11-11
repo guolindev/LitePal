@@ -18,6 +18,7 @@ package org.litepal.crud;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 
 import org.litepal.crud.model.AssociationsInfo;
 import org.litepal.exceptions.DataSupportException;
@@ -359,39 +360,41 @@ class UpdateHandler extends DataHandler {
      *            value that will be translated to NULL.
      */
     private void convertContentValues(ContentValues values) {
-        Map<String, Object> valuesToConvert = new HashMap<>();
-        for (String key : values.keySet()) {
-            if (DBUtility.isFieldNameConflictWithSQLiteKeywords(key)) {
-                Object object = values.get(key);
-                valuesToConvert.put(key, object);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            Map<String, Object> valuesToConvert = new HashMap<>();
+            for (String key : values.keySet()) {
+                if (DBUtility.isFieldNameConflictWithSQLiteKeywords(key)) {
+                    Object object = values.get(key);
+                    valuesToConvert.put(key, object);
+                }
             }
-        }
-        for (String key : valuesToConvert.keySet()) {
-            String convertedKey = DBUtility.convertToValidColumnName(key);
-            Object object = values.get(key);
-            values.remove(key);
-            if (object == null) {
-                values.putNull(convertedKey);
-            } else {
-                String className = object.getClass().getName();
-                if ("java.lang.Byte".equals(className)) {
-                    values.put(convertedKey, (Byte) object);
-                } else if ("[B".equals(className)) {
-                    values.put(convertedKey, (byte[]) object);
-                } else if ("java.lang.Boolean".equals(className)) {
-                    values.put(convertedKey, (Boolean) object);
-                } else if ("java.lang.String".equals(className)) {
-                    values.put(convertedKey, (String) object);
-                } else if ("java.lang.Float".equals(className)) {
-                    values.put(convertedKey, (Float) object);
-                } else if ("java.lang.Long".equals(className)) {
-                    values.put(convertedKey, (Long) object);
-                } else if ("java.lang.Integer".equals(className)) {
-                    values.put(convertedKey, (Integer) object);
-                } else if ("java.lang.Short".equals(className)) {
-                    values.put(convertedKey, (Short) object);
-                } else if ("java.lang.Double".equals(className)) {
-                    values.put(convertedKey, (Double) object);
+            for (String key : valuesToConvert.keySet()) {
+                String convertedKey = DBUtility.convertToValidColumnName(key);
+                Object object = values.get(key);
+                values.remove(key);
+                if (object == null) {
+                    values.putNull(convertedKey);
+                } else {
+                    String className = object.getClass().getName();
+                    if ("java.lang.Byte".equals(className)) {
+                        values.put(convertedKey, (Byte) object);
+                    } else if ("[B".equals(className)) {
+                        values.put(convertedKey, (byte[]) object);
+                    } else if ("java.lang.Boolean".equals(className)) {
+                        values.put(convertedKey, (Boolean) object);
+                    } else if ("java.lang.String".equals(className)) {
+                        values.put(convertedKey, (String) object);
+                    } else if ("java.lang.Float".equals(className)) {
+                        values.put(convertedKey, (Float) object);
+                    } else if ("java.lang.Long".equals(className)) {
+                        values.put(convertedKey, (Long) object);
+                    } else if ("java.lang.Integer".equals(className)) {
+                        values.put(convertedKey, (Integer) object);
+                    } else if ("java.lang.Short".equals(className)) {
+                        values.put(convertedKey, (Short) object);
+                    } else if ("java.lang.Double".equals(className)) {
+                        values.put(convertedKey, (Double) object);
+                    }
                 }
             }
         }
