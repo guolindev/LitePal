@@ -36,7 +36,7 @@ public class LitePalContentHandler extends DefaultHandler {
 	private LitePalAttr litePalAttr;
 
 	/**
-	 * Characters in the <>characters</> tag. Decide to not use this method
+	 * Characters in the characters tag. Decide to not use this method
 	 * temporarily. Use value attribute instead.
 	 */
 	@Override

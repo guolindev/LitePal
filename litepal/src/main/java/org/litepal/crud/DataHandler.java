@@ -282,8 +282,6 @@ abstract class DataHandler extends LitePalBase {
      *            The class of base object.
      * @param field
      *            Field to put into ContentValues.
-     * @oaran fieldValue
-     *            The value of the field.
      * @param values
      *            To store data of current model for persisting or updating.
      * @throws SecurityException
