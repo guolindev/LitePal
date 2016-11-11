@@ -17,6 +17,7 @@
 package org.litepal;
 
 import org.litepal.parser.LitePalAttr;
+import org.litepal.parser.LitePalConfig;
 import org.litepal.parser.LitePalParser;
 
 import java.util.ArrayList;
@@ -61,11 +62,10 @@ public class LitePalDB {
      * @return A LitePalDB instance which used the default configuration in litepal.xml but with a specified database name.
      */
     public static LitePalDB fromDefault(String dbName) {
-        LitePalParser.parseLitePalConfiguration();
-        LitePalAttr attr = LitePalAttr.getInstance();
-        LitePalDB litePalDB = new LitePalDB(dbName, attr.getVersion());
-        litePalDB.setExternalStorage("external".equals(attr.getStorage()));
-        litePalDB.setClassNames(attr.getClassNames());
+        LitePalConfig config = LitePalParser.parseLitePalConfiguration();
+        LitePalDB litePalDB = new LitePalDB(dbName, config.getVersion());
+        litePalDB.setExternalStorage("external".equals(config.getStorage()));
+        litePalDB.setClassNames(config.getClassNames());
         return litePalDB;
     }
 
