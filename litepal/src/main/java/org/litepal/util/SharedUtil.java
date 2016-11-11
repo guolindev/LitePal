@@ -50,6 +50,9 @@ public class SharedUtil {
 		if (TextUtils.isEmpty(extraKeyName)) {
 			sEditor.putInt(VERSION, newVersion);
 		} else {
+            if (extraKeyName.endsWith(Const.Config.DB_NAME_SUFFIX)) {
+                extraKeyName = extraKeyName.replace(Const.Config.DB_NAME_SUFFIX, "");
+            }
 			sEditor.putInt(VERSION + "_" + extraKeyName, newVersion);
 		}
 		sEditor.apply();
@@ -67,8 +70,30 @@ public class SharedUtil {
 		if (TextUtils.isEmpty(extraKeyName)) {
 			return sPref.getInt(VERSION, 0);
 		} else {
+            if (extraKeyName.endsWith(Const.Config.DB_NAME_SUFFIX)) {
+                extraKeyName = extraKeyName.replace(Const.Config.DB_NAME_SUFFIX, "");
+            }
 			return sPref.getInt(VERSION + "_" + extraKeyName, 0);
 		}
 	}
+
+    /**
+     * Remove the version with specified extra key name.
+     * @param extraKeyName
+     * 			Pass the name of the using database usually. Pass null if it's default database.
+     */
+    public static void removeVersion(String extraKeyName) {
+        SharedPreferences.Editor sEditor = LitePalApplication.getContext()
+                .getSharedPreferences(LITEPAL_PREPS, Context.MODE_PRIVATE).edit();
+        if (TextUtils.isEmpty(extraKeyName)) {
+            sEditor.remove(VERSION);
+        } else {
+            if (extraKeyName.endsWith(Const.Config.DB_NAME_SUFFIX)) {
+                extraKeyName = extraKeyName.replace(Const.Config.DB_NAME_SUFFIX, "");
+            }
+            sEditor.remove(VERSION + "_" + extraKeyName);
+        }
+        sEditor.apply();
+    }
 
 }
