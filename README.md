@@ -310,8 +310,8 @@ litePalDB.addClassName(Album.class.getName());
 litePalDB.addClassName(Song.class.getName());
 LitePal.use(litePalDB);
 ```
-This will create a demo2 database with singer, album and song tables.
-If you just want to create a new database but with same configuration as litepal.xml, you can do it with:
+This will create a **demo2** database with **singer**, **album** and **song** tables.
+If you just want to create a new database but with same configuration as **litepal.xml**, you can do it with:
 ```java
 LitePalDB litePalDB = LitePalDB.fromDefault("newdb");
 LitePal.use(litePalDB);
