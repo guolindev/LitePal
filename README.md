@@ -173,7 +173,7 @@ Then add these models into the mapping list in **litepal.xml**:
 ```
 OK! The tables will be generated next time you operate database. For example, gets the **SQLiteDatabase** with following codes:
 ``` java
-SQLiteDatabase db = Connector.getDatabase();
+SQLiteDatabase db = LitePal.getDatabase();
 ```
 Now the tables will be generated automatically with SQLs like this:
 ``` sql
@@ -301,6 +301,30 @@ Constructing complex query with fluent query:
 List<Song> songs = DataSupport.where("name like ?", "song%").order("duration").find(Song.class);
 ```
 
+#### 7. Multiple databases
+If your app needs multiple databases, LitePal support it completely. You can create as many databases as you want at runtime. For example:
+```java
+LitePalDB litePalDB = new LitePalDB("demo2", 1);
+litePalDB.addClassName(Singer.class.getName());
+litePalDB.addClassName(Album.class.getName());
+litePalDB.addClassName(Song.class.getName());
+LitePal.use(litePalDB);
+```
+This will create a demo2 database with singer, album and song tables.
+If you just want to create a new database but with same configuration as litepal.xml, you can do it with:
+```java
+LitePalDB litePalDB = LitePalDB.fromDefault("newdb");
+LitePal.use(litePalDB);
+```
+You can always switch back to default database with:
+```java
+LitePal.useDefault();
+```
+And you can delete any database by specified database name:
+```java
+LitePal.deleteDatabase("newdb");
+```
+
 ## Developed By
  * Tony Green
  
@@ -312,7 +336,7 @@ Get it on:
 [![Google Play](http://www.gstatic.com/android/market_images/web/play_logo.png)](https://play.google.com/store/apps/details?id=org.litepal.litepalsample)
 
 ## Bugs Report
-If you find any bug when using LitePal, please report **[here](https://github.com/LitePalFramework/LitePal/issues/new)**. Thanks for helping us building a better one.
+If you find any bug when using LitePal, please report **[here](https://github.com/LitePalFramework/LitePal/issues/new)**. Thanks for helping us making better.
 
 ## Change logs
 ### 1.3.2
