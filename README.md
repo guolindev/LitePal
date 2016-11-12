@@ -9,14 +9,15 @@ Experience the magic right now and have fun!
  * Using object-relational mapping (ORM) pattern.
  * Almost zero-configuration(only one configuration file with few properties).
  * Maintains all tables automatically(e.g. create, alter or drop tables).
+ * Multi databases supported.
  * Encapsulated APIs for avoiding writing SQL statements.
  * Awesome fluent query API.
  * Alternative choice to use SQL still, but easier and better APIs than the originals.
  * More for you to explore.
  
 ## Latest Downloads
- * **[litepal-1.3.2.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.3.2.jar)** (library contains *.class files)
- * **[litepal-1.3.2-src.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.3.2-src.jar)** (library contains *.class files and *.java files)
+ * **[litepal-1.4.0.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.4.0.jar)** (library contains *.class files)
+ * **[litepal-1.4.0-src.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.4.0-src.jar)** (library contains *.class files and *.java files)
  
 ## Quick Setup
 #### 1. Include library
@@ -28,7 +29,7 @@ Experience the magic right now and have fun!
 Edit your **build.gradle** file and add below dependency:
 ``` groovy
 dependencies {
-    compile 'org.litepal.android:core:1.3.2'
+    compile 'org.litepal.android:core:1.4.0'
 }
 ```
 #### 2. Configure litepal.xml
@@ -112,25 +113,19 @@ Of course you may have your own Application and has already configured here, lik
 	</application>
 </manifest>
 ```
-That's OK. LitePal can still live with that. Just change the inheritance of **MyOwnApplication** from **Application** to **LitePalApplication**, like:
-``` java
-public class MyOwnApplication extends LitePalApplication {
-	...
-}
-```
-Finally, if it still didn't work for you because you have to inherit from another Application. In this case, you can call **LitePalApplication.initialize(context)** instead of inheritance:
+That's OK. LitePal can still live with that. Just call **LitePal.initialize(context)** in your own Application:
 ```java
 public class MyOwnApplication extends AnotherApplication {
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		LitePalApplication.initialize(this);
+		LitePal.initialize(this);
 	}
 	...
 }
 ```
-Just make sure to call this method as early as you can. In the **onCreate()** method of Application will be fine. And always remember to use the application context as parameter. Do not use any intance of activity or service as parameter, or memory leaks might happen.
+Make sure to call this method as early as you can. In the **onCreate()** method of Application will be fine. And always remember to use the application context as parameter. Do not use any intance of activity or service as parameter, or memory leaks might happen.
 ## Get Started
 After setup, you can experience the powerful function now.
 
