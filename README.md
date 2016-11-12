@@ -311,6 +311,7 @@ litePalDB.addClassName(Song.class.getName());
 LitePal.use(litePalDB);
 ```
 This will create a **demo2** database with **singer**, **album** and **song** tables.
+
 If you just want to create a new database but with same configuration as **litepal.xml**, you can do it with:
 ```java
 LitePalDB litePalDB = LitePalDB.fromDefault("newdb");
@@ -339,6 +340,12 @@ Get it on:
 If you find any bug when using LitePal, please report **[here](https://github.com/LitePalFramework/LitePal/issues/new)**. Thanks for helping us making better.
 
 ## Change logs
+### 1.4.0
+ * Support multiple databases.
+ * Support crud operations for generic collection data in models.
+ * Add SQLite keywords convert function to avoid keywords conflict.
+ * Fix known bugs.
+ 
 ### 1.3.2
  * Improve an outstanding speed up of querying and saving.
  * Support to store database file in external storage.
