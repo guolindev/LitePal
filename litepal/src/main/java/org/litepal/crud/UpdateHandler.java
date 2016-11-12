@@ -361,7 +361,7 @@ class UpdateHandler extends DataHandler {
      */
     private void convertContentValues(ContentValues values) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            Map<String, Object> valuesToConvert = new HashMap<>();
+            Map<String, Object> valuesToConvert = new HashMap<String, Object>();
             for (String key : values.keySet()) {
                 if (DBUtility.isFieldNameConflictWithSQLiteKeywords(key)) {
                     Object object = values.get(key);
