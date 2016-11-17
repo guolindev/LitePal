@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.litepal.exceptions.InvalidAttributesException;
+import org.litepal.util.BaseUtility;
 import org.litepal.util.Const;
 import org.litepal.util.SharedUtil;
 
@@ -86,18 +87,18 @@ public final class LitePalAttr {
 			synchronized (LitePalAttr.class) {
 				if (litePalAttr == null) {
 					litePalAttr = new LitePalAttr();
+                    if (BaseUtility.isLitePalXMLExists()) {
+                        LitePalConfig config = LitePalParser.parseLitePalConfiguration();
+                        litePalAttr.setDbName(config.getDbName());
+                        litePalAttr.setVersion(config.getVersion());
+                        litePalAttr.setClassNames(config.getClassNames());
+                        litePalAttr.setCases(config.getCases());
+                        litePalAttr.setStorage(config.getStorage());
+                    }
 				}
 			}
 		}
 		return litePalAttr;
-	}
-
-	/**
-	 * Already has LitePalAttr instance or not.
-	 * @return True if already has LitePalAttr instance. False otherwise.
-     */
-	public static boolean hasInstance() {
-		return litePalAttr != null;
 	}
 
 	/**

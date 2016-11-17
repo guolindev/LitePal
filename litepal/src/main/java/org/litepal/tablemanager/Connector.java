@@ -95,15 +95,6 @@ public class Connector {
 	 * @throws org.litepal.exceptions.InvalidAttributesException
 	 */
 	private static LitePalOpenHelper buildConnection() {
-		if (!LitePalAttr.hasInstance()) {
-			LitePalConfig config = LitePalParser.parseLitePalConfiguration();
-            LitePalAttr litePalAttr = LitePalAttr.getInstance();
-            litePalAttr.setDbName(config.getDbName());
-            litePalAttr.setVersion(config.getVersion());
-            litePalAttr.setClassNames(config.getClassNames());
-            litePalAttr.setCases(config.getCases());
-            litePalAttr.setStorage(config.getStorage());
-		}
 		LitePalAttr litePalAttr = LitePalAttr.getInstance();
 		litePalAttr.checkSelfValid();
 		if (mLitePalHelper == null) {
