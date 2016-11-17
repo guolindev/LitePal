@@ -104,7 +104,7 @@ public class LitePalDB {
      */
     public List<String> getClassNames() {
         if (classNames == null) {
-            classNames = new ArrayList<>();
+            classNames = new ArrayList<String>();
             classNames.add("org.litepal.model.Table_Schema");
         } else if (classNames.isEmpty()) {
             classNames.add("org.litepal.model.Table_Schema");
