@@ -15,7 +15,7 @@ public class BlobOrm extends OrmChange{
     @Override
     public String object2Relation(String fieldType) {
         if (fieldType != null) {
-            if (fieldType.equals("byte") || fieldType.equals("java.lang.Byte")) {
+            if (fieldType.equals("[B")) {
                 return "blob";
             }
         }

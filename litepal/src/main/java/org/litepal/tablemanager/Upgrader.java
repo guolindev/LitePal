@@ -16,9 +16,8 @@
 
 package org.litepal.tablemanager;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 
 import org.litepal.crud.model.AssociationsInfo;
 import org.litepal.tablemanager.model.ColumnModel;
@@ -27,8 +26,9 @@ import org.litepal.util.Const;
 import org.litepal.util.DBUtility;
 import org.litepal.util.LogUtil;
 
-import android.database.sqlite.SQLiteDatabase;
-import android.text.TextUtils;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Upgrade the database. The first step is to remove the columns that can not
@@ -65,7 +65,8 @@ public class Upgrader extends AssociationUpdater {
 		for (TableModel tableModel : getAllTableModels()) {
 			mTableModel = tableModel;
             mTableModelDB = getTableModelFromDB(tableModel.getTableName());
-			upgradeTable();
+            LogUtil.d(TAG, "createOrUpgradeTable: model is " + mTableModel.getTableName());
+            upgradeTable();
 		}
 	}
 
@@ -176,8 +177,12 @@ public class Upgrader extends AssociationUpdater {
             for (ColumnModel columnModel : mTableModel.getColumnModels()) {
                 if (columnModelDB.getColumnName().equalsIgnoreCase(columnModel.getColumnName())) {
                     if (!columnModelDB.getColumnType().equalsIgnoreCase(columnModel.getColumnType())) {
-                        // column type is changed
-                        columnsToChangeType.add(columnModel);
+                        if (columnModel.getColumnType().equalsIgnoreCase("blob") && TextUtils.isEmpty(columnModelDB.getColumnType())) {
+                            // Case for binary array type upgrade. Do nothing under this condition.
+                        } else {
+                            // column type is changed
+                            columnsToChangeType.add(columnModel);
+                        }
                     }
                     if (!hasConstraintChanged) {
                         // for reducing loops, check column constraints change here.
@@ -257,7 +262,7 @@ public class Upgrader extends AssociationUpdater {
      *            The column names that need to remove.
      */
     private void removeColumns(List<String> removeColumnNames) {
-        LogUtil.d(TAG, "do addColumn");
+        LogUtil.d(TAG, "do removeColumns " + removeColumnNames);
         removeColumns(removeColumnNames, mTableModel.getTableName());
         for (String columnName : removeColumnNames) {
             mTableModelDB.removeColumnModelByName(columnName);
