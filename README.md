@@ -343,7 +343,7 @@ If you find any bug when using LitePal, please report **[here](https://github.co
 ### 1.4.1
  * Fix bug of DateSupport.count error.
  * Fix bug of losing blob data when upgrading database.
- * Fix known bugs.
+ * Fix other known bugs.
 
 ### 1.4.0
  * Support multiple databases.
