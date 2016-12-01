@@ -229,6 +229,9 @@ class SaveHandler extends DataHandler {
 	 * @return The row ID of the newly inserted row, or -1 if an error occurred.
 	 */
 	private long saving(DataSupport baseObj, ContentValues values) {
+        if (values.size() == 0) {
+            values.putNull("id");
+        }
 		return mDatabase.insert(baseObj.getTableName(), null, values);
 	}
 
