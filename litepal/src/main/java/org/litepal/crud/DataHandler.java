@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -1338,6 +1339,14 @@ abstract class DataHandler extends LitePalBase {
         }
         if (isCollection(field.getType())) {
             Collection<Object> collection = (Collection<Object>) DynamicExecutor.getField(modelInstance, field.getName(), modelInstance.getClass());
+            if (collection == null) {
+                if (isList(field.getType())) {
+                    collection = new ArrayList<Object>();
+                } else {
+                    collection = new HashSet<Object>();
+                }
+                DynamicExecutor.setField(modelInstance, field.getName(), collection, modelInstance.getClass());
+            }
             collection.add(value);
         } else {
             DynamicExecutor.setField(modelInstance, field.getName(), value,
