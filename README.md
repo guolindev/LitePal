@@ -43,9 +43,9 @@ Create a file in the **assets** folder of your project and name it as **litepal.
     	If you didn't name your database end with .db, 
     	LitePal would plus the suffix automaticly for you.
     	For example:    
-    	<dbname value="demo" ></dbname>
+    	<dbname value="demo" />
     -->
-    <dbname value="demo" ></dbname>
+    <dbname value="demo" />
 
     <!--
     	Define the version of your database. Each time you want 
@@ -54,9 +54,9 @@ Create a file in the **assets** folder of your project and name it as **litepal.
     	make the version value plus one, the upgrade of database
     	will be processed automaticly without concern.
 			For example:    
-    	<version value="1" ></version>
+    	<version value="1" />
     -->
-    <version value="1" ></version>
+    <version value="1" />
 
     <!--
     	Define your models in the list with mapping tag, LitePal will
@@ -64,8 +64,8 @@ Create a file in the **assets** folder of your project and name it as **litepal.
     	defined in models will be mapped into columns.
     	For example:    
     	<list>
-    		<mapping class="com.test.model.Reader"></mapping>
-    		<mapping class="com.test.model.Magazine"></mapping>
+    		<mapping class="com.test.model.Reader" />
+    		<mapping class="com.test.model.Magazine" />
     	</list>
     -->
     <list>
@@ -79,7 +79,7 @@ Create a file in the **assets** folder of your project and name it as **litepal.
         the application can place persistent files it owns which everyone
         can access. "internal" will act as default.
         For example:
-        <storage value="external"></storage>
+        <storage value="external" />
     -->
     
 </litepal>
