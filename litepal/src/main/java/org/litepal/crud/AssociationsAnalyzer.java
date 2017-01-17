@@ -55,7 +55,7 @@ abstract class AssociationsAnalyzer extends DataHandler {
 	protected Collection<DataSupport> getReverseAssociatedModels(DataSupport associatedModel,
 			AssociationsInfo associationInfo) throws SecurityException, IllegalArgumentException,
 			NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-		return (Collection<DataSupport>) takeGetMethodValueByField(associatedModel,
+		return (Collection<DataSupport>) getFieldValue(associatedModel,
 				associationInfo.getAssociateSelfFromOtherModel());
 	}
 
@@ -80,7 +80,7 @@ abstract class AssociationsAnalyzer extends DataHandler {
 			AssociationsInfo associationInfo, Collection<DataSupport> associatedModelCollection)
 			throws SecurityException, IllegalArgumentException, NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException {
-		putSetMethodValueByField(associatedModel, associationInfo.getAssociateSelfFromOtherModel(),
+		setFieldValue(associatedModel, associationInfo.getAssociateSelfFromOtherModel(),
 				associatedModelCollection);
 	}
 
@@ -135,7 +135,7 @@ abstract class AssociationsAnalyzer extends DataHandler {
 	protected void buildBidirectionalAssociations(DataSupport baseObj, DataSupport associatedModel,
 			AssociationsInfo associationInfo) throws SecurityException, IllegalArgumentException,
 			NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-		putSetMethodValueByField(associatedModel, associationInfo.getAssociateSelfFromOtherModel(),
+		setFieldValue(associatedModel, associationInfo.getAssociateSelfFromOtherModel(),
 				baseObj);
 	}
 

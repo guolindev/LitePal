@@ -294,7 +294,7 @@ abstract class DataHandler extends LitePalBase {
     protected void putContentValuesForUpdate(DataSupport baseObj, Field field, ContentValues values)
             throws SecurityException, IllegalArgumentException, NoSuchMethodException,
             IllegalAccessException, InvocationTargetException {
-        Object fieldValue = takeGetMethodValueByField(baseObj, field);
+        Object fieldValue = getFieldValue(baseObj, field);
         if ("java.util.Date".equals(field.getType().getName()) && fieldValue != null) {
             Date date = (Date) fieldValue;
             fieldValue = date.getTime();
@@ -305,9 +305,7 @@ abstract class DataHandler extends LitePalBase {
     }
 
 	/**
-	 * It finds the getter method by the field. For example, field name is age,
-	 * getter method name will be getAge. Then invoke the getter method and
-	 * return the value.
+	 * Get the field value for model.
 	 * 
 	 * @param dataSupport
 	 *            The model to get method from.
@@ -320,21 +318,17 @@ abstract class DataHandler extends LitePalBase {
 	 * @throws IllegalAccessException
 	 * @throws java.lang.reflect.InvocationTargetException
 	 */
-	protected Object takeGetMethodValueByField(DataSupport dataSupport, Field field)
+	protected Object getFieldValue(DataSupport dataSupport, Field field)
 			throws SecurityException, NoSuchMethodException, IllegalArgumentException,
 			IllegalAccessException, InvocationTargetException {
 		if (shouldGetOrSet(dataSupport, field)) {
-			String getMethodName = makeGetterMethodName(field);
-			return DynamicExecutor.send(dataSupport, getMethodName, null, dataSupport.getClass(),
-					null);
+			return DynamicExecutor.getField(dataSupport, field.getName(), dataSupport.getClass());
 		}
 		return null;
 	}
 
 	/**
-	 * It finds the setter method by the field. For example, field name is age,
-	 * setter method name will be setAge. Then invoke the setter method with
-	 * necessary parameter.
+	 * Set the field value for model.
 	 * 
 	 * @param dataSupport
 	 *            The model to set method to.
@@ -348,13 +342,11 @@ abstract class DataHandler extends LitePalBase {
 	 * @throws IllegalAccessException
 	 * @throws java.lang.reflect.InvocationTargetException
 	 */
-	protected void putSetMethodValueByField(DataSupport dataSupport, Field field, Object parameter)
+	protected void setFieldValue(DataSupport dataSupport, Field field, Object parameter)
 			throws SecurityException, NoSuchMethodException, IllegalArgumentException,
 			IllegalAccessException, InvocationTargetException {
 		if (shouldGetOrSet(dataSupport, field)) {
-			String setMethodName = makeSetterMethodName(field);
-			DynamicExecutor.send(dataSupport, setMethodName, new Object[] { parameter },
-					dataSupport.getClass(), new Class[] { field.getType() });
+            DynamicExecutor.setField(dataSupport, field.getName(), parameter, dataSupport.getClass());
 		}
 	}
 
@@ -399,7 +391,7 @@ abstract class DataHandler extends LitePalBase {
 	protected DataSupport getAssociatedModel(DataSupport baseObj, AssociationsInfo associationInfo)
 			throws SecurityException, IllegalArgumentException, NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException {
-		return (DataSupport) takeGetMethodValueByField(baseObj,
+		return (DataSupport) getFieldValue(baseObj,
 				associationInfo.getAssociateOtherModelFromSelf());
 	}
 
@@ -423,7 +415,7 @@ abstract class DataHandler extends LitePalBase {
 	protected Collection<DataSupport> getAssociatedModels(DataSupport baseObj,
 			AssociationsInfo associationInfo) throws SecurityException, IllegalArgumentException,
 			NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-		return (Collection<DataSupport>) takeGetMethodValueByField(baseObj,
+		return (Collection<DataSupport>) getFieldValue(baseObj,
 				associationInfo.getAssociateOtherModelFromSelf());
 	}
 
@@ -556,8 +548,8 @@ abstract class DataHandler extends LitePalBase {
 	}
 
 	/**
-	 * When executing {@link #takeGetMethodValueByField(DataSupport, java.lang.reflect.Field)} or
-	 * {@link #putSetMethodValueByField(DataSupport, java.lang.reflect.Field, Object)}, the
+	 * When executing {@link #getFieldValue(DataSupport, Field)} or
+	 * {@link #setFieldValue(DataSupport, Field, Object)}, the
 	 * dataSupport and field passed in should be protected from null value.
 	 * 
 	 * @param dataSupport
@@ -731,7 +723,7 @@ abstract class DataHandler extends LitePalBase {
 								Class.forName(associationInfo.getAssociatedClassName()),
 								associatedClassId);
 						if (associatedObj != null) {
-							putSetMethodValueByField((DataSupport) modelInstance,
+							setFieldValue((DataSupport) modelInstance,
 									associationInfo.getAssociateOtherModelFromSelf(), associatedObj);
 						}
 					} catch (ClassNotFoundException e) {
@@ -1007,14 +999,14 @@ abstract class DataHandler extends LitePalBase {
 	}
 
 	/**
-	 * Analyze the passed in field. Judge if this field is with default value.
+	 * Analyze the passed in field. Check if this field is with default value.
 	 * The baseObj need a default constructor or {@link DataSupportException}
 	 * will be thrown.
 	 * 
 	 * @param baseObj
 	 *            Current model to update.
 	 * @param field
-	 *            To judge if with default value.
+	 *            To check if with default value.
 	 * @return If the field is with default value, return true. Otherwise return
 	 *         false.
 	 * @throws IllegalAccessException
@@ -1029,11 +1021,11 @@ abstract class DataHandler extends LitePalBase {
 			throws IllegalAccessException, SecurityException, IllegalArgumentException,
 			NoSuchMethodException, InvocationTargetException {
 		DataSupport emptyModel = getEmptyModel(baseObj);
-		Object realReturn = takeGetMethodValueByField(baseObj, field);
-		Object defaultReturn = takeGetMethodValueByField(emptyModel, field);
+		Object realReturn = getFieldValue(baseObj, field);
+		Object defaultReturn = getFieldValue(emptyModel, field);
 		if (realReturn != null && defaultReturn != null) {
-			String realFieldValue = takeGetMethodValueByField(baseObj, field).toString();
-			String defaultFieldValue = takeGetMethodValueByField(emptyModel, field).toString();
+			String realFieldValue = realReturn.toString();
+			String defaultFieldValue = defaultReturn.toString();
 			return realFieldValue.equals(defaultFieldValue);
 		}
 		return realReturn == defaultReturn;
@@ -1294,11 +1286,11 @@ abstract class DataHandler extends LitePalBase {
 						setValueToModel(modelInstance, supportedFields, null, cursor, queryInfoCacheSparseArray);
                         setGenericValueToModel(modelInstance, supportedGenericFields, genericModelMap);
 						if (info.getAssociationType() == Const.Model.MANY_TO_ONE || isM2M) {
-							Collection collection = (Collection) takeGetMethodValueByField(baseObj,
+							Collection collection = (Collection) getFieldValue(baseObj,
 									info.getAssociateOtherModelFromSelf());
 							collection.add(modelInstance);
 						} else if (info.getAssociationType() == Const.Model.ONE_TO_ONE) {
-							putSetMethodValueByField(baseObj,
+							setFieldValue(baseObj,
 									info.getAssociateOtherModelFromSelf(), modelInstance);
 						}
 					} while (cursor.moveToNext());
