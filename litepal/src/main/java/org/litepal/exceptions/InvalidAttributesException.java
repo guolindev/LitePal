@@ -30,7 +30,7 @@ public class InvalidAttributesException extends RuntimeException {
 	/**
 	 * dbname is empty or not defined in litepal.xml file.
 	 */
-	public static final String DBNAME_IS_EMPTY_OR_NOT_DEFINED = "dbname is empty or not defined in litepal.xml file";
+	public static final String DBNAME_IS_EMPTY_OR_NOT_DEFINED = "dbname is empty or not defined in litepal.xml file, or your litepal.xml file is missing.";
 
 	/**
 	 * the version of database can not be less than 1.
