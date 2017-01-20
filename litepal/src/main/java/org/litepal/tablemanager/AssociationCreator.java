@@ -81,7 +81,8 @@ public abstract class AssociationCreator extends Generator {
 		if (autoIncrementId) {
 			createTableSQL.append("id integer primary key autoincrement,");
 		}
-		if (columnModels.size() == 0) {
+		if (isContainsOnlyIdField(columnModels)) {
+            // Remove the last comma when only have id field in model.
 			createTableSQL.deleteCharAt(createTableSQL.length() - 1);
 		}
 		boolean needSeparator = false;
@@ -419,5 +420,17 @@ public abstract class AssociationCreator extends Generator {
 					+ tableName);
 		}
 	}
+
+    /**
+     * Check if the ColumnModel list contains only id field.
+     * @param columnModels
+     *          List contains model fields.
+     * @return If ColumnModel list is empty or contains only id, _id field, return true. Otherwise return false.
+     */
+    private boolean isContainsOnlyIdField(List<ColumnModel> columnModels) {
+        return columnModels.size() == 0
+                || (columnModels.size() == 1 && isIdColumn(columnModels.get(0).getColumnName()))
+                || (columnModels.size() == 2 && isIdColumn(columnModels.get(0).getColumnName()) && isIdColumn(columnModels.get(1).getColumnName()));
+    }
 
 }
