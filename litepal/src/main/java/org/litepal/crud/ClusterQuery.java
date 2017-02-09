@@ -191,6 +191,9 @@ public class ClusterQuery {
 	/**
 	 * It is mostly same as {@link org.litepal.crud.ClusterQuery#find(Class)} but an isEager
 	 * parameter. If set true the associated models will be loaded as well.
+     * <br>
+     * Note that isEager will only work for one deep level relation, considering the query efficiency.
+     * You have to implement on your own if you need to load multiple deepness of relation at once.
 	 * 
 	 * @param modelClass
 	 *            Which table to query and the object type to return as a list.
@@ -236,6 +239,9 @@ public class ClusterQuery {
     /**
      * It is mostly same as {@link org.litepal.crud.ClusterQuery#findFirst(Class)} but an isEager
      * parameter. If set true the associated models will be loaded as well.
+     * <br>
+     * Note that isEager will only work for one deep level relation, considering the query efficiency.
+     * You have to implement on your own if you need to load multiple deepness of relation at once.
      *
      * @param modelClass
      *            Which table to query and the object type to return.
@@ -275,6 +281,9 @@ public class ClusterQuery {
     /**
      * It is mostly same as {@link org.litepal.crud.ClusterQuery#findLast(Class)} but an isEager
      * parameter. If set true the associated models will be loaded as well.
+     * <br>
+     * Note that isEager will only work for one deep level relation, considering the query efficiency.
+     * You have to implement on your own if you need to load multiple deepness of relation at once.
      *
      * @param modelClass
      *            Which table to query and the object type to return.

@@ -494,6 +494,9 @@ public class DataSupport {
 	/**
 	 * It is mostly same as {@link org.litepal.crud.DataSupport#find(Class, long)} but an isEager
 	 * parameter. If set true the associated models will be loaded as well.
+     * <br>
+     * Note that isEager will only work for one deep level relation, considering the query efficiency.
+     * You have to implement on your own if you need to load multiple deepness of relation at once.
 	 * 
 	 * @param modelClass
 	 *            Which table to query and the object type to return.
@@ -530,7 +533,10 @@ public class DataSupport {
 	/**
 	 * It is mostly same as {@link org.litepal.crud.DataSupport#findFirst(Class)} but an isEager
 	 * parameter. If set true the associated models will be loaded as well.
-	 * 
+     * <br>
+     * Note that isEager will only work for one deep level relation, considering the query efficiency.
+     * You have to implement on your own if you need to load multiple deepness of relation at once.
+	 *
 	 * @param modelClass
 	 *            Which table to query and the object type to return.
 	 * @param isEager
@@ -564,6 +570,9 @@ public class DataSupport {
 	/**
 	 * It is mostly same as {@link org.litepal.crud.DataSupport#findLast(Class)} but an isEager
 	 * parameter. If set true the associated models will be loaded as well.
+     * <br>
+     * Note that isEager will only work for one deep level relation, considering the query efficiency.
+     * You have to implement on your own if you need to load multiple deepness of relation at once.
 	 * 
 	 * @param modelClass
 	 *            Which table to query and the object type to return.
@@ -612,8 +621,10 @@ public class DataSupport {
 
 	/**
 	 * It is mostly same as {@link org.litepal.crud.DataSupport#findAll(Class, long...)} but an
-	 * isEager parameter. If set true the associated models will be loaded as
-	 * well.
+	 * isEager parameter. If set true the associated models will be loaded as well.
+     * <br>
+     * Note that isEager will only work for one deep level relation, considering the query efficiency.
+     * You have to implement on your own if you need to load multiple deepness of relation at once.
 	 * 
 	 * @param modelClass
 	 *            Which table to query and the object type to return as a list.
