@@ -16,6 +16,21 @@
 
 package org.litepal.crud;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
+import org.litepal.crud.async.AverageExecutor;
+import org.litepal.crud.async.CountExecutor;
+import org.litepal.crud.async.UpdateOrDeleteExecutor;
+import org.litepal.crud.async.FindBySQLExecutor;
+import org.litepal.crud.async.FindExecutor;
+import org.litepal.crud.async.FindMultiExecutor;
+import org.litepal.exceptions.DataSupportException;
+import org.litepal.tablemanager.Connector;
+import org.litepal.util.BaseUtility;
+import org.litepal.util.DBUtility;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,15 +38,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.litepal.exceptions.DataSupportException;
-import org.litepal.tablemanager.Connector;
-import org.litepal.util.BaseUtility;
-import org.litepal.util.DBUtility;
-
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
 /**
  * DataSupport connects classes to SQLite database tables to establish an almost
@@ -238,6 +244,10 @@ public class DataSupport {
 		return count(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())));
 	}
 
+    public static CountExecutor countAsync(final Class<?> modelClass) {
+        return countAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())));
+    }
+
 	/**
 	 * Count the records.
 	 * 
@@ -260,6 +270,23 @@ public class DataSupport {
 		ClusterQuery cQuery = new ClusterQuery();
 		return cQuery.count(tableName);
 	}
+
+    public static CountExecutor countAsync(final String tableName) {
+        final CountExecutor executor = new CountExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    int count = count(tableName);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(count);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
 
 	/**
 	 * Calculates the average value on a given column.
@@ -284,6 +311,10 @@ public class DataSupport {
 		return average(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), column);
 	}
 
+    public static AverageExecutor averageAsync(final Class<?> modelClass, final String column) {
+        return averageAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), column);
+    }
+
 	/**
 	 * Calculates the average value on a given column.
 	 * 
@@ -307,6 +338,23 @@ public class DataSupport {
 		ClusterQuery cQuery = new ClusterQuery();
 		return cQuery.average(tableName, column);
 	}
+
+    public static AverageExecutor averageAsync(final String tableName, final String column) {
+        final AverageExecutor executor = new AverageExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    double average = average(tableName, column);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(average);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
 
 	/**
 	 * Calculates the maximum value on a given column. The value is returned
@@ -333,6 +381,10 @@ public class DataSupport {
 	public static synchronized <T> T max(Class<?> modelClass, String columnName, Class<T> columnType) {
 		return max(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
 	}
+
+    public static <T> FindExecutor maxAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
+        return maxAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
+    }
 
 	/**
 	 * Calculates the maximum value on a given column. The value is returned
@@ -361,6 +413,23 @@ public class DataSupport {
 		return cQuery.max(tableName, columnName, columnType);
 	}
 
+    public static <T> FindExecutor maxAsync(final String tableName, final String columnName, final Class<T> columnType) {
+        final FindExecutor executor = new FindExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    T t = max(tableName, columnName, columnType);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(t);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
+
 	/**
 	 * Calculates the minimum value on a given column. The value is returned
 	 * with the same data type of the column.
@@ -386,6 +455,10 @@ public class DataSupport {
 	public static synchronized <T> T min(Class<?> modelClass, String columnName, Class<T> columnType) {
 		return min(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
 	}
+
+    public static <T> FindExecutor minAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
+        return minAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
+    }
 
 	/**
 	 * Calculates the minimum value on a given column. The value is returned
@@ -414,6 +487,23 @@ public class DataSupport {
 		return cQuery.min(tableName, columnName, columnType);
 	}
 
+    public static <T> FindExecutor minAsync(final String tableName, final String columnName, final Class<T> columnType) {
+        final FindExecutor executor = new FindExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    T t = min(tableName, columnName, columnType);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(t);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
+
 	/**
 	 * Calculates the sum of values on a given column. The value is returned
 	 * with the same data type of the column.
@@ -439,6 +529,10 @@ public class DataSupport {
 	public static synchronized <T> T sum(Class<?> modelClass, String columnName, Class<T> columnType) {
 		return sum(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
 	}
+
+    public static <T> FindExecutor sumAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
+        return sumAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
+    }
 
 	/**
 	 * Calculates the sum of values on a given column. The value is returned
@@ -467,6 +561,23 @@ public class DataSupport {
 		return cQuery.sum(tableName, columnName, columnType);
 	}
 
+    public static <T> FindExecutor sumAsync(final String tableName, final String columnName, final Class<T> columnType) {
+        final FindExecutor executor = new FindExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    T t = sum(tableName, columnName, columnType);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(t);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
+
 	/**
 	 * Finds the record by a specific id.
 	 * 
@@ -491,6 +602,10 @@ public class DataSupport {
 		return find(modelClass, id, false);
 	}
 
+    public static <T> FindExecutor findAsync(Class<T> modelClass, long id) {
+        return findAsync(modelClass, id, false);
+    }
+
 	/**
 	 * It is mostly same as {@link org.litepal.crud.DataSupport#find(Class, long)} but an isEager
 	 * parameter. If set true the associated models will be loaded as well.
@@ -511,6 +626,23 @@ public class DataSupport {
 		return queryHandler.onFind(modelClass, id, isEager);
 	}
 
+    public static <T> FindExecutor findAsync(final Class<T> modelClass, final long id, final boolean isEager) {
+        final FindExecutor executor = new FindExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    T t = find(modelClass, id, isEager);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(t);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
+
 	/**
 	 * Finds the first record of a single table.
 	 * 
@@ -530,6 +662,10 @@ public class DataSupport {
 		return findFirst(modelClass, false);
 	}
 
+    public static <T> FindExecutor findFirstAsync(Class<T> modelClass) {
+        return findFirstAsync(modelClass, false);
+    }
+
 	/**
 	 * It is mostly same as {@link org.litepal.crud.DataSupport#findFirst(Class)} but an isEager
 	 * parameter. If set true the associated models will be loaded as well.
@@ -547,6 +683,23 @@ public class DataSupport {
 		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
 		return queryHandler.onFindFirst(modelClass, isEager);
 	}
+
+    public static <T> FindExecutor findFirstAsync(final Class<T> modelClass, final boolean isEager) {
+        final FindExecutor executor = new FindExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    T t = findFirst(modelClass, isEager);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(t);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
 
 	/**
 	 * Finds the last record of a single table.
@@ -567,6 +720,10 @@ public class DataSupport {
 		return findLast(modelClass, false);
 	}
 
+    public static <T> FindExecutor findLastAsync(Class<T> modelClass) {
+        return findLastAsync(modelClass, false);
+    }
+
 	/**
 	 * It is mostly same as {@link org.litepal.crud.DataSupport#findLast(Class)} but an isEager
 	 * parameter. If set true the associated models will be loaded as well.
@@ -584,6 +741,23 @@ public class DataSupport {
 		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
 		return queryHandler.onFindLast(modelClass, isEager);
 	}
+
+    public static <T> FindExecutor findLastAsync(final Class<T> modelClass, final boolean isEager) {
+        final FindExecutor executor = new FindExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    T t = findLast(modelClass, isEager);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(t);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
 
 	/**
 	 * Finds multiple records by an id array.
@@ -619,6 +793,10 @@ public class DataSupport {
 		return findAll(modelClass, false, ids);
 	}
 
+    public static <T> FindMultiExecutor findAllAsync(Class<T> modelClass, long... ids) {
+        return findAllAsync(modelClass, false, ids);
+    }
+
 	/**
 	 * It is mostly same as {@link org.litepal.crud.DataSupport#findAll(Class, long...)} but an
 	 * isEager parameter. If set true the associated models will be loaded as well.
@@ -640,9 +818,26 @@ public class DataSupport {
 		return queryHandler.onFindAll(modelClass, isEager, ids);
 	}
 
+    public static <T> FindMultiExecutor findAllAsync(final Class<T> modelClass, final boolean isEager, final long... ids) {
+        final FindMultiExecutor executor = new FindMultiExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    List<T> t = findAll(modelClass, isEager, ids);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(t);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
+
 	/**
 	 * Runs the provided SQL and returns a Cursor over the result set. You may
-	 * include ?s in where clause in the query, which will be replaced by the
+	 * include ? in where clause in the query, which will be replaced by the
 	 * second to the last parameters, such as:
 	 * 
 	 * <pre>
@@ -673,6 +868,23 @@ public class DataSupport {
 		}
 		return Connector.getDatabase().rawQuery(sql[0], selectionArgs);
 	}
+
+    public static FindBySQLExecutor findBySQLAsync(final String... sql) {
+        final FindBySQLExecutor executor = new FindBySQLExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    Cursor cursor = findBySQL(sql);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(cursor);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
 
 	/**
 	 * Deletes the record in the database by id.<br>
@@ -705,6 +917,23 @@ public class DataSupport {
 		}
 	}
 
+    public static UpdateOrDeleteExecutor deleteAsync(final Class<?> modelClass, final long id) {
+        final UpdateOrDeleteExecutor executor = new UpdateOrDeleteExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    int rowsAffected = delete(modelClass, id);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(rowsAffected);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
+
 	/**
 	 * Deletes all records with details given if they match a set of conditions
 	 * supplied. This method constructs a single SQL DELETE statement and sends
@@ -733,6 +962,23 @@ public class DataSupport {
 		DeleteHandler deleteHandler = new DeleteHandler(Connector.getDatabase());
 		return deleteHandler.onDeleteAll(modelClass, conditions);
 	}
+
+    public static UpdateOrDeleteExecutor deleteAllAsync(final Class<?> modelClass, final String... conditions) {
+        final UpdateOrDeleteExecutor executor = new UpdateOrDeleteExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    int rowsAffected = deleteAll(modelClass, conditions);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(rowsAffected);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
 
 	/**
 	 * Deletes all records with details given if they match a set of conditions
@@ -766,6 +1012,23 @@ public class DataSupport {
 		return deleteHandler.onDeleteAll(tableName, conditions);
 	}
 
+    public static UpdateOrDeleteExecutor deleteAllAsync(final String tableName, final String... conditions) {
+        final UpdateOrDeleteExecutor executor = new UpdateOrDeleteExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    int rowsAffected = deleteAll(tableName, conditions);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(rowsAffected);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
+
 	/**
 	 * Updates the corresponding record by id with ContentValues. Returns the
 	 * number of affected rows.
@@ -791,6 +1054,23 @@ public class DataSupport {
 		UpdateHandler updateHandler = new UpdateHandler(Connector.getDatabase());
 		return updateHandler.onUpdate(modelClass, id, values);
 	}
+
+    public static UpdateOrDeleteExecutor updateAsync(final Class<?> modelClass, final ContentValues values, final long id) {
+        final UpdateOrDeleteExecutor executor = new UpdateOrDeleteExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    int rowsAffected = update(modelClass, values, id);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(rowsAffected);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
 
 	/**
 	 * Updates all records with details given if they match a set of conditions
@@ -827,6 +1107,11 @@ public class DataSupport {
                 modelClass.getName())), values, conditions);
 	}
 
+    public static UpdateOrDeleteExecutor updateAllAsync(Class<?> modelClass, ContentValues values, String... conditions) {
+        return updateAllAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(
+                modelClass.getName())), values, conditions);
+    }
+
 	/**
 	 * Updates all records with details given if they match a set of conditions
 	 * supplied. This method constructs a single SQL UPDATE statement and sends
@@ -861,6 +1146,23 @@ public class DataSupport {
 		UpdateHandler updateHandler = new UpdateHandler(Connector.getDatabase());
 		return updateHandler.onUpdateAll(tableName, values, conditions);
 	}
+
+    public static UpdateOrDeleteExecutor updateAllAsync(final String tableName, final ContentValues values, final String... conditions) {
+        final UpdateOrDeleteExecutor executor = new UpdateOrDeleteExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    int rowsAffected = updateAll(tableName, values, conditions);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(rowsAffected);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
 
 	/**
 	 * Saves the collection into database. <br>

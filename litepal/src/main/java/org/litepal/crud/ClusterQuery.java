@@ -18,8 +18,13 @@ package org.litepal.crud;
 
 import java.util.List;
 
+import org.litepal.crud.async.AverageExecutor;
+import org.litepal.crud.async.CountExecutor;
+import org.litepal.crud.async.FindExecutor;
+import org.litepal.crud.async.FindMultiExecutor;
 import org.litepal.tablemanager.Connector;
 import org.litepal.util.BaseUtility;
+import org.litepal.util.DBUtility;
 
 /**
  * Allows developers to query tables with cluster style.
@@ -188,6 +193,10 @@ public class ClusterQuery {
 		return find(modelClass, false);
 	}
 
+    public <T> FindMultiExecutor findAsync(final Class<T> modelClass) {
+        return findAsync(modelClass, false);
+    }
+
 	/**
 	 * It is mostly same as {@link org.litepal.crud.ClusterQuery#find(Class)} but an isEager
 	 * parameter. If set true the associated models will be loaded as well.
@@ -215,6 +224,23 @@ public class ClusterQuery {
 		return queryHandler.onFind(modelClass, mColumns, mConditions, mOrderBy, limit, isEager);
 	}
 
+    public <T> FindMultiExecutor findAsync(final Class<T> modelClass, final boolean isEager) {
+        final FindMultiExecutor executor = new FindMultiExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    List<T> t = find(modelClass, isEager);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(t);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
+
     /**
      * Finds the first record by the cluster parameters. You can use the below
      * way to finish a complicated query:
@@ -234,6 +260,10 @@ public class ClusterQuery {
      */
     public <T> T findFirst(Class<T> modelClass) {
         return findFirst(modelClass, false);
+    }
+
+    public <T> FindExecutor findFirstAsync(Class<T> modelClass) {
+        return findFirstAsync(modelClass, false);
     }
 
     /**
@@ -257,6 +287,23 @@ public class ClusterQuery {
         return null;
     }
 
+    public <T> FindExecutor findFirstAsync(final Class<T> modelClass, final boolean isEager) {
+        final FindExecutor executor = new FindExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    T t = findFirst(modelClass, isEager);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(t);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
+
     /**
      * Finds the last record by the cluster parameters. You can use the below
      * way to finish a complicated query:
@@ -276,6 +323,10 @@ public class ClusterQuery {
      */
     public <T> T findLast(Class<T> modelClass) {
         return findLast(modelClass, false);
+    }
+
+    public <T> FindExecutor findLastAsync(Class<T> modelClass) {
+        return findLastAsync(modelClass, false);
     }
 
     /**
@@ -300,6 +351,23 @@ public class ClusterQuery {
         return null;
     }
 
+    public <T> FindExecutor findLastAsync(final Class<T> modelClass, final boolean isEager) {
+        final FindExecutor executor = new FindExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    T t = findLast(modelClass, isEager);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(t);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
+
 	/**
 	 * Count the records.
 	 * 
@@ -321,6 +389,10 @@ public class ClusterQuery {
 	public synchronized int count(Class<?> modelClass) {
 		return count(BaseUtility.changeCase(modelClass.getSimpleName()));
 	}
+
+    public CountExecutor countAsync(Class<?> modelClass) {
+        return countAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())));
+    }
 
 	/**
 	 * Count the records.
@@ -345,6 +417,23 @@ public class ClusterQuery {
 		return queryHandler.onCount(tableName, mConditions);
 	}
 
+    public CountExecutor countAsync(final String tableName) {
+        final CountExecutor executor = new CountExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    int count = count(tableName);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(count);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
+
 	/**
 	 * Calculates the average value on a given column.
 	 * 
@@ -367,6 +456,10 @@ public class ClusterQuery {
 	public synchronized double average(Class<?> modelClass, String column) {
 		return average(BaseUtility.changeCase(modelClass.getSimpleName()), column);
 	}
+
+    public AverageExecutor averageAsync(final Class<?> modelClass, final String column) {
+        return averageAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), column);
+    }
 
 	/**
 	 * Calculates the average value on a given column.
@@ -391,6 +484,23 @@ public class ClusterQuery {
 		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
 		return queryHandler.onAverage(tableName, column, mConditions);
 	}
+
+    public AverageExecutor averageAsync(final String tableName, final String column) {
+        final AverageExecutor executor = new AverageExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    double average = average(tableName, column);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(average);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
 
 	/**
 	 * Calculates the maximum value on a given column. The value is returned
@@ -417,6 +527,10 @@ public class ClusterQuery {
 	public synchronized <T> T max(Class<?> modelClass, String columnName, Class<T> columnType) {
 		return max(BaseUtility.changeCase(modelClass.getSimpleName()), columnName, columnType);
 	}
+
+    public <T> FindExecutor maxAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
+        return maxAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
+    }
 
 	/**
 	 * Calculates the maximum value on a given column. The value is returned
@@ -445,6 +559,23 @@ public class ClusterQuery {
 		return queryHandler.onMax(tableName, columnName, mConditions, columnType);
 	}
 
+    public <T> FindExecutor maxAsync(final String tableName, final String columnName, final Class<T> columnType) {
+        final FindExecutor executor = new FindExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    T t = max(tableName, columnName, columnType);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(t);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
+
 	/**
 	 * Calculates the minimum value on a given column. The value is returned
 	 * with the same data type of the column.
@@ -470,6 +601,10 @@ public class ClusterQuery {
 	public synchronized <T> T min(Class<?> modelClass, String columnName, Class<T> columnType) {
 		return min(BaseUtility.changeCase(modelClass.getSimpleName()), columnName, columnType);
 	}
+
+    public <T> FindExecutor minAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
+        return minAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
+    }
 
 	/**
 	 * Calculates the minimum value on a given column. The value is returned
@@ -498,6 +633,23 @@ public class ClusterQuery {
 		return queryHandler.onMin(tableName, columnName, mConditions, columnType);
 	}
 
+    public <T> FindExecutor minAsync(final String tableName, final String columnName, final Class<T> columnType) {
+        final FindExecutor executor = new FindExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    T t = min(tableName, columnName, columnType);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(t);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
+
 	/**
 	 * Calculates the sum of values on a given column. The value is returned
 	 * with the same data type of the column.
@@ -524,7 +676,11 @@ public class ClusterQuery {
 		return sum(BaseUtility.changeCase(modelClass.getSimpleName()), columnName, columnType);
 	}
 
-	/**
+    public <T> FindExecutor sumAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
+        return sumAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
+    }
+
+    /**
 	 * Calculates the sum of values on a given column. The value is returned
 	 * with the same data type of the column.
 	 * 
@@ -550,5 +706,22 @@ public class ClusterQuery {
 		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
 		return queryHandler.onSum(tableName, columnName, mConditions, columnType);
 	}
+
+    public <T> FindExecutor sumAsync(final String tableName, final String columnName, final Class<T> columnType) {
+        final FindExecutor executor = new FindExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    T t = sum(tableName, columnName, columnType);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(t);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
 
 }
