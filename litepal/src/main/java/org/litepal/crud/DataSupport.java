@@ -22,6 +22,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import org.litepal.crud.async.AverageExecutor;
 import org.litepal.crud.async.CountExecutor;
+import org.litepal.crud.async.SaveExecutor;
 import org.litepal.crud.async.UpdateOrDeleteExecutor;
 import org.litepal.crud.async.FindBySQLExecutor;
 import org.litepal.crud.async.FindExecutor;
@@ -1204,6 +1205,29 @@ public class DataSupport {
 		}
 	}
 
+    public static <T extends DataSupport> SaveExecutor saveAllAsync(final Collection<T> collection) {
+        final SaveExecutor executor = new SaveExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    boolean success;
+                    try {
+                        saveAll(collection);
+                        success = true;
+                    } catch (Exception e) {
+                        success = false;
+                    }
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(success);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
+
     /**
      * Provide a way to mark all models in collection as deleted. This means these models' save
      * state is no longer exist anymore. If save them again, they will be treated as inserting new
@@ -1263,6 +1287,23 @@ public class DataSupport {
 		}
 	}
 
+    public UpdateOrDeleteExecutor deleteAsync() {
+        final UpdateOrDeleteExecutor executor = new UpdateOrDeleteExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    int rowsAffected = delete();
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(rowsAffected);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
+
 	/**
 	 * Updates the corresponding record by id. Use setXxx to decide which
 	 * columns to update.
@@ -1294,6 +1335,23 @@ public class DataSupport {
 			throw new DataSupportException(e.getMessage(), e);
 		}
 	}
+
+    public UpdateOrDeleteExecutor updateAsync(final long id) {
+        final UpdateOrDeleteExecutor executor = new UpdateOrDeleteExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    int rowsAffected = update(id);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(rowsAffected);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
 
 	/**
 	 * Updates all records with details given if they match a set of conditions
@@ -1335,6 +1393,23 @@ public class DataSupport {
 		}
 	}
 
+    public UpdateOrDeleteExecutor updateAllAsync(final String... conditions) {
+        final UpdateOrDeleteExecutor executor = new UpdateOrDeleteExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    int rowsAffected = updateAll(conditions);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(rowsAffected);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
+
 	/**
 	 * Saves the model. <br>
 	 * 
@@ -1368,6 +1443,23 @@ public class DataSupport {
 			return false;
 		}
 	}
+
+    public SaveExecutor saveAsync() {
+        final SaveExecutor executor = new SaveExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    boolean success = save();
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(success);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
+    }
 
     /**
 	 * Saves the model. <br>
@@ -1431,11 +1523,57 @@ public class DataSupport {
      *
      * @return If the model is saved successfully, return true. If the conditions data already exist or any exception happens, return false.
      */
+    @Deprecated
     public synchronized boolean saveIfNotExist(String... conditions) {
         if (!isExist(getClass(), conditions)) {
             return save();
         }
         return false;
+    }
+
+    public synchronized boolean saveOrUpdate(String... conditions) {
+        if (conditions == null) {
+            return save();
+        }
+        List<DataSupport> list = (List<DataSupport>) where(conditions).find(getClass());
+        if (list.isEmpty()) {
+            return save();
+        } else {
+            SQLiteDatabase db = Connector.getDatabase();
+            db.beginTransaction();
+            try {
+                for (DataSupport dataSupport : list) {
+                    baseObjId = dataSupport.getBaseObjId();
+                    SaveHandler saveHandler = new SaveHandler(db);
+                    saveHandler.onSave(this);
+                    clearAssociatedData();
+                }
+                db.setTransactionSuccessful();
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            } finally {
+                db.endTransaction();
+            }
+        }
+    }
+
+    public SaveExecutor saveOrUpdateAsync(final String... conditions) {
+        final SaveExecutor executor = new SaveExecutor();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DataSupport.class) {
+                    boolean success = saveOrUpdate(conditions);
+                    if (executor.getListener() != null) {
+                        executor.getListener().onFinish(success);
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
+        return executor;
     }
 
     /**
@@ -1460,6 +1598,7 @@ public class DataSupport {
      * @return If the model is saved successfully, return true. Any exception
      *         happens, return false.
      */
+    @Deprecated
     public synchronized boolean saveFast() {
         SQLiteDatabase db = Connector.getDatabase();
         db.beginTransaction();
