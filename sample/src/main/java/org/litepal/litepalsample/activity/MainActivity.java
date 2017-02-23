@@ -31,6 +31,8 @@ import java.util.UUID;
 
 public class MainActivity extends Activity implements OnClickListener {
 
+    private static final String TAG = "MainActivity";
+
 	private Button mManageTableBtn;
 
 	private Button mCrudBtn;

@@ -74,7 +74,4 @@ public class Singer extends DataSupport {
 		this.albums = albums;
 	}
 
-    public void setIsMale(boolean isMale) {
-        this.isMale = isMale;
-    }
 }
