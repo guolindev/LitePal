@@ -245,6 +245,13 @@ public class DataSupport {
 		return count(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())));
 	}
 
+    /**
+     * Basically same as {@link #count(Class)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *          Which table to query from by class.
+     * @return A CountExecutor instance.
+     */
     public static CountExecutor countAsync(final Class<?> modelClass) {
         return countAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())));
     }
@@ -272,6 +279,13 @@ public class DataSupport {
 		return cQuery.count(tableName);
 	}
 
+    /**
+     * Basically same as {@link #count(String)} but pending to a new thread for executing.
+     *
+     * @param tableName
+     *          Which table to query from.
+     * @return A CountExecutor instance.
+     */
     public static CountExecutor countAsync(final String tableName) {
         final CountExecutor executor = new CountExecutor();
         Runnable runnable = new Runnable() {
@@ -312,6 +326,15 @@ public class DataSupport {
 		return average(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), column);
 	}
 
+    /**
+     * Basically same as {@link #average(Class, String)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query from by class.
+     * @param column
+     *            The based on column to calculate.
+     * @return A AverageExecutor instance.
+     */
     public static AverageExecutor averageAsync(final Class<?> modelClass, final String column) {
         return averageAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), column);
     }
@@ -340,6 +363,15 @@ public class DataSupport {
 		return cQuery.average(tableName, column);
 	}
 
+    /**
+     * Basically same as {@link #average(String, String)} but pending to a new thread for executing.
+     *
+     * @param tableName
+     *            Which table to query from.
+     * @param column
+     *            The based on column to calculate.
+     * @return A AverageExecutor instance.
+     */
     public static AverageExecutor averageAsync(final String tableName, final String column) {
         final AverageExecutor executor = new AverageExecutor();
         Runnable runnable = new Runnable() {
@@ -383,6 +415,17 @@ public class DataSupport {
 		return max(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
 	}
 
+    /**
+     * Basically same as {@link #max(Class, String, Class)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query from by class.
+     * @param columnName
+     *            The based on column to calculate.
+     * @param columnType
+     *            The type of the based on column.
+     * @return A FindExecutor instance.
+     */
     public static <T> FindExecutor maxAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
         return maxAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
     }
@@ -414,6 +457,17 @@ public class DataSupport {
 		return cQuery.max(tableName, columnName, columnType);
 	}
 
+    /**
+     * Basically same as {@link #max(String, String, Class)} but pending to a new thread for executing.
+     *
+     * @param tableName
+     *            Which table to query from.
+     * @param columnName
+     *            The based on column to calculate.
+     * @param columnType
+     *            The type of the based on column.
+     * @return A FindExecutor instance.
+     */
     public static <T> FindExecutor maxAsync(final String tableName, final String columnName, final Class<T> columnType) {
         final FindExecutor executor = new FindExecutor();
         Runnable runnable = new Runnable() {
@@ -457,6 +511,17 @@ public class DataSupport {
 		return min(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
 	}
 
+    /**
+     * Basically same as {@link #min(Class, String, Class)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query from by class.
+     * @param columnName
+     *            The based on column to calculate.
+     * @param columnType
+     *            The type of the based on column.
+     * @return A FindExecutor instance.
+     */
     public static <T> FindExecutor minAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
         return minAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
     }
@@ -488,6 +553,17 @@ public class DataSupport {
 		return cQuery.min(tableName, columnName, columnType);
 	}
 
+    /**
+     * Basically same as {@link #min(String, String, Class)} but pending to a new thread for executing.
+     *
+     * @param tableName
+     *            Which table to query from.
+     * @param columnName
+     *            The based on column to calculate.
+     * @param columnType
+     *            The type of the based on column.
+     * @return A FindExecutor instance.
+     */
     public static <T> FindExecutor minAsync(final String tableName, final String columnName, final Class<T> columnType) {
         final FindExecutor executor = new FindExecutor();
         Runnable runnable = new Runnable() {
@@ -531,6 +607,17 @@ public class DataSupport {
 		return sum(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
 	}
 
+    /**
+     * Basically same as {@link #sum(Class, String, Class)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query from by class.
+     * @param columnName
+     *            The based on column to calculate.
+     * @param columnType
+     *            The type of the based on column.
+     * @return A FindExecutor instance.
+     */
     public static <T> FindExecutor sumAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
         return sumAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
     }
@@ -562,6 +649,17 @@ public class DataSupport {
 		return cQuery.sum(tableName, columnName, columnType);
 	}
 
+    /**
+     * Basically same as {@link #sum(String, String, Class)} but pending to a new thread for executing.
+     *
+     * @param tableName
+     *            Which table to query from.
+     * @param columnName
+     *            The based on column to calculate.
+     * @param columnType
+     *            The type of the based on column.
+     * @return A FindExecutor instance.
+     */
     public static <T> FindExecutor sumAsync(final String tableName, final String columnName, final Class<T> columnType) {
         final FindExecutor executor = new FindExecutor();
         Runnable runnable = new Runnable() {
@@ -603,6 +701,15 @@ public class DataSupport {
 		return find(modelClass, id, false);
 	}
 
+    /**
+     * Basically same as {@link #find(Class, long)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query and the object type to return.
+     * @param id
+     *            Which record to query.
+     * @return A FindExecutor instance.
+     */
     public static <T> FindExecutor findAsync(Class<T> modelClass, long id) {
         return findAsync(modelClass, id, false);
     }
@@ -627,6 +734,17 @@ public class DataSupport {
 		return queryHandler.onFind(modelClass, id, isEager);
 	}
 
+    /**
+     * Basically same as {@link #find(Class, long, boolean)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query and the object type to return.
+     * @param id
+     *            Which record to query.
+     * @param isEager
+     *            True to load the associated models, false not.
+     * @return A FindExecutor instance.
+     */
     public static <T> FindExecutor findAsync(final Class<T> modelClass, final long id, final boolean isEager) {
         final FindExecutor executor = new FindExecutor();
         Runnable runnable = new Runnable() {
@@ -663,6 +781,13 @@ public class DataSupport {
 		return findFirst(modelClass, false);
 	}
 
+    /**
+     * Basically same as {@link #findFirst(Class)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query and the object type to return.
+     * @return A FindExecutor instance.
+     */
     public static <T> FindExecutor findFirstAsync(Class<T> modelClass) {
         return findFirstAsync(modelClass, false);
     }
@@ -685,6 +810,15 @@ public class DataSupport {
 		return queryHandler.onFindFirst(modelClass, isEager);
 	}
 
+    /**
+     * Basically same as {@link #findFirstAsync(Class, boolean)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query and the object type to return.
+     * @param isEager
+     *            True to load the associated models, false not.
+     * @return A FindExecutor instance.
+     */
     public static <T> FindExecutor findFirstAsync(final Class<T> modelClass, final boolean isEager) {
         final FindExecutor executor = new FindExecutor();
         Runnable runnable = new Runnable() {
@@ -721,6 +855,13 @@ public class DataSupport {
 		return findLast(modelClass, false);
 	}
 
+    /**
+     * Basically same as {@link #findLast(Class)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query and the object type to return.
+     * @return A FindExecutor instance.
+     */
     public static <T> FindExecutor findLastAsync(Class<T> modelClass) {
         return findLastAsync(modelClass, false);
     }
@@ -743,6 +884,15 @@ public class DataSupport {
 		return queryHandler.onFindLast(modelClass, isEager);
 	}
 
+    /**
+     * Basically same as {@link #findLast(Class, boolean)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query and the object type to return.
+     * @param isEager
+     *            True to load the associated models, false not.
+     * @return A FindExecutor instance.
+     */
     public static <T> FindExecutor findLastAsync(final Class<T> modelClass, final boolean isEager) {
         final FindExecutor executor = new FindExecutor();
         Runnable runnable = new Runnable() {
@@ -794,6 +944,15 @@ public class DataSupport {
 		return findAll(modelClass, false, ids);
 	}
 
+    /**
+     * Basically same as {@link #findAll(Class, long...)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query and the object type to return as a list.
+     * @param ids
+     *            Which records to query. Or do not pass it to find all records.
+     * @return A FindMultiExecutor instance.
+     */
     public static <T> FindMultiExecutor findAllAsync(Class<T> modelClass, long... ids) {
         return findAllAsync(modelClass, false, ids);
     }
@@ -819,6 +978,17 @@ public class DataSupport {
 		return queryHandler.onFindAll(modelClass, isEager, ids);
 	}
 
+    /**
+     * Basically same as {@link #findAll(Class, boolean, long...)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query and the object type to return as a list.
+     * @param isEager
+     *            True to load the associated models, false not.
+     * @param ids
+     *            Which records to query. Or do not pass it to find all records.
+     * @return A FindMultiExecutor instance.
+     */
     public static <T> FindMultiExecutor findAllAsync(final Class<T> modelClass, final boolean isEager, final long... ids) {
         final FindMultiExecutor executor = new FindMultiExecutor();
         Runnable runnable = new Runnable() {
@@ -870,6 +1040,14 @@ public class DataSupport {
 		return Connector.getDatabase().rawQuery(sql[0], selectionArgs);
 	}
 
+    /**
+     * Basically same as {@link #findBySQL(String...)} but pending to a new thread for executing.
+     *
+     * @param sql
+     *            First parameter is the SQL clause to apply. Second to the last
+     *            parameters will replace the place holders.
+     * @return A FindBySQLExecutor instance.
+     */
     public static FindBySQLExecutor findBySQLAsync(final String... sql) {
         final FindBySQLExecutor executor = new FindBySQLExecutor();
         Runnable runnable = new Runnable() {
@@ -918,6 +1096,15 @@ public class DataSupport {
 		}
 	}
 
+    /**
+     * Basically same as {@link #delete(Class, long)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to delete from by class.
+     * @param id
+     *            Which record to delete.
+     * @return A UpdateOrDeleteExecutor instance.
+     */
     public static UpdateOrDeleteExecutor deleteAsync(final Class<?> modelClass, final long id) {
         final UpdateOrDeleteExecutor executor = new UpdateOrDeleteExecutor();
         Runnable runnable = new Runnable() {
@@ -964,6 +1151,21 @@ public class DataSupport {
 		return deleteHandler.onDeleteAll(modelClass, conditions);
 	}
 
+    /**
+     * Basically same as {@link #deleteAll(Class, String...)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to delete from by class.
+     * @param conditions
+     *            A string array representing the WHERE part of an SQL
+     *            statement. First parameter is the WHERE clause to apply when
+     *            deleting. The way of specifying place holders is to insert one
+     *            or more question marks in the SQL. The first question mark is
+     *            replaced by the second element of the array, the next question
+     *            mark by the third, and so on. Passing empty string will update
+     *            all rows.
+     * @return A UpdateOrDeleteExecutor instance.
+     */
     public static UpdateOrDeleteExecutor deleteAllAsync(final Class<?> modelClass, final String... conditions) {
         final UpdateOrDeleteExecutor executor = new UpdateOrDeleteExecutor();
         Runnable runnable = new Runnable() {
@@ -1013,6 +1215,21 @@ public class DataSupport {
 		return deleteHandler.onDeleteAll(tableName, conditions);
 	}
 
+    /**
+     * Basically same as {@link #deleteAll(String, String...)} but pending to a new thread for executing.
+     *
+     * @param tableName
+     *            Which table to delete from.
+     * @param conditions
+     *            A string array representing the WHERE part of an SQL
+     *            statement. First parameter is the WHERE clause to apply when
+     *            deleting. The way of specifying place holders is to insert one
+     *            or more question marks in the SQL. The first question mark is
+     *            replaced by the second element of the array, the next question
+     *            mark by the third, and so on. Passing empty string will update
+     *            all rows.
+     * @return A UpdateOrDeleteExecutor instance.
+     */
     public static UpdateOrDeleteExecutor deleteAllAsync(final String tableName, final String... conditions) {
         final UpdateOrDeleteExecutor executor = new UpdateOrDeleteExecutor();
         Runnable runnable = new Runnable() {
@@ -1056,6 +1273,18 @@ public class DataSupport {
 		return updateHandler.onUpdate(modelClass, id, values);
 	}
 
+    /**
+     * Basically same as {@link #update(Class, ContentValues, long)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to update by class.
+     * @param values
+     *            A map from column names to new column values. null is a valid
+     *            value that will be translated to NULL.
+     * @param id
+     *            Which record to update.
+     * @return A UpdateOrDeleteExecutor instance.
+     */
     public static UpdateOrDeleteExecutor updateAsync(final Class<?> modelClass, final ContentValues values, final long id) {
         final UpdateOrDeleteExecutor executor = new UpdateOrDeleteExecutor();
         Runnable runnable = new Runnable() {
@@ -1108,6 +1337,24 @@ public class DataSupport {
                 modelClass.getName())), values, conditions);
 	}
 
+    /**
+     * Basically same as {@link #updateAll(Class, ContentValues, String...)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to update by class.
+     * @param values
+     *            A map from column names to new column values. null is a valid
+     *            value that will be translated to NULL.
+     * @param conditions
+     *            A string array representing the WHERE part of an SQL
+     *            statement. First parameter is the WHERE clause to apply when
+     *            updating. The way of specifying place holders is to insert one
+     *            or more question marks in the SQL. The first question mark is
+     *            replaced by the second element of the array, the next question
+     *            mark by the third, and so on. Passing empty string will update
+     *            all rows.
+     * @return A UpdateOrDeleteExecutor instance.
+     */
     public static UpdateOrDeleteExecutor updateAllAsync(Class<?> modelClass, ContentValues values, String... conditions) {
         return updateAllAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(
                 modelClass.getName())), values, conditions);
@@ -1148,6 +1395,24 @@ public class DataSupport {
 		return updateHandler.onUpdateAll(tableName, values, conditions);
 	}
 
+    /**
+     * Basically same as {@link #updateAll(String, ContentValues, String...)} but pending to a new thread for executing.
+     *
+     * @param tableName
+     *            Which table to update.
+     * @param values
+     *            A map from column names to new column values. null is a valid
+     *            value that will be translated to NULL.
+     * @param conditions
+     *            A string array representing the WHERE part of an SQL
+     *            statement. First parameter is the WHERE clause to apply when
+     *            updating. The way of specifying place holders is to insert one
+     *            or more question marks in the SQL. The first question mark is
+     *            replaced by the second element of the array, the next question
+     *            mark by the third, and so on. Passing empty string will update
+     *            all rows.
+     * @return A UpdateOrDeleteExecutor instance.
+     */
     public static UpdateOrDeleteExecutor updateAllAsync(final String tableName, final ContentValues values, final String... conditions) {
         final UpdateOrDeleteExecutor executor = new UpdateOrDeleteExecutor();
         Runnable runnable = new Runnable() {
@@ -1205,6 +1470,13 @@ public class DataSupport {
 		}
 	}
 
+    /**
+     * Basically same as {@link #saveAll(Collection)} but pending to a new thread for executing.
+     *
+     * @param collection
+     *            Holds all models to save.
+     * @return A SaveExecutor instance.
+     */
     public static <T extends DataSupport> SaveExecutor saveAllAsync(final Collection<T> collection) {
         final SaveExecutor executor = new SaveExecutor();
         Runnable runnable = new Runnable() {
@@ -1287,6 +1559,11 @@ public class DataSupport {
 		}
 	}
 
+    /**
+     * Basically same as {@link #delete()} but pending to a new thread for executing.
+     *
+     * @return A UpdateOrDeleteExecutor instance.
+     */
     public UpdateOrDeleteExecutor deleteAsync() {
         final UpdateOrDeleteExecutor executor = new UpdateOrDeleteExecutor();
         Runnable runnable = new Runnable() {
@@ -1336,6 +1613,13 @@ public class DataSupport {
 		}
 	}
 
+    /**
+     * Basically same as {@link #update(long)} but pending to a new thread for executing.
+     *
+     * @param id
+     *            Which record to update.
+     * @return A UpdateOrDeleteExecutor instance.
+     */
     public UpdateOrDeleteExecutor updateAsync(final long id) {
         final UpdateOrDeleteExecutor executor = new UpdateOrDeleteExecutor();
         Runnable runnable = new Runnable() {
@@ -1393,6 +1677,19 @@ public class DataSupport {
 		}
 	}
 
+    /**
+     * Basically same as {@link #updateAll(String...)} but pending to a new thread for executing.
+     *
+     * @param conditions
+     *            A string array representing the WHERE part of an SQL
+     *            statement. First parameter is the WHERE clause to apply when
+     *            updating. The way of specifying place holders is to insert one
+     *            or more question marks in the SQL. The first question mark is
+     *            replaced by the second element of the array, the next question
+     *            mark by the third, and so on. Passing empty string will update
+     *            all rows.
+     * @return A UpdateOrDeleteExecutor instance.
+     */
     public UpdateOrDeleteExecutor updateAllAsync(final String... conditions) {
         final UpdateOrDeleteExecutor executor = new UpdateOrDeleteExecutor();
         Runnable runnable = new Runnable() {
@@ -1444,6 +1741,11 @@ public class DataSupport {
 		}
 	}
 
+    /**
+     * Basically same as {@link #save()} but pending to a new thread for executing.
+     *
+     * @return A SaveExecutor instance.
+     */
     public SaveExecutor saveAsync() {
         final SaveExecutor executor = new SaveExecutor();
         Runnable runnable = new Runnable() {
@@ -1501,27 +1803,8 @@ public class DataSupport {
 	}
 
     /**
-     * Saves the model only when the conditions data not exist. <br>
-     *
-     * <pre>
-     * Person person = new Person();
-     * person.setName(&quot;Tom&quot;);
-     * person.setAge(22);
-     * person.saveIfNotExists(&quot;name = ?&quot;, &quot;Tom&quot;);
-     * </pre>
-     *
-     * If person table doesn't have a name with Tom, a new record gets created in the database,
-     * otherwise the saving operation will be ignored.<br>
-     * If saving process failed by any accident, the whole action will be
-     * cancelled and your database will be <b>rolled back</b>. <br>
-     * If the model has a field named id or _id and field type is int or long,
-     * the id value generated by database will assign to it after the model is
-     * saved.<br>
-     * Note that if the associated models of this model is already saved. The
-     * associations between them will be built automatically in database after
-     * it saved.
-     *
-     * @return If the model is saved successfully, return true. If the conditions data already exist or any exception happens, return false.
+     * This method is deprecated and will be removed in the future releases.
+     * Use {@link #saveOrUpdate(String...)} instead.
      */
     @Deprecated
     public synchronized boolean saveIfNotExist(String... conditions) {
@@ -1531,6 +1814,38 @@ public class DataSupport {
         return false;
     }
 
+    /**
+     * Save the model if the conditions data not exist, or update the matching models if the conditions data exist. <br>
+     *
+     * <pre>
+     * Person person = new Person();
+     * person.setName(&quot;Tom&quot;);
+     * person.setAge(22);
+     * person.saveOrUpdate(&quot;name = ?&quot;, &quot;Tom&quot;);
+     * </pre>
+     *
+     * If person table doesn't have a name with Tom, a new record gets created in the database,
+     * otherwise all records which names are Tom will be updated.<br>
+     * If saving process failed by any accident, the whole action will be
+     * cancelled and your database will be <b>rolled back</b>. <br>
+     * If the model has a field named id or _id and field type is int or long,
+     * the id value generated by database will assign to it after the model is
+     * saved.<br>
+     * Note that if the associated models of this model is already saved. The
+     * associations between them will be built automatically in database after
+     * it saved.
+     *
+     * @param conditions
+     *            A string array representing the WHERE part of an SQL
+     *            statement. First parameter is the WHERE clause to apply when
+     *            updating. The way of specifying place holders is to insert one
+     *            or more question marks in the SQL. The first question mark is
+     *            replaced by the second element of the array, the next question
+     *            mark by the third, and so on. Passing empty string will update
+     *            all rows.
+     * @return If the model saved or updated successfully, return true. Otherwise return false.
+     */
+    @SuppressWarnings("unchecked")
     public synchronized boolean saveOrUpdate(String... conditions) {
         if (conditions == null) {
             return save();
@@ -1559,6 +1874,19 @@ public class DataSupport {
         }
     }
 
+    /**
+     * Basically same as {@link #saveOrUpdate(String...)} but pending to a new thread for executing.
+     *
+     * @param conditions
+     *            A string array representing the WHERE part of an SQL
+     *            statement. First parameter is the WHERE clause to apply when
+     *            updating. The way of specifying place holders is to insert one
+     *            or more question marks in the SQL. The first question mark is
+     *            replaced by the second element of the array, the next question
+     *            mark by the third, and so on. Passing empty string will update
+     *            all rows.
+     * @return A SaveExecutor instance.
+     */
     public SaveExecutor saveOrUpdateAsync(final String... conditions) {
         final SaveExecutor executor = new SaveExecutor();
         Runnable runnable = new Runnable() {
@@ -1577,26 +1905,8 @@ public class DataSupport {
     }
 
     /**
-     * Saves the model ignore associations, so that the saving process will be faster. <br>
-     *
-     * <pre>
-     * Person person = new Person();
-     * person.setName(&quot;Tom&quot;);
-     * person.setAge(22);
-     * person.save();
-     * </pre>
-     *
-     * If the model is a new record gets created in the database, otherwise the
-     * existing record gets updated.<br>
-     * If saving process failed by any accident, the whole action will be
-     * cancelled and your database will be <b>rolled back</b>. <br>
-     * If the model has a field named id or _id and field type is int or long,
-     * the id value generated by database will assign to it after the model is
-     * saved.<br>
-     * If your model doesn't has any association, you can use this method to save faster.
-     *
-     * @return If the model is saved successfully, return true. Any exception
-     *         happens, return false.
+     * This method is deprecated and will be removed in the future releases.
+     * Use {@link #save()} instead.
      */
     @Deprecated
     public synchronized boolean saveFast() {
