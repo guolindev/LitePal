@@ -193,6 +193,13 @@ public class ClusterQuery {
 		return find(modelClass, false);
 	}
 
+    /**
+     * Basically same as {@link #find(Class)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query and the object type to return as a list.
+     * @return A FindMultiExecutor instance.
+     */
     public <T> FindMultiExecutor findAsync(final Class<T> modelClass) {
         return findAsync(modelClass, false);
     }
@@ -224,6 +231,15 @@ public class ClusterQuery {
 		return queryHandler.onFind(modelClass, mColumns, mConditions, mOrderBy, limit, isEager);
 	}
 
+    /**
+     * Basically same as {@link #find(Class, boolean)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query and the object type to return as a list.
+     * @param isEager
+     *            True to load the associated models, false not.
+     * @return A FindMultiExecutor instance.
+     */
     public <T> FindMultiExecutor findAsync(final Class<T> modelClass, final boolean isEager) {
         final FindMultiExecutor executor = new FindMultiExecutor();
         Runnable runnable = new Runnable() {
@@ -262,6 +278,13 @@ public class ClusterQuery {
         return findFirst(modelClass, false);
     }
 
+    /**
+     * Basically same as {@link #findFirst(Class)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query and the object type to return.
+     * @return A FindExecutor instance.
+     */
     public <T> FindExecutor findFirstAsync(Class<T> modelClass) {
         return findFirstAsync(modelClass, false);
     }
@@ -287,6 +310,15 @@ public class ClusterQuery {
         return null;
     }
 
+    /**
+     * Basically same as {@link #findFirst(Class, boolean)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query and the object type to return.
+     * @param isEager
+     *            True to load the associated models, false not.
+     * @return A FindExecutor instance.
+     */
     public <T> FindExecutor findFirstAsync(final Class<T> modelClass, final boolean isEager) {
         final FindExecutor executor = new FindExecutor();
         Runnable runnable = new Runnable() {
@@ -325,6 +357,13 @@ public class ClusterQuery {
         return findLast(modelClass, false);
     }
 
+    /**
+     * Basically same as {@link #findLast(Class)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query and the object type to return.
+     * @return A FindExecutor instance.
+     */
     public <T> FindExecutor findLastAsync(Class<T> modelClass) {
         return findLastAsync(modelClass, false);
     }
@@ -351,6 +390,15 @@ public class ClusterQuery {
         return null;
     }
 
+    /**
+     * Basically same as {@link #findLast(Class, boolean)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query and the object type to return.
+     * @param isEager
+     *            True to load the associated models, false not.
+     * @return A FindExecutor instance.
+     */
     public <T> FindExecutor findLastAsync(final Class<T> modelClass, final boolean isEager) {
         final FindExecutor executor = new FindExecutor();
         Runnable runnable = new Runnable() {
@@ -390,6 +438,13 @@ public class ClusterQuery {
 		return count(BaseUtility.changeCase(modelClass.getSimpleName()));
 	}
 
+    /**
+     * Basically same as {@link #count(Class)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query from by class.
+     * @return A CountExecutor instance.
+     */
     public CountExecutor countAsync(Class<?> modelClass) {
         return countAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())));
     }
@@ -417,6 +472,13 @@ public class ClusterQuery {
 		return queryHandler.onCount(tableName, mConditions);
 	}
 
+    /**
+     * Basically same as {@link #count(String)} but pending to a new thread for executing.
+     *
+     * @param tableName
+     *            Which table to query from.
+     * @return A CountExecutor instance.
+     */
     public CountExecutor countAsync(final String tableName) {
         final CountExecutor executor = new CountExecutor();
         Runnable runnable = new Runnable() {
@@ -457,6 +519,15 @@ public class ClusterQuery {
 		return average(BaseUtility.changeCase(modelClass.getSimpleName()), column);
 	}
 
+    /**
+     * Basically same as {@link #average(Class, String)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query from by class.
+     * @param column
+     *            The based on column to calculate.
+     * @return A AverageExecutor instance.
+     */
     public AverageExecutor averageAsync(final Class<?> modelClass, final String column) {
         return averageAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), column);
     }
@@ -485,6 +556,15 @@ public class ClusterQuery {
 		return queryHandler.onAverage(tableName, column, mConditions);
 	}
 
+    /**
+     * Basically same as {@link #average(String, String)} but pending to a new thread for executing.
+     *
+     * @param tableName
+     *            Which table to query from.
+     * @param column
+     *            The based on column to calculate.
+     * @return A AverageExecutor instance.
+     */
     public AverageExecutor averageAsync(final String tableName, final String column) {
         final AverageExecutor executor = new AverageExecutor();
         Runnable runnable = new Runnable() {
@@ -528,6 +608,17 @@ public class ClusterQuery {
 		return max(BaseUtility.changeCase(modelClass.getSimpleName()), columnName, columnType);
 	}
 
+    /**
+     * Basically same as {@link #max(Class, String, Class)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query from by class.
+     * @param columnName
+     *            The based on column to calculate.
+     * @param columnType
+     *            The type of the based on column.
+     * @return A FindExecutor instance.
+     */
     public <T> FindExecutor maxAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
         return maxAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
     }
@@ -559,6 +650,17 @@ public class ClusterQuery {
 		return queryHandler.onMax(tableName, columnName, mConditions, columnType);
 	}
 
+    /**
+     * Basically same as {@link #max(String, String, Class)} but pending to a new thread for executing.
+     *
+     * @param tableName
+     *            Which table to query from.
+     * @param columnName
+     *            The based on column to calculate.
+     * @param columnType
+     *            The type of the based on column.
+     * @return A FindExecutor instance.
+     */
     public <T> FindExecutor maxAsync(final String tableName, final String columnName, final Class<T> columnType) {
         final FindExecutor executor = new FindExecutor();
         Runnable runnable = new Runnable() {
@@ -602,6 +704,17 @@ public class ClusterQuery {
 		return min(BaseUtility.changeCase(modelClass.getSimpleName()), columnName, columnType);
 	}
 
+    /**
+     * Basically same as {@link #min(Class, String, Class)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query from by class.
+     * @param columnName
+     *            The based on column to calculate.
+     * @param columnType
+     *            The type of the based on column.
+     * @return A FindExecutor instance.
+     */
     public <T> FindExecutor minAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
         return minAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
     }
@@ -633,6 +746,17 @@ public class ClusterQuery {
 		return queryHandler.onMin(tableName, columnName, mConditions, columnType);
 	}
 
+    /**
+     * Basically same as {@link #min(String, String, Class)} but pending to a new thread for executing.
+     *
+     * @param tableName
+     *            Which table to query from.
+     * @param columnName
+     *            The based on column to calculate.
+     * @param columnType
+     *            The type of the based on column.
+     * @return A FindExecutor instance.
+     */
     public <T> FindExecutor minAsync(final String tableName, final String columnName, final Class<T> columnType) {
         final FindExecutor executor = new FindExecutor();
         Runnable runnable = new Runnable() {
@@ -676,6 +800,17 @@ public class ClusterQuery {
 		return sum(BaseUtility.changeCase(modelClass.getSimpleName()), columnName, columnType);
 	}
 
+    /**
+     * Basically same as {@link #sum(Class, String, Class)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query from by class.
+     * @param columnName
+     *            The based on column to calculate.
+     * @param columnType
+     *            The type of the based on column.
+     * @return A FindExecutor instance.
+     */
     public <T> FindExecutor sumAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
         return sumAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
     }
@@ -707,6 +842,17 @@ public class ClusterQuery {
 		return queryHandler.onSum(tableName, columnName, mConditions, columnType);
 	}
 
+    /**
+     * Basically same as {@link #sum(String, String, Class)} but pending to a new thread for executing.
+     *
+     * @param tableName
+     *            Which table to query from.
+     * @param columnName
+     *            The based on column to calculate.
+     * @param columnType
+     *            The type of the based on column.
+     * @return A FindExecutor instance.
+     */
     public <T> FindExecutor sumAsync(final String tableName, final String columnName, final Class<T> columnType) {
         final FindExecutor executor = new FindExecutor();
         Runnable runnable = new Runnable() {
