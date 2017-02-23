@@ -18,6 +18,7 @@ package org.litepal.crud;
 
 import java.util.List;
 
+import org.litepal.LitePal;
 import org.litepal.crud.async.AverageExecutor;
 import org.litepal.crud.async.CountExecutor;
 import org.litepal.crud.async.FindExecutor;
@@ -246,9 +247,14 @@ public class ClusterQuery {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    List<T> t = find(modelClass, isEager);
+                    final List<T> t = find(modelClass, isEager);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(t);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(t);
+                            }
+                        });
                     }
                 }
             }
@@ -325,9 +331,14 @@ public class ClusterQuery {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    T t = findFirst(modelClass, isEager);
+                    final T t = findFirst(modelClass, isEager);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(t);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(t);
+                            }
+                        });
                     }
                 }
             }
@@ -405,9 +416,14 @@ public class ClusterQuery {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    T t = findLast(modelClass, isEager);
+                    final T t = findLast(modelClass, isEager);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(t);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(t);
+                            }
+                        });
                     }
                 }
             }
@@ -485,9 +501,14 @@ public class ClusterQuery {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    int count = count(tableName);
+                    final int count = count(tableName);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(count);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(count);
+                            }
+                        });
                     }
                 }
             }
@@ -571,9 +592,14 @@ public class ClusterQuery {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    double average = average(tableName, column);
+                    final double average = average(tableName, column);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(average);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(average);
+                            }
+                        });
                     }
                 }
             }
@@ -667,9 +693,14 @@ public class ClusterQuery {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    T t = max(tableName, columnName, columnType);
+                    final T t = max(tableName, columnName, columnType);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(t);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(t);
+                            }
+                        });
                     }
                 }
             }
@@ -763,9 +794,14 @@ public class ClusterQuery {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    T t = min(tableName, columnName, columnType);
+                    final T t = min(tableName, columnName, columnType);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(t);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(t);
+                            }
+                        });
                     }
                 }
             }
@@ -859,9 +895,14 @@ public class ClusterQuery {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    T t = sum(tableName, columnName, columnType);
+                    final T t = sum(tableName, columnName, columnType);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(t);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(t);
+                            }
+                        });
                     }
                 }
             }

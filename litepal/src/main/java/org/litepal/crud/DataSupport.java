@@ -20,13 +20,13 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import org.litepal.LitePal;
 import org.litepal.crud.async.AverageExecutor;
 import org.litepal.crud.async.CountExecutor;
-import org.litepal.crud.async.SaveExecutor;
-import org.litepal.crud.async.UpdateOrDeleteExecutor;
-import org.litepal.crud.async.FindBySQLExecutor;
 import org.litepal.crud.async.FindExecutor;
 import org.litepal.crud.async.FindMultiExecutor;
+import org.litepal.crud.async.SaveExecutor;
+import org.litepal.crud.async.UpdateOrDeleteExecutor;
 import org.litepal.exceptions.DataSupportException;
 import org.litepal.tablemanager.Connector;
 import org.litepal.util.BaseUtility;
@@ -292,9 +292,14 @@ public class DataSupport {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    int count = count(tableName);
+                    final int count = count(tableName);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(count);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(count);
+                            }
+                        });
                     }
                 }
             }
@@ -378,9 +383,14 @@ public class DataSupport {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    double average = average(tableName, column);
+                    final double average = average(tableName, column);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(average);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(average);
+                            }
+                        });
                     }
                 }
             }
@@ -474,9 +484,14 @@ public class DataSupport {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    T t = max(tableName, columnName, columnType);
+                    final T t = max(tableName, columnName, columnType);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(t);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(t);
+                            }
+                        });
                     }
                 }
             }
@@ -570,9 +585,14 @@ public class DataSupport {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    T t = min(tableName, columnName, columnType);
+                    final T t = min(tableName, columnName, columnType);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(t);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(t);
+                            }
+                        });
                     }
                 }
             }
@@ -666,9 +686,14 @@ public class DataSupport {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    T t = sum(tableName, columnName, columnType);
+                    final T t = sum(tableName, columnName, columnType);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(t);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(t);
+                            }
+                        });
                     }
                 }
             }
@@ -751,9 +776,14 @@ public class DataSupport {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    T t = find(modelClass, id, isEager);
+                    final T t = find(modelClass, id, isEager);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(t);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(t);
+                            }
+                        });
                     }
                 }
             }
@@ -825,9 +855,14 @@ public class DataSupport {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    T t = findFirst(modelClass, isEager);
+                    final T t = findFirst(modelClass, isEager);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(t);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(t);
+                            }
+                        });
                     }
                 }
             }
@@ -899,9 +934,14 @@ public class DataSupport {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    T t = findLast(modelClass, isEager);
+                    final T t = findLast(modelClass, isEager);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(t);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(t);
+                            }
+                        });
                     }
                 }
             }
@@ -995,9 +1035,14 @@ public class DataSupport {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    List<T> t = findAll(modelClass, isEager, ids);
+                    final List<T> t = findAll(modelClass, isEager, ids);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(t);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(t);
+                            }
+                        });
                     }
                 }
             }
@@ -1039,31 +1084,6 @@ public class DataSupport {
 		}
 		return Connector.getDatabase().rawQuery(sql[0], selectionArgs);
 	}
-
-    /**
-     * Basically same as {@link #findBySQL(String...)} but pending to a new thread for executing.
-     *
-     * @param sql
-     *            First parameter is the SQL clause to apply. Second to the last
-     *            parameters will replace the place holders.
-     * @return A FindBySQLExecutor instance.
-     */
-    public static FindBySQLExecutor findBySQLAsync(final String... sql) {
-        final FindBySQLExecutor executor = new FindBySQLExecutor();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                synchronized (DataSupport.class) {
-                    Cursor cursor = findBySQL(sql);
-                    if (executor.getListener() != null) {
-                        executor.getListener().onFinish(cursor);
-                    }
-                }
-            }
-        };
-        executor.submit(runnable);
-        return executor;
-    }
 
 	/**
 	 * Deletes the record in the database by id.<br>
@@ -1111,9 +1131,14 @@ public class DataSupport {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    int rowsAffected = delete(modelClass, id);
+                    final int rowsAffected = delete(modelClass, id);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(rowsAffected);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(rowsAffected);
+                            }
+                        });
                     }
                 }
             }
@@ -1172,9 +1197,14 @@ public class DataSupport {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    int rowsAffected = deleteAll(modelClass, conditions);
+                    final int rowsAffected = deleteAll(modelClass, conditions);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(rowsAffected);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(rowsAffected);
+                            }
+                        });
                     }
                 }
             }
@@ -1236,9 +1266,14 @@ public class DataSupport {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    int rowsAffected = deleteAll(tableName, conditions);
+                    final int rowsAffected = deleteAll(tableName, conditions);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(rowsAffected);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(rowsAffected);
+                            }
+                        });
                     }
                 }
             }
@@ -1291,9 +1326,14 @@ public class DataSupport {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    int rowsAffected = update(modelClass, values, id);
+                    final int rowsAffected = update(modelClass, values, id);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(rowsAffected);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(rowsAffected);
+                            }
+                        });
                     }
                 }
             }
@@ -1419,9 +1459,14 @@ public class DataSupport {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    int rowsAffected = updateAll(tableName, values, conditions);
+                    final int rowsAffected = updateAll(tableName, values, conditions);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(rowsAffected);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(rowsAffected);
+                            }
+                        });
                     }
                 }
             }
@@ -1490,8 +1535,14 @@ public class DataSupport {
                     } catch (Exception e) {
                         success = false;
                     }
+                    final boolean result = success;
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(success);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(result);
+                            }
+                        });
                     }
                 }
             }
@@ -1570,9 +1621,14 @@ public class DataSupport {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    int rowsAffected = delete();
+                    final int rowsAffected = delete();
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(rowsAffected);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(rowsAffected);
+                            }
+                        });
                     }
                 }
             }
@@ -1626,9 +1682,14 @@ public class DataSupport {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    int rowsAffected = update(id);
+                    final int rowsAffected = update(id);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(rowsAffected);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(rowsAffected);
+                            }
+                        });
                     }
                 }
             }
@@ -1696,9 +1757,14 @@ public class DataSupport {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    int rowsAffected = updateAll(conditions);
+                    final int rowsAffected = updateAll(conditions);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(rowsAffected);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(rowsAffected);
+                            }
+                        });
                     }
                 }
             }
@@ -1752,9 +1818,14 @@ public class DataSupport {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    boolean success = save();
+                    final boolean success = save();
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(success);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(success);
+                            }
+                        });
                     }
                 }
             }
@@ -1893,9 +1964,14 @@ public class DataSupport {
             @Override
             public void run() {
                 synchronized (DataSupport.class) {
-                    boolean success = saveOrUpdate(conditions);
+                    final boolean success = saveOrUpdate(conditions);
                     if (executor.getListener() != null) {
-                        executor.getListener().onFinish(success);
+                        LitePal.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                executor.getListener().onFinish(success);
+                            }
+                        });
                     }
                 }
             }
