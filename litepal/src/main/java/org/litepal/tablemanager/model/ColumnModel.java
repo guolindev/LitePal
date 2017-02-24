@@ -47,11 +47,6 @@ public class ColumnModel {
     private boolean isUnique = false;
 
     /**
-     * Column has index or not.
-     */
-    private boolean hasIndex = false;
-
-    /**
      * Default constraint.
      */
     private String defaultValue = "";
@@ -86,14 +81,6 @@ public class ColumnModel {
 
     public void setUnique(boolean isUnique) {
         this.isUnique = isUnique;
-    }
-
-    public boolean isHasIndex() {
-        return hasIndex;
-    }
-
-    public void setHasIndex(boolean hasIndex) {
-        this.hasIndex = hasIndex;
     }
 
     public String getDefaultValue() {

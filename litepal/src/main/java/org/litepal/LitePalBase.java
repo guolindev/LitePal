@@ -674,13 +674,11 @@ public abstract class LitePalBase {
         String columnType = getColumnType(fieldType);
         boolean nullable = true;
         boolean unique = false;
-        boolean hasIndex = false;
         String defaultValue = "";
         Column annotation = field.getAnnotation(Column.class);
         if (annotation != null) {
             nullable = annotation.nullable();
             unique = annotation.unique();
-            hasIndex = annotation.index();
             defaultValue = annotation.defaultValue();
         }
         ColumnModel columnModel = new ColumnModel();
@@ -688,7 +686,6 @@ public abstract class LitePalBase {
         columnModel.setColumnType(columnType);
         columnModel.setNullable(nullable);
         columnModel.setUnique(unique);
-        columnModel.setHasIndex(hasIndex);
         columnModel.setDefaultValue(defaultValue);
         return columnModel;
     }

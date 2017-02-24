@@ -74,13 +74,11 @@ class Creator extends AssociationCreator {
 		if (force) {
             sqls.add(generateDropTableSQL(tableModel));
             sqls.add(generateCreateTableSQL(tableModel));
-            sqls.addAll(generateCreateIndexSQLs(tableModel));
 		} else {
 			if (DBUtility.isTableExists(tableModel.getTableName(), db)) {
 				return null;
 			} else {
                 sqls.add(generateCreateTableSQL(tableModel));
-                sqls.addAll(generateCreateIndexSQLs(tableModel));
 			}
 		}
         return sqls;
@@ -110,17 +108,5 @@ class Creator extends AssociationCreator {
     String generateCreateTableSQL(TableModel tableModel) {
 		return generateCreateTableSQL(tableModel.getTableName(), tableModel.getColumnModels(), true);
 	}
-
-    /**
-     * Generate create index SQLs by analyzing the TableModel.
-     *
-     * @param tableModel
-     *            Use the TableModel to get table name and columns name to
-     *            generate SQL.
-     * @return generated create index SQLs.
-     */
-    private List<String> generateCreateIndexSQLs(TableModel tableModel) {
-        return generateCreateIndexSQL(tableModel.getTableName(), tableModel.getColumnModels());
-    }
 
 }
