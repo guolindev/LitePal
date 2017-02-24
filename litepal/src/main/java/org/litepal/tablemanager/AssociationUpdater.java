@@ -140,9 +140,9 @@ public abstract class AssociationUpdater extends Creator {
 	 */
 	protected void dropTables(List<String> dropTableNames, SQLiteDatabase db) {
 		if (dropTableNames != null && !dropTableNames.isEmpty()) {
-			String[] dropTableSQLS = new String[dropTableNames.size()];
-			for (int i = 0; i < dropTableSQLS.length; i++) {
-				dropTableSQLS[i] = generateDropTableSQL(dropTableNames.get(i));
+            List<String> dropTableSQLS = new ArrayList<String>();
+			for (int i = 0; i < dropTableNames.size(); i++) {
+                dropTableSQLS.add(generateDropTableSQL(dropTableNames.get(i)));
 			}
 			execute(dropTableSQLS, db);
 		}
@@ -185,7 +185,8 @@ public abstract class AssociationUpdater extends Creator {
 				deleteData.append("=").append(" lower('").append(tableName).append("')");
 			}
 			LogUtil.d(TAG, "clear table schema value sql is " + deleteData);
-			String[] sqls = { deleteData.toString() };
+            List<String> sqls = new ArrayList<String>();
+            sqls.add(deleteData.toString());
 			execute(sqls, mDb);
 		}
 	}
@@ -415,10 +416,10 @@ public abstract class AssociationUpdater extends Creator {
 	 *            The column names need to remove.
 	 * @param tableName
 	 *            The table name to remove from.
-	 * @return A SQL array contains create temporary table, create new table,
+	 * @return A SQL list contains create temporary table, create new table,
 	 *         migrate data and drop temporary table.
 	 */
-	private String[] getRemoveColumnSQLs(Collection<String> removeColumnNames, String tableName) {
+	private List<String> getRemoveColumnSQLs(Collection<String> removeColumnNames, String tableName) {
         TableModel tableModelFromDB = getTableModelFromDB(tableName);
 		String alterToTempTableSQL = generateAlterToTempTableSQL(tableName);
 		LogUtil.d(TAG, "generateRemoveColumnSQL >> " + alterToTempTableSQL);
@@ -428,8 +429,11 @@ public abstract class AssociationUpdater extends Creator {
 		LogUtil.d(TAG, "generateRemoveColumnSQL >> " + dataMigrationSQL);
 		String dropTempTableSQL = generateDropTempTableSQL(tableName);
 		LogUtil.d(TAG, "generateRemoveColumnSQL >> " + dropTempTableSQL);
-		String[] sqls = { alterToTempTableSQL, createNewTableSQL, dataMigrationSQL,
-				dropTempTableSQL };
+        List<String> sqls = new ArrayList<String>();
+        sqls.add(alterToTempTableSQL);
+        sqls.add(createNewTableSQL);
+        sqls.add(dataMigrationSQL);
+        sqls.add(dropTempTableSQL);
 		return sqls;
 	}
 

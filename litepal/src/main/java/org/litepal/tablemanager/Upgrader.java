@@ -244,14 +244,14 @@ public class Upgrader extends AssociationUpdater {
 	 * 
 	 * @param columnModelList
 	 *            List with ColumnModel to add new column.
-	 * @return A SQL array contains add all new columns job.
+	 * @return A SQL list contains add all new columns job.
 	 */
-	private String[] getAddColumnSQLs(List<ColumnModel> columnModelList) {
+	private List<String> getAddColumnSQLs(List<ColumnModel> columnModelList) {
 		List<String> sqls = new ArrayList<String>();
 		for (ColumnModel columnModel : columnModelList) {
 			sqls.add(generateAddColumnSQL(columnModel));
 		}
-		return sqls.toArray(new String[0]);
+		return sqls;
 	}
 
     /**
@@ -316,10 +316,10 @@ public class Upgrader extends AssociationUpdater {
 
     /**
      * This method create a SQL array for the whole changing column constraints job.
-     * @return A SQL array contains create temporary table, create new table, add foreign keys,
+     * @return A SQL list contains create temporary table, create new table, add foreign keys,
      *         migrate data and drop temporary table.
      */
-    private String[] getChangeColumnsConstraintsSQL() {
+    private List<String> getChangeColumnsConstraintsSQL() {
         String alterToTempTableSQL = generateAlterToTempTableSQL(mTableModel.getTableName());
         String createNewTableSQL = generateCreateTableSQL(mTableModel);
         List<String> addForeignKeySQLs = generateAddForeignKeySQL();
@@ -336,7 +336,7 @@ public class Upgrader extends AssociationUpdater {
             LogUtil.d(TAG, sql);
         }
         LogUtil.d(TAG, "<< generateChangeConstraintSQL");
-        return sqls.toArray(new String[0]);
+        return sqls;
     }
 
     /**

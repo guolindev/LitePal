@@ -374,8 +374,8 @@ public class DBUtility {
                         String defaultValue = cursor.getString(cursor.getColumnIndexOrThrow("dflt_value"));
                         columnModel.setColumnName(name);
                         columnModel.setColumnType(type);
-                        columnModel.setIsNullable(nullable);
-                        columnModel.setIsUnique(unique);
+                        columnModel.setNullable(nullable);
+                        columnModel.setUnique(unique);
                         if (defaultValue != null) {
                             defaultValue = defaultValue.replace("'", "");
                         } else {

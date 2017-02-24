@@ -122,6 +122,27 @@ public abstract class AssociationCreator extends Generator {
 		return "drop table if exists " + tableName;
 	}
 
+    /**
+     * Generate SQLs for creating index on a table.
+     *
+     * @param tableName
+     *            The table name.
+     * @param columnModels
+     *            A list contains all column models with column info.
+     * @return SQLs to create index.
+     */
+    protected List<String> generateCreateIndexSQL(String tableName, List<ColumnModel> columnModels) {
+        List<String> createIndexSQLs = new ArrayList<String>();
+        for (ColumnModel columnModel : columnModels) {
+            if (columnModel.isHasIndex()) {
+                String sql = "create index " + tableName + "_" + columnModel.getColumnName() + "_index" +
+                        " on " + tableName + "(" + columnModel.getColumnName() + ")";
+                createIndexSQLs.add(sql);
+            }
+        }
+        return createIndexSQLs;
+    }
+
 	/**
 	 * Generate a SQL for add new column into the existing table.
 	 * @param tableName
@@ -332,7 +353,7 @@ public abstract class AssociationCreator extends Generator {
 		} else {
 			sqls.add(generateCreateTableSQL(intermediateTableName, columnModelList, false));
 		}
-		execute(sqls.toArray(new String[0]), db);
+		execute(sqls, db);
 		giveTableSchemaACopy(intermediateTableName, Const.TableSchema.INTERMEDIATE_JOIN_TABLE, db);
 	}
 
@@ -370,7 +391,7 @@ public abstract class AssociationCreator extends Generator {
         } else {
             sqls.add(generateCreateTableSQL(tableName, columnModelList, false));
         }
-        execute(sqls.toArray(new String[0]), db);
+        execute(sqls, db);
         giveTableSchemaACopy(tableName, Const.TableSchema.GENERIC_TABLE, db);
     }
 
@@ -405,7 +426,8 @@ public abstract class AssociationCreator extends Generator {
                     ColumnModel columnModel = new ColumnModel();
                     columnModel.setColumnName(foreignKeyColumn);
                     columnModel.setColumnType("integer");
-					String[] sqls = { generateAddColumnSQL(tableHoldsForeignKey, columnModel) };
+                    List<String> sqls = new ArrayList<String>();
+                    sqls.add(generateAddColumnSQL(tableHoldsForeignKey, columnModel));
 					execute(sqls, db);
 				} else {
 					LogUtil.d(TAG, "column " + foreignKeyColumn

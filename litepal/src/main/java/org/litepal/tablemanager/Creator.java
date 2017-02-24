@@ -22,6 +22,9 @@ import org.litepal.util.DBUtility;
 
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This is a subclass of Generator. Use to create tables. It will automatically
  * build a create table SQL based on the passing TableModel object. In case of
@@ -66,17 +69,21 @@ class Creator extends AssociationCreator {
 	 * @return A SQL array contains drop table if it exists and create new
 	 *         table.
 	 */
-	protected String[] getCreateTableSQLs(TableModel tableModel, SQLiteDatabase db, boolean force) {
+	protected List<String> getCreateTableSQLs(TableModel tableModel, SQLiteDatabase db, boolean force) {
+        List<String> sqls = new ArrayList<String>();
 		if (force) {
-			return new String[] { generateDropTableSQL(tableModel),
-					generateCreateTableSQL(tableModel) };
+            sqls.add(generateDropTableSQL(tableModel));
+            sqls.add(generateCreateTableSQL(tableModel));
+            sqls.addAll(generateCreateIndexSQLs(tableModel));
 		} else {
 			if (DBUtility.isTableExists(tableModel.getTableName(), db)) {
 				return null;
 			} else {
-				return new String[] { generateCreateTableSQL(tableModel) };
+                sqls.add(generateCreateTableSQL(tableModel));
+                sqls.addAll(generateCreateIndexSQLs(tableModel));
 			}
 		}
+        return sqls;
 	}
 
 	/**
@@ -86,7 +93,7 @@ class Creator extends AssociationCreator {
 	 *            The table model.
 	 * @return A SQL to drop table.
 	 */
-	protected String generateDropTableSQL(TableModel tableModel) {
+    private String generateDropTableSQL(TableModel tableModel) {
 		return generateDropTableSQL(tableModel.getTableName());
 	}
 
@@ -100,8 +107,20 @@ class Creator extends AssociationCreator {
 	 *            generate SQL.
 	 * @return A generated create table SQL.
 	 */
-	protected String generateCreateTableSQL(TableModel tableModel) {
+    String generateCreateTableSQL(TableModel tableModel) {
 		return generateCreateTableSQL(tableModel.getTableName(), tableModel.getColumnModels(), true);
 	}
+
+    /**
+     * Generate create index SQLs by analyzing the TableModel.
+     *
+     * @param tableModel
+     *            Use the TableModel to get table name and columns name to
+     *            generate SQL.
+     * @return generated create index SQLs.
+     */
+    private List<String> generateCreateIndexSQLs(TableModel tableModel) {
+        return generateCreateIndexSQL(tableModel.getTableName(), tableModel.getColumnModels());
+    }
 
 }
