@@ -109,9 +109,6 @@ public class LitePal {
         Connector.clearLitePalOpenHelperInstance();
     }
 
-    public static void clearDBMemory(String dbname){
-       Connector.clearLitePalHelperMemory(dbname);
-    }
 
     /**
      * Switch the using database to default with configuration by litepal.xml.
@@ -137,7 +134,7 @@ public class LitePal {
                 boolean result = dbFile.delete();
                 if (result) {
                     removeVersionInSharedPreferences(dbName);
-                    Connector.clearLitePalHelperMemory(dbName);
+//                    Connector.clearLitePalHelperMemory(dbName);
                     Connector.clearLitePalOpenHelperInstance();
                 }
                 return result;
@@ -147,7 +144,6 @@ public class LitePal {
             boolean result = dbFile.delete();
             if (result) {
                 removeVersionInSharedPreferences(dbName);
-                Connector.clearLitePalHelperMemory(dbName);
                 Connector.clearLitePalOpenHelperInstance();
             }
             return result;
