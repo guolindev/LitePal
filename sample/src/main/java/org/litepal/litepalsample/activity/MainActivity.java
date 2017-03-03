@@ -16,56 +16,94 @@
 
 package org.litepal.litepalsample.activity;
 
-import org.litepal.litepalsample.R;
-import org.litepal.litepalsample.model.Album;
-import org.litepal.litepalsample.model.Singer;
-
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 
-import java.util.Date;
-import java.util.UUID;
+import org.litepal.LitePal;
+import org.litepal.LitePalDB;
+import org.litepal.litepalsample.R;
+import org.litepal.litepalsample.model.Album;
+import org.litepal.litepalsample.model.Singer;
+import org.litepal.litepalsample.model.Song;
 
 public class MainActivity extends Activity implements OnClickListener {
 
     private static final String TAG = "MainActivity";
 
-	private Button mManageTableBtn;
+    private Button mManageTableBtn;
 
-	private Button mCrudBtn;
+    private Button mCrudBtn;
 
-	private Button mAggregateBtn;
+    private Button mAggregateBtn;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main_layout);
-		mManageTableBtn = (Button) findViewById(R.id.manage_table_btn);
-		mCrudBtn = (Button) findViewById(R.id.crud_btn);
-		mAggregateBtn = (Button) findViewById(R.id.aggregate_btn);
-		mManageTableBtn.setOnClickListener(this);
-		mCrudBtn.setOnClickListener(this);
-		mAggregateBtn.setOnClickListener(this);
-	}
+    private EditText mTargetDbNameEt;
 
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-		case R.id.manage_table_btn:
-			ManageTablesActivity.actionStart(this);
-			break;
-		case R.id.crud_btn:
-			CRUDActivity.actionStart(this);
-			break;
-		case R.id.aggregate_btn:
-			AggregateActivity.actionStart(this);
-			break;
-		default:
-			break;
-		}
-	}
+    private Button mChangheDbBtn;
+    private Button mDelDbBtn;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main_layout);
+        mTargetDbNameEt = (EditText) findViewById(R.id.et_targetname);
+        mManageTableBtn = (Button) findViewById(R.id.manage_table_btn);
+        mCrudBtn = (Button) findViewById(R.id.crud_btn);
+        mAggregateBtn = (Button) findViewById(R.id.aggregate_btn);
+        mChangheDbBtn = (Button) findViewById(R.id.changedb_btn);
+        mDelDbBtn= (Button)findViewById(R.id.deldb_btn);
+        mManageTableBtn.setOnClickListener(this);
+        mCrudBtn.setOnClickListener(this);
+        mAggregateBtn.setOnClickListener(this);
+        mChangheDbBtn.setOnClickListener(this);
+        mDelDbBtn.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.manage_table_btn:
+                ManageTablesActivity.actionStart(this);
+                break;
+            case R.id.crud_btn:
+                CRUDActivity.actionStart(this);
+                break;
+            case R.id.aggregate_btn:
+                AggregateActivity.actionStart(this);
+                break;
+            case R.id.changedb_btn: {
+                Editable text = mTargetDbNameEt.getText();
+                if (!TextUtils.isEmpty(text)) {
+                    long timeStart = System.currentTimeMillis();
+                    LitePalDB litePalDB = new LitePalDB(text.toString(),1);
+                    litePalDB.addClassName(Singer.class.getName());
+                    litePalDB.addClassName(Album.class.getName());
+                    litePalDB.addClassName(Song.class.getName());
+                    Log.e("changeTimeS1", System.currentTimeMillis() - timeStart + "");
+                    timeStart = System.currentTimeMillis();
+                    LitePal.use(litePalDB,false);
+                    Log.e("changeTimeS2", System.currentTimeMillis() - timeStart + "");
+                }
+            }
+                break;
+            case R.id.deldb_btn: {
+                Editable text = mTargetDbNameEt.getText();
+                if (!TextUtils.isEmpty(text)) {
+                    long timeStart = System.currentTimeMillis();
+                    LitePal.deleteDatabase(text.toString());
+                    Log.e("deletime", System.currentTimeMillis() - timeStart + "");
+                }
+            }
+                break;
+            default:
+                break;
+        }
+    }
 
 }
