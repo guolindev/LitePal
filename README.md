@@ -41,7 +41,7 @@ Create a file in the **assets** folder of your project and name it as **litepal.
     	Define the database name of your application. 
     	By default each database name should be end with .db. 
     	If you didn't name your database end with .db, 
-    	LitePal would plus the suffix automaticly for you.
+    	LitePal would plus the suffix automatically for you.
     	For example:    
     	<dbname value="demo" />
     -->
@@ -52,7 +52,7 @@ Create a file in the **assets** folder of your project and name it as **litepal.
     	to upgrade your database, the version tag would helps.
     	Modify the models you defined in the mapping tag, and just 
     	make the version value plus one, the upgrade of database
-    	will be processed automaticly without concern.
+    	will be processed automatically without concern.
 			For example:    
     	<version value="1" />
     -->
@@ -125,7 +125,7 @@ public class MyOwnApplication extends AnotherApplication {
 	...
 }
 ```
-Make sure to call this method as early as you can. In the **onCreate()** method of Application will be fine. And always remember to use the application context as parameter. Do not use any intance of activity or service as parameter, or memory leaks might happen.
+Make sure to call this method as early as you can. In the **onCreate()** method of Application will be fine. And always remember to use the application context as parameter. Do not use any instance of activity or service as parameter, or memory leaks might happen.
 ## Get Started
 After setup, you can experience the powerful function now.
 
@@ -221,7 +221,7 @@ Then increase the version number in **litepal.xml**:
     to upgrade your database, the version tag would helps.
     Modify the models you defined in the mapping tag, and just 
     make the version value plus one, the upgrade of database
-    will be processed automaticly without concern.
+    will be processed automatically without concern.
     For example:    
     <version value="1" ></version>
 -->
@@ -231,8 +231,8 @@ The tables will be upgraded next time you operate database. A **releasedate** co
 
 But there are some upgrading conditions that LitePal can't handle and all data in the upgrading table will be cleaned:
  * Add a field which annotated as `unique = true`.
- * Change a field's annoation into `unique = true`.
- * Change a field's annoation into `nullable = false`.
+ * Change a field's annotation into `unique = true`.
+ * Change a field's annotation into `nullable = false`.
 
 Be careful of the above conditions which will cause losing data.
 
@@ -402,7 +402,7 @@ If you find any bug when using LitePal, please report **[here](https://github.co
  * Improve query speed with optimized algorithm.
  
 ### 1.3.0
- * Add annotation functions to decalre **unique**, **not null** and **default** constraints.
+ * Add annotation functions to declare **unique**, **not null** and **default** constraints.
  * Remove the trick of ignore mapping fields with non-private modifier.
  * Support to use annotation to ignore mapping fields with `ignore = true`
  * Add some magical methods in DataSupport for those who understand LitePal deeper.
