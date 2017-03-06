@@ -16,8 +16,8 @@ Experience the magic right now and have fun!
  * More for you to explore.
  
 ## Latest Downloads
- * **[litepal-1.4.1.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.4.1.jar)** (library contains *.class files)
- * **[litepal-1.4.1-src.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.4.1-src.jar)** (library contains *.class files and *.java files)
+ * **[litepal-1.5.0.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.5.0.jar)** (library contains *.class files)
+ * **[litepal-1.5.0-src.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.5.0-src.jar)** (library contains *.class files and *.java files)
  
 ## Quick Setup
 #### 1. Include library
@@ -29,7 +29,7 @@ Experience the magic right now and have fun!
 Edit your **build.gradle** file and add below dependency:
 ``` groovy
 dependencies {
-    compile 'org.litepal.android:core:1.4.1'
+    compile 'org.litepal.android:core:1.5.0'
 }
 ```
 #### 2. Configure litepal.xml
@@ -41,7 +41,7 @@ Create a file in the **assets** folder of your project and name it as **litepal.
     	Define the database name of your application. 
     	By default each database name should be end with .db. 
     	If you didn't name your database end with .db, 
-    	LitePal would plus the suffix automaticly for you.
+    	LitePal would plus the suffix automatically for you.
     	For example:    
     	<dbname value="demo" />
     -->
@@ -52,7 +52,7 @@ Create a file in the **assets** folder of your project and name it as **litepal.
     	to upgrade your database, the version tag would helps.
     	Modify the models you defined in the mapping tag, and just 
     	make the version value plus one, the upgrade of database
-    	will be processed automaticly without concern.
+    	will be processed automatically without concern.
 			For example:    
     	<version value="1" />
     -->
@@ -125,7 +125,7 @@ public class MyOwnApplication extends AnotherApplication {
 	...
 }
 ```
-Make sure to call this method as early as you can. In the **onCreate()** method of Application will be fine. And always remember to use the application context as parameter. Do not use any intance of activity or service as parameter, or memory leaks might happen.
+Make sure to call this method as early as you can. In the **onCreate()** method of Application will be fine. And always remember to use the application context as parameter. Do not use any instance of activity or service as parameter, or memory leaks might happen.
 ## Get Started
 After setup, you can experience the powerful function now.
 
@@ -193,7 +193,7 @@ CREATE TABLE song (
 ```
 
 #### 2. Upgrade tables
-Upgrade tables in LitePal is extremely easy. Just modify your models everyway you want:
+Upgrade tables in LitePal is extremely easy. Just modify your models anyway you want:
 ```java
 public class Album extends DataSupport {
 	
@@ -221,7 +221,7 @@ Then increase the version number in **litepal.xml**:
     to upgrade your database, the version tag would helps.
     Modify the models you defined in the mapping tag, and just 
     make the version value plus one, the upgrade of database
-    will be processed automaticly without concern.
+    will be processed automatically without concern.
     For example:    
     <version value="1" ></version>
 -->
@@ -231,8 +231,8 @@ The tables will be upgraded next time you operate database. A **releasedate** co
 
 But there are some upgrading conditions that LitePal can't handle and all data in the upgrading table will be cleaned:
  * Add a field which annotated as `unique = true`.
- * Change a field's annoation into `unique = true`.
- * Change a field's annoation into `nullable = false`.
+ * Change a field's annotation into `unique = true`.
+ * Change a field's annotation into `nullable = false`.
 
 Be careful of the above conditions which will cause losing data.
 
@@ -301,7 +301,40 @@ Constructing complex query with fluent query:
 List<Song> songs = DataSupport.where("name like ?", "song%").order("duration").find(Song.class);
 ```
 
-#### 7. Multiple databases
+#### 7. Async operations
+Every database operation is on main thread by default. If your operation might spent a long time,
+for example saving or querying tons of records. You may want to use async operations.
+
+LitePal support async operations on all crud methods. If you want to find all records from song table
+on a background thread, use codes like this:
+```java
+DataSupport.findAllAsync(Song.class).listen(new FindMultiCallback() {
+    @Override
+    public <T> void onFinish(List<T> t) {
+        List<Song> allSongs = (List<Song>) t;
+    }
+});
+```
+Just use **findAllAsync()** instead of **findAll()**, and append a **listen()** method, the finding result will
+be callback to **onFinish()** method once it finished.
+
+Abd saving asynchronously is quite the same:
+```java
+Album album = new Album();
+album.setName("album");
+album.setPrice(10.99f);
+album.setCover(getCoverImageBytes());
+album.saveAsync().listen(new SaveCallback() {
+    @Override
+    public void onFinish(boolean success) {
+
+    }
+});
+```
+Just use **saveAsync()** instead of **save()**. It will save Album into database on a background, and
+the saving result will be callback to **onFinish()** method.
+
+#### 8. Multiple databases
 If your app needs multiple databases, LitePal support it completely. You can create as many databases as you want at runtime. For example:
 ```java
 LitePalDB litePalDB = new LitePalDB("demo2", 1);
@@ -340,6 +373,11 @@ Get it on:
 If you find any bug when using LitePal, please report **[here](https://github.com/LitePalFramework/LitePal/issues/new)**. Thanks for helping us making better.
 
 ## Change logs
+### 1.5.0
+ * Support async operations for all crud methods.
+ * Add **saveOrUpdate()** method in DataSupport.
+ * Fix known bugs.
+
 ### 1.4.1
  * Fix bug of DateSupport.count error.
  * Fix bug of losing blob data when upgrading database.
@@ -364,7 +402,7 @@ If you find any bug when using LitePal, please report **[here](https://github.co
  * Improve query speed with optimized algorithm.
  
 ### 1.3.0
- * Add annotation functions to decalre **unique**, **not null** and **default** constraints.
+ * Add annotation functions to declare **unique**, **not null** and **default** constraints.
  * Remove the trick of ignore mapping fields with non-private modifier.
  * Support to use annotation to ignore mapping fields with `ignore = true`
  * Add some magical methods in DataSupport for those who understand LitePal deeper.
