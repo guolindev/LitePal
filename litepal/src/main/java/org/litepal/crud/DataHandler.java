@@ -1286,9 +1286,17 @@ abstract class DataHandler extends LitePalBase {
 						setValueToModel(modelInstance, supportedFields, null, cursor, queryInfoCacheSparseArray);
                         setGenericValueToModel(modelInstance, supportedGenericFields, genericModelMap);
 						if (info.getAssociationType() == Const.Model.MANY_TO_ONE || isM2M) {
-							Collection collection = (Collection) getFieldValue(baseObj,
-									info.getAssociateOtherModelFromSelf());
-							collection.add(modelInstance);
+                            Field field = info.getAssociateOtherModelFromSelf();
+							Collection collection = (Collection) getFieldValue(baseObj, field);
+                            if (collection == null) {
+                                if (isList(field.getType())) {
+                                    collection = new ArrayList();
+                                } else {
+                                    collection = new HashSet();
+                                }
+                                DynamicExecutor.setField(baseObj, field.getName(), collection, baseObj.getClass());
+                            }
+                            collection.add(modelInstance);
 						} else if (info.getAssociationType() == Const.Model.ONE_TO_ONE) {
 							setFieldValue(baseObj,
 									info.getAssociateOtherModelFromSelf(), modelInstance);
