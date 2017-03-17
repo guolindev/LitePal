@@ -359,6 +359,19 @@ And you can delete any database by specified database name:
 LitePal.deleteDatabase("newdb");
 ```
 
+## ProGuard
+If you are using ProGuard you might need to add the following option:
+
+```proguard
+-keep class org.litepal.** {
+    *;
+}
+
+-keep class * extends org.litepal.crud.DataSupport {
+    *;
+}
+```
+
 ## Developed By
  * Tony Green
  
