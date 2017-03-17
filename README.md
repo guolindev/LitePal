@@ -96,9 +96,10 @@ You don't want to pass the Context param all the time. To makes the APIs simple,
 <manifest>
     <application
         android:name="org.litepal.LitePalApplication"
-        ...>
         ...
-	</application>
+    >
+        ...
+    </application>
 </manifest>
 ```
 Of course you may have your own Application and has already configured here, like:
@@ -106,9 +107,10 @@ Of course you may have your own Application and has already configured here, lik
 <manifest>
     <application
         android:name="com.example.MyOwnApplication"
-        ...>
         ...
-	</application>
+    >
+        ...
+    </application>
 </manifest>
 ```
 That's OK. LitePal can still live with that. Just call **LitePal.initialize(context)** in your own Application:
