@@ -16,8 +16,8 @@ Experience the magic right now and have fun!
  * More for you to explore.
  
 ## Latest Downloads
- * **[litepal-1.5.0.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.5.0.jar)** (library contains *.class files)
- * **[litepal-1.5.0-src.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.5.0-src.jar)** (library contains *.class files and *.java files)
+ * **[litepal-1.5.1.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.5.1.jar)** (library contains *.class files)
+ * **[litepal-1.5.1-src.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.5.1-src.jar)** (library contains *.class files and *.java files)
  
 ## Quick Setup
 #### 1. Include library
@@ -29,7 +29,7 @@ Experience the magic right now and have fun!
 Edit your **build.gradle** file and add below dependency:
 ``` groovy
 dependencies {
-    compile 'org.litepal.android:core:1.5.0'
+    compile 'org.litepal.android:core:1.5.1'
 }
 ```
 #### 2. Configure litepal.xml
@@ -373,7 +373,7 @@ Get it on:
 If you find any bug when using LitePal, please report **[here](https://github.com/LitePalFramework/LitePal/issues/new)**. Thanks for helping us making better.
 
 ## Change logs
-### 1.5.0
+### 1.5.1
  * Support async operations for all crud methods.
  * Add **saveOrUpdate()** method in DataSupport.
  * Fix known bugs.
