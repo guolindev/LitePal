@@ -94,22 +94,20 @@ This is the only configuration file, and the properties are simple.
 You don't want to pass the Context param all the time. To makes the APIs simple, just configure the LitePalApplication in **AndroidManifest.xml** as below:
 ``` xml
 <manifest>
-	<application
-		android:name="org.litepal.LitePalApplication"
-		...
-	>
-    ...
+    <application
+        android:name="org.litepal.LitePalApplication"
+        ...>
+        ...
 	</application>
 </manifest>
 ```
 Of course you may have your own Application and has already configured here, like:
 ``` xml
 <manifest>
-	<application
-		android:name="com.example.MyOwnApplication"
-		...
-	>
-    ...
+    <application
+        android:name="com.example.MyOwnApplication"
+        ...>
+        ...
 	</application>
 </manifest>
 ```
@@ -117,12 +115,12 @@ That's OK. LitePal can still live with that. Just call **LitePal.initialize(cont
 ```java
 public class MyOwnApplication extends AnotherApplication {
 
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		LitePal.initialize(this);
-	}
-	...
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        LitePal.initialize(this);
+    }
+    ...
 }
 ```
 Make sure to call this method as early as you can. In the **onCreate()** method of Application will be fine. And always remember to use the application context as parameter. Do not use any instance of activity or service as parameter, or memory leaks might happen.
@@ -134,34 +132,34 @@ Define the models first. For example you have two models, **Album** and **Song**
 ``` java
 public class Album extends DataSupport {
 	
-	@Column(unique = true, defaultValue = "unknown")
-	private String name;
+    @Column(unique = true, defaultValue = "unknown")
+    private String name;
 	
-	private float price;
+    private float price;
 	
-	private byte[] cover;
+    private byte[] cover;
 	
-	private List<Song> songs = new ArrayList<Song>();
+    private List<Song> songs = new ArrayList<Song>();
 
-	// generated getters and setters.
-	...
+    // generated getters and setters.
+    ...
 }
 ```
 ``` java
 public class Song extends DataSupport {
 	
-	@Column(nullable = false)
-	private String name;
+    @Column(nullable = false)
+    private String name;
 	
-	private int duration;
+    private int duration;
 	
-	@Column(ignore = true)
-	private String uselessField;
+    @Column(ignore = true)
+    private String uselessField;
 	
-	private Album album;
+    private Album album;
 
-	// generated getters and setters.
-	...
+    // generated getters and setters.
+    ...
 }
 ```
 Then add these models into the mapping list in **litepal.xml**:
@@ -197,20 +195,20 @@ Upgrade tables in LitePal is extremely easy. Just modify your models anyway you 
 ```java
 public class Album extends DataSupport {
 	
-	@Column(unique = true, defaultValue = "unknown")
-	private String name;
+    @Column(unique = true, defaultValue = "unknown")
+    private String name;
 	
-	@Column(ignore = true)
-	private float price;
+    @Column(ignore = true)
+    private float price;
 	
-	private byte[] cover;
+    private byte[] cover;
 	
-	private Date releaseDate;
+    private Date releaseDate;
 	
-	private List<Song> songs = new ArrayList<Song>();
+    private List<Song> songs = new ArrayList<Song>();
 
-	// generated getters and setters.
-	...
+    // generated getters and setters.
+    ...
 }
 ```
 A **releaseDate** field was added and **price** field was annotated to ignore.
