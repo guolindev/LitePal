@@ -167,8 +167,8 @@ public class Song extends DataSupport {
 Then add these models into the mapping list in **litepal.xml**:
 ``` xml
 <list>
-    <mapping class="org.litepal.litepalsample.model.Album"></mapping>
-    <mapping class="org.litepal.litepalsample.model.Song"></mapping>
+    <mapping class="org.litepal.litepalsample.model.Album" />
+    <mapping class="org.litepal.litepalsample.model.Song" />
 </list>
 ```
 OK! The tables will be generated next time you operate database. For example, gets the **SQLiteDatabase** with following codes:
