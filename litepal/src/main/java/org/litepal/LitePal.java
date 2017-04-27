@@ -27,6 +27,7 @@ import org.litepal.parser.LitePalConfig;
 import org.litepal.parser.LitePalParser;
 import org.litepal.tablemanager.Connector;
 import org.litepal.util.BaseUtility;
+import org.litepal.util.CipherUtil;
 import org.litepal.util.Const;
 import org.litepal.util.SharedUtil;
 
@@ -133,9 +134,14 @@ public class LitePal {
         return false;
     }
 
+    public static void aesKey(String key) {
+        CipherUtil.aesKey = key;
+    }
+
     /**
      * Remove the database version in SharedPreferences file.
      * @param dbName
+     *          Name of database to delete.
      */
     private static void removeVersionInSharedPreferences(String dbName) {
         if (isDefaultDatabase(dbName)) {

@@ -22,11 +22,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.SparseArray;
 
 import org.litepal.LitePalBase;
+import org.litepal.annotation.Column;
+import org.litepal.annotation.Encrypt;
 import org.litepal.crud.model.AssociationsInfo;
 import org.litepal.exceptions.DataSupportException;
 import org.litepal.exceptions.DatabaseGenerateException;
 import org.litepal.tablemanager.model.GenericModel;
 import org.litepal.util.BaseUtility;
+import org.litepal.util.CipherUtil;
 import org.litepal.util.Const;
 import org.litepal.util.DBUtility;
 
@@ -265,6 +268,15 @@ abstract class DataHandler extends LitePalBase {
             if ("java.util.Date".equals(field.getType().getName())) {
                 Date date = (Date) fieldValue;
                 fieldValue = date.getTime();
+            }
+            Encrypt annotation = field.getAnnotation(Encrypt.class);
+            if (annotation != null && "java.lang.String".equals(field.getType().getName())) {
+                String algorithm = annotation.algorithm();
+                if (Encrypt.AES.equalsIgnoreCase(algorithm)) {
+                    fieldValue = CipherUtil.aesEncrypt((String) fieldValue);
+                } else if (Encrypt.MD5.equalsIgnoreCase(algorithm)) {
+
+                }
             }
             Object[] parameters = new Object[] { changeCase(DBUtility.convertToValidColumnName(field.getName())), fieldValue };
             Class<?>[] parameterTypes = getParameterTypes(field, fieldValue, parameters);
