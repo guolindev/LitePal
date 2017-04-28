@@ -22,7 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Used for adding constraints to a column. Note that this annotation won't affect id column.
+ * Used for encrypt string field value when persisted into database.
  *
  * @author Tony Green
  * @since 1.6
@@ -30,10 +30,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Encrypt {
-
-    String MD5 = "MD5";
-
-    String AES = "AES";
 
     /**
      * Set the algorithm for encryption.

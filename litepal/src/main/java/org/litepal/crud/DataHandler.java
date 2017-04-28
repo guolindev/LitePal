@@ -272,10 +272,10 @@ abstract class DataHandler extends LitePalBase {
             Encrypt annotation = field.getAnnotation(Encrypt.class);
             if (annotation != null && "java.lang.String".equals(field.getType().getName())) {
                 String algorithm = annotation.algorithm();
-                if (Encrypt.AES.equalsIgnoreCase(algorithm)) {
+                if (DataSupport.AES.equalsIgnoreCase(algorithm)) {
                     fieldValue = CipherUtil.aesEncrypt((String) fieldValue);
-                } else if (Encrypt.MD5.equalsIgnoreCase(algorithm)) {
-
+                } else if (DataSupport.MD5.equalsIgnoreCase(algorithm)) {
+                    fieldValue = CipherUtil.md5Encrypt((String) fieldValue);
                 }
             }
             Object[] parameters = new Object[] { changeCase(DBUtility.convertToValidColumnName(field.getName())), fieldValue };

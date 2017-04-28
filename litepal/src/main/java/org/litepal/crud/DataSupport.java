@@ -72,6 +72,16 @@ import java.util.Set;
  */
 public class DataSupport {
 
+    /**
+     * Constant for MD5 encryption.
+     */
+    protected static final String MD5 = "MD5";
+
+    /**
+     * Constant for AES encryption.
+     */
+    protected static final String AES = "AES";
+
 	/**
 	 * The identify of each model. LitePal will generate the value
 	 * automatically. Do not try to assign or modify it.
