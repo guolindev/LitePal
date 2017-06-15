@@ -87,19 +87,23 @@ public final class LitePalAttr {
 			synchronized (LitePalAttr.class) {
 				if (litePalAttr == null) {
 					litePalAttr = new LitePalAttr();
-                    if (BaseUtility.isLitePalXMLExists()) {
-                        LitePalConfig config = LitePalParser.parseLitePalConfiguration();
-                        litePalAttr.setDbName(config.getDbName());
-                        litePalAttr.setVersion(config.getVersion());
-                        litePalAttr.setClassNames(config.getClassNames());
-                        litePalAttr.setCases(config.getCases());
-                        litePalAttr.setStorage(config.getStorage());
-                    }
+                    loadLitePalXMLConfiguration();
 				}
 			}
 		}
 		return litePalAttr;
 	}
+
+	private static void loadLitePalXMLConfiguration() {
+        if (BaseUtility.isLitePalXMLExists()) {
+            LitePalConfig config = LitePalParser.parseLitePalConfiguration();
+            litePalAttr.setDbName(config.getDbName());
+            litePalAttr.setVersion(config.getVersion());
+            litePalAttr.setClassNames(config.getClassNames());
+            litePalAttr.setCases(config.getCases());
+            litePalAttr.setStorage(config.getStorage());
+        }
+    }
 
 	/**
 	 * Clear the instance of LitePalAttr.
@@ -188,8 +192,11 @@ public final class LitePalAttr {
 	 */
 	public void checkSelfValid() {
 		if (TextUtils.isEmpty(dbName)) {
-			throw new InvalidAttributesException(
-					InvalidAttributesException.DBNAME_IS_EMPTY_OR_NOT_DEFINED);
+            loadLitePalXMLConfiguration();
+            if (TextUtils.isEmpty(dbName)) {
+                throw new InvalidAttributesException(
+                        InvalidAttributesException.DBNAME_IS_EMPTY_OR_NOT_DEFINED);
+            }
 		}
 		if (!dbName.endsWith(Const.Config.DB_NAME_SUFFIX)) {
 			dbName = dbName + Const.Config.DB_NAME_SUFFIX;

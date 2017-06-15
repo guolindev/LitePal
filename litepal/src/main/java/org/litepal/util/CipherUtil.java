@@ -42,9 +42,9 @@ public class CipherUtil {
 
     public static String aesEncrypt(String content) {
         try {
-            KeyGenerator kgen = KeyGenerator.getInstance(AES);
-            kgen.init(128, new SecureRandom(aesKey.getBytes()));
-            SecretKey secretKey = kgen.generateKey();
+            KeyGenerator keyGen = KeyGenerator.getInstance(AES);
+            keyGen.init(128, new SecureRandom(aesKey.getBytes()));
+            SecretKey secretKey = keyGen.generateKey();
             byte[] enCodeFormat = secretKey.getEncoded();
             SecretKeySpec key = new SecretKeySpec(enCodeFormat, AES);
             Cipher cipher = Cipher.getInstance(AES);
@@ -60,9 +60,9 @@ public class CipherUtil {
 
     public static String aesDecrypt(String content) {
         try {
-            KeyGenerator kgen = KeyGenerator.getInstance(AES);
-            kgen.init(128, new SecureRandom(aesKey.getBytes()));
-            SecretKey secretKey = kgen.generateKey();
+            KeyGenerator keyGen = KeyGenerator.getInstance(AES);
+            keyGen.init(128, new SecureRandom(aesKey.getBytes()));
+            SecretKey secretKey = keyGen.generateKey();
             byte[] enCodeFormat = secretKey.getEncoded();
             SecretKeySpec key = new SecretKeySpec(enCodeFormat, AES);
             Cipher cipher = Cipher.getInstance(AES);
