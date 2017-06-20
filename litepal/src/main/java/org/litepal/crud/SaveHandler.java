@@ -18,9 +18,12 @@ package org.litepal.crud;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
+import org.litepal.annotation.Encrypt;
 import org.litepal.crud.model.AssociationsInfo;
 import org.litepal.exceptions.DataSupportException;
+import org.litepal.util.CipherUtil;
 import org.litepal.util.DBUtility;
 
 import java.lang.reflect.Field;
@@ -561,6 +564,12 @@ class SaveHandler extends DataHandler {
     private void updateGenericTables(DataSupport baseObj, List<Field> supportedGenericFields,
                                      long id) throws IllegalAccessException, InvocationTargetException {
         for (Field field : supportedGenericFields) {
+            String genericTypeName = getGenericTypeName(field);
+            Encrypt annotation = field.getAnnotation(Encrypt.class);
+            String algorithm = null;
+            if (annotation != null && "java.lang.String".equals(getGenericTypeName(field))) {
+                algorithm = annotation.algorithm();
+            }
             field.setAccessible(true);
             Collection<?> collection = (Collection<?>) field.get(baseObj);
             if (collection != null) {
@@ -570,6 +579,13 @@ class SaveHandler extends DataHandler {
                 for (Object object : collection) {
                     ContentValues values = new ContentValues();
                     values.put(genericValueIdColumnName, id);
+                    if (algorithm != null) {
+                        if (DataSupport.AES.equalsIgnoreCase(algorithm)) {
+                            object = CipherUtil.aesEncrypt((String) object);
+                        } else if (DataSupport.MD5.equalsIgnoreCase(algorithm)) {
+                            object = CipherUtil.md5Encrypt((String) object);
+                        }
+                    }
                     Object[] parameters = new Object[] { changeCase(DBUtility.convertToValidColumnName(field.getName())), object };
                     Class<?>[] parameterTypes = new Class[] { String.class, getGenericTypeClass(field) };
                     DynamicExecutor.send(values, "put", parameters, values.getClass(), parameterTypes);
