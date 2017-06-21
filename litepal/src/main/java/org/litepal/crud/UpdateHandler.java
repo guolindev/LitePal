@@ -20,6 +20,7 @@ import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 
+import org.litepal.annotation.Encrypt;
 import org.litepal.crud.model.AssociationsInfo;
 import org.litepal.exceptions.DataSupportException;
 import org.litepal.util.BaseUtility;
@@ -331,6 +332,11 @@ class UpdateHandler extends DataHandler {
                                      long... ids) throws IllegalAccessException, InvocationTargetException {
         if (ids != null && ids.length > 0) {
             for (Field field : supportedGenericFields) {
+                Encrypt annotation = field.getAnnotation(Encrypt.class);
+                String algorithm = null;
+                if (annotation != null && "java.lang.String".equals(getGenericTypeName(field))) {
+                    algorithm = annotation.algorithm();
+                }
                 field.setAccessible(true);
                 Collection<?> collection = (Collection<?>) field.get(baseObj);
                 if (collection != null && !collection.isEmpty()) {
@@ -341,6 +347,7 @@ class UpdateHandler extends DataHandler {
                         for (Object object : collection) {
                             ContentValues values = new ContentValues();
                             values.put(genericValueIdColumnName, id);
+                            object = encryptValue(algorithm, object);
                             Object[] parameters = new Object[] { DBUtility.convertToValidColumnName(changeCase(field.getName())), object };
                             Class<?>[] parameterTypes = new Class[] { String.class, getGenericTypeClass(field) };
                             DynamicExecutor.send(values, "put", parameters, values.getClass(), parameterTypes);

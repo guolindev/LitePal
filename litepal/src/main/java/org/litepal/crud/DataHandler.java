@@ -271,12 +271,7 @@ abstract class DataHandler extends LitePalBase {
             }
             Encrypt annotation = field.getAnnotation(Encrypt.class);
             if (annotation != null && "java.lang.String".equals(field.getType().getName())) {
-                String algorithm = annotation.algorithm();
-                if (DataSupport.AES.equalsIgnoreCase(algorithm)) {
-                    fieldValue = CipherUtil.aesEncrypt((String) fieldValue);
-                } else if (DataSupport.MD5.equalsIgnoreCase(algorithm)) {
-                    fieldValue = CipherUtil.md5Encrypt((String) fieldValue);
-                }
+                fieldValue = encryptValue(annotation.algorithm(), fieldValue);
             }
             Object[] parameters = new Object[] { changeCase(DBUtility.convertToValidColumnName(field.getName())), fieldValue };
             Class<?>[] parameterTypes = getParameterTypes(field, fieldValue, parameters);
@@ -311,9 +306,32 @@ abstract class DataHandler extends LitePalBase {
             Date date = (Date) fieldValue;
             fieldValue = date.getTime();
         }
+        Encrypt annotation = field.getAnnotation(Encrypt.class);
+        if (annotation != null && "java.lang.String".equals(field.getType().getName())) {
+            fieldValue = encryptValue(annotation.algorithm(), fieldValue);
+        }
         Object[] parameters = new Object[] { changeCase(DBUtility.convertToValidColumnName(field.getName())), fieldValue };
         Class<?>[] parameterTypes = getParameterTypes(field, fieldValue, parameters);
         DynamicExecutor.send(values, "put", parameters, values.getClass(), parameterTypes);
+    }
+
+    /**
+     * Encrypt the field value with targeted algorithm.
+     * @param algorithm
+     *          The algorithm to encrypt value.
+     * @param fieldValue
+     *          Field value to encrypt.
+     * @return Encrypted value by targeted algorithm.
+     */
+    protected Object encryptValue(String algorithm, Object fieldValue) {
+        if (algorithm != null) {
+            if (DataSupport.AES.equalsIgnoreCase(algorithm)) {
+                fieldValue = CipherUtil.aesEncrypt((String) fieldValue);
+            } else if (DataSupport.MD5.equalsIgnoreCase(algorithm)) {
+                fieldValue = CipherUtil.md5Encrypt((String) fieldValue);
+            }
+        }
+        return fieldValue;
     }
 
 	/**
