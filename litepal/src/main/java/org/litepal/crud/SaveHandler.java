@@ -18,12 +18,10 @@ package org.litepal.crud;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import org.litepal.annotation.Encrypt;
 import org.litepal.crud.model.AssociationsInfo;
 import org.litepal.exceptions.DataSupportException;
-import org.litepal.util.CipherUtil;
 import org.litepal.util.DBUtility;
 
 import java.lang.reflect.Field;

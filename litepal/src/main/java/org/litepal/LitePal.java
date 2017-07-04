@@ -27,7 +27,7 @@ import org.litepal.parser.LitePalConfig;
 import org.litepal.parser.LitePalParser;
 import org.litepal.tablemanager.Connector;
 import org.litepal.util.BaseUtility;
-import org.litepal.util.CipherUtil;
+import org.litepal.util.cipher.CipherUtil;
 import org.litepal.util.Const;
 import org.litepal.util.SharedUtil;
 

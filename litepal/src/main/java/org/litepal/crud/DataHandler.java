@@ -22,14 +22,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.SparseArray;
 
 import org.litepal.LitePalBase;
-import org.litepal.annotation.Column;
 import org.litepal.annotation.Encrypt;
 import org.litepal.crud.model.AssociationsInfo;
 import org.litepal.exceptions.DataSupportException;
 import org.litepal.exceptions.DatabaseGenerateException;
 import org.litepal.tablemanager.model.GenericModel;
 import org.litepal.util.BaseUtility;
-import org.litepal.util.CipherUtil;
+import org.litepal.util.cipher.CipherUtil;
 import org.litepal.util.Const;
 import org.litepal.util.DBUtility;
 
@@ -324,7 +323,7 @@ abstract class DataHandler extends LitePalBase {
      * @return Encrypted value by targeted algorithm.
      */
     protected Object encryptValue(String algorithm, Object fieldValue) {
-        if (algorithm != null) {
+        if (algorithm != null && fieldValue != null) {
             if (DataSupport.AES.equalsIgnoreCase(algorithm)) {
                 fieldValue = CipherUtil.aesEncrypt((String) fieldValue);
             } else if (DataSupport.MD5.equalsIgnoreCase(algorithm)) {
@@ -1377,11 +1376,36 @@ abstract class DataHandler extends LitePalBase {
                 }
                 DynamicExecutor.setField(modelInstance, field.getName(), collection, modelInstance.getClass());
             }
+            Encrypt annotation = field.getAnnotation(Encrypt.class);
+            if (annotation != null && "java.lang.String".equals(getGenericTypeName(field))) {
+                value = decryptValue(annotation.algorithm(), value);
+            }
             collection.add(value);
         } else {
+            Encrypt annotation = field.getAnnotation(Encrypt.class);
+            if (annotation != null && "java.lang.String".equals(field.getType().getName())) {
+                value = decryptValue(annotation.algorithm(), value);
+            }
             DynamicExecutor.setField(modelInstance, field.getName(), value,
                     modelInstance.getClass());
         }
+    }
+
+    /**
+     * Decrypt the field value with targeted algorithm.
+     * @param algorithm
+     *          The algorithm to decrypt value.
+     * @param fieldValue
+     *          Field value to decrypt.
+     * @return Decrypted value by targeted algorithm.
+     */
+    protected Object decryptValue(String algorithm, Object fieldValue) {
+        if (algorithm != null && fieldValue != null) {
+            if (DataSupport.AES.equalsIgnoreCase(algorithm)) {
+                fieldValue = CipherUtil.aesDecrypt((String) fieldValue);
+            }
+        }
+        return fieldValue;
     }
 
     /**
