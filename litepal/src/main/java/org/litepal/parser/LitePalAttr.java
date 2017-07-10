@@ -57,7 +57,7 @@ public final class LitePalAttr {
 	private String cases;
 
     /**
-     * Define where the .db file should be. Option values: internal external.
+     * Define where the .db file should be. Option values: internal, external, or path in sdcard.
      */
     private String storage;
 

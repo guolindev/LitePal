@@ -44,6 +44,11 @@ public class LitePalDB {
     private String dbName;
 
     /**
+     * Define where the .db file should be. Option values: internal, external, or path in sdcard.
+     */
+    private String storage;
+
+    /**
      * Indicates that the database file stores in external storage or not.
      */
     private boolean isExternalStorage = false;
@@ -64,7 +69,7 @@ public class LitePalDB {
     public static LitePalDB fromDefault(String dbName) {
         LitePalConfig config = LitePalParser.parseLitePalConfiguration();
         LitePalDB litePalDB = new LitePalDB(dbName, config.getVersion());
-        litePalDB.setExternalStorage("external".equals(config.getStorage()));
+        litePalDB.setStorage(config.getStorage());
         litePalDB.setClassNames(config.getClassNames());
         return litePalDB;
     }
@@ -87,6 +92,14 @@ public class LitePalDB {
 
     public String getDbName() {
         return dbName;
+    }
+
+    public String getStorage() {
+        return storage;
+    }
+
+    public void setStorage(String storage) {
+        this.storage = storage;
     }
 
     public boolean isExternalStorage() {

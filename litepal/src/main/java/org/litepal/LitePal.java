@@ -84,7 +84,7 @@ public class LitePal {
         LitePalAttr litePalAttr = LitePalAttr.getInstance();
         litePalAttr.setDbName(litePalDB.getDbName());
         litePalAttr.setVersion(litePalDB.getVersion());
-        litePalAttr.setStorage(litePalDB.isExternalStorage() ? "external" : "internal");
+        litePalAttr.setStorage(litePalDB.getStorage());
         litePalAttr.setClassNames(litePalDB.getClassNames());
         // set the extra key name only when use database other than default or litepal.xml not exists
         if (!isDefaultDatabase(litePalDB.getDbName())) {
