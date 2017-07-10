@@ -24,6 +24,7 @@ import org.litepal.exceptions.DataSupportException;
 import org.litepal.parser.LitePalAttr;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Locale;
 
@@ -241,6 +242,30 @@ public class BaseUtility {
                 }
             }
         } catch (IOException e) {
+        }
+        return false;
+    }
+
+    /**
+     * Check the existence of the specific class and method.
+     *
+     * @param className
+     * 			Class name with full package name.
+     * @param methodName
+     * 			Method name.
+     * @return Return true if both of class and method are exist. Otherwise return false.
+     */
+    public static boolean isClassAndMethodExist(String className, String methodName) {
+        try {
+            Class<?> clazz = Class.forName(className);
+            Method[] methods = clazz.getMethods();
+            for (Method method : methods) {
+                if (methodName.equals(method.getName())) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return false;
     }

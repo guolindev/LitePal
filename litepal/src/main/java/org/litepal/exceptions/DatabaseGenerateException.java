@@ -54,7 +54,7 @@ public class DatabaseGenerateException extends RuntimeException {
     /**
      * Don't have permission to create database on sdcard.
      */
-    public static final String EXTERNAL_STORAGE_PERMISSION_DENIED = "You don't have permission to create database at %1$s. Make sure you handled WRITE_EXTERNAL_STORAGE runtime permission correctly.";
+    public static final String EXTERNAL_STORAGE_PERMISSION_DENIED = "You don't have permission to access database at %1$s. Make sure you handled WRITE_EXTERNAL_STORAGE runtime permission correctly.";
 
 	/**
 	 * Constructor of DatabaseGenerateException.
