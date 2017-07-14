@@ -26,6 +26,7 @@ import org.litepal.tablemanager.model.TableModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -107,7 +108,7 @@ public class DBUtility {
 	 */
 	public static String getTableNameByForeignColumn(String foreignColumnName) {
 		if (!TextUtils.isEmpty(foreignColumnName)) {
-			if (foreignColumnName.toLowerCase().endsWith("_id")) {
+			if (foreignColumnName.toLowerCase(Locale.US).endsWith("_id")) {
 				return foreignColumnName.substring(0, foreignColumnName.length() - "_id".length());
 			}
 			return null;
@@ -130,7 +131,7 @@ public class DBUtility {
 	public static String getIntermediateTableName(String tableName, String associatedTableName) {
 		if (!(TextUtils.isEmpty(tableName) || TextUtils.isEmpty(associatedTableName))) {
 			String intermediateTableName;
-			if (tableName.toLowerCase().compareTo(associatedTableName.toLowerCase()) <= 0) {
+			if (tableName.toLowerCase(Locale.US).compareTo(associatedTableName.toLowerCase(Locale.US)) <= 0) {
 				intermediateTableName = tableName + "_" + associatedTableName;
 			} else {
 				intermediateTableName = associatedTableName + "_" + tableName;
@@ -450,7 +451,7 @@ public class DBUtility {
      */
     public static boolean isFieldNameConflictWithSQLiteKeywords(String fieldName) {
         if (!TextUtils.isEmpty(fieldName)) {
-            String fieldNameWithComma = "," + fieldName.toLowerCase() + ",";
+            String fieldNameWithComma = "," + fieldName.toLowerCase(Locale.US) + ",";
             if (SQLITE_KEYWORDS.contains(fieldNameWithComma)) {
                 return true;
             }
@@ -525,7 +526,7 @@ public class DBUtility {
      */
     public static String convertOrderByClauseToValidName(String orderBy) {
         if (!TextUtils.isEmpty(orderBy)) {
-            orderBy = orderBy.trim().toLowerCase();
+            orderBy = orderBy.trim().toLowerCase(Locale.US);
             if (orderBy.contains(",")) {
                 String[] orderByItems = orderBy.split(",");
                 StringBuilder builder = new StringBuilder();

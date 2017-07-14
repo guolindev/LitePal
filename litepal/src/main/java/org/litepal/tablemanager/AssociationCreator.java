@@ -33,6 +33,7 @@ import org.litepal.util.LogUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * When models have associations such as one2one, many2one or many2many, tables
@@ -172,7 +173,7 @@ public abstract class AssociationCreator extends Generator {
 	 */
 	protected boolean isForeignKeyColumnFormat(String columnName) {
 		if (!TextUtils.isEmpty(columnName)) {
-			return columnName.toLowerCase().endsWith("_id") && !columnName.equalsIgnoreCase("_id");
+			return columnName.toLowerCase(Locale.US).endsWith("_id") && !columnName.equalsIgnoreCase("_id");
 		}
 		return false;
 	}
