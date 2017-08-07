@@ -14,13 +14,10 @@
    limitations under the License.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.litepal.litepalsample"
-    android:versionCode="1"
-    android:versionName="1.0" >
+    package="org.litepal.litepalsample">
 
-    <uses-sdk
-        android:minSdkVersion="7"
-        android:targetSdkVersion="19" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name="org.litepal.litepalsample.MyApplication"

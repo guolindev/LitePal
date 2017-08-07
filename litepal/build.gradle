@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+//apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 23
@@ -26,3 +27,12 @@ dependencies {
 if (hasProperty("BINTRAY_KEY")) {
     apply from: 'bintray.gradle'
 }
+
+//publish {
+//    userOrg = 'litepal'
+//    groupId = 'org.litepal.android'
+//    artifactId = 'core'
+//    publishVersion = '1.6.0-SNAPSHOT'
+//    desc = 'An Android library that allows developers to use SQLite database extremely easy'
+//    website = 'https://github.com/LitePalFramework/LitePal'
+//}
