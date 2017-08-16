@@ -50,7 +50,7 @@ public class DBUtility {
 
     private static final String REG_FUZZY = "\\s+(not\\s+)?(like|between)\\s+";
 
-    private static final String REG_COLLECTION = "\\s+(not\\s+)?(in|exists)\\s*\\(";
+    private static final String REG_COLLECTION = "\\s+(not\\s+)?(in)\\s*\\(";
 
     /**
 	 * Disable to create an instance of DBUtility.
