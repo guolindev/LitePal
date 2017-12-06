@@ -30,6 +30,7 @@ import org.litepal.util.Const;
 import org.litepal.util.DBUtility;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 
 /**
  * This is a component under DataSupport. It deals with the deleting stuff as
@@ -383,16 +384,27 @@ class DeleteHandler extends DataHandler {
         for (Field field : supportedGenericFields) {
             String tableName = DBUtility.getGenericTableName(modelClass.getName(), field.getName());
             String genericValueIdColumnName = DBUtility.getGenericValueIdColumnName(modelClass.getName());
-            StringBuilder whereClause = new StringBuilder();
-            boolean needOr = false;
-            for (long id : ids) {
-                if (needOr) {
-                    whereClause.append(" or ");
+            int maxExpressionCount = 500; // Prevent the where condition is too long
+            int length = ids.length;
+            int loopCount = (length - 1) / maxExpressionCount;
+            for (int i = 0; i <= loopCount; i++) {
+                StringBuilder whereClause = new StringBuilder();
+                boolean needOr = false;
+                for (int j = maxExpressionCount * i; j < maxExpressionCount * (i + 1); j++) {
+                    if (j >= length) {
+                        break;
+                    }
+                    long id = ids[j];
+                    if (needOr) {
+                        whereClause.append(" or ");
+                    }
+                    whereClause.append(genericValueIdColumnName).append(" = ").append(id);
+                    needOr = true;
                 }
-                whereClause.append(genericValueIdColumnName).append(" = ").append(id);
-                needOr = true;
+                if (!TextUtils.isEmpty(whereClause.toString())) {
+                    mDatabase.delete(tableName, whereClause.toString(), null);
+                }
             }
-            mDatabase.delete(tableName, whereClause.toString(), null);
         }
     }
 }
