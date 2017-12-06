@@ -655,7 +655,7 @@ abstract class DataHandler extends LitePalBase {
 			for (Class<?> parameterType : types) {
 				if (parameterType == modelClass) {
 					key = key + 10000; // plus the key for not using this constructor
-				} else if (parameterType.getName().equals("com.android.tools.fd.runtime.InstantReloadException")) {
+				} else if (parameterType.getName().startsWith("com.android") && parameterType.getName().endsWith("InstantReloadException")) {
                     key = key + 10000; // plus the key for not using this constructor
                 }
 			}
