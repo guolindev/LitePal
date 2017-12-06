@@ -115,7 +115,7 @@ Of course you may have your own Application and has already configured here, lik
 ```
 That's OK. LitePal can still live with that. Just call **LitePal.initialize(context)** in your own Application:
 ```java
-public class MyOwnApplication extends AnotherApplication {
+public class MyOwnApplication extends Application {
 
     @Override
     public void onCreate() {
