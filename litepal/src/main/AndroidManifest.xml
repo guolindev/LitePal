@@ -1,6 +1,6 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.litepal">
+<manifest package="org.litepal">
 
-    <application android:allowBackup="true" android:label="@string/app_name">
+    <application>
 
     </application>
 
