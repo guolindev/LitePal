@@ -324,8 +324,10 @@ class SaveHandler extends DataHandler {
 	 *            To store data of current model for updating.
 	 */
 	private void updating(DataSupport baseObj, ContentValues values) {
-		mDatabase.update(baseObj.getTableName(), values, "id = ?",
-				new String[] { String.valueOf(baseObj.getBaseObjId()) });
+	    if (values.size() > 0) {
+            mDatabase.update(baseObj.getTableName(), values, "id = ?",
+                    new String[] { String.valueOf(baseObj.getBaseObjId()) });
+        }
 	}
 
 	/**
