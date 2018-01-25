@@ -1990,27 +1990,6 @@ public class DataSupport {
         return executor;
     }
 
-    /**
-     * This method is deprecated and will be removed in the future releases.
-     * Use {@link #save()} instead.
-     */
-    @Deprecated
-    public synchronized boolean saveFast() {
-        SQLiteDatabase db = Connector.getDatabase();
-        db.beginTransaction();
-        try {
-            SaveHandler saveHandler = new SaveHandler(db);
-            saveHandler.onSaveFast(this);
-            db.setTransactionSuccessful();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        } finally {
-            db.endTransaction();
-        }
-    }
-
 	/**
 	 * Current model is saved or not.
 	 * 
