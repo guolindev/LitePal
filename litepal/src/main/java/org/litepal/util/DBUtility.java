@@ -480,21 +480,23 @@ public class DBUtility {
      * @return Converted where clause with valid column names.
      */
     public static String convertWhereClauseToColumnName(String whereClause) {
-        try {
-            StringBuffer convertedWhereClause = new StringBuffer();
-            Pattern p = Pattern.compile("(\\w+" + REG_OPERATOR + "|\\w+" + REG_FUZZY + "|\\w+" + REG_COLLECTION + ")");
-            Matcher m = p.matcher(whereClause);
-            while (m.find()) {
-                String matches = m.group();
-                String column = matches.replaceAll("(" + REG_OPERATOR + "|" + REG_FUZZY + "|" + REG_COLLECTION + ")", "");
-                String rest = matches.replace(column, "");
-                column = convertToValidColumnName(column);
-                m.appendReplacement(convertedWhereClause, column + rest);
+        if (!TextUtils.isEmpty(whereClause)) {
+            try {
+                StringBuffer convertedWhereClause = new StringBuffer();
+                Pattern p = Pattern.compile("(\\w+" + REG_OPERATOR + "|\\w+" + REG_FUZZY + "|\\w+" + REG_COLLECTION + ")");
+                Matcher m = p.matcher(whereClause);
+                while (m.find()) {
+                    String matches = m.group();
+                    String column = matches.replaceAll("(" + REG_OPERATOR + "|" + REG_FUZZY + "|" + REG_COLLECTION + ")", "");
+                    String rest = matches.replace(column, "");
+                    column = convertToValidColumnName(column);
+                    m.appendReplacement(convertedWhereClause, column + rest);
+                }
+                m.appendTail(convertedWhereClause);
+                return convertedWhereClause.toString();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            m.appendTail(convertedWhereClause);
-            return convertedWhereClause.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return whereClause;
     }
