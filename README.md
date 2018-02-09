@@ -298,7 +298,7 @@ List<Song> allSongs = DataSupport.findAll(Song.class);
 ```
 Constructing complex query with fluent query:
 ``` java
-List<Song> songs = DataSupport.where("name like ?", "song%").order("duration").find(Song.class);
+List<Song> songs = DataSupport.where("name like ? and duration < ?", "song%", "200").order("duration").find(Song.class);
 ```
 
 #### 7. Async operations
