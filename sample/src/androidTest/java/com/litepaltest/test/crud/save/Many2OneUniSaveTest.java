@@ -65,22 +65,6 @@ public class Many2OneUniSaveTest extends LitePalTestCase {
 		isDataExists(getTableName(c1), c1.get_id());
 	}
 
-    public void testSaveFast() {
-        init();
-        c1.getTeachers().add(t1);
-        c1.getTeachers().add(t2);
-        c1.saveFast();
-        t1.saveFast();
-        t2.saveFast();
-        isDataExists(getTableName(c1), c1.get_id());
-        isDataExists(getTableName(t1), t1.getId());
-        isDataExists(getTableName(t2), t2.getId());
-        Assert.assertFalse(isFKInsertCorrect(getTableName(c1), getTableName(t1), c1.get_id(),
-                t1.getId()));
-        Assert.assertFalse(isFKInsertCorrect(getTableName(c1), getTableName(t2), c1.get_id(),
-                t2.getId()));
-    }
-
 	private void assertFK(Classroom c1, Teacher t1, Teacher t2) {
 		Assert.assertTrue(isFKInsertCorrect(getTableName(c1), getTableName(t1), c1.get_id(),
 				t1.getId()));

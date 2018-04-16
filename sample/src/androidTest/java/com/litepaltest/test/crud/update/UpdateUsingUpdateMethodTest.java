@@ -119,7 +119,7 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
         product.setBrand("Android");
         product.setPrice(2899.69);
         product.setPic(b);
-        assertTrue(product.saveFast());
+        assertTrue(product.save());
         for (int i = 0; i < b.length; i++) {
             b[i] = (byte) (b.length - i);
         }
@@ -185,7 +185,7 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
         product.setBrand("Android");
         product.setPrice(2899.69);
         product.setPic(b);
-        assertTrue(product.saveFast());
+        assertTrue(product.save());
         for (int i = 0; i < b.length; i++) {
             b[i] = (byte) (b.length - i);
         }

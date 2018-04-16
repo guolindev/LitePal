@@ -47,13 +47,6 @@ public class One2OneUniSaveTest extends LitePalTestCase {
 		isDataExists(getTableName(i), i.getId());
 	}
 
-    public void testSaveFast() {
-        init();
-        t.setIdCard(i);
-        t.saveFast();
-        i.saveFast();
-        assertFalse(isFKInsertCorrect(getTableName(t), getTableName(i), t.getId(), i.getId()));
-    }
 
 	private void assertFK(Teacher t, IdCard i) {
 		Assert.assertTrue(isFKInsertCorrect(getTableName(t), getTableName(i), t.getId(), i.getId()));

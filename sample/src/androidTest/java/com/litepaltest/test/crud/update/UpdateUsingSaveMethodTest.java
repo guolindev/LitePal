@@ -134,12 +134,12 @@ public class UpdateUsingSaveMethodTest extends LitePalTestCase {
         product.setBrand("Android");
         product.setPrice(2899.69);
         product.setPic(b);
-        assertTrue(product.saveFast());
+        assertTrue(product.save());
         for (int i = 0; i < b.length; i++) {
             b[i] = (byte) (b.length - i);
         }
         product.setPic(b);
-        assertTrue(product.saveFast());
+        assertTrue(product.save());
         Product p = DataSupport.find(Product.class, product.getId());
         byte[] pic = p.getPic();
         assertEquals(b.length, pic.length);

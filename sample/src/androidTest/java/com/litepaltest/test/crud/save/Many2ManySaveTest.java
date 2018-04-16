@@ -142,20 +142,4 @@ public class Many2ManySaveTest extends LitePalTestCase {
 		assertM2M(getTableName(mick), getTableName(jack), mick.getId(), jack.getId());
 	}
 
-    public void testSaveFast() {
-        init();
-        buildBidirectionalAssociation();
-        danny.saveFast();
-        jack.saveFast();
-        cam.saveFast();
-        assertTrue(isDataExists(getTableName(danny), danny.getId()));
-        assertTrue(!isDataExists(getTableName(mick), mick.getId()));
-        assertTrue(isDataExists(getTableName(cam), cam.getId()));
-        assertTrue(isDataExists(getTableName(jack), jack.getId()));
-        assertM2MFalse(getTableName(danny), getTableName(cam), danny.getId(), cam.getId());
-        assertM2MFalse(getTableName(danny), getTableName(jack), danny.getId(), jack.getId());
-        assertM2MFalse(getTableName(mick), getTableName(cam), mick.getId(), cam.getId());
-        assertM2MFalse(getTableName(mick), getTableName(jack), mick.getId(), jack.getId());
-    }
-
 }
