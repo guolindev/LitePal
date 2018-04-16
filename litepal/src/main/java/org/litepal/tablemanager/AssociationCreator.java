@@ -315,10 +315,15 @@ public abstract class AssociationCreator extends Generator {
 			SQLiteDatabase db, boolean force) {
         List<ColumnModel> columnModelList = new ArrayList<ColumnModel>();
         ColumnModel column1 = new ColumnModel();
-        column1.setColumnName(tableName + "_id");
-        column1.setColumnType("integer");
         ColumnModel column2 = new ColumnModel();
-        column2.setColumnName(associatedTableName + "_id");
+        if (tableName.equals(associatedTableName)) {
+            column1.setColumnName("self_id");
+            column2.setColumnName("ref_id");
+        } else {
+            column1.setColumnName(tableName + "_id");
+            column2.setColumnName(associatedTableName + "_id");
+        }
+        column1.setColumnType("integer");
         column2.setColumnType("integer");
         columnModelList.add(column1);
         columnModelList.add(column2);

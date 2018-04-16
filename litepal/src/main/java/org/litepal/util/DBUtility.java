@@ -131,11 +131,15 @@ public class DBUtility {
 	public static String getIntermediateTableName(String tableName, String associatedTableName) {
 		if (!(TextUtils.isEmpty(tableName) || TextUtils.isEmpty(associatedTableName))) {
 			String intermediateTableName;
-			if (tableName.toLowerCase(Locale.US).compareTo(associatedTableName.toLowerCase(Locale.US)) <= 0) {
-				intermediateTableName = tableName + "_" + associatedTableName;
-			} else {
-				intermediateTableName = associatedTableName + "_" + tableName;
-			}
+			if (tableName.equalsIgnoreCase(associatedTableName)) {
+                intermediateTableName = tableName + "_selfref";
+            } else {
+                if (tableName.toLowerCase(Locale.US).compareTo(associatedTableName.toLowerCase(Locale.US)) <= 0) {
+                    intermediateTableName = tableName + "_" + associatedTableName;
+                } else {
+                    intermediateTableName = associatedTableName + "_" + tableName;
+                }
+            }
 			return intermediateTableName;
 		}
 		return null;
