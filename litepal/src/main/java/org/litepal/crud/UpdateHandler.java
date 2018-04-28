@@ -334,7 +334,8 @@ class UpdateHandler extends DataHandler {
             for (Field field : supportedGenericFields) {
                 Encrypt annotation = field.getAnnotation(Encrypt.class);
                 String algorithm = null;
-                if (annotation != null && "java.lang.String".equals(getGenericTypeName(field))) {
+                String genericTypeName = getGenericTypeName(field);
+                if (annotation != null && "java.lang.String".equals(genericTypeName)) {
                     algorithm = annotation.algorithm();
                 }
                 field.setAccessible(true);
@@ -348,9 +349,18 @@ class UpdateHandler extends DataHandler {
                             ContentValues values = new ContentValues();
                             values.put(genericValueIdColumnName, id);
                             object = encryptValue(algorithm, object);
-                            Object[] parameters = new Object[] { DBUtility.convertToValidColumnName(changeCase(field.getName())), object };
-                            Class<?>[] parameterTypes = new Class[] { String.class, getGenericTypeClass(field) };
-                            DynamicExecutor.send(values, "put", parameters, values.getClass(), parameterTypes);
+                            if (baseObj.getClass().getName().equalsIgnoreCase(genericTypeName)) {
+                                DataSupport dataSupport = (DataSupport) object;
+                                long baseObjId = dataSupport.getBaseObjId();
+                                if (baseObjId <= 0) {
+                                    continue;
+                                }
+                                values.put(DBUtility.getM2MSelfRefColumnName(field), baseObjId);
+                            } else {
+                                Object[] parameters = new Object[] { DBUtility.convertToValidColumnName(changeCase(field.getName())), object };
+                                Class<?>[] parameterTypes = new Class[] { String.class, getGenericTypeClass(field) };
+                                DynamicExecutor.send(values, "put", parameters, values.getClass(), parameterTypes);
+                            }
                             mDatabase.insert(tableName, null, values);
                         }
                     }
