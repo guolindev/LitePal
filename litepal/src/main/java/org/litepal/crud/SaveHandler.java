@@ -46,11 +46,6 @@ import static org.litepal.util.BaseUtility.changeCase;
  */
 class SaveHandler extends DataHandler {
 
-    /**
-     * indicates that associations can be ignored while saving.
-     */
-    private boolean ignoreAssociations = false;
-
     private ContentValues values;
 
     /**
@@ -88,40 +83,14 @@ class SaveHandler extends DataHandler {
         List<Field> supportedGenericFields = getSupportedGenericFields(className);
 		Collection<AssociationsInfo> associationInfos = getAssociationInfo(className);
 		if (!baseObj.isSaved()) {
-            if (!ignoreAssociations) {
-                analyzeAssociatedModels(baseObj, associationInfos);
-            }
+            analyzeAssociatedModels(baseObj, associationInfos);
 			doSaveAction(baseObj, supportedFields, supportedGenericFields);
-            if (!ignoreAssociations) {
-                analyzeAssociatedModels(baseObj, associationInfos);
-            }
+            analyzeAssociatedModels(baseObj, associationInfos);
 		} else {
-            if (!ignoreAssociations) {
-                analyzeAssociatedModels(baseObj, associationInfos);
-            }
+            analyzeAssociatedModels(baseObj, associationInfos);
 			doUpdateAction(baseObj, supportedFields, supportedGenericFields);
 		}
 	}
-
-    /**
-     * The open interface for other classes in CRUD package to save a model. It
-     * is called when a model class calls the save method. This method will only
-     * save the baseObj into database without analyzing any association, so that
-     * the saving process will be faster.
-     *
-     * @param baseObj
-     *            Current model to persist.
-     * @throws java.lang.reflect.InvocationTargetException
-     * @throws IllegalAccessException
-     * @throws NoSuchMethodException
-     * @throws IllegalArgumentException
-     * @throws SecurityException
-     */
-    void onSaveFast(DataSupport baseObj) throws SecurityException, IllegalArgumentException,
-            NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        ignoreAssociations = true;
-        onSave(baseObj);
-    }
 
 	/**
 	 * The open interface for other classes in CRUD package to save a model
@@ -214,9 +183,7 @@ class SaveHandler extends DataHandler {
 			throws SecurityException, IllegalArgumentException, NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException {
 		putFieldsValue(baseObj, supportedFields, values);
-        if (!ignoreAssociations) {
-            putForeignKeyValue(values, baseObj);
-        }
+        putForeignKeyValue(values, baseObj);
 	}
 
 	/**
@@ -253,10 +220,8 @@ class SaveHandler extends DataHandler {
 		throwIfSaveFailed(id);
 		assignIdValue(baseObj, getIdField(supportedFields), id);
         updateGenericTables(baseObj, supportedGenericFields, id);
-        if (!ignoreAssociations) {
-            updateAssociatedTableWithFK(baseObj);
-            insertIntermediateJoinTableValue(baseObj, false);
-        }
+        updateAssociatedTableWithFK(baseObj);
+        insertIntermediateJoinTableValue(baseObj, false);
 	}
 
 	/**
@@ -305,11 +270,9 @@ class SaveHandler extends DataHandler {
 			throws SecurityException, IllegalArgumentException, NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException {
 		putFieldsValue(baseObj, supportedFields, values);
-        if (!ignoreAssociations) {
-            putForeignKeyValue(values, baseObj);
-            for (String fkName : baseObj.getListToClearSelfFK()) {
-                values.putNull(fkName);
-            }
+        putForeignKeyValue(values, baseObj);
+        for (String fkName : baseObj.getListToClearSelfFK()) {
+            values.putNull(fkName);
         }
 	}
 
@@ -341,11 +304,9 @@ class SaveHandler extends DataHandler {
 	private void afterUpdate(DataSupport baseObj, List<Field> supportedGenericFields)
             throws InvocationTargetException, IllegalAccessException {
         updateGenericTables(baseObj, supportedGenericFields, baseObj.getBaseObjId());
-        if (!ignoreAssociations) {
-            updateAssociatedTableWithFK(baseObj);
-            insertIntermediateJoinTableValue(baseObj, true);
-            clearFKValueInAssociatedTable(baseObj);
-        }
+        updateAssociatedTableWithFK(baseObj);
+        insertIntermediateJoinTableValue(baseObj, true);
+        clearFKValueInAssociatedTable(baseObj);
 	}
 
 	/**
@@ -566,7 +527,8 @@ class SaveHandler extends DataHandler {
         for (Field field : supportedGenericFields) {
             Encrypt annotation = field.getAnnotation(Encrypt.class);
             String algorithm = null;
-            if (annotation != null && "java.lang.String".equals(getGenericTypeName(field))) {
+            String genericTypeName = getGenericTypeName(field);
+            if (annotation != null && "java.lang.String".equals(genericTypeName)) {
                 algorithm = annotation.algorithm();
             }
             field.setAccessible(true);
@@ -579,9 +541,18 @@ class SaveHandler extends DataHandler {
                     ContentValues values = new ContentValues();
                     values.put(genericValueIdColumnName, id);
                     object = encryptValue(algorithm, object);
-                    Object[] parameters = new Object[] { changeCase(DBUtility.convertToValidColumnName(field.getName())), object };
-                    Class<?>[] parameterTypes = new Class[] { String.class, getGenericTypeClass(field) };
-                    DynamicExecutor.send(values, "put", parameters, values.getClass(), parameterTypes);
+                    if (baseObj.getClass().getName().equalsIgnoreCase(genericTypeName)) {
+                        DataSupport dataSupport = (DataSupport) object;
+                        long baseObjId = dataSupport.getBaseObjId();
+                        if (baseObjId <= 0) {
+                            continue;
+                        }
+                        values.put(DBUtility.getM2MSelfRefColumnName(field), baseObjId);
+                    } else {
+                        Object[] parameters = new Object[] { changeCase(DBUtility.convertToValidColumnName(field.getName())), object };
+                        Class<?>[] parameterTypes = new Class[] { String.class, getGenericTypeClass(field) };
+                        DynamicExecutor.send(values, "put", parameters, values.getClass(), parameterTypes);
+                    }
                     mDatabase.insert(tableName, null, values);
                 }
             }

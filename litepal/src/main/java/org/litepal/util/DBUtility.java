@@ -24,6 +24,7 @@ import org.litepal.exceptions.DatabaseGenerateException;
 import org.litepal.tablemanager.model.ColumnModel;
 import org.litepal.tablemanager.model.TableModel;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -129,20 +130,16 @@ public class DBUtility {
 	 *         name or associated table name is null of empty, return null.
 	 */
 	public static String getIntermediateTableName(String tableName, String associatedTableName) {
-		if (!(TextUtils.isEmpty(tableName) || TextUtils.isEmpty(associatedTableName))) {
-			String intermediateTableName;
-			if (tableName.equalsIgnoreCase(associatedTableName)) {
-                intermediateTableName = tableName + "_selfref";
+        if (!(TextUtils.isEmpty(tableName) || TextUtils.isEmpty(associatedTableName))) {
+            String intermediateTableName;
+            if (tableName.toLowerCase(Locale.US).compareTo(associatedTableName.toLowerCase(Locale.US)) <= 0) {
+                intermediateTableName = tableName + "_" + associatedTableName;
             } else {
-                if (tableName.toLowerCase(Locale.US).compareTo(associatedTableName.toLowerCase(Locale.US)) <= 0) {
-                    intermediateTableName = tableName + "_" + associatedTableName;
-                } else {
-                    intermediateTableName = associatedTableName + "_" + tableName;
-                }
+                intermediateTableName = associatedTableName + "_" + tableName;
             }
-			return intermediateTableName;
-		}
-		return null;
+            return intermediateTableName;
+        }
+        return null;
 	}
 
     /**
@@ -168,6 +165,10 @@ public class DBUtility {
      */
     public static String getGenericValueIdColumnName(String className) {
         return BaseUtility.changeCase(getTableNameByClassName(className) + "_id");
+    }
+
+    public static String getM2MSelfRefColumnName(Field field) {
+        return BaseUtility.changeCase(field.getName() + "_id");
     }
 
 	/**

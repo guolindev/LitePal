@@ -357,7 +357,7 @@ public abstract class LitePalBase {
                 int modifiers = field.getModifiers();
                 if (!Modifier.isStatic(modifiers) && isCollection(field.getType())) {
                     String genericTypeName = getGenericTypeName(field);
-                    if (BaseUtility.isGenericTypeSupported(genericTypeName)) {
+                    if (BaseUtility.isGenericTypeSupported(genericTypeName) || clazz.getName().equalsIgnoreCase(genericTypeName)) {
                         supportedGenericFields.add(field);
                     }
                 }
@@ -456,41 +456,40 @@ public abstract class LitePalBase {
 			boolean reverseAssociations = false;
 			// Begin to check the fields of the defined
 			// class.
-			for (int i = 0; i < reverseFields.length; i++) {
-				Field reverseField = reverseFields[i];
-				if (!Modifier.isStatic(reverseField.getModifiers())) {
-					Class<?> reverseFieldTypeClass = reverseField.getType();
-					// If there's the from class name in the
-					// defined class, they are one2one bidirectional
-					// associations.
-					if (className.equals(reverseFieldTypeClass.getName())) {
-						if (action == GET_ASSOCIATIONS_ACTION) {
-							addIntoAssociationModelCollection(className, fieldTypeClass.getName(),
-									fieldTypeClass.getName(), Const.Model.ONE_TO_ONE);
-						} else if (action == GET_ASSOCIATION_INFO_ACTION) {
-							addIntoAssociationInfoCollection(className, fieldTypeClass.getName(),
-									fieldTypeClass.getName(), field, reverseField, Const.Model.ONE_TO_ONE);
-						}
-						reverseAssociations = true;
-					}
-					// If there's the from class Set or List in
-					// the defined class, they are many2one bidirectional
-					// associations.
-					else if (isCollection(reverseFieldTypeClass)) {
-						String genericTypeName = getGenericTypeName(reverseField);
-						if (className.equals(genericTypeName)) {
-							if (action == GET_ASSOCIATIONS_ACTION) {
-								addIntoAssociationModelCollection(className, fieldTypeClass.getName(),
-										className, Const.Model.MANY_TO_ONE);
-							} else if (action == GET_ASSOCIATION_INFO_ACTION) {
-								addIntoAssociationInfoCollection(className, fieldTypeClass.getName(),
-										className, field, reverseField, Const.Model.MANY_TO_ONE);
-							}
-							reverseAssociations = true;
-						}
-					}
-				}
-			}
+            for (Field reverseField : reverseFields) {
+                if (!Modifier.isStatic(reverseField.getModifiers())) {
+                    Class<?> reverseFieldTypeClass = reverseField.getType();
+                    // If there's the from class name in the
+                    // defined class, they are one2one bidirectional
+                    // associations.
+                    if (className.equals(reverseFieldTypeClass.getName())) {
+                        if (action == GET_ASSOCIATIONS_ACTION) {
+                            addIntoAssociationModelCollection(className, fieldTypeClass.getName(),
+                                    fieldTypeClass.getName(), Const.Model.ONE_TO_ONE);
+                        } else if (action == GET_ASSOCIATION_INFO_ACTION) {
+                            addIntoAssociationInfoCollection(className, fieldTypeClass.getName(),
+                                    fieldTypeClass.getName(), field, reverseField, Const.Model.ONE_TO_ONE);
+                        }
+                        reverseAssociations = true;
+                    }
+                    // If there's the from class Set or List in
+                    // the defined class, they are many2one bidirectional
+                    // associations.
+                    else if (isCollection(reverseFieldTypeClass)) {
+                        String genericTypeName = getGenericTypeName(reverseField);
+                        if (className.equals(genericTypeName)) {
+                            if (action == GET_ASSOCIATIONS_ACTION) {
+                                addIntoAssociationModelCollection(className, fieldTypeClass.getName(),
+                                        className, Const.Model.MANY_TO_ONE);
+                            } else if (action == GET_ASSOCIATION_INFO_ACTION) {
+                                addIntoAssociationInfoCollection(className, fieldTypeClass.getName(),
+                                        className, field, reverseField, Const.Model.MANY_TO_ONE);
+                            }
+                            reverseAssociations = true;
+                        }
+                    }
+                }
+            }
             // If there's no from class in the defined class, they are
             // one2one unidirectional associations.
             if (!reverseAssociations) {
@@ -542,43 +541,53 @@ public abstract class LitePalBase {
 				// Look up if there's a reverse association
 				// definition in the reverse class.
 				boolean reverseAssociations = false;
-				for (int i = 0; i < reverseFields.length; i++) {
-					Field reverseField = reverseFields[i];
-					// Only map private fields
-					if (!Modifier.isStatic(reverseField.getModifiers())) {
-						Class<?> reverseFieldTypeClass = reverseField.getType();
-						// If there's a from class name defined in the reverse
-						// class, they are many2one bidirectional
-						// associations.
-						if (className.equals(reverseFieldTypeClass.getName())) {
-							if (action == GET_ASSOCIATIONS_ACTION) {
-								addIntoAssociationModelCollection(className, genericTypeName,
-										genericTypeName, Const.Model.MANY_TO_ONE);
-							} else if (action == GET_ASSOCIATION_INFO_ACTION) {
-								addIntoAssociationInfoCollection(className, genericTypeName, genericTypeName,
-										field, reverseField, Const.Model.MANY_TO_ONE);
-							}
-							reverseAssociations = true;
-						}
-						// If there's a List or Set contains from class name
-						// defined in the reverse class, they are many2many
-						// association.
-						else if (isCollection(reverseFieldTypeClass)) {
-							String reverseGenericTypeName = getGenericTypeName(reverseField);
-							if (className.equals(reverseGenericTypeName)) {
-								if (action == GET_ASSOCIATIONS_ACTION) {
-									addIntoAssociationModelCollection(className, genericTypeName, null,
-											Const.Model.MANY_TO_MANY);
-								} else if (action == GET_ASSOCIATION_INFO_ACTION) {
-									addIntoAssociationInfoCollection(className, genericTypeName, null, field,
-											reverseField, Const.Model.MANY_TO_MANY);
-								}
-								reverseAssociations = true;
-							}
-						}
-
-					}
-				}
+                for (Field reverseField : reverseFields) {
+                    // Only map private fields
+                    if (!Modifier.isStatic(reverseField.getModifiers())) {
+                        Class<?> reverseFieldTypeClass = reverseField.getType();
+                        // If there's a from class name defined in the reverse
+                        // class, they are many2one bidirectional
+                        // associations.
+                        if (className.equals(reverseFieldTypeClass.getName())) {
+                            if (action == GET_ASSOCIATIONS_ACTION) {
+                                addIntoAssociationModelCollection(className, genericTypeName,
+                                        genericTypeName, Const.Model.MANY_TO_ONE);
+                            } else if (action == GET_ASSOCIATION_INFO_ACTION) {
+                                addIntoAssociationInfoCollection(className, genericTypeName, genericTypeName,
+                                        field, reverseField, Const.Model.MANY_TO_ONE);
+                            }
+                            reverseAssociations = true;
+                        }
+                        // If there's a List or Set contains from class name
+                        // defined in the reverse class, they are many2many
+                        // association.
+                        else if (isCollection(reverseFieldTypeClass)) {
+                            String reverseGenericTypeName = getGenericTypeName(reverseField);
+                            if (className.equals(reverseGenericTypeName)) {
+                                if (action == GET_ASSOCIATIONS_ACTION) {
+                                    if (className.equalsIgnoreCase(genericTypeName)) {
+                                        // This is M2M self association condition. Regard as generic model condition.
+                                        GenericModel genericModel = new GenericModel();
+                                        genericModel.setTableName(DBUtility.getGenericTableName(className, field.getName()));
+                                        genericModel.setValueColumnName(DBUtility.getM2MSelfRefColumnName(field));
+                                        genericModel.setValueColumnType("integer");
+                                        genericModel.setValueIdColumnName(DBUtility.getGenericValueIdColumnName(className));
+                                        mGenericModels.add(genericModel);
+                                    } else {
+                                        addIntoAssociationModelCollection(className, genericTypeName, null,
+                                                Const.Model.MANY_TO_MANY);
+                                    }
+                                } else if (action == GET_ASSOCIATION_INFO_ACTION) {
+                                    if (!className.equalsIgnoreCase(genericTypeName)) {
+                                        addIntoAssociationInfoCollection(className, genericTypeName, null, field,
+                                                reverseField, Const.Model.MANY_TO_MANY);
+                                    }
+                                }
+                                reverseAssociations = true;
+                            }
+                        }
+                    }
+                }
                 // If there's no from class in the defined class, they
                 // are many2one unidirectional associations.
                 if (!reverseAssociations) {
@@ -591,10 +600,6 @@ public abstract class LitePalBase {
                     }
                 }
 			} else if(BaseUtility.isGenericTypeSupported(genericTypeName) && action == GET_ASSOCIATIONS_ACTION) {
-                Column annotation = field.getAnnotation(Column.class);
-                if (annotation != null && annotation.ignore()) {
-                    return;
-                }
                 GenericModel genericModel = new GenericModel();
                 genericModel.setTableName(DBUtility.getGenericTableName(className, field.getName()));
                 genericModel.setValueColumnName(DBUtility.convertToValidColumnName(field.getName()));
