@@ -541,8 +541,11 @@ class SaveHandler extends DataHandler {
                     ContentValues values = new ContentValues();
                     values.put(genericValueIdColumnName, id);
                     object = encryptValue(algorithm, object);
-                    if (baseObj.getClass().getName().equalsIgnoreCase(genericTypeName)) {
+                    if (baseObj.getClassName().equals(genericTypeName)) {
                         DataSupport dataSupport = (DataSupport) object;
+                        if (dataSupport == null) {
+                            continue;
+                        }
                         long baseObjId = dataSupport.getBaseObjId();
                         if (baseObjId <= 0) {
                             continue;

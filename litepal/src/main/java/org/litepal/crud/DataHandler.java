@@ -28,9 +28,9 @@ import org.litepal.exceptions.DataSupportException;
 import org.litepal.exceptions.DatabaseGenerateException;
 import org.litepal.tablemanager.model.GenericModel;
 import org.litepal.util.BaseUtility;
-import org.litepal.util.cipher.CipherUtil;
 import org.litepal.util.Const;
 import org.litepal.util.DBUtility;
+import org.litepal.util.cipher.CipherUtil;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -783,10 +783,16 @@ abstract class DataHandler extends LitePalBase {
             Cursor cursor = null;
             GenericModel genericModel = genericModelMap.get(field);
             if (genericModel == null) {
+                String genericTypeName = getGenericTypeName(field);
+                if (baseObj.getClassName().equals(genericTypeName)) {
+                    genericValueColumnName = DBUtility.getM2MSelfRefColumnName(field);
+                    getMethodName = "getLong";
+                } else {
+                    genericValueColumnName = DBUtility.convertToValidColumnName(field.getName());
+                    getMethodName = genGetColumnMethod(field);
+                }
                 tableName = DBUtility.getGenericTableName(baseObj.getClassName(), field.getName());
-                genericValueColumnName = DBUtility.convertToValidColumnName(field.getName());
                 genericValueIdColumnName = DBUtility.getGenericValueIdColumnName(baseObj.getClassName());
-                getMethodName = genGetColumnMethod(field);
                 GenericModel model = new GenericModel();
                 model.setTableName(tableName);
                 model.setValueColumnName(genericValueColumnName);
@@ -1376,9 +1382,16 @@ abstract class DataHandler extends LitePalBase {
                 }
                 DynamicExecutor.setField(modelInstance, field.getName(), collection, modelInstance.getClass());
             }
-            Encrypt annotation = field.getAnnotation(Encrypt.class);
-            if (annotation != null && "java.lang.String".equals(getGenericTypeName(field))) {
-                value = decryptValue(annotation.algorithm(), value);
+            String genericTypeName = getGenericTypeName(field);
+            if ("java.lang.String".equals(genericTypeName)) {
+                Encrypt annotation = field.getAnnotation(Encrypt.class);
+                if (annotation != null) {
+                    value = decryptValue(annotation.algorithm(), value);
+                }
+            } else if (modelInstance.getClass().getName().equals(genericTypeName)) {
+                if (value instanceof Long || value instanceof Integer) {
+                    value = DataSupport.find(modelInstance.getClass(), (long) value);
+                }
             }
             collection.add(value);
         } else {
