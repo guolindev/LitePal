@@ -21,7 +21,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import org.litepal.annotation.Encrypt;
 import org.litepal.crud.model.AssociationsInfo;
-import org.litepal.exceptions.DataSupportException;
+import org.litepal.exceptions.LitePalSupportException;
 import org.litepal.util.DBUtility;
 
 import java.lang.reflect.Field;
@@ -44,7 +44,7 @@ import static org.litepal.util.BaseUtility.changeCase;
  * @author Tony Green
  * @since 1.1
  */
-class SaveHandler extends DataHandler {
+public class SaveHandler extends DataHandler {
 
     private ContentValues values;
 
@@ -55,7 +55,7 @@ class SaveHandler extends DataHandler {
 	 * @param db
 	 *            The instance of SQLiteDatabase.
 	 */
-	SaveHandler(SQLiteDatabase db) {
+    public SaveHandler(SQLiteDatabase db) {
         values = new ContentValues();
 		mDatabase = db;
 	}
@@ -333,7 +333,7 @@ class SaveHandler extends DataHandler {
 	 */
 	private void throwIfSaveFailed(long id) {
 		if (id == -1) {
-			throw new DataSupportException(DataSupportException.SAVE_FAILED);
+			throw new LitePalSupportException(LitePalSupportException.SAVE_FAILED);
 		}
 	}
 
@@ -359,7 +359,7 @@ class SaveHandler extends DataHandler {
 				giveModelIdValue(baseObj, idField.getName(), idField.getType(), id);
 			}
 		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage(), e);
+			throw new LitePalSupportException(e.getMessage(), e);
 		}
 	}
 
@@ -390,7 +390,7 @@ class SaveHandler extends DataHandler {
 			} else if (idType == long.class || idType == Long.class) {
 				value = id;
 			} else {
-				throw new DataSupportException(DataSupportException.ID_TYPE_INVALID_EXCEPTION);
+				throw new LitePalSupportException(LitePalSupportException.ID_TYPE_INVALID_EXCEPTION);
 			}
 			DynamicExecutor.setField(baseObj, idName, value, baseObj.getClass());
 		}

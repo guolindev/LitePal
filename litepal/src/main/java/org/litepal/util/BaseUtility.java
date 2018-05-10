@@ -20,7 +20,7 @@ import android.content.res.AssetManager;
 import android.text.TextUtils;
 
 import org.litepal.LitePalApplication;
-import org.litepal.exceptions.DataSupportException;
+import org.litepal.exceptions.LitePalSupportException;
 import org.litepal.parser.LitePalAttr;
 
 import java.io.IOException;
@@ -138,12 +138,12 @@ public class BaseUtility {
 	/**
 	 * Check the number of question mark existed in conditions[0] equals the
 	 * number of rest conditions elements or not. If not equals, throws
-	 * DataSupportException.
+	 * LitePalSupportException.
 	 * 
 	 * @param conditions
 	 *            A string array representing the WHERE part of an SQL
 	 *            statement.
-	 * @throws org.litepal.exceptions.DataSupportException
+	 * @throws LitePalSupportException
 	 */
 	public static void checkConditionsCorrect(String... conditions) {
 		if (conditions != null) {
@@ -152,7 +152,7 @@ public class BaseUtility {
 				String whereClause = conditions[0];
 				int placeHolderSize = BaseUtility.count(whereClause, "?");
 				if (conditionsSize != placeHolderSize + 1) {
-					throw new DataSupportException(DataSupportException.UPDATE_CONDITIONS_EXCEPTION);
+					throw new LitePalSupportException(LitePalSupportException.UPDATE_CONDITIONS_EXCEPTION);
 				}
 			}
 		}

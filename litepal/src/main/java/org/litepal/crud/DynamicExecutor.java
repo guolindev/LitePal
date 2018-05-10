@@ -20,7 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.litepal.exceptions.DataSupportException;
+import org.litepal.exceptions.LitePalSupportException;
 
 /**
  * This provides a send method to allow calling method in dynamic way. (Just
@@ -72,7 +72,7 @@ class DynamicExecutor {
 			method.setAccessible(true);
 			return method.invoke(object, parameters);
 		} catch (NoSuchMethodException e) {
-			throw new DataSupportException(DataSupportException.noSuchMethodException(
+			throw new LitePalSupportException(LitePalSupportException.noSuchMethodException(
 					objectClass.getSimpleName(), methodName), e);
 		}
 	}
@@ -104,7 +104,7 @@ class DynamicExecutor {
 	static void setField(Object object, String fieldName, Object value, Class<?> objectClass)
 			throws SecurityException, IllegalArgumentException, IllegalAccessException {
         if (objectClass == DataSupport.class || objectClass == Object.class) {
-            throw new DataSupportException(DataSupportException.noSuchFieldExceptioin(
+            throw new LitePalSupportException(LitePalSupportException.noSuchFieldExceptioin(
                     objectClass.getSimpleName(), fieldName));
         }
 		try {
@@ -132,7 +132,7 @@ class DynamicExecutor {
 	static Object getField(Object object, String fieldName, Class<?> objectClass)
 			throws IllegalArgumentException, IllegalAccessException {
         if (objectClass == DataSupport.class || objectClass == Object.class) {
-            throw new DataSupportException(DataSupportException.noSuchFieldExceptioin(
+            throw new LitePalSupportException(LitePalSupportException.noSuchFieldExceptioin(
                     objectClass.getSimpleName(), fieldName));
         }
 		try {

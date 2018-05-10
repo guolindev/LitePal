@@ -18,12 +18,12 @@ package org.litepal.exceptions;
 
 /**
  * When LitePal deals with CRUD actions of DataSupport, it may throw
- * DataSupportException.
+ * LitePalSupportException.
  * 
  * @author Tony Green
  * @since 1.1
  */
-public class DataSupportException extends RuntimeException {
+public class LitePalSupportException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -59,24 +59,24 @@ public class DataSupportException extends RuntimeException {
 	public static final String UPDATE_CONDITIONS_EXCEPTION = "The parameters in conditions are incorrect.";
 
 	/**
-	 * Constructor of DataSupportException.
+	 * Constructor of LitePalSupportException.
 	 * 
 	 * @param errorMessage
 	 *            the description of this exception.
 	 */
-	public DataSupportException(String errorMessage) {
+	public LitePalSupportException(String errorMessage) {
 		super(errorMessage);
 	}
 
     /**
-     * Constructor of DataSupportException.
+     * Constructor of LitePalSupportException.
      *
      * @param errorMessage
      *            the description of this exception.
      * @param throwable
      *            the cause of this exception.
      */
-    public DataSupportException(String errorMessage, Throwable throwable) {
+    public LitePalSupportException(String errorMessage, Throwable throwable) {
         super(errorMessage, throwable);
     }
 

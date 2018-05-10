@@ -30,7 +30,7 @@ import android.database.sqlite.SQLiteDatabase;
  * @author Tony Green
  * @since 1.1
  */
-class QueryHandler extends DataHandler {
+public class QueryHandler extends DataHandler {
 
 	/**
 	 * Initialize {@link org.litepal.crud.DataHandler#mDatabase} for operating database. Do not
@@ -39,7 +39,7 @@ class QueryHandler extends DataHandler {
 	 * @param db
 	 *            The instance of SQLiteDatabase.
 	 */
-	QueryHandler(SQLiteDatabase db) {
+    public QueryHandler(SQLiteDatabase db) {
 		mDatabase = db;
 	}
 
@@ -55,7 +55,7 @@ class QueryHandler extends DataHandler {
 	 *            True to load the associated models, false not.
 	 * @return An object with found data from database, or null.
 	 */
-	<T> T onFind(Class<T> modelClass, long id, boolean isEager) {
+    public <T> T onFind(Class<T> modelClass, long id, boolean isEager) {
 		List<T> dataList = query(modelClass, null, "id = ?", new String[] { String.valueOf(id) },
 				null, null, null, null, getForeignKeyAssociations(modelClass.getName(), isEager));
 		if (dataList.size() > 0) {
@@ -74,7 +74,7 @@ class QueryHandler extends DataHandler {
 	 *            True to load the associated models, false not.
 	 * @return An object with data of first row, or null.
 	 */
-	<T> T onFindFirst(Class<T> modelClass, boolean isEager) {
+    public <T> T onFindFirst(Class<T> modelClass, boolean isEager) {
 		List<T> dataList = query(modelClass, null, null, null, null, null, "id", "1",
 				getForeignKeyAssociations(modelClass.getName(), isEager));
 		if (dataList.size() > 0) {
@@ -93,7 +93,7 @@ class QueryHandler extends DataHandler {
 	 *            True to load the associated models, false not.
 	 * @return An object with data of last row, or null.
 	 */
-	<T> T onFindLast(Class<T> modelClass, boolean isEager) {
+    public <T> T onFindLast(Class<T> modelClass, boolean isEager) {
 		List<T> dataList = query(modelClass, null, null, null, null, null, "id desc", "1",
 				getForeignKeyAssociations(modelClass.getName(), isEager));
 		if (dataList.size() > 0) {
@@ -114,7 +114,7 @@ class QueryHandler extends DataHandler {
 	 *            Which records to query. Or do not pass it to find all records.
 	 * @return An object list with found data from database, or an empty list.
 	 */
-	<T> List<T> onFindAll(Class<T> modelClass, boolean isEager, long... ids) {
+    public <T> List<T> onFindAll(Class<T> modelClass, boolean isEager, long... ids) {
 		List<T> dataList;
 		if (isAffectAllLines(ids)) {
 			dataList = query(modelClass, null, null, null, null, null, "id", null,
@@ -149,7 +149,7 @@ class QueryHandler extends DataHandler {
 	 *            True to load the associated models, false not.
 	 * @return An object list with found data from database, or an empty list.
 	 */
-	<T> List<T> onFind(Class<T> modelClass, String[] columns, String[] conditions, String orderBy,
+	public <T> List<T> onFind(Class<T> modelClass, String[] columns, String[] conditions, String orderBy,
 			String limit, boolean isEager) {
 		BaseUtility.checkConditionsCorrect(conditions);
         if (conditions != null && conditions.length > 0) {
@@ -172,7 +172,7 @@ class QueryHandler extends DataHandler {
 	 *            WHERE clause. Passing null will return all rows.
 	 * @return Count of the specified table.
 	 */
-	int onCount(String tableName, String[] conditions) {
+    public int onCount(String tableName, String[] conditions) {
         BaseUtility.checkConditionsCorrect(conditions);
         if (conditions != null && conditions.length > 0) {
             conditions[0] = DBUtility.convertWhereClauseToColumnName(conditions[0]);
@@ -193,7 +193,7 @@ class QueryHandler extends DataHandler {
 	 *            WHERE clause. Passing null will return all rows.
 	 * @return The average value on a given column.
 	 */
-	double onAverage(String tableName, String column, String[] conditions) {
+    public double onAverage(String tableName, String column, String[] conditions) {
         BaseUtility.checkConditionsCorrect(conditions);
         if (conditions != null && conditions.length > 0) {
             conditions[0] = DBUtility.convertWhereClauseToColumnName(conditions[0]);
@@ -217,7 +217,7 @@ class QueryHandler extends DataHandler {
 	 *            The type of the based on column.
 	 * @return The maximum value on a given column.
 	 */
-	<T> T onMax(String tableName, String column, String[] conditions, Class<T> type) {
+    public <T> T onMax(String tableName, String column, String[] conditions, Class<T> type) {
         BaseUtility.checkConditionsCorrect(conditions);
         if (conditions != null && conditions.length > 0) {
             conditions[0] = DBUtility.convertWhereClauseToColumnName(conditions[0]);
@@ -240,7 +240,7 @@ class QueryHandler extends DataHandler {
 	 *            The type of the based on column.
 	 * @return The minimum value on a given column.
 	 */
-	<T> T onMin(String tableName, String column, String[] conditions, Class<T> type) {
+    public <T> T onMin(String tableName, String column, String[] conditions, Class<T> type) {
         BaseUtility.checkConditionsCorrect(conditions);
         if (conditions != null && conditions.length > 0) {
             conditions[0] = DBUtility.convertWhereClauseToColumnName(conditions[0]);
@@ -263,7 +263,7 @@ class QueryHandler extends DataHandler {
 	 *            The type of the based on column.
 	 * @return The sum value on a given column.
 	 */
-	<T> T onSum(String tableName, String column, String[] conditions, Class<T> type) {
+    public <T> T onSum(String tableName, String column, String[] conditions, Class<T> type) {
         BaseUtility.checkConditionsCorrect(conditions);
         if (conditions != null && conditions.length > 0) {
             conditions[0] = DBUtility.convertWhereClauseToColumnName(conditions[0]);

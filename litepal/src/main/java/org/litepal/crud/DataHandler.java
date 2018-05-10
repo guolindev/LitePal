@@ -24,7 +24,7 @@ import android.util.SparseArray;
 import org.litepal.LitePalBase;
 import org.litepal.annotation.Encrypt;
 import org.litepal.crud.model.AssociationsInfo;
-import org.litepal.exceptions.DataSupportException;
+import org.litepal.exceptions.LitePalSupportException;
 import org.litepal.exceptions.DatabaseGenerateException;
 import org.litepal.tablemanager.model.GenericModel;
 import org.litepal.util.BaseUtility;
@@ -150,7 +150,7 @@ abstract class DataHandler extends LitePalBase {
 			}
 			return dataList;
 		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage(), e);
+			throw new LitePalSupportException(e.getMessage(), e);
 		} finally {
 			if (cursor != null) {
 				cursor.close();
@@ -188,7 +188,7 @@ abstract class DataHandler extends LitePalBase {
 				result = (T) method.invoke(cursor, 0);
 			}
 		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage(), e);
+			throw new LitePalSupportException(e.getMessage(), e);
 		} finally {
 			if (cursor != null) {
 				cursor.close();
@@ -398,7 +398,7 @@ abstract class DataHandler extends LitePalBase {
 				}
 			}
 		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage(), e);
+			throw new LitePalSupportException(e.getMessage(), e);
 		}
 	}
 	
@@ -471,9 +471,9 @@ abstract class DataHandler extends LitePalBase {
 			throw new DatabaseGenerateException(DatabaseGenerateException.CLASS_NOT_FOUND
 					+ className);
 		} catch (InstantiationException e) {
-			throw new DataSupportException(className + DataSupportException.INSTANTIATION_EXCEPTION, e);
+			throw new LitePalSupportException(className + LitePalSupportException.INSTANTIATION_EXCEPTION, e);
 		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage(), e);
+			throw new LitePalSupportException(e.getMessage(), e);
 		}
 	}
 
@@ -632,7 +632,7 @@ abstract class DataHandler extends LitePalBase {
 			Constructor<?> constructor = findBestSuitConstructor(modelClass);
 			return constructor.newInstance(getConstructorParams(modelClass, constructor));
 		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage(), e);
+			throw new LitePalSupportException(e.getMessage(), e);
 		}
 	}
 
@@ -1035,7 +1035,7 @@ abstract class DataHandler extends LitePalBase {
 
 	/**
 	 * Analyze the passed in field. Check if this field is with default value.
-	 * The baseObj need a default constructor or {@link DataSupportException}
+	 * The baseObj need a default constructor or {@link LitePalSupportException}
 	 * will be thrown.
 	 * 
 	 * @param baseObj
@@ -1050,7 +1050,7 @@ abstract class DataHandler extends LitePalBase {
 	 * @throws NoSuchMethodException
 	 * @throws java.lang.reflect.InvocationTargetException
 	 * @throws DatabaseGenerateException
-	 * @throws DataSupportException
+	 * @throws LitePalSupportException
 	 */
 	private boolean isFieldWithDefaultValue(DataSupport baseObj, Field field)
 			throws IllegalAccessException, SecurityException, IllegalArgumentException,
@@ -1341,7 +1341,7 @@ abstract class DataHandler extends LitePalBase {
                     genericModelMap.clear();
 				}
 			} catch (Exception e) {
-				throw new DataSupportException(e.getMessage(), e);
+				throw new LitePalSupportException(e.getMessage(), e);
 			} finally {
 				if (cursor != null) {
 					cursor.close();

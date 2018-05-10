@@ -22,7 +22,7 @@ import android.os.Build;
 
 import org.litepal.annotation.Encrypt;
 import org.litepal.crud.model.AssociationsInfo;
-import org.litepal.exceptions.DataSupportException;
+import org.litepal.exceptions.LitePalSupportException;
 import org.litepal.util.BaseUtility;
 import org.litepal.util.DBUtility;
 
@@ -44,7 +44,7 @@ import static org.litepal.util.BaseUtility.changeCase;
  * @author Tony Green
  * @since 1.1
  */
-class UpdateHandler extends DataHandler {
+public class UpdateHandler extends DataHandler {
 
 	/**
 	 * Initialize {@link org.litepal.crud.DataHandler#mDatabase} for operating database. Do not
@@ -53,7 +53,7 @@ class UpdateHandler extends DataHandler {
 	 * @param db
 	 *            The instance of SQLiteDatabase.
 	 */
-	UpdateHandler(SQLiteDatabase db) {
+    public UpdateHandler(SQLiteDatabase db) {
 		mDatabase = db;
 	}
 
@@ -101,7 +101,7 @@ class UpdateHandler extends DataHandler {
 	 *            value that will be translated to NULL.
 	 * @return The number of rows affected.
 	 */
-	int onUpdate(Class<?> modelClass, long id, ContentValues values) {
+    public int onUpdate(Class<?> modelClass, long id, ContentValues values) {
 		if (values.size() > 0) {
             convertContentValues(values);
             return mDatabase.update(getTableName(modelClass), values, "id = " + id, null);
@@ -171,7 +171,7 @@ class UpdateHandler extends DataHandler {
 	 *            value that will be translated to NULL.
 	 * @return The number of rows affected.
 	 */
-	int onUpdateAll(String tableName, ContentValues values, String... conditions) {
+    public int onUpdateAll(String tableName, ContentValues values, String... conditions) {
         BaseUtility.checkConditionsCorrect(conditions);
         if (conditions != null && conditions.length > 0) {
             conditions[0] = DBUtility.convertWhereClauseToColumnName(conditions[0]);
@@ -183,7 +183,7 @@ class UpdateHandler extends DataHandler {
 	/**
 	 * Do the action for updating multiple rows. It will check the validity of
 	 * conditions, then update rows in database. If the format of conditions is
-	 * invalid, throw DataSupportException.
+	 * invalid, throw LitePalSupportException.
 	 * 
 	 * @param tableName
 	 *            Which table to delete from.
@@ -248,10 +248,10 @@ class UpdateHandler extends DataHandler {
 				}
 			}
 		} catch (NoSuchFieldException e) {
-			throw new DataSupportException(DataSupportException.noSuchFieldExceptioin(
+			throw new LitePalSupportException(LitePalSupportException.noSuchFieldExceptioin(
 					baseObj.getClassName(), fieldName), e);
 		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage(), e);
+			throw new LitePalSupportException(e.getMessage(), e);
 		}
 	}
 
@@ -281,7 +281,7 @@ class UpdateHandler extends DataHandler {
 					.getClassName());
 			analyzeAssociatedModels(baseObj, associationInfos);
 		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage(), e);
+			throw new LitePalSupportException(e.getMessage(), e);
 		}
 	}
 

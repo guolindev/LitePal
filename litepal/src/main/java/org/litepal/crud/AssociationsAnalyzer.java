@@ -24,7 +24,7 @@ import java.util.HashSet;
 
 import org.litepal.LitePalBase;
 import org.litepal.crud.model.AssociationsInfo;
-import org.litepal.exceptions.DataSupportException;
+import org.litepal.exceptions.LitePalSupportException;
 import org.litepal.util.DBUtility;
 
 /**
@@ -98,7 +98,7 @@ abstract class AssociationsAnalyzer extends DataHandler {
 	 * @param associatedField
 	 *            The field to decide which type to initialize for associated
 	 *            model collection.
-	 * @throws DataSupportException
+	 * @throws LitePalSupportException
 	 */
 	protected Collection<DataSupport> checkAssociatedModelCollection(
 			Collection<DataSupport> associatedModelCollection, Field associatedField) {
@@ -108,7 +108,7 @@ abstract class AssociationsAnalyzer extends DataHandler {
 		} else if (isSet(associatedField.getType())) {
 			collection = new HashSet<DataSupport>();
 		} else {
-			throw new DataSupportException(DataSupportException.WRONG_FIELD_TYPE_FOR_ASSOCIATIONS);
+			throw new LitePalSupportException(LitePalSupportException.WRONG_FIELD_TYPE_FOR_ASSOCIATIONS);
 		}
 		if (associatedModelCollection != null) {
 			collection.addAll(associatedModelCollection);

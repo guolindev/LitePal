@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.litepal.crud.model.AssociationsInfo;
-import org.litepal.exceptions.DataSupportException;
+import org.litepal.exceptions.LitePalSupportException;
 import org.litepal.util.BaseUtility;
 import org.litepal.util.Const;
 import org.litepal.util.DBUtility;
@@ -42,7 +42,7 @@ import android.text.TextUtils;
  * @author Tony Green
  * @since 1.1
  */
-class DeleteHandler extends DataHandler {
+public class DeleteHandler extends DataHandler {
 
 	/**
 	 * To store associated tables of current model's table. Only used while
@@ -57,7 +57,7 @@ class DeleteHandler extends DataHandler {
 	 * @param db
 	 *            The instance of SQLiteDatabase.
 	 */
-	DeleteHandler(SQLiteDatabase db) {
+    public DeleteHandler(SQLiteDatabase db) {
 		mDatabase = db;
 	}
 
@@ -100,7 +100,7 @@ class DeleteHandler extends DataHandler {
 	 *            Which record to delete.
 	 * @return The number of rows affected. Including cascade delete rows.
 	 */
-	int onDelete(Class<?> modelClass, long id) {
+    public int onDelete(Class<?> modelClass, long id) {
         List<Field> supportedGenericFields = getSupportedGenericFields(modelClass.getName());
         deleteGenericData(modelClass, supportedGenericFields, id);
 		analyzeAssociations(modelClass);
@@ -123,7 +123,7 @@ class DeleteHandler extends DataHandler {
 	 *            statement.
 	 * @return The number of rows affected.
 	 */
-	int onDeleteAll(String tableName, String... conditions) {
+	public int onDeleteAll(String tableName, String... conditions) {
 		BaseUtility.checkConditionsCorrect(conditions);
         if (conditions != null && conditions.length > 0) {
             conditions[0] = DBUtility.convertWhereClauseToColumnName(conditions[0]);
@@ -133,7 +133,7 @@ class DeleteHandler extends DataHandler {
 	}
 
     @SuppressWarnings("unchecked")
-	int onDeleteAll(Class<?> modelClass, String... conditions) {
+    public int onDeleteAll(Class<?> modelClass, String... conditions) {
 		BaseUtility.checkConditionsCorrect(conditions);
         if (conditions != null && conditions.length > 0) {
             conditions[0] = DBUtility.convertWhereClauseToColumnName(conditions[0]);
@@ -254,7 +254,7 @@ class DeleteHandler extends DataHandler {
 			analyzeAssociatedModels(baseObj, associationInfos);
 			return associationInfos;
 		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage(), e);
+			throw new LitePalSupportException(e.getMessage(), e);
 		}
 	}
 
@@ -293,7 +293,7 @@ class DeleteHandler extends DataHandler {
 				}
 			}
 		} catch (Exception e) {
-			throw new DataSupportException(e.getMessage(), e);
+			throw new LitePalSupportException(e.getMessage(), e);
 		}
 	}
 
