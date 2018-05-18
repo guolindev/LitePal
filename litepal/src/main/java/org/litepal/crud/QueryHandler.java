@@ -24,7 +24,7 @@ import org.litepal.util.DBUtility;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
- * This is a component under DataSupport. It deals with query stuff as primary
+ * This is a component under LitePalSupport. It deals with query stuff as primary
  * task.
  * 
  * @author Tony Green

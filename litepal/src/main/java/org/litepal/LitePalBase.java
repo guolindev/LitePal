@@ -18,6 +18,7 @@ package org.litepal;
 
 import org.litepal.annotation.Column;
 import org.litepal.crud.DataSupport;
+import org.litepal.crud.LitePalSupport;
 import org.litepal.crud.model.AssociationsInfo;
 import org.litepal.exceptions.DatabaseGenerateException;
 import org.litepal.parser.LitePalAttr;
@@ -320,7 +321,7 @@ public abstract class LitePalBase {
     }
 
     private void recursiveSupportedFields(Class<?> clazz, List<Field> supportedFields) {
-        if (clazz == DataSupport.class || clazz == Object.class) {
+        if (clazz == LitePalSupport.class || clazz == Object.class) {
             return;
         }
         Field[] fields = clazz.getDeclaredFields();
@@ -344,7 +345,7 @@ public abstract class LitePalBase {
     }
 
     private void recursiveSupportedGenericFields(Class<?> clazz, List<Field> supportedGenericFields) {
-        if (clazz == DataSupport.class || clazz == Object.class) {
+        if (clazz == LitePalSupport.class || clazz == DataSupport.class || clazz == Object.class) {
             return;
         }
         Field[] fields = clazz.getDeclaredFields();

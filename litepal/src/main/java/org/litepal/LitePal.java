@@ -1577,8 +1577,7 @@ public class LitePal {
         db.beginTransaction();
         try {
             SaveHandler saveHandler = new SaveHandler(db);
-//            saveHandler.onSaveAll(collection);
-            // TODO
+            saveHandler.onSaveAll(collection);
             db.setTransactionSuccessful();
         } catch (Exception e) {
             throw new LitePalSupportException(e.getMessage(), e);

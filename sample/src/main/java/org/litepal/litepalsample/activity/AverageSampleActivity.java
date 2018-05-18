@@ -16,10 +16,6 @@
 
 package org.litepal.litepalsample.activity;
 
-import org.litepal.crud.DataSupport;
-import org.litepal.litepalsample.R;
-import org.litepal.litepalsample.model.Singer;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -29,6 +25,10 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import org.litepal.LitePal;
+import org.litepal.litepalsample.R;
+import org.litepal.litepalsample.model.Singer;
 
 public class AverageSampleActivity extends Activity implements OnClickListener {
 
@@ -62,12 +62,12 @@ public class AverageSampleActivity extends Activity implements OnClickListener {
 		double result = 0;
 		switch (view.getId()) {
 		case R.id.avg_btn1:
-			result = DataSupport.average(Singer.class, "age");
+			result = LitePal.average(Singer.class, "age");
 			mResultText.setText(String.valueOf(result));
 			break;
 		case R.id.avg_btn2:
 			try {
-				result = DataSupport.where("age > ?", mAgeEdit.getText().toString()).average(
+				result = LitePal.where("age > ?", mAgeEdit.getText().toString()).average(
 						Singer.class, "age");
 				mResultText.setText(String.valueOf(result));
 			} catch (Exception e) {

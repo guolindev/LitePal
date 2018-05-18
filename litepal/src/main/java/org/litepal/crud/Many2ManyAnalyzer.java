@@ -43,7 +43,7 @@ public class Many2ManyAnalyzer extends AssociationsAnalyzer {
 	 * associations in class files but developer has only build unidirectional
 	 * associations in models, it will force to build the bidirectional
 	 * associations. Besides the
-	 * {@link org.litepal.crud.DataSupport#addAssociatedModelForJoinTable(String, long)} will be called
+	 * {@link LitePalSupport#addAssociatedModelForJoinTable(String, long)} will be called
 	 * here to put right values into tables.
 	 * 
 	 * @param baseObj
@@ -57,16 +57,16 @@ public class Many2ManyAnalyzer extends AssociationsAnalyzer {
 	 * @throws IllegalAccessException
 	 * @throws java.lang.reflect.InvocationTargetException
 	 */
-	void analyze(DataSupport baseObj, AssociationsInfo associationInfo) throws SecurityException,
+	void analyze(LitePalSupport baseObj, AssociationsInfo associationInfo) throws SecurityException,
 			IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
 			InvocationTargetException {
-		Collection<DataSupport> associatedModels = getAssociatedModels(baseObj, associationInfo);
+		Collection<LitePalSupport> associatedModels = getAssociatedModels(baseObj, associationInfo);
 		declareAssociations(baseObj, associationInfo);
 		if (associatedModels != null) {
-			for (DataSupport associatedModel : associatedModels) {
-				Collection<DataSupport> tempCollection = getReverseAssociatedModels(
+			for (LitePalSupport associatedModel : associatedModels) {
+				Collection<LitePalSupport> tempCollection = getReverseAssociatedModels(
 						associatedModel, associationInfo);
-				Collection<DataSupport> reverseAssociatedModels = checkAssociatedModelCollection(
+				Collection<LitePalSupport> reverseAssociatedModels = checkAssociatedModelCollection(
 						tempCollection, associationInfo.getAssociateSelfFromOtherModel());
 				addNewModelForAssociatedModel(reverseAssociatedModels, baseObj);
 				setReverseAssociatedModels(associatedModel, associationInfo,
@@ -77,7 +77,7 @@ public class Many2ManyAnalyzer extends AssociationsAnalyzer {
 	}
 
 	/**
-	 * This add an empty set for {@link org.litepal.crud.DataSupport#associatedModelsMapForJoinTable}.
+	 * This add an empty set for {@link LitePalSupport#associatedModelsMapForJoinTable}.
      * Might use for updating intermediate join table.
 	 * 
 	 * @param baseObj
@@ -85,7 +85,7 @@ public class Many2ManyAnalyzer extends AssociationsAnalyzer {
 	 * @param associationInfo
 	 *            To get associated table name from.
 	 */
-	private void declareAssociations(DataSupport baseObj, AssociationsInfo associationInfo) {
+	private void declareAssociations(LitePalSupport baseObj, AssociationsInfo associationInfo) {
 		baseObj.addEmptyModelForJoinTable(getAssociatedTableName(associationInfo));
 	}
 
@@ -99,8 +99,8 @@ public class Many2ManyAnalyzer extends AssociationsAnalyzer {
 	 * @param baseObj
 	 *            The baseObj currently want to persist or update.
 	 */
-	private void addNewModelForAssociatedModel(Collection<DataSupport> associatedModelCollection,
-			DataSupport baseObj) {
+	private void addNewModelForAssociatedModel(Collection<LitePalSupport> associatedModelCollection,
+			LitePalSupport baseObj) {
 		if (!associatedModelCollection.contains(baseObj)) {
 			associatedModelCollection.add(baseObj);
 		}
@@ -109,7 +109,7 @@ public class Many2ManyAnalyzer extends AssociationsAnalyzer {
 	/**
 	 * First of all the associated model need to be saved already, or nothing
 	 * will be executed below. Then add the id of associated model into
-	 * {@link org.litepal.crud.DataSupport#associatedModelsMapForJoinTable} for
+	 * {@link LitePalSupport#associatedModelsMapForJoinTable} for
      * inserting value into intermediate join table after baseObj is saved.
 	 * 
 	 * @param baseObj
@@ -117,7 +117,7 @@ public class Many2ManyAnalyzer extends AssociationsAnalyzer {
 	 * @param associatedModel
 	 *            The associated model of baseObj.
 	 */
-	private void dealAssociatedModel(DataSupport baseObj, DataSupport associatedModel) {
+	private void dealAssociatedModel(LitePalSupport baseObj, LitePalSupport associatedModel) {
 		if (associatedModel.isSaved()) {
 			baseObj.addAssociatedModelForJoinTable(associatedModel.getTableName(),
 					associatedModel.getBaseObjId());
@@ -152,7 +152,7 @@ public class Many2ManyAnalyzer extends AssociationsAnalyzer {
 	 */
 	@SuppressWarnings("unused")
 	@Deprecated
-	private boolean isDataExists(DataSupport baseObj, DataSupport associatedModel) {
+	private boolean isDataExists(LitePalSupport baseObj, LitePalSupport associatedModel) {
 		boolean exists = false;
 		SQLiteDatabase db = Connector.getDatabase();
 		Cursor cursor = null;
@@ -180,7 +180,7 @@ public class Many2ManyAnalyzer extends AssociationsAnalyzer {
 	 *            The associated model of baseObj.
 	 * @return The selection clause for querying data.
 	 */
-	private String getSelection(DataSupport baseObj, DataSupport associatedModel) {
+	private String getSelection(LitePalSupport baseObj, LitePalSupport associatedModel) {
 		StringBuilder where = new StringBuilder();
 		where.append(getForeignKeyColumnName(baseObj.getTableName()));
 		where.append(" = ? and ");
@@ -199,7 +199,7 @@ public class Many2ManyAnalyzer extends AssociationsAnalyzer {
 	 * @return The selection arguments with the id of baseObj and
 	 *         associatedModel to fill.
 	 */
-	private String[] getSelectionArgs(DataSupport baseObj, DataSupport associatedModel) {
+	private String[] getSelectionArgs(LitePalSupport baseObj, LitePalSupport associatedModel) {
 		return new String[] { String.valueOf(baseObj.getBaseObjId()),
 				String.valueOf(associatedModel.getBaseObjId()) };
 	}
@@ -213,7 +213,7 @@ public class Many2ManyAnalyzer extends AssociationsAnalyzer {
 	 *            The associated model of baseObj.
 	 * @return The intermediate join table name.
 	 */
-	private String getJoinTableName(DataSupport baseObj, DataSupport associatedModel) {
+	private String getJoinTableName(LitePalSupport baseObj, LitePalSupport associatedModel) {
 		return getIntermediateTableName(baseObj, associatedModel.getTableName());
 	}
 

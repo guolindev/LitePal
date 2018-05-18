@@ -16,9 +16,9 @@
 
 package org.litepal.litepalsample.model;
 
-import org.litepal.crud.DataSupport;
+import org.litepal.crud.LitePalSupport;
 
-public class Song extends DataSupport {
+public class Song extends LitePalSupport {
 
 	private long id;
 

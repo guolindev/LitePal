@@ -16,15 +16,6 @@
 
 package org.litepal.litepalsample.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.litepal.crud.DataSupport;
-import org.litepal.litepalsample.R;
-import org.litepal.litepalsample.adapter.DataArrayAdapter;
-import org.litepal.litepalsample.model.Singer;
-import org.litepal.tablemanager.Connector;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -37,6 +28,15 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import org.litepal.LitePal;
+import org.litepal.litepalsample.R;
+import org.litepal.litepalsample.adapter.DataArrayAdapter;
+import org.litepal.litepalsample.model.Singer;
+import org.litepal.tablemanager.Connector;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DeleteSampleActivity extends Activity implements OnClickListener {
 
@@ -86,7 +86,7 @@ public class DeleteSampleActivity extends Activity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.delete_btn1:
 			try {
-				int rowsAffected = DataSupport.delete(Singer.class,
+				int rowsAffected = LitePal.delete(Singer.class,
 						Long.parseLong(mSingerIdEdit.getText().toString()));
 				Toast.makeText(
 						this,
@@ -101,7 +101,7 @@ public class DeleteSampleActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.delete_btn2:
 			try {
-				int rowsAffected = DataSupport.deleteAll(Singer.class, "name=? and age=?",
+				int rowsAffected = LitePal.deleteAll(Singer.class, "name=? and age=?",
 						mNameToDeleteEdit.getText().toString(), mAgeToDeleteEdit.getText()
 								.toString());
 				Toast.makeText(

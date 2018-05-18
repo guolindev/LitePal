@@ -17,13 +17,13 @@
 package org.litepal.exceptions;
 
 /**
- * When LitePal deals with CRUD actions of DataSupport, it may throw
+ * When LitePal deals with CRUD actions of LitePalSupport, it may throw
  * LitePalSupportException.
  * 
  * @author Tony Green
- * @since 1.1
+ * @since 2.0
  */
-public class LitePalSupportException extends RuntimeException {
+public class LitePalSupportException extends DataSupportException {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -33,9 +33,9 @@ public class LitePalSupportException extends RuntimeException {
 	public static final String ID_TYPE_INVALID_EXCEPTION = "id type is not supported. Only int or long is acceptable for id";
 
 	/**
-	 * Thrown when the saving model is not an instance of DataSupport.
+	 * Thrown when the saving model is not an instance of LitePalSupport.
 	 */
-	public static final String MODEL_IS_NOT_AN_INSTANCE_OF_DATA_SUPPORT = " should be inherited from DataSupport";
+	public static final String MODEL_IS_NOT_AN_INSTANCE_OF_LITE_PAL_SUPPORT = " should be inherited from LitePalSupport";
 
 	/**
 	 * Thrown when developers use wrong field to declare many2one or many2many

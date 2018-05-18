@@ -16,7 +16,7 @@
 
 package org.litepal;
 
-import org.litepal.crud.DataSupport;
+import org.litepal.crud.LitePalSupport;
 import org.litepal.crud.QueryHandler;
 import org.litepal.crud.async.AverageExecutor;
 import org.litepal.crud.async.CountExecutor;
@@ -71,7 +71,7 @@ public class FluentQuery {
 	 * Declaring to query which columns in table.
 	 *
 	 * <pre>
-	 * DataSupport.select(&quot;name&quot;, &quot;age&quot;).find(Person.class);
+	 * LitePalSupport.select(&quot;name&quot;, &quot;age&quot;).find(Person.class);
 	 * </pre>
 	 *
 	 * This will find all rows with name and age columns in Person table.
@@ -91,7 +91,7 @@ public class FluentQuery {
 	 * Declaring to query which rows in table.
 	 *
 	 * <pre>
-	 * DataSupport.where(&quot;name = ? or age &gt; ?&quot;, &quot;Tom&quot;, &quot;14&quot;).find(Person.class);
+	 * LitePalSupport.where(&quot;name = ? or age &gt; ?&quot;, &quot;Tom&quot;, &quot;14&quot;).find(Person.class);
 	 * </pre>
 	 *
 	 * This will find rows which name is Tom or age greater than 14 in Person
@@ -111,7 +111,7 @@ public class FluentQuery {
 	 * Declaring how to order the rows queried from table.
 	 *
 	 * <pre>
-	 * DataSupport.order(&quot;name desc&quot;).find(Person.class);
+	 * LitePalSupport.order(&quot;name desc&quot;).find(Person.class);
 	 * </pre>
 	 *
 	 * This will find all rows in Person table sorted by name with inverted
@@ -132,7 +132,7 @@ public class FluentQuery {
 	 * Limits the number of rows returned by the query.
 	 *
 	 * <pre>
-	 * DataSupport.limit(2).find(Person.class);
+	 * LitePalSupport.limit(2).find(Person.class);
 	 * </pre>
 	 *
 	 * This will find the top 2 rows in Person table.
@@ -152,7 +152,7 @@ public class FluentQuery {
 	 * used with {@link #limit(int)}, or nothing will return.
 	 *
 	 * <pre>
-	 * DataSupport.limit(1).offset(2).find(Person.class);
+	 * LitePalSupport.limit(1).offset(2).find(Person.class);
 	 * </pre>
 	 *
 	 * This will find the third row in Person table.
@@ -171,7 +171,7 @@ public class FluentQuery {
 	 * way to finish a complicated query:
 	 *
 	 * <pre>
-	 * DataSupport.select(&quot;name&quot;).where(&quot;age &gt; ?&quot;, &quot;14&quot;).order(&quot;age&quot;).limit(1).offset(2)
+	 * LitePalSupport.select(&quot;name&quot;).where(&quot;age &gt; ?&quot;, &quot;14&quot;).order(&quot;age&quot;).limit(1).offset(2)
 	 * 		.find(Person.class);
 	 * </pre>
 	 *
@@ -247,7 +247,7 @@ public class FluentQuery {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                synchronized (DataSupport.class) {
+                synchronized (LitePalSupport.class) {
                     final List<T> t = find(modelClass, isEager);
                     if (executor.getListener() != null) {
                         LitePal.getHandler().post(new Runnable() {
@@ -269,7 +269,7 @@ public class FluentQuery {
      * way to finish a complicated query:
      *
      * <pre>
-     * DataSupport.select(&quot;name&quot;).where(&quot;age &gt; ?&quot;, &quot;14&quot;).order(&quot;age&quot;).limit(1).offset(2)
+     * LitePalSupport.select(&quot;name&quot;).where(&quot;age &gt; ?&quot;, &quot;14&quot;).order(&quot;age&quot;).limit(1).offset(2)
      * 		.findFirst(Person.class);
      * </pre>
      *
@@ -331,7 +331,7 @@ public class FluentQuery {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                synchronized (DataSupport.class) {
+                synchronized (LitePalSupport.class) {
                     final T t = findFirst(modelClass, isEager);
                     if (executor.getListener() != null) {
                         LitePal.getHandler().post(new Runnable() {
@@ -353,7 +353,7 @@ public class FluentQuery {
      * way to finish a complicated query:
      *
      * <pre>
-     * DataSupport.select(&quot;name&quot;).where(&quot;age &gt; ?&quot;, &quot;14&quot;).order(&quot;age&quot;).limit(1).offset(2)
+     * LitePalSupport.select(&quot;name&quot;).where(&quot;age &gt; ?&quot;, &quot;14&quot;).order(&quot;age&quot;).limit(1).offset(2)
      * 		.findLast(Person.class);
      * </pre>
      *
@@ -416,7 +416,7 @@ public class FluentQuery {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                synchronized (DataSupport.class) {
+                synchronized (LitePalSupport.class) {
                     final T t = findLast(modelClass, isEager);
                     if (executor.getListener() != null) {
                         LitePal.getHandler().post(new Runnable() {
@@ -437,14 +437,14 @@ public class FluentQuery {
 	 * Count the records.
 	 *
 	 * <pre>
-	 * DataSupport.count(Person.class);
+	 * LitePalSupport.count(Person.class);
 	 * </pre>
 	 *
 	 * This will count all rows in person table.<br>
 	 * You can also specify a where clause when counting.
 	 *
 	 * <pre>
-	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).count(Person.class);
+	 * LitePalSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).count(Person.class);
 	 * </pre>
 	 *
 	 * @param modelClass
@@ -470,14 +470,14 @@ public class FluentQuery {
 	 * Count the records.
 	 *
 	 * <pre>
-	 * DataSupport.count(&quot;person&quot;);
+	 * LitePalSupport.count(&quot;person&quot;);
 	 * </pre>
 	 *
 	 * This will count all rows in person table.<br>
 	 * You can also specify a where clause when counting.
 	 *
 	 * <pre>
-	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).count(&quot;person&quot;);
+	 * LitePalSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).count(&quot;person&quot;);
 	 * </pre>
 	 *
 	 * @param tableName
@@ -501,7 +501,7 @@ public class FluentQuery {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                synchronized (DataSupport.class) {
+                synchronized (LitePalSupport.class) {
                     final int count = count(tableName);
                     if (executor.getListener() != null) {
                         LitePal.getHandler().post(new Runnable() {
@@ -522,13 +522,13 @@ public class FluentQuery {
 	 * Calculates the average value on a given column.
 	 *
 	 * <pre>
-	 * DataSupport.average(Person.class, &quot;age&quot;);
+	 * LitePalSupport.average(Person.class, &quot;age&quot;);
 	 * </pre>
 	 *
 	 * You can also specify a where clause when calculating.
 	 *
 	 * <pre>
-	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).average(Person.class, &quot;age&quot;);
+	 * LitePalSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).average(Person.class, &quot;age&quot;);
 	 * </pre>
 	 *
 	 * @param modelClass
@@ -558,13 +558,13 @@ public class FluentQuery {
 	 * Calculates the average value on a given column.
 	 *
 	 * <pre>
-	 * DataSupport.average(&quot;person&quot;, &quot;age&quot;);
+	 * LitePalSupport.average(&quot;person&quot;, &quot;age&quot;);
 	 * </pre>
 	 *
 	 * You can also specify a where clause when calculating.
 	 *
 	 * <pre>
-	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).average(&quot;person&quot;, &quot;age&quot;);
+	 * LitePalSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).average(&quot;person&quot;, &quot;age&quot;);
 	 * </pre>
 	 *
 	 * @param tableName
@@ -592,7 +592,7 @@ public class FluentQuery {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                synchronized (DataSupport.class) {
+                synchronized (LitePalSupport.class) {
                     final double average = average(tableName, column);
                     if (executor.getListener() != null) {
                         LitePal.getHandler().post(new Runnable() {
@@ -614,13 +614,13 @@ public class FluentQuery {
 	 * with the same data type of the column.
 	 *
 	 * <pre>
-	 * DataSupport.max(Person.class, &quot;age&quot;, int.class);
+	 * LitePalSupport.max(Person.class, &quot;age&quot;, int.class);
 	 * </pre>
 	 *
 	 * You can also specify a where clause when calculating.
 	 *
 	 * <pre>
-	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).max(Person.class, &quot;age&quot;, Integer.TYPE);
+	 * LitePalSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).max(Person.class, &quot;age&quot;, Integer.TYPE);
 	 * </pre>
 	 *
 	 * @param modelClass
@@ -655,13 +655,13 @@ public class FluentQuery {
 	 * with the same data type of the column.
 	 *
 	 * <pre>
-	 * DataSupport.max(&quot;person&quot;, &quot;age&quot;, int.class);
+	 * LitePalSupport.max(&quot;person&quot;, &quot;age&quot;, int.class);
 	 * </pre>
 	 *
 	 * You can also specify a where clause when calculating.
 	 *
 	 * <pre>
-	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).max(&quot;person&quot;, &quot;age&quot;, Integer.TYPE);
+	 * LitePalSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).max(&quot;person&quot;, &quot;age&quot;, Integer.TYPE);
 	 * </pre>
 	 *
 	 * @param tableName
@@ -693,7 +693,7 @@ public class FluentQuery {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                synchronized (DataSupport.class) {
+                synchronized (LitePalSupport.class) {
                     final T t = max(tableName, columnName, columnType);
                     if (executor.getListener() != null) {
                         LitePal.getHandler().post(new Runnable() {
@@ -715,13 +715,13 @@ public class FluentQuery {
 	 * with the same data type of the column.
 	 *
 	 * <pre>
-	 * DataSupport.min(Person.class, &quot;age&quot;, int.class);
+	 * LitePalSupport.min(Person.class, &quot;age&quot;, int.class);
 	 * </pre>
 	 *
 	 * You can also specify a where clause when calculating.
 	 *
 	 * <pre>
-	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).min(Person.class, &quot;age&quot;, Integer.TYPE);
+	 * LitePalSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).min(Person.class, &quot;age&quot;, Integer.TYPE);
 	 * </pre>
 	 *
 	 * @param modelClass
@@ -756,13 +756,13 @@ public class FluentQuery {
 	 * with the same data type of the column.
 	 *
 	 * <pre>
-	 * DataSupport.min(&quot;person&quot;, &quot;age&quot;, int.class);
+	 * LitePalSupport.min(&quot;person&quot;, &quot;age&quot;, int.class);
 	 * </pre>
 	 *
 	 * You can also specify a where clause when calculating.
 	 *
 	 * <pre>
-	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).min(&quot;person&quot;, &quot;age&quot;, Integer.TYPE);
+	 * LitePalSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).min(&quot;person&quot;, &quot;age&quot;, Integer.TYPE);
 	 * </pre>
 	 *
 	 * @param tableName
@@ -794,7 +794,7 @@ public class FluentQuery {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                synchronized (DataSupport.class) {
+                synchronized (LitePalSupport.class) {
                     final T t = min(tableName, columnName, columnType);
                     if (executor.getListener() != null) {
                         LitePal.getHandler().post(new Runnable() {
@@ -816,13 +816,13 @@ public class FluentQuery {
 	 * with the same data type of the column.
 	 * 
 	 * <pre>
-	 * DataSupport.sum(Person.class, &quot;age&quot;, int.class);
+	 * LitePalSupport.sum(Person.class, &quot;age&quot;, int.class);
 	 * </pre>
 	 * 
 	 * You can also specify a where clause when calculating.
 	 * 
 	 * <pre>
-	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).sum(Person.class, &quot;age&quot;, Integer.TYPE);
+	 * LitePalSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).sum(Person.class, &quot;age&quot;, Integer.TYPE);
 	 * </pre>
 	 * 
 	 * @param modelClass
@@ -857,13 +857,13 @@ public class FluentQuery {
 	 * with the same data type of the column.
 	 * 
 	 * <pre>
-	 * DataSupport.sum(&quot;person&quot;, &quot;age&quot;, int.class);
+	 * LitePalSupport.sum(&quot;person&quot;, &quot;age&quot;, int.class);
 	 * </pre>
 	 * 
 	 * You can also specify a where clause when calculating.
 	 * 
 	 * <pre>
-	 * DataSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).sum(&quot;person&quot;, &quot;age&quot;, Integer.TYPE);
+	 * LitePalSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).sum(&quot;person&quot;, &quot;age&quot;, Integer.TYPE);
 	 * </pre>
 	 * 
 	 * @param tableName
@@ -895,7 +895,7 @@ public class FluentQuery {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                synchronized (DataSupport.class) {
+                synchronized (LitePalSupport.class) {
                     final T t = sum(tableName, columnName, columnType);
                     if (executor.getListener() != null) {
                         LitePal.getHandler().post(new Runnable() {

@@ -103,7 +103,7 @@ class DynamicExecutor {
 	 */
 	static void setField(Object object, String fieldName, Object value, Class<?> objectClass)
 			throws SecurityException, IllegalArgumentException, IllegalAccessException {
-        if (objectClass == DataSupport.class || objectClass == Object.class) {
+        if (objectClass == LitePalSupport.class || objectClass == Object.class) {
             throw new LitePalSupportException(LitePalSupportException.noSuchFieldExceptioin(
                     objectClass.getSimpleName(), fieldName));
         }
@@ -131,7 +131,7 @@ class DynamicExecutor {
 	 */
 	static Object getField(Object object, String fieldName, Class<?> objectClass)
 			throws IllegalArgumentException, IllegalAccessException {
-        if (objectClass == DataSupport.class || objectClass == Object.class) {
+        if (objectClass == LitePalSupport.class || objectClass == Object.class) {
             throw new LitePalSupportException(LitePalSupportException.noSuchFieldExceptioin(
                     objectClass.getSimpleName(), fieldName));
         }

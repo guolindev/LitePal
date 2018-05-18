@@ -38,8 +38,8 @@ class Many2OneAnalyzer extends AssociationsAnalyzer {
 	 * associations in class files but developer has only build unidirectional
 	 * associations in models, it will force to build the bidirectional
 	 * associations. Besides
-	 * {@link org.litepal.crud.DataSupport#addAssociatedModelWithFK(String, long)} and
-	 * {@link org.litepal.crud.DataSupport#addAssociatedModelWithoutFK(String, long)} will be
+	 * {@link LitePalSupport#addAssociatedModelWithFK(String, long)} and
+	 * {@link LitePalSupport#addAssociatedModelWithoutFK(String, long)} will be
 	 * called here to put right values into tables.
 	 * 
 	 * @param baseObj
@@ -53,7 +53,7 @@ class Many2OneAnalyzer extends AssociationsAnalyzer {
 	 * @throws IllegalAccessException
 	 * @throws java.lang.reflect.InvocationTargetException
 	 */
-	void analyze(DataSupport baseObj, AssociationsInfo associationInfo) throws SecurityException,
+	void analyze(LitePalSupport baseObj, AssociationsInfo associationInfo) throws SecurityException,
 			IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
 			InvocationTargetException {
 		if (baseObj.getClassName().equals(associationInfo.getClassHoldsForeignKey())) {
@@ -69,7 +69,7 @@ class Many2OneAnalyzer extends AssociationsAnalyzer {
 	 * collection by calling
 	 * {@link #checkAssociatedModelCollection(java.util.Collection, java.lang.reflect.Field)}
 	 * and calling
-	 * {@link #dealAssociatedModelOnManySide(java.util.Collection, org.litepal.crud.DataSupport, org.litepal.crud.DataSupport)}
+	 * {@link #dealAssociatedModelOnManySide(java.util.Collection, LitePalSupport, LitePalSupport)}
 	 * to set foreign key.
 	 * 
 	 * @param baseObj
@@ -83,15 +83,15 @@ class Many2OneAnalyzer extends AssociationsAnalyzer {
 	 * @throws IllegalAccessException
 	 * @throws java.lang.reflect.InvocationTargetException
 	 */
-	private void analyzeManySide(DataSupport baseObj, AssociationsInfo associationInfo)
+	private void analyzeManySide(LitePalSupport baseObj, AssociationsInfo associationInfo)
 			throws SecurityException, IllegalArgumentException, NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException {
-		DataSupport associatedModel = getAssociatedModel(baseObj, associationInfo);
+		LitePalSupport associatedModel = getAssociatedModel(baseObj, associationInfo);
 		if (associatedModel != null) {
 			// now it's m2o bidirectional association.
-			Collection<DataSupport> tempCollection = getReverseAssociatedModels(associatedModel,
+			Collection<LitePalSupport> tempCollection = getReverseAssociatedModels(associatedModel,
 					associationInfo);
-			Collection<DataSupport> reverseAssociatedModels = checkAssociatedModelCollection(
+			Collection<LitePalSupport> reverseAssociatedModels = checkAssociatedModelCollection(
 					tempCollection, associationInfo.getAssociateSelfFromOtherModel());
 			setReverseAssociatedModels(associatedModel, associationInfo, reverseAssociatedModels);
 			dealAssociatedModelOnManySide(reverseAssociatedModels, baseObj, associatedModel);
@@ -103,9 +103,9 @@ class Many2OneAnalyzer extends AssociationsAnalyzer {
 	/**
 	 * When it's on the O side. Get the associated model collection first, then
 	 * iterate all the associated models. Each associated model calls
-	 * {@link #buildBidirectionalAssociations(org.litepal.crud.DataSupport, org.litepal.crud.DataSupport, org.litepal.crud.model.AssociationsInfo)}
+	 * {@link #buildBidirectionalAssociations(LitePalSupport, LitePalSupport, org.litepal.crud.model.AssociationsInfo)}
 	 * to build bidirectional association if they haven't built yet. Then calls
-	 * {@link #dealAssociatedModelOnOneSide(org.litepal.crud.DataSupport, org.litepal.crud.DataSupport)} to set
+	 * {@link #dealAssociatedModelOnOneSide(LitePalSupport, LitePalSupport)} to set
 	 * foreign key.
 	 * 
 	 * @param baseObj
@@ -119,17 +119,17 @@ class Many2OneAnalyzer extends AssociationsAnalyzer {
 	 * @throws IllegalAccessException
 	 * @throws java.lang.reflect.InvocationTargetException
 	 */
-	private void analyzeOneSide(DataSupport baseObj, AssociationsInfo associationInfo)
+	private void analyzeOneSide(LitePalSupport baseObj, AssociationsInfo associationInfo)
 			throws SecurityException, IllegalArgumentException, NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException {
-		Collection<DataSupport> associatedModels = getAssociatedModels(baseObj, associationInfo);
+		Collection<LitePalSupport> associatedModels = getAssociatedModels(baseObj, associationInfo);
 		if (associatedModels == null || associatedModels.isEmpty()) {
 			String tableName = DBUtility.getTableNameByClassName(associationInfo
 					.getAssociatedClassName());
 			baseObj.addAssociatedTableNameToClearFK(tableName);
 			return;
 		}
-		for (DataSupport associatedModel : associatedModels) {
+		for (LitePalSupport associatedModel : associatedModels) {
 			buildBidirectionalAssociations(baseObj, associatedModel, associationInfo);
 			dealAssociatedModelOnOneSide(baseObj, associatedModel);
 		}
@@ -139,7 +139,7 @@ class Many2OneAnalyzer extends AssociationsAnalyzer {
 	 * Check if the baseObj is already existed in the associatedModels
 	 * collection. If not add baseObj into the collection. Then if the
 	 * associated model is saved, add its' name and id to baseObj by calling
-	 * {@link org.litepal.crud.DataSupport#addAssociatedModelWithFK(String, long)}.
+	 * {@link LitePalSupport#addAssociatedModelWithFK(String, long)}.
 	 * 
 	 * @param associatedModels
 	 *            The associated model collection.
@@ -149,8 +149,8 @@ class Many2OneAnalyzer extends AssociationsAnalyzer {
 	 *            The associated info analyzed by
 	 *            {@link LitePalBase#getAssociationInfo(String)}.
 	 */
-	private void dealAssociatedModelOnManySide(Collection<DataSupport> associatedModels,
-			DataSupport baseObj, DataSupport associatedModel) {
+	private void dealAssociatedModelOnManySide(Collection<LitePalSupport> associatedModels,
+                                               LitePalSupport baseObj, LitePalSupport associatedModel) {
 		if (!associatedModels.contains(baseObj)) {
 			associatedModels.add(baseObj);
 		}
@@ -169,7 +169,7 @@ class Many2OneAnalyzer extends AssociationsAnalyzer {
 	 *            The associated info analyzed by
 	 *            {@link LitePalBase#getAssociationInfo(String)}.
 	 */
-	private void dealAssociatedModelOnOneSide(DataSupport baseObj, DataSupport associatedModel) {
+	private void dealAssociatedModelOnOneSide(LitePalSupport baseObj, LitePalSupport associatedModel) {
 		dealsAssociationsOnTheSideWithoutFK(baseObj, associatedModel);
 	}
 }
