@@ -38,4 +38,20 @@
         android:layout_height="wrap_content"
         android:text="@string/aggregate_functions" />
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Input Target DBname"
+        android:id="@+id/et_targetname"
+        />
+    <Button
+        android:id="@+id/changedb_btn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/change_db" />
+    <Button
+        android:id="@+id/deldb_btn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/del_db" />
 </LinearLayout>

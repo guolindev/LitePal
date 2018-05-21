@@ -21,6 +21,8 @@
     <string name="manage_table">Manage Tables</string>
     <string name="crud">CRUD</string>
     <string name="aggregate_functions">Aggregate Functions</string>
+    <string name="change_db">Change DBName</string>
+    <string name="del_db">Del DB by Name</string>
     <string name="aggregate_sample">Aggregate Sample</string>
     <string name="table_generation_tip">Tables will be generated automatically depending on the current model structure once you operate database.</string>
     <string name="current_model_structure">Current Model Structure</string>

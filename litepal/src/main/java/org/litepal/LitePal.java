@@ -98,18 +98,35 @@ public class LitePal {
      *          The database to switch to.
      */
     public static void use(LitePalDB litePalDB) {
+        use(litePalDB,true);
+    }
+
+    /**
+     * Switch the using database to the one specified by parameter.
+     * @param litePalDB
+     *          The database to switch to.
+     * @param isDefault   db isDefault
+     */
+    public static void use(LitePalDB litePalDB,boolean isDefault) {
         LitePalAttr litePalAttr = LitePalAttr.getInstance();
         litePalAttr.setDbName(litePalDB.getDbName());
         litePalAttr.setVersion(litePalDB.getVersion());
         litePalAttr.setStorage(litePalDB.getStorage());
         litePalAttr.setClassNames(litePalDB.getClassNames());
         // set the extra key name only when use database other than default or litepal.xml not exists
-        if (!isDefaultDatabase(litePalDB.getDbName())) {
+        if (!isDefault) {
             litePalAttr.setExtraKeyName(litePalDB.getDbName());
             litePalAttr.setCases("lower");
+
+        }else {
+            if (!isDefaultDatabase(litePalDB.getDbName())) {
+                litePalAttr.setExtraKeyName(litePalDB.getDbName());
+                litePalAttr.setCases("lower");
+            }
         }
         Connector.clearLitePalOpenHelperInstance();
     }
+
 
     /**
      * Switch the using database to default with configuration by litepal.xml.
@@ -135,6 +152,7 @@ public class LitePal {
                 boolean result = dbFile.delete();
                 if (result) {
                     removeVersionInSharedPreferences(dbName);
+//                    Connector.clearLitePalHelperMemory(dbName);
                     Connector.clearLitePalOpenHelperInstance();
                 }
                 return result;
