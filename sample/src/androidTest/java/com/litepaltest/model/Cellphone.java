@@ -1,12 +1,12 @@
 package com.litepaltest.model;
 
 import org.litepal.annotation.Column;
-import org.litepal.crud.DataSupport;
+import org.litepal.crud.LitePalSupport;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cellphone extends DataSupport {
+public class Cellphone extends LitePalSupport {
 
 	private Long id;
 

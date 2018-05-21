@@ -3,8 +3,7 @@ package com.litepaltest.test.annotation;
 import com.litepaltest.model.Cellphone;
 import com.litepaltest.test.LitePalTestCase;
 
-import org.litepal.crud.DataSupport;
-import org.litepal.tablemanager.Connector;
+import org.litepal.LitePal;
 
 import java.util.UUID;
 
@@ -15,7 +14,7 @@ public class ColumnTest extends LitePalTestCase {
 
     @Override
     protected void setUp() throws Exception {
-        Connector.getDatabase();
+        LitePal.getDatabase();
     }
 
     public void testUnique() {
@@ -51,10 +50,10 @@ public class ColumnTest extends LitePalTestCase {
         cellphone.setPrice(1949.99);
         cellphone.setSerial(UUID.randomUUID().toString());
         assertTrue(cellphone.save());
-        assertEquals("0.0.0.0", DataSupport.find(Cellphone.class, cellphone.getId()).getMac());
+        assertEquals("0.0.0.0", LitePal.find(Cellphone.class, cellphone.getId()).getMac());
         cellphone.setMac("192.168.0.1");
         assertTrue(cellphone.save());
-        assertEquals("192.168.0.1", DataSupport.find(Cellphone.class, cellphone.getId()).getMac());
+        assertEquals("192.168.0.1", LitePal.find(Cellphone.class, cellphone.getId()).getMac());
     }
 
 }

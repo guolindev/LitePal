@@ -1,11 +1,10 @@
 package com.litepaltest.model;
 
+import org.litepal.crud.LitePalSupport;
+
 import java.io.Serializable;
 
-import org.litepal.annotation.Column;
-import org.litepal.crud.DataSupport;
-
-public class Book extends DataSupport implements Serializable{
+public class Book extends LitePalSupport implements Serializable{
 
 	private static final long serialVersionUID = 9040804172147110007L;
 

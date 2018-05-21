@@ -3,6 +3,7 @@ package com.litepaltest.test.crud.update;
 import java.util.Date;
 import java.util.List;
 
+import org.litepal.LitePal;
 import org.litepal.crud.DataSupport;
 import org.litepal.exceptions.DataSupportException;
 import org.litepal.tablemanager.Connector;
@@ -100,12 +101,12 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 	public void testUpdateWithStaticUpdate() {
 		ContentValues values = new ContentValues();
 		values.put("TEACHERNAME", "Toy");
-		int rowsAffected = DataSupport.update(Teacher.class, values, teacher.getId());
+		int rowsAffected = LitePal.update(Teacher.class, values, teacher.getId());
 		assertEquals(1, rowsAffected);
 		assertEquals("Toy", getTeacher(teacher.getId()).getTeacherName());
 		values.clear();
 		values.put("aGe", 15);
-		rowsAffected = DataSupport.update(Student.class, values, student.getId());
+		rowsAffected = LitePal.update(Student.class, values, student.getId());
 		assertEquals(1, rowsAffected);
 		assertEquals(15, getStudent(student.getId()).getAge());
 	}
@@ -125,9 +126,9 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
         }
         ContentValues values = new ContentValues();
         values.put("pic", b);
-        int rows = DataSupport.update(Product.class, values, product.getId());
+        int rows = LitePal.update(Product.class, values, product.getId());
         assertEquals(1, rows);
-        Product p = DataSupport.find(Product.class, product.getId());
+        Product p = LitePal.find(Product.class, product.getId());
         byte[] pic = p.getPic();
         assertEquals(b.length, pic.length);
         for (int i = 0; i < b.length; i++) {
@@ -140,7 +141,7 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 		ContentValues values = new ContentValues();
 		values.put("TEACHERNAME", "Toy");
 		try {
-			DataSupport.update(Object.class, values, teacher.getId());
+            LitePal.update(Object.class, values, teacher.getId());
 		} catch (SQLiteException e) {
 		}
 	}
@@ -149,7 +150,7 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 		ContentValues values = new ContentValues();
 		values.put("TEACHERYEARS", 13);
 		try {
-			DataSupport.update(Teacher.class, values, teacher.getId());
+            LitePal.update(Teacher.class, values, teacher.getId());
 			fail("no such column: TEACHERYEARS");
 		} catch (SQLiteException e) {
 		}
@@ -158,7 +159,7 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 	public void testUpdateWithStaticUpdateButNotExistsRecord() {
 		ContentValues values = new ContentValues();
 		values.put("TEACHERNAME", "Toy");
-		int rowsAffected = DataSupport.update(Teacher.class, values, 998909);
+		int rowsAffected = LitePal.update(Teacher.class, values, 998909);
 		assertEquals(0, rowsAffected);
 	}
 
@@ -193,7 +194,7 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
         pro.setPic(b);
         int rows = pro.update(product.getId());
         assertEquals(1, rows);
-        Product p = DataSupport.find(Product.class, product.getId());
+        Product p = LitePal.find(Product.class, product.getId());
         byte[] pic = p.getPic();
         assertEquals(b.length, pic.length);
         for (int i = 0; i < b.length; i++) {
@@ -232,7 +233,7 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 		s.setToDefault("birthday");
 		int affectedStudent = s.update(student.getId());
 		assertEquals(1, affectedStudent);
-		Student newStudent = DataSupport.find(Student.class, student.getId());
+		Student newStudent = LitePal.find(Student.class, student.getId());
 		assertNull(newStudent.getBirthday());
 		assertEquals(null, newStudent.getName());
 		assertEquals(0, newStudent.getAge());
@@ -425,14 +426,14 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 		}
 		ContentValues values = new ContentValues();
 		values.put("age", 24);
-		int affectedRows = DataSupport.updateAll(Student.class, values, "name = ? and age = ?",
+		int affectedRows = LitePal.updateAll(Student.class, values, "name = ? and age = ?",
 				"Dusting", "13");
 		assertEquals(1, affectedRows);
 		Student updatedStu = getStudent(ids[3]);
 		assertEquals(24, updatedStu.getAge());
 		values.clear();
 		values.put("name", "Dustee");
-		affectedRows = DataSupport.updateAll(Student.class, values, "name = ?", "Dusting");
+		affectedRows = LitePal.updateAll(Student.class, values, "name = ?", "Dusting");
 		assertEquals(5, affectedRows);
 		List<Student> students = getStudents(ids);
 		for (Student updatedStudent : students) {
@@ -444,13 +445,13 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 		int allRows = getRowsCount(studentTable);
 		ContentValues values = new ContentValues();
 		values.put("name", "Zuckerburg");
-		int affectedRows = DataSupport.updateAll(Student.class, values);
+		int affectedRows = LitePal.updateAll(Student.class, values);
 		assertEquals(allRows, affectedRows);
         String table = DBUtility.getIntermediateTableName(studentTable, DBUtility.getTableNameByClassName(Teacher.class.getName()));
 		allRows = getRowsCount(table);
 		values.clear();
 		values.putNull(studentTable + "_id");
-		affectedRows = DataSupport.updateAll(table, values);
+		affectedRows = LitePal.updateAll(table, values);
 		assertEquals(allRows, affectedRows);
 	}
 
@@ -458,19 +459,19 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 		ContentValues values = new ContentValues();
 		values.put("name", "Dustee");
 		try {
-			DataSupport.updateAll(Student.class, values, "name = 'Dustin'", "aaa");
+            LitePal.updateAll(Student.class, values, "name = 'Dustin'", "aaa");
 			fail();
 		} catch (DataSupportException e) {
 			assertEquals("The parameters in conditions are incorrect.", e.getMessage());
 		}
 		try {
-			DataSupport.updateAll(Student.class, values, null, null);
+            LitePal.updateAll(Student.class, values, null, null);
 			fail();
 		} catch (DataSupportException e) {
 			assertEquals("The parameters in conditions are incorrect.", e.getMessage());
 		}
 		try {
-			DataSupport.updateAll(Student.class, values, "address = ?", "HK");
+            LitePal.updateAll(Student.class, values, "address = ?", "HK");
 			fail();
 		} catch (SQLiteException e) {
 		}
@@ -493,7 +494,7 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 		int affectedRows = toUpdate.updateAll(new String[] { "name = ? and age = ?", "Jessica",
 				"13" });
 		assertEquals(1, affectedRows);
-		Student updatedStu = DataSupport.find(Student.class, ids[3]);
+		Student updatedStu = LitePal.find(Student.class, ids[3]);
 		assertEquals(24, updatedStu.getAge());
 		assertEquals(date.getTime(), updatedStu.getBirthday().getTime());
 		toUpdate.setAge(18);
@@ -608,7 +609,7 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
         c.getNews().add("news");
         c.getNews().add("paper");
         c.update(classroom.get_id());
-        Classroom result = DataSupport.find(Classroom.class, classroom.get_id());
+        Classroom result = LitePal.find(Classroom.class, classroom.get_id());
         assertEquals("Math room", result.getName());
         StringBuilder builder = new StringBuilder();
         for (String s : result.getNews()) {
@@ -619,7 +620,7 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
         Classroom c2 = new Classroom();
         c2.setToDefault("numbers");
         c2.update(classroom.get_id());
-        result = DataSupport.find(Classroom.class, classroom.get_id());
+        result = LitePal.find(Classroom.class, classroom.get_id());
         assertEquals("Math room", result.getName());
         assertEquals(2, result.getNews().size());
         assertEquals(0, result.getNumbers().size());

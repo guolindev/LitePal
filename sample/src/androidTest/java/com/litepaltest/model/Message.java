@@ -1,9 +1,9 @@
 package com.litepaltest.model;
 
 import org.litepal.annotation.Column;
-import org.litepal.crud.DataSupport;
+import org.litepal.crud.LitePalSupport;
 
-public class Message extends DataSupport {
+public class Message extends LitePalSupport {
 
     private int id;
 

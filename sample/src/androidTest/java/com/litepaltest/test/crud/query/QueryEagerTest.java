@@ -3,6 +3,7 @@ package com.litepaltest.test.crud.query;
 import java.util.Calendar;
 import java.util.List;
 
+import org.litepal.LitePal;
 import org.litepal.crud.DataSupport;
 
 import android.test.AndroidTestCase;
@@ -76,7 +77,7 @@ public class QueryEagerTest extends AndroidTestCase {
 	}
 
 	public void testEagerFind() {
-		Student s1 = DataSupport.find(Student.class, student1.getId(), true);
+		Student s1 = LitePal.find(Student.class, student1.getId(), true);
 		Classroom c = s1.getClassroom();
 		IdCard ic = s1.getIdcard();
 		List<Teacher> tList = s1.getTeachers();
@@ -105,12 +106,12 @@ public class QueryEagerTest extends AndroidTestCase {
 			}
 			fail();
 		}
-		s1 = DataSupport.find(Student.class, student1.getId());
+		s1 = LitePal.find(Student.class, student1.getId());
 		c = s1.getClassroom();
 		assertNull(c);
 		assertNull(s1.getIdcard());
 		assertEquals(0, s1.getTeachers().size());
-		c = DataSupport.find(Classroom.class, classroom.get_id(), true);
+		c = LitePal.find(Classroom.class, classroom.get_id(), true);
 		assertEquals(2, c.getStudentCollection().size());
 		assertEquals(1, c.getTeachers().size());
 		for (Student s : c.getStudentCollection()) {
@@ -127,7 +128,7 @@ public class QueryEagerTest extends AndroidTestCase {
 			}
 			fail();
 		}
-		Teacher t1 = DataSupport.find(Teacher.class, teacher2.getId(), true);
+		Teacher t1 = LitePal.find(Teacher.class, teacher2.getId(), true);
 		List<Student> sList = t1.getStudents();
 		assertEquals(teacher2.getStudents().size(), sList.size());
 		for (Student s : sList) {
@@ -144,42 +145,42 @@ public class QueryEagerTest extends AndroidTestCase {
 			}
 			fail();
 		}
-		Student s3 = DataSupport.find(Student.class, student3.getId());
+		Student s3 = LitePal.find(Student.class, student3.getId());
 		assertNull(s3.getBirthday());
 	}
 
 	public void resetData() {
-		DataSupport.deleteAll(Student.class);
-		DataSupport.deleteAll(Classroom.class);
-		DataSupport.deleteAll(Teacher.class);
-		DataSupport.deleteAll(IdCard.class);
+        LitePal.deleteAll(Student.class);
+        LitePal.deleteAll(Classroom.class);
+        LitePal.deleteAll(Teacher.class);
+        LitePal.deleteAll(IdCard.class);
 		setUp();
 	}
 
 	public void testEagerFindFirst() {
 		resetData();
-		Student s1 = DataSupport.findFirst(Student.class);
+		Student s1 = LitePal.findFirst(Student.class);
 		assertNull(s1.getClassroom());
-		s1 = DataSupport.findFirst(Student.class, true);
+		s1 = LitePal.findFirst(Student.class, true);
 		assertNotNull(s1);
 	}
 
 	public void testEagerFindLast() {
 		resetData();
-		Teacher t1 = DataSupport.findLast(Teacher.class);
+		Teacher t1 = LitePal.findLast(Teacher.class);
 		assertEquals(0, t1.getStudents().size());
-		t1 = DataSupport.findLast(Teacher.class, true);
+		t1 = LitePal.findLast(Teacher.class, true);
 		assertTrue(0 < t1.getStudents().size());
 	}
 
 	public void testEagerFindAll() {
 		resetData();
-		List<Student> sList = DataSupport.findAll(Student.class);
+		List<Student> sList = LitePal.findAll(Student.class);
 		for (Student s : sList) {
 			assertNull(s.getClassroom());
 			assertEquals(0, s.getTeachers().size());
 		}
-		sList = DataSupport.findAll(Student.class, true);
+		sList = LitePal.findAll(Student.class, true);
 		for (Student s : sList) {
 			if (s.getClassroom() == null) {
 				continue;
@@ -206,12 +207,12 @@ public class QueryEagerTest extends AndroidTestCase {
 
 	public void testEagerClusterQuery() {
 		resetData();
-		List<Student> sList = DataSupport.where("id = ?", String.valueOf(student1.getId())).find(
+		List<Student> sList = LitePal.where("id = ?", String.valueOf(student1.getId())).find(
 				Student.class);
 		assertEquals(1, sList.size());
 		Student s = sList.get(0);
 		assertNull(s.getClassroom());
-		sList = DataSupport.where("id = ?", String.valueOf(student1.getId())).find(Student.class, true);
+		sList = LitePal.where("id = ?", String.valueOf(student1.getId())).find(Student.class, true);
 		assertEquals(1, sList.size());
 		s = sList.get(0);
 		assertNotNull(s.getClassroom());

@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import org.litepal.LitePal;
 import org.litepal.crud.DataSupport;
 import org.litepal.util.DBUtility;
 
@@ -140,7 +141,7 @@ public class UpdateUsingSaveMethodTest extends LitePalTestCase {
         }
         product.setPic(b);
         assertTrue(product.save());
-        Product p = DataSupport.find(Product.class, product.getId());
+        Product p = LitePal.find(Product.class, product.getId());
         byte[] pic = p.getPic();
         assertEquals(b.length, pic.length);
         for (int i = 0; i < b.length; i++) {
@@ -167,7 +168,7 @@ public class UpdateUsingSaveMethodTest extends LitePalTestCase {
 		assertTrue(s2.save());
 		assertEquals(c2.get_id(), getForeignKeyValue(studentTable, classroomTable, s1.getId()));
 		assertEquals(c2.get_id(), getForeignKeyValue(studentTable, classroomTable, s2.getId()));
-		Student student2 = DataSupport.find(Student.class, s2.getId());
+		Student student2 = LitePal.find(Student.class, s2.getId());
 		calendar.clear();
 		calendar.set(1989, 7, 7, 0, 0, 0);
 		assertEquals(calendar.getTimeInMillis(), student2.getBirthday().getTime());

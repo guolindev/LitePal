@@ -1,11 +1,11 @@
 package com.litepaltest.model;
 
+import org.litepal.crud.LitePalSupport;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.litepal.crud.DataSupport;
-
-public class Teacher extends DataSupport {
+public class Teacher extends LitePalSupport {
 
 	private int id;
 

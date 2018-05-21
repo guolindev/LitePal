@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.litepal.crud.DataSupport;
+import org.litepal.crud.LitePalSupport;
 
 import com.litepaltest.model.Student;
 import com.litepaltest.model.Teacher;
@@ -64,8 +65,8 @@ public class Many2ManySaveTest extends LitePalTestCase {
 		}
 	}
 
-	private List<DataSupport> getModelList() {
-		List<DataSupport> list = new ArrayList<DataSupport>();
+	private List<LitePalSupport> getModelList() {
+		List<LitePalSupport> list = new ArrayList<LitePalSupport>();
 		list.add(jack);
 		list.add(danny);
 		list.add(cam);
@@ -74,11 +75,11 @@ public class Many2ManySaveTest extends LitePalTestCase {
 	}
 
 	private void saveAllByRandom() {
-		List<DataSupport> modelList = getModelList();
+		List<LitePalSupport> modelList = getModelList();
 		while (!modelList.isEmpty()) {
 			Random rand = new Random();
 			int index = rand.nextInt(modelList.size());
-			DataSupport model = modelList.remove(index);
+            LitePalSupport model = modelList.remove(index);
 			model.save();
 		}
 	}

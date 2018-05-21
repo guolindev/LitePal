@@ -1,8 +1,8 @@
 package com.litepaltest.model;
 
-import org.litepal.crud.DataSupport;
+import org.litepal.crud.LitePalSupport;
 
-public class Computer extends DataSupport {
+public class Computer extends LitePalSupport {
 	
 	private long id;
 

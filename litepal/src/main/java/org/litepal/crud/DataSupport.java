@@ -38,7 +38,7 @@ import java.util.List;
 /**
  * DataSupport is deprecated and will be removed in the future release.
  * For model inheritance, use {@link LitePalSupport} instead.
- * For static CRUD method, use {@link LitePal} instead.
+ * For static CRUD op, use {@link LitePal} instead.
  *
  * @author Tony Green
  * @since 1.1
