@@ -83,8 +83,8 @@ public class FluentQuery {
 	 * @return A ClusterQuery instance.
 	 */
 	public FluentQuery select(String... columns) {
-		mColumns = columns;
-		return this;
+        mColumns = columns;
+        return this;
 	}
 
 	/**
@@ -103,8 +103,8 @@ public class FluentQuery {
 	 * @return A ClusterQuery instance.
 	 */
 	public FluentQuery where(String... conditions) {
-		mConditions = conditions;
-		return this;
+        mConditions = conditions;
+        return this;
 	}
 
 	/**
@@ -124,8 +124,8 @@ public class FluentQuery {
 	 * @return A ClusterQuery instance.
 	 */
 	public FluentQuery order(String column) {
-		mOrderBy = column;
-		return this;
+        mOrderBy = column;
+        return this;
 	}
 
 	/**
@@ -143,8 +143,8 @@ public class FluentQuery {
 	 * @return A ClusterQuery instance.
 	 */
 	public FluentQuery limit(int value) {
-		mLimit = String.valueOf(value);
-		return this;
+        mLimit = String.valueOf(value);
+        return this;
 	}
 
 	/**
@@ -162,8 +162,8 @@ public class FluentQuery {
 	 * @return A ClusterQuery instance.
 	 */
 	public FluentQuery offset(int value) {
-		mOffset = String.valueOf(value);
-		return this;
+        mOffset = String.valueOf(value);
+        return this;
 	}
 
 	/**
@@ -192,7 +192,7 @@ public class FluentQuery {
 	 * @return An object list with founded data from database, or an empty list.
 	 */
 	public <T> List<T> find(Class<T> modelClass) {
-		return find(modelClass, false);
+        return find(modelClass, false);
 	}
 
     /**
@@ -219,18 +219,20 @@ public class FluentQuery {
 	 *            True to load the associated models, false not.
 	 * @return An object list with founded data from database, or an empty list.
 	 */
-	public synchronized <T> List<T> find(Class<T> modelClass, boolean isEager) {
-		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
-		String limit;
-		if (mOffset == null) {
-			limit = mLimit;
-		} else {
-			if (mLimit == null) {
-				mLimit = "0";
-			}
-			limit = mOffset + "," + mLimit;
-		}
-		return queryHandler.onFind(modelClass, mColumns, mConditions, mOrderBy, limit, isEager);
+	public <T> List<T> find(Class<T> modelClass, boolean isEager) {
+        synchronized (LitePalSupport.class) {
+            QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
+            String limit;
+            if (mOffset == null) {
+                limit = mLimit;
+            } else {
+                if (mLimit == null) {
+                    mLimit = "0";
+                }
+                limit = mOffset + "," + mLimit;
+            }
+            return queryHandler.onFind(modelClass, mColumns, mConditions, mOrderBy, limit, isEager);
+        }
 	}
 
     /**
@@ -310,11 +312,13 @@ public class FluentQuery {
      * @return An object with founded data from database, or null.
      */
     public <T> T findFirst(Class<T> modelClass, boolean isEager) {
-        List<T> list = find(modelClass, isEager);
-        if (list.size() > 0) {
-            return list.get(0);
+        synchronized (LitePalSupport.class) {
+            List<T> list = find(modelClass, isEager);
+            if (list.size() > 0) {
+                return list.get(0);
+            }
+            return null;
         }
-        return null;
     }
 
     /**
@@ -394,12 +398,14 @@ public class FluentQuery {
      * @return An object with founded data from database, or null.
      */
     public <T> T findLast(Class<T> modelClass, boolean isEager) {
-        List<T> list = find(modelClass, isEager);
-        int size = list.size();
-        if (size > 0) {
-            return list.get(size - 1);
+        synchronized (LitePalSupport.class) {
+            List<T> list = find(modelClass, isEager);
+            int size = list.size();
+            if (size > 0) {
+                return list.get(size - 1);
+            }
+            return null;
         }
-        return null;
     }
 
     /**
@@ -451,8 +457,8 @@ public class FluentQuery {
 	 *            Which table to query from by class.
 	 * @return Count of the specified table.
 	 */
-	public synchronized int count(Class<?> modelClass) {
-		return count(BaseUtility.changeCase(modelClass.getSimpleName()));
+	public int count(Class<?> modelClass) {
+        return count(BaseUtility.changeCase(modelClass.getSimpleName()));
 	}
 
     /**
@@ -484,9 +490,11 @@ public class FluentQuery {
 	 *            Which table to query from.
 	 * @return Count of the specified table.
 	 */
-	public synchronized int count(String tableName) {
-		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
-		return queryHandler.onCount(tableName, mConditions);
+	public int count(String tableName) {
+        synchronized (LitePalSupport.class) {
+            QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
+            return queryHandler.onCount(tableName, mConditions);
+        }
 	}
 
     /**
@@ -537,8 +545,8 @@ public class FluentQuery {
 	 *            The based on column to calculate.
 	 * @return The average value on a given column.
 	 */
-	public synchronized double average(Class<?> modelClass, String column) {
-		return average(BaseUtility.changeCase(modelClass.getSimpleName()), column);
+	public double average(Class<?> modelClass, String column) {
+        return average(BaseUtility.changeCase(modelClass.getSimpleName()), column);
 	}
 
     /**
@@ -573,9 +581,11 @@ public class FluentQuery {
 	 *            The based on column to calculate.
 	 * @return The average value on a given column.
 	 */
-	public synchronized double average(String tableName, String column) {
-		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
-		return queryHandler.onAverage(tableName, column, mConditions);
+	public double average(String tableName, String column) {
+        synchronized (LitePalSupport.class) {
+            QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
+            return queryHandler.onAverage(tableName, column, mConditions);
+        }
 	}
 
     /**
@@ -631,8 +641,8 @@ public class FluentQuery {
 	 *            The type of the based on column.
 	 * @return The maximum value on a given column.
 	 */
-	public synchronized <T> T max(Class<?> modelClass, String columnName, Class<T> columnType) {
-		return max(BaseUtility.changeCase(modelClass.getSimpleName()), columnName, columnType);
+	public <T> T max(Class<?> modelClass, String columnName, Class<T> columnType) {
+        return max(BaseUtility.changeCase(modelClass.getSimpleName()), columnName, columnType);
 	}
 
     /**
@@ -672,9 +682,11 @@ public class FluentQuery {
 	 *            The type of the based on column.
 	 * @return The maximum value on a given column.
 	 */
-	public synchronized <T> T max(String tableName, String columnName, Class<T> columnType) {
-		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
-		return queryHandler.onMax(tableName, columnName, mConditions, columnType);
+	public <T> T max(String tableName, String columnName, Class<T> columnType) {
+        synchronized (LitePalSupport.class) {
+            QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
+            return queryHandler.onMax(tableName, columnName, mConditions, columnType);
+        }
 	}
 
     /**
@@ -732,8 +744,8 @@ public class FluentQuery {
 	 *            The type of the based on column.
 	 * @return The minimum value on a given column.
 	 */
-	public synchronized <T> T min(Class<?> modelClass, String columnName, Class<T> columnType) {
-		return min(BaseUtility.changeCase(modelClass.getSimpleName()), columnName, columnType);
+	public <T> T min(Class<?> modelClass, String columnName, Class<T> columnType) {
+        return min(BaseUtility.changeCase(modelClass.getSimpleName()), columnName, columnType);
 	}
 
     /**
@@ -773,9 +785,11 @@ public class FluentQuery {
 	 *            The type of the based on column.
 	 * @return The minimum value on a given column.
 	 */
-	public synchronized <T> T min(String tableName, String columnName, Class<T> columnType) {
-		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
-		return queryHandler.onMin(tableName, columnName, mConditions, columnType);
+	public <T> T min(String tableName, String columnName, Class<T> columnType) {
+        synchronized (LitePalSupport.class) {
+            QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
+            return queryHandler.onMin(tableName, columnName, mConditions, columnType);
+        }
 	}
 
     /**
@@ -833,8 +847,8 @@ public class FluentQuery {
 	 *            The type of the based on column.
 	 * @return The sum value on a given column.
 	 */
-	public synchronized <T> T sum(Class<?> modelClass, String columnName, Class<T> columnType) {
-		return sum(BaseUtility.changeCase(modelClass.getSimpleName()), columnName, columnType);
+	public <T> T sum(Class<?> modelClass, String columnName, Class<T> columnType) {
+        return sum(BaseUtility.changeCase(modelClass.getSimpleName()), columnName, columnType);
 	}
 
     /**
@@ -874,9 +888,11 @@ public class FluentQuery {
 	 *            The type of the based on column.
 	 * @return The sum value on a given column.
 	 */
-	public synchronized <T> T sum(String tableName, String columnName, Class<T> columnType) {
-		QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
-		return queryHandler.onSum(tableName, columnName, mConditions, columnType);
+	public <T> T sum(String tableName, String columnName, Class<T> columnType) {
+        synchronized (LitePalSupport.class) {
+            QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
+            return queryHandler.onSum(tableName, columnName, mConditions, columnType);
+        }
 	}
 
     /**

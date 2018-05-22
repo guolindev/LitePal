@@ -81,7 +81,9 @@ public class LitePal {
      * @return A writable SQLiteDatabase instance
      */
     public static SQLiteDatabase getDatabase() {
-        return Connector.getDatabase();
+        synchronized (LitePalSupport.class) {
+            return Connector.getDatabase();
+        }
     }
 
     /**
@@ -98,25 +100,29 @@ public class LitePal {
      *          The database to switch to.
      */
     public static void use(LitePalDB litePalDB) {
-        LitePalAttr litePalAttr = LitePalAttr.getInstance();
-        litePalAttr.setDbName(litePalDB.getDbName());
-        litePalAttr.setVersion(litePalDB.getVersion());
-        litePalAttr.setStorage(litePalDB.getStorage());
-        litePalAttr.setClassNames(litePalDB.getClassNames());
-        // set the extra key name only when use database other than default or litepal.xml not exists
-        if (!isDefaultDatabase(litePalDB.getDbName())) {
-            litePalAttr.setExtraKeyName(litePalDB.getDbName());
-            litePalAttr.setCases("lower");
+        synchronized (LitePalSupport.class) {
+            LitePalAttr litePalAttr = LitePalAttr.getInstance();
+            litePalAttr.setDbName(litePalDB.getDbName());
+            litePalAttr.setVersion(litePalDB.getVersion());
+            litePalAttr.setStorage(litePalDB.getStorage());
+            litePalAttr.setClassNames(litePalDB.getClassNames());
+            // set the extra key name only when use database other than default or litepal.xml not exists
+            if (!isDefaultDatabase(litePalDB.getDbName())) {
+                litePalAttr.setExtraKeyName(litePalDB.getDbName());
+                litePalAttr.setCases("lower");
+            }
+            Connector.clearLitePalOpenHelperInstance();
         }
-        Connector.clearLitePalOpenHelperInstance();
     }
 
     /**
      * Switch the using database to default with configuration by litepal.xml.
      */
     public static void useDefault() {
-        LitePalAttr.clearInstance();
-        Connector.clearLitePalOpenHelperInstance();
+        synchronized (LitePalSupport.class) {
+            LitePalAttr.clearInstance();
+            Connector.clearLitePalOpenHelperInstance();
+        }
     }
 
     /**
@@ -126,12 +132,22 @@ public class LitePal {
      * @return True if delete success, false otherwise.
      */
     public static boolean deleteDatabase(String dbName) {
-        if (!TextUtils.isEmpty(dbName)) {
-            if (!dbName.endsWith(Const.Config.DB_NAME_SUFFIX)) {
-                dbName = dbName + Const.Config.DB_NAME_SUFFIX;
-            }
-            File dbFile = LitePalApplication.getContext().getDatabasePath(dbName);
-            if (dbFile.exists()) {
+        synchronized (LitePalSupport.class) {
+            if (!TextUtils.isEmpty(dbName)) {
+                if (!dbName.endsWith(Const.Config.DB_NAME_SUFFIX)) {
+                    dbName = dbName + Const.Config.DB_NAME_SUFFIX;
+                }
+                File dbFile = LitePalApplication.getContext().getDatabasePath(dbName);
+                if (dbFile.exists()) {
+                    boolean result = dbFile.delete();
+                    if (result) {
+                        removeVersionInSharedPreferences(dbName);
+                        Connector.clearLitePalOpenHelperInstance();
+                    }
+                    return result;
+                }
+                String path = LitePalApplication.getContext().getExternalFilesDir("") + "/databases/";
+                dbFile = new File(path + dbName);
                 boolean result = dbFile.delete();
                 if (result) {
                     removeVersionInSharedPreferences(dbName);
@@ -139,16 +155,8 @@ public class LitePal {
                 }
                 return result;
             }
-            String path = LitePalApplication.getContext().getExternalFilesDir("") + "/databases/";
-            dbFile = new File(path + dbName);
-            boolean result = dbFile.delete();
-            if (result) {
-                removeVersionInSharedPreferences(dbName);
-                Connector.clearLitePalOpenHelperInstance();
-            }
-            return result;
+            return false;
         }
-        return false;
     }
 
     public static void aesKey(String key) {
@@ -205,7 +213,7 @@ public class LitePal {
      *
      * @return A FluentQuery instance.
      */
-    public static synchronized FluentQuery select(String... columns) {
+    public static FluentQuery select(String... columns) {
         FluentQuery cQuery = new FluentQuery();
         cQuery.mColumns = columns;
         return cQuery;
@@ -226,7 +234,7 @@ public class LitePal {
      *            WHERE clause. Passing null will return all rows.
      * @return A FluentQuery instance.
      */
-    public static synchronized FluentQuery where(String... conditions) {
+    public static FluentQuery where(String... conditions) {
         FluentQuery cQuery = new FluentQuery();
         cQuery.mConditions = conditions;
         return cQuery;
@@ -248,7 +256,7 @@ public class LitePal {
      *            unordered.
      * @return A FluentQuery instance.
      */
-    public static synchronized FluentQuery order(String column) {
+    public static FluentQuery order(String column) {
         FluentQuery cQuery = new FluentQuery();
         cQuery.mOrderBy = column;
         return cQuery;
@@ -268,7 +276,7 @@ public class LitePal {
      *            LIMIT clause.
      * @return A FluentQuery instance.
      */
-    public static synchronized FluentQuery limit(int value) {
+    public static FluentQuery limit(int value) {
         FluentQuery cQuery = new FluentQuery();
         cQuery.mLimit = String.valueOf(value);
         return cQuery;
@@ -288,7 +296,7 @@ public class LitePal {
      *            The offset amount of rows returned by the query.
      * @return A FluentQuery instance.
      */
-    public static synchronized FluentQuery offset(int value) {
+    public static FluentQuery offset(int value) {
         FluentQuery cQuery = new FluentQuery();
         cQuery.mOffset = String.valueOf(value);
         return cQuery;
@@ -312,7 +320,7 @@ public class LitePal {
      *            Which table to query from by class.
      * @return Count of the specified table.
      */
-    public static synchronized int count(Class<?> modelClass) {
+    public static int count(Class<?> modelClass) {
         return count(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())));
     }
 
@@ -345,9 +353,11 @@ public class LitePal {
      *            Which table to query from.
      * @return Count of the specified table.
      */
-    public static synchronized int count(String tableName) {
-        FluentQuery cQuery = new FluentQuery();
-        return cQuery.count(tableName);
+    public static int count(String tableName) {
+        synchronized (LitePalSupport.class) {
+            FluentQuery cQuery = new FluentQuery();
+            return cQuery.count(tableName);
+        }
     }
 
     /**
@@ -398,7 +408,7 @@ public class LitePal {
      *            The based on column to calculate.
      * @return The average value on a given column.
      */
-    public static synchronized double average(Class<?> modelClass, String column) {
+    public static double average(Class<?> modelClass, String column) {
         return average(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), column);
     }
 
@@ -434,9 +444,11 @@ public class LitePal {
      *            The based on column to calculate.
      * @return The average value on a given column.
      */
-    public static synchronized double average(String tableName, String column) {
-        FluentQuery cQuery = new FluentQuery();
-        return cQuery.average(tableName, column);
+    public static double average(String tableName, String column) {
+        synchronized (LitePalSupport.class) {
+            FluentQuery cQuery = new FluentQuery();
+            return cQuery.average(tableName, column);
+        }
     }
 
     /**
@@ -492,7 +504,7 @@ public class LitePal {
      *            The type of the based on column.
      * @return The maximum value on a given column.
      */
-    public static synchronized <T> T max(Class<?> modelClass, String columnName, Class<T> columnType) {
+    public static <T> T max(Class<?> modelClass, String columnName, Class<T> columnType) {
         return max(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
     }
 
@@ -533,9 +545,11 @@ public class LitePal {
      *            The type of the based on column.
      * @return The maximum value on a given column.
      */
-    public static synchronized <T> T max(String tableName, String columnName, Class<T> columnType) {
-        FluentQuery cQuery = new FluentQuery();
-        return cQuery.max(tableName, columnName, columnType);
+    public static <T> T max(String tableName, String columnName, Class<T> columnType) {
+        synchronized (LitePalSupport.class) {
+            FluentQuery cQuery = new FluentQuery();
+            return cQuery.max(tableName, columnName, columnType);
+        }
     }
 
     /**
@@ -593,7 +607,7 @@ public class LitePal {
      *            The type of the based on column.
      * @return The minimum value on a given column.
      */
-    public static synchronized <T> T min(Class<?> modelClass, String columnName, Class<T> columnType) {
+    public static <T> T min(Class<?> modelClass, String columnName, Class<T> columnType) {
         return min(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
     }
 
@@ -634,9 +648,11 @@ public class LitePal {
      *            The type of the based on column.
      * @return The minimum value on a given column.
      */
-    public static synchronized <T> T min(String tableName, String columnName, Class<T> columnType) {
-        FluentQuery cQuery = new FluentQuery();
-        return cQuery.min(tableName, columnName, columnType);
+    public static <T> T min(String tableName, String columnName, Class<T> columnType) {
+        synchronized (LitePalSupport.class) {
+            FluentQuery cQuery = new FluentQuery();
+            return cQuery.min(tableName, columnName, columnType);
+        }
     }
 
     /**
@@ -694,7 +710,7 @@ public class LitePal {
      *            The type of the based on column.
      * @return The sum value on a given column.
      */
-    public static synchronized <T> T sum(Class<?> modelClass, String columnName, Class<T> columnType) {
+    public static <T> T sum(Class<?> modelClass, String columnName, Class<T> columnType) {
         return sum(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
     }
 
@@ -735,9 +751,11 @@ public class LitePal {
      *            The type of the based on column.
      * @return The sum value on a given column.
      */
-    public static synchronized <T> T sum(String tableName, String columnName, Class<T> columnType) {
-        FluentQuery cQuery = new FluentQuery();
-        return cQuery.sum(tableName, columnName, columnType);
+    public static <T> T sum(String tableName, String columnName, Class<T> columnType) {
+        synchronized (LitePalSupport.class) {
+            FluentQuery cQuery = new FluentQuery();
+            return cQuery.sum(tableName, columnName, columnType);
+        }
     }
 
     /**
@@ -793,7 +811,7 @@ public class LitePal {
      *            Which record to query.
      * @return An object with found data from database, or null.
      */
-    public static synchronized <T> T find(Class<T> modelClass, long id) {
+    public static <T> T find(Class<T> modelClass, long id) {
         return find(modelClass, id, false);
     }
 
@@ -825,9 +843,11 @@ public class LitePal {
      *            True to load the associated models, false not.
      * @return An object with found data from database, or null.
      */
-    public static synchronized <T> T find(Class<T> modelClass, long id, boolean isEager) {
-        QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
-        return queryHandler.onFind(modelClass, id, isEager);
+    public static <T> T find(Class<T> modelClass, long id, boolean isEager) {
+        synchronized (LitePalSupport.class) {
+            QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
+            return queryHandler.onFind(modelClass, id, isEager);
+        }
     }
 
     /**
@@ -878,7 +898,7 @@ public class LitePal {
      *            Which table to query and the object type to return.
      * @return An object with data of first row, or null.
      */
-    public static synchronized <T> T findFirst(Class<T> modelClass) {
+    public static <T> T findFirst(Class<T> modelClass) {
         return findFirst(modelClass, false);
     }
 
@@ -906,9 +926,11 @@ public class LitePal {
      *            True to load the associated models, false not.
      * @return An object with data of first row, or null.
      */
-    public static synchronized <T> T findFirst(Class<T> modelClass, boolean isEager) {
-        QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
-        return queryHandler.onFindFirst(modelClass, isEager);
+    public static <T> T findFirst(Class<T> modelClass, boolean isEager) {
+        synchronized (LitePalSupport.class) {
+            QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
+            return queryHandler.onFindFirst(modelClass, isEager);
+        }
     }
 
     /**
@@ -957,7 +979,7 @@ public class LitePal {
      *            Which table to query and the object type to return.
      * @return An object with data of last row, or null.
      */
-    public static synchronized <T> T findLast(Class<T> modelClass) {
+    public static <T> T findLast(Class<T> modelClass) {
         return findLast(modelClass, false);
     }
 
@@ -985,9 +1007,11 @@ public class LitePal {
      *            True to load the associated models, false not.
      * @return An object with data of last row, or null.
      */
-    public static synchronized <T> T findLast(Class<T> modelClass, boolean isEager) {
-        QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
-        return queryHandler.onFindLast(modelClass, isEager);
+    public static <T> T findLast(Class<T> modelClass, boolean isEager) {
+        synchronized (LitePalSupport.class) {
+            QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
+            return queryHandler.onFindLast(modelClass, isEager);
+        }
     }
 
     /**
@@ -1051,7 +1075,7 @@ public class LitePal {
      *            Which records to query. Or do not pass it to find all records.
      * @return An object list with found data from database, or an empty list.
      */
-    public static synchronized <T> List<T> findAll(Class<T> modelClass, long... ids) {
+    public static <T> List<T> findAll(Class<T> modelClass, long... ids) {
         return findAll(modelClass, false, ids);
     }
 
@@ -1083,10 +1107,12 @@ public class LitePal {
      *            Which records to query. Or do not pass it to find all records.
      * @return An object list with found data from database, or an empty list.
      */
-    public static synchronized <T> List<T> findAll(Class<T> modelClass, boolean isEager,
+    public static <T> List<T> findAll(Class<T> modelClass, boolean isEager,
                                                    long... ids) {
-        QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
-        return queryHandler.onFindAll(modelClass, isEager, ids);
+        synchronized (LitePalSupport.class) {
+            QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
+            return queryHandler.onFindAll(modelClass, isEager, ids);
+        }
     }
 
     /**
@@ -1138,22 +1164,24 @@ public class LitePal {
      *         that Cursors are not synchronized, see the documentation for more
      *         details.
      */
-    public static synchronized Cursor findBySQL(String... sql) {
-        BaseUtility.checkConditionsCorrect(sql);
-        if (sql == null) {
-            return null;
+    public static Cursor findBySQL(String... sql) {
+        synchronized (LitePalSupport.class) {
+            BaseUtility.checkConditionsCorrect(sql);
+            if (sql == null) {
+                return null;
+            }
+            if (sql.length <= 0) {
+                return null;
+            }
+            String[] selectionArgs;
+            if (sql.length == 1) {
+                selectionArgs = null;
+            } else {
+                selectionArgs = new String[sql.length - 1];
+                System.arraycopy(sql, 1, selectionArgs, 0, sql.length - 1);
+            }
+            return Connector.getDatabase().rawQuery(sql[0], selectionArgs);
         }
-        if (sql.length <= 0) {
-            return null;
-        }
-        String[] selectionArgs;
-        if (sql.length == 1) {
-            selectionArgs = null;
-        } else {
-            selectionArgs = new String[sql.length - 1];
-            System.arraycopy(sql, 1, selectionArgs, 0, sql.length - 1);
-        }
-        return Connector.getDatabase().rawQuery(sql[0], selectionArgs);
     }
 
     /**
@@ -1173,17 +1201,19 @@ public class LitePal {
      *            Which record to delete.
      * @return The number of rows affected. Including cascade delete rows.
      */
-    public static synchronized int delete(Class<?> modelClass, long id) {
-        int rowsAffected = 0;
-        SQLiteDatabase db = Connector.getDatabase();
-        db.beginTransaction();
-        try {
-            DeleteHandler deleteHandler = new DeleteHandler(db);
-            rowsAffected = deleteHandler.onDelete(modelClass, id);
-            db.setTransactionSuccessful();
-            return rowsAffected;
-        } finally {
-            db.endTransaction();
+    public static int delete(Class<?> modelClass, long id) {
+        synchronized (LitePalSupport.class) {
+            int rowsAffected = 0;
+            SQLiteDatabase db = Connector.getDatabase();
+            db.beginTransaction();
+            try {
+                DeleteHandler deleteHandler = new DeleteHandler(db);
+                rowsAffected = deleteHandler.onDelete(modelClass, id);
+                db.setTransactionSuccessful();
+                return rowsAffected;
+            } finally {
+                db.endTransaction();
+            }
         }
     }
 
@@ -1242,9 +1272,11 @@ public class LitePal {
      *            all rows.
      * @return The number of rows affected.
      */
-    public static synchronized int deleteAll(Class<?> modelClass, String... conditions) {
-        DeleteHandler deleteHandler = new DeleteHandler(Connector.getDatabase());
-        return deleteHandler.onDeleteAll(modelClass, conditions);
+    public static int deleteAll(Class<?> modelClass, String... conditions) {
+        synchronized (LitePalSupport.class) {
+            DeleteHandler deleteHandler = new DeleteHandler(Connector.getDatabase());
+            return deleteHandler.onDeleteAll(modelClass, conditions);
+        }
     }
 
     /**
@@ -1311,9 +1343,11 @@ public class LitePal {
      *            all rows.
      * @return The number of rows affected.
      */
-    public static synchronized int deleteAll(String tableName, String... conditions) {
-        DeleteHandler deleteHandler = new DeleteHandler(Connector.getDatabase());
-        return deleteHandler.onDeleteAll(tableName, conditions);
+    public static int deleteAll(String tableName, String... conditions) {
+        synchronized (LitePalSupport.class) {
+            DeleteHandler deleteHandler = new DeleteHandler(Connector.getDatabase());
+            return deleteHandler.onDeleteAll(tableName, conditions);
+        }
     }
 
     /**
@@ -1374,9 +1408,11 @@ public class LitePal {
      *            Which record to update.
      * @return The number of rows affected.
      */
-    public static synchronized int update(Class<?> modelClass, ContentValues values, long id) {
-        UpdateHandler updateHandler = new UpdateHandler(Connector.getDatabase());
-        return updateHandler.onUpdate(modelClass, id, values);
+    public static int update(Class<?> modelClass, ContentValues values, long id) {
+        synchronized (LitePalSupport.class) {
+            UpdateHandler updateHandler = new UpdateHandler(Connector.getDatabase());
+            return updateHandler.onUpdate(modelClass, id, values);
+        }
     }
 
     /**
@@ -1442,10 +1478,10 @@ public class LitePal {
      *            all rows.
      * @return The number of rows affected.
      */
-    public static synchronized int updateAll(Class<?> modelClass, ContentValues values,
+    public static int updateAll(Class<?> modelClass, ContentValues values,
                                              String... conditions) {
         return updateAll(BaseUtility.changeCase(DBUtility.getTableNameByClassName(
-                modelClass.getName())), values, conditions);
+                    modelClass.getName())), values, conditions);
     }
 
     /**
@@ -1500,10 +1536,12 @@ public class LitePal {
      *            all rows.
      * @return The number of rows affected.
      */
-    public static synchronized int updateAll(String tableName, ContentValues values,
+    public static int updateAll(String tableName, ContentValues values,
                                              String... conditions) {
-        UpdateHandler updateHandler = new UpdateHandler(Connector.getDatabase());
-        return updateHandler.onUpdateAll(tableName, values, conditions);
+        synchronized (LitePalSupport.class) {
+            UpdateHandler updateHandler = new UpdateHandler(Connector.getDatabase());
+            return updateHandler.onUpdateAll(tableName, values, conditions);
+        }
     }
 
     /**
@@ -1572,17 +1610,19 @@ public class LitePal {
      * @param collection
      *            Holds all models to save.
      */
-    public static synchronized <T extends LitePalSupport> void saveAll(Collection<T> collection) {
-        SQLiteDatabase db = Connector.getDatabase();
-        db.beginTransaction();
-        try {
-            SaveHandler saveHandler = new SaveHandler(db);
-            saveHandler.onSaveAll(collection);
-            db.setTransactionSuccessful();
-        } catch (Exception e) {
-            throw new LitePalSupportException(e.getMessage(), e);
-        } finally {
-            db.endTransaction();
+    public static <T extends LitePalSupport> void saveAll(Collection<T> collection) {
+        synchronized (LitePalSupport.class) {
+            SQLiteDatabase db = Connector.getDatabase();
+            db.beginTransaction();
+            try {
+                SaveHandler saveHandler = new SaveHandler(db);
+                saveHandler.onSaveAll(collection);
+                db.setTransactionSuccessful();
+            } catch (Exception e) {
+                throw new LitePalSupportException(e.getMessage(), e);
+            } finally {
+                db.endTransaction();
+            }
         }
     }
 
