@@ -16,8 +16,8 @@ Experience the magic right now and have fun!
  * More for you to explore.
  
 ## Latest Downloads
- * **[litepal-1.6.1.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.6.1.jar)** (library contains *.class files)
- * **[litepal-1.6.1-src.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-1.6.1-src.jar)** (library contains *.class files and *.java files)
+ * **[litepal-2.0.0.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-2.0.0.jar)** (library contains *.class files)
+ * **[litepal-2.0.0-src.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-2.0.0-src.jar)** (library contains *.class files and *.java files)
  
 ## Quick Setup
 #### 1. Include library
@@ -29,7 +29,7 @@ Experience the magic right now and have fun!
 Edit your **build.gradle** file and add below dependency:
 ``` groovy
 dependencies {
-    compile 'org.litepal.android:core:1.6.1'
+    compile 'org.litepal.android:core:2.0.0'
 }
 ```
 #### 2. Configure litepal.xml
@@ -132,7 +132,7 @@ After setup, you can experience the powerful function now.
 #### 1. Create tables
 Define the models first. For example you have two models, **Album** and **Song**. The models can be defined as below:
 ``` java
-public class Album extends DataSupport {
+public class Album extends LitePalSupport {
 	
     @Column(unique = true, defaultValue = "unknown")
     private String name;
@@ -148,7 +148,7 @@ public class Album extends DataSupport {
 }
 ```
 ``` java
-public class Song extends DataSupport {
+public class Song extends LitePalSupport {
 	
     @Column(nullable = false)
     private String name;
@@ -195,7 +195,7 @@ CREATE TABLE song (
 #### 2. Upgrade tables
 Upgrade tables in LitePal is extremely easy. Just modify your models anyway you want:
 ```java
-public class Album extends DataSupport {
+public class Album extends LitePalSupport {
 	
     @Column(unique = true, defaultValue = "unknown")
     private String name;
@@ -237,7 +237,7 @@ But there are some upgrading conditions that LitePal can't handle and all data i
 Be careful of the above conditions which will cause losing data.
 
 #### 3. Save data
-The saving API is quite object oriented. Each model which inherits from **DataSupport** would have the **save()** method for free:
+The saving API is quite object oriented. Each model which inherits from **LitePalSupport** would have the **save()** method for free:
 ``` java
 Album album = new Album();
 album.setName("album");
@@ -260,11 +260,11 @@ This will insert album, song1 and song2 into database with associations.
 #### 4. Update data
 The simplest way, use **save()** method to update a record found by **find()**:
 ``` java
-Album albumToUpdate = DataSupport.find(Album.class, 1);
+Album albumToUpdate = LitePal.find(Album.class, 1);
 albumToUpdate.setPrice(20.99f); // raise the price
 albumToUpdate.save();
 ```
-Each model which inherits from **DataSupport** would also have **update()** and **updateAll()** method. You can update a single record with a specified id:
+Each model which inherits from **LitePalSupport** would also have **update()** and **updateAll()** method. You can update a single record with a specified id:
 ``` java
 Album albumToUpdate = new Album();
 albumToUpdate.setPrice(20.99f); // raise the price
@@ -278,27 +278,27 @@ albumToUpdate.updateAll("name = ?", "album");
 ```
 
 #### 5. Delete data
-You can delete a single record using the static **delete()** method in **DataSupport**:
+You can delete a single record using the static **delete()** method in **LitePal**:
 ``` java
-DataSupport.delete(Song.class, id);
+LitePal.delete(Song.class, id);
 ```
-Or delete multiple records using the static **deleteAll()** method in **DataSupport**:
+Or delete multiple records using the static **deleteAll()** method in **LitePal**:
 ``` java
-DataSupport.deleteAll(Song.class, "duration > ?" , "350");
+LitePal.deleteAll(Song.class, "duration > ?" , "350");
 ```
 
 #### 6. Query data
 Find a single record from song table with specified id:
 ``` java
-Song song = DataSupport.find(Song.class, id);
+Song song = LitePal.find(Song.class, id);
 ```
 Find all records from song table:
 ``` java
-List<Song> allSongs = DataSupport.findAll(Song.class);
+List<Song> allSongs = LitePal.findAll(Song.class);
 ```
 Constructing complex query with fluent query:
 ``` java
-List<Song> songs = DataSupport.where("name like ? and duration < ?", "song%", "200").order("duration").find(Song.class);
+List<Song> songs = LitePal.where("name like ? and duration < ?", "song%", "200").order("duration").find(Song.class);
 ```
 
 #### 7. Async operations
@@ -308,7 +308,7 @@ for example saving or querying tons of records. You may want to use async operat
 LitePal support async operations on all crud methods. If you want to find all records from song table
 on a background thread, use codes like this:
 ```java
-DataSupport.findAllAsync(Song.class).listen(new FindMultiCallback() {
+LitePal.findAllAsync(Song.class).listen(new FindMultiCallback() {
     @Override
     public <T> void onFinish(List<T> t) {
         List<Song> allSongs = (List<Song>) t;
@@ -370,6 +370,10 @@ If you are using ProGuard you might need to add the following option:
 -keep class * extends org.litepal.crud.DataSupport {
     *;
 }
+
+-keep class * extends org.litepal.crud.LitePalSupport {
+    *;
+}
 ```
 
 ## Developed By
@@ -386,6 +390,11 @@ Get it on:
 If you find any bug when using LitePal, please report **[here](https://github.com/LitePalFramework/LitePal/issues/new)**. Thanks for helping us making better.
 
 ## Change logs
+### 2.0.0
+ * Offer new APIs for CRUD operations. Deprecate **DataSupport**, use **LitePal** and **LitePalSupport** instead.
+ * Fully support kotlin programming.
+ * Fix known bugs.
+
 ### 1.6.1
  * Support AES and MD5 encryption with @Encrypt annotation on fields.
  * Support to store database file on any directory of external storage.
