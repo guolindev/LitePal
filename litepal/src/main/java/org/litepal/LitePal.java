@@ -519,7 +519,7 @@ public class LitePal {
      *            The type of the based on column.
      * @return A FindExecutor instance.
      */
-    public static <T> FindExecutor maxAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
+    public static <T> FindExecutor<T> maxAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
         return maxAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
     }
 
@@ -563,8 +563,8 @@ public class LitePal {
      *            The type of the based on column.
      * @return A FindExecutor instance.
      */
-    public static <T> FindExecutor maxAsync(final String tableName, final String columnName, final Class<T> columnType) {
-        final FindExecutor executor = new FindExecutor();
+    public static <T> FindExecutor<T> maxAsync(final String tableName, final String columnName, final Class<T> columnType) {
+        final FindExecutor<T> executor = new FindExecutor<>();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -622,7 +622,7 @@ public class LitePal {
      *            The type of the based on column.
      * @return A FindExecutor instance.
      */
-    public static <T> FindExecutor minAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
+    public static <T> FindExecutor<T> minAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
         return minAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
     }
 
@@ -666,8 +666,8 @@ public class LitePal {
      *            The type of the based on column.
      * @return A FindExecutor instance.
      */
-    public static <T> FindExecutor minAsync(final String tableName, final String columnName, final Class<T> columnType) {
-        final FindExecutor executor = new FindExecutor();
+    public static <T> FindExecutor<T> minAsync(final String tableName, final String columnName, final Class<T> columnType) {
+        final FindExecutor<T> executor = new FindExecutor<>();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -725,7 +725,7 @@ public class LitePal {
      *            The type of the based on column.
      * @return A FindExecutor instance.
      */
-    public static <T> FindExecutor sumAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
+    public static <T> FindExecutor<T> sumAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
         return sumAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
     }
 
@@ -769,8 +769,8 @@ public class LitePal {
      *            The type of the based on column.
      * @return A FindExecutor instance.
      */
-    public static <T> FindExecutor sumAsync(final String tableName, final String columnName, final Class<T> columnType) {
-        final FindExecutor executor = new FindExecutor();
+    public static <T> FindExecutor<T> sumAsync(final String tableName, final String columnName, final Class<T> columnType) {
+        final FindExecutor<T> executor = new FindExecutor<>();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -824,7 +824,7 @@ public class LitePal {
      *            Which record to query.
      * @return A FindExecutor instance.
      */
-    public static <T> FindExecutor findAsync(Class<T> modelClass, long id) {
+    public static <T> FindExecutor<T> findAsync(Class<T> modelClass, long id) {
         return findAsync(modelClass, id, false);
     }
 
@@ -861,8 +861,8 @@ public class LitePal {
      *            True to load the associated models, false not.
      * @return A FindExecutor instance.
      */
-    public static <T> FindExecutor findAsync(final Class<T> modelClass, final long id, final boolean isEager) {
-        final FindExecutor executor = new FindExecutor();
+    public static <T> FindExecutor<T> findAsync(final Class<T> modelClass, final long id, final boolean isEager) {
+        final FindExecutor<T> executor = new FindExecutor<>();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -909,7 +909,7 @@ public class LitePal {
      *            Which table to query and the object type to return.
      * @return A FindExecutor instance.
      */
-    public static <T> FindExecutor findFirstAsync(Class<T> modelClass) {
+    public static <T> FindExecutor<T> findFirstAsync(Class<T> modelClass) {
         return findFirstAsync(modelClass, false);
     }
 
@@ -942,8 +942,8 @@ public class LitePal {
      *            True to load the associated models, false not.
      * @return A FindExecutor instance.
      */
-    public static <T> FindExecutor findFirstAsync(final Class<T> modelClass, final boolean isEager) {
-        final FindExecutor executor = new FindExecutor();
+    public static <T> FindExecutor<T> findFirstAsync(final Class<T> modelClass, final boolean isEager) {
+        final FindExecutor<T> executor = new FindExecutor<>();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -990,7 +990,7 @@ public class LitePal {
      *            Which table to query and the object type to return.
      * @return A FindExecutor instance.
      */
-    public static <T> FindExecutor findLastAsync(Class<T> modelClass) {
+    public static <T> FindExecutor<T> findLastAsync(Class<T> modelClass) {
         return findLastAsync(modelClass, false);
     }
 
@@ -1023,8 +1023,8 @@ public class LitePal {
      *            True to load the associated models, false not.
      * @return A FindExecutor instance.
      */
-    public static <T> FindExecutor findLastAsync(final Class<T> modelClass, final boolean isEager) {
-        final FindExecutor executor = new FindExecutor();
+    public static <T> FindExecutor<T> findLastAsync(final Class<T> modelClass, final boolean isEager) {
+        final FindExecutor<T> executor = new FindExecutor<>();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -1088,7 +1088,7 @@ public class LitePal {
      *            Which records to query. Or do not pass it to find all records.
      * @return A FindMultiExecutor instance.
      */
-    public static <T> FindMultiExecutor findAllAsync(Class<T> modelClass, long... ids) {
+    public static <T> FindMultiExecutor<T> findAllAsync(Class<T> modelClass, long... ids) {
         return findAllAsync(modelClass, false, ids);
     }
 
@@ -1126,8 +1126,8 @@ public class LitePal {
      *            Which records to query. Or do not pass it to find all records.
      * @return A FindMultiExecutor instance.
      */
-    public static <T> FindMultiExecutor findAllAsync(final Class<T> modelClass, final boolean isEager, final long... ids) {
-        final FindMultiExecutor executor = new FindMultiExecutor();
+    public static <T> FindMultiExecutor<T> findAllAsync(final Class<T> modelClass, final boolean isEager, final long... ids) {
+        final FindMultiExecutor<T> executor = new FindMultiExecutor<>();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -1203,7 +1203,7 @@ public class LitePal {
      */
     public static int delete(Class<?> modelClass, long id) {
         synchronized (LitePalSupport.class) {
-            int rowsAffected = 0;
+            int rowsAffected;
             SQLiteDatabase db = Connector.getDatabase();
             db.beginTransaction();
             try {
@@ -1604,8 +1604,7 @@ public class LitePal {
      * }
      * </pre>
      *
-     * So when your collection holds huge of models,
-     * {@link #saveAll(Collection)} is the better choice.
+     * So when your collection holds huge of models, saveAll(Collection) is the better choice.
      *
      * @param collection
      *            Holds all models to save.
@@ -1686,10 +1685,7 @@ public class LitePal {
      *         False otherwise. Null conditions will result in false.
      */
     public static <T> boolean isExist(Class<T> modelClass, String... conditions) {
-        if (conditions == null) {
-            return false;
-        }
-        return where(conditions).count(modelClass) > 0;
+        return conditions != null && where(conditions).count(modelClass) > 0;
     }
 
 }

@@ -23,21 +23,21 @@ import org.litepal.crud.callback.FindCallback;
  * @author Tony Green
  * @since 2017/2/22
  */
-public class FindExecutor extends AsyncExecutor {
+public class FindExecutor<T> extends AsyncExecutor {
 
-    private FindCallback cb;
+    private FindCallback<T> cb;
 
     /**
      * Register a callback listener and async task will start executing right away.
      * @param callback
      *          Callback for find record in background.
      */
-    public void listen(FindCallback callback) {
+    public void listen(FindCallback<T> callback) {
         cb = callback;
         execute();
     }
 
-    public FindCallback getListener() {
+    public FindCallback<T> getListener() {
         return  cb;
     }
 

@@ -202,7 +202,7 @@ public class FluentQuery {
      *            Which table to query and the object type to return as a list.
      * @return A FindMultiExecutor instance.
      */
-    public <T> FindMultiExecutor findAsync(final Class<T> modelClass) {
+    public <T> FindMultiExecutor<T> findAsync(final Class<T> modelClass) {
         return findAsync(modelClass, false);
     }
 
@@ -244,8 +244,8 @@ public class FluentQuery {
      *            True to load the associated models, false not.
      * @return A FindMultiExecutor instance.
      */
-    public <T> FindMultiExecutor findAsync(final Class<T> modelClass, final boolean isEager) {
-        final FindMultiExecutor executor = new FindMultiExecutor();
+    public <T> FindMultiExecutor<T> findAsync(final Class<T> modelClass, final boolean isEager) {
+        final FindMultiExecutor<T> executor = new FindMultiExecutor<>();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -294,7 +294,7 @@ public class FluentQuery {
      *            Which table to query and the object type to return.
      * @return A FindExecutor instance.
      */
-    public <T> FindExecutor findFirstAsync(Class<T> modelClass) {
+    public <T> FindExecutor<T> findFirstAsync(Class<T> modelClass) {
         return findFirstAsync(modelClass, false);
     }
 
@@ -330,8 +330,8 @@ public class FluentQuery {
      *            True to load the associated models, false not.
      * @return A FindExecutor instance.
      */
-    public <T> FindExecutor findFirstAsync(final Class<T> modelClass, final boolean isEager) {
-        final FindExecutor executor = new FindExecutor();
+    public <T> FindExecutor<T> findFirstAsync(final Class<T> modelClass, final boolean isEager) {
+        final FindExecutor<T> executor = new FindExecutor<>();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -380,7 +380,7 @@ public class FluentQuery {
      *            Which table to query and the object type to return.
      * @return A FindExecutor instance.
      */
-    public <T> FindExecutor findLastAsync(Class<T> modelClass) {
+    public <T> FindExecutor<T> findLastAsync(Class<T> modelClass) {
         return findLastAsync(modelClass, false);
     }
 
@@ -417,8 +417,8 @@ public class FluentQuery {
      *            True to load the associated models, false not.
      * @return A FindExecutor instance.
      */
-    public <T> FindExecutor findLastAsync(final Class<T> modelClass, final boolean isEager) {
-        final FindExecutor executor = new FindExecutor();
+    public <T> FindExecutor<T> findLastAsync(final Class<T> modelClass, final boolean isEager) {
+        final FindExecutor<T> executor = new FindExecutor<>();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -656,7 +656,7 @@ public class FluentQuery {
      *            The type of the based on column.
      * @return A FindExecutor instance.
      */
-    public <T> FindExecutor maxAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
+    public <T> FindExecutor<T> maxAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
         return maxAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
     }
 
@@ -700,8 +700,8 @@ public class FluentQuery {
      *            The type of the based on column.
      * @return A FindExecutor instance.
      */
-    public <T> FindExecutor maxAsync(final String tableName, final String columnName, final Class<T> columnType) {
-        final FindExecutor executor = new FindExecutor();
+    public <T> FindExecutor<T> maxAsync(final String tableName, final String columnName, final Class<T> columnType) {
+        final FindExecutor<T> executor = new FindExecutor<>();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -759,7 +759,7 @@ public class FluentQuery {
      *            The type of the based on column.
      * @return A FindExecutor instance.
      */
-    public <T> FindExecutor minAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
+    public <T> FindExecutor<T> minAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
         return minAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
     }
 
@@ -803,8 +803,8 @@ public class FluentQuery {
      *            The type of the based on column.
      * @return A FindExecutor instance.
      */
-    public <T> FindExecutor minAsync(final String tableName, final String columnName, final Class<T> columnType) {
-        final FindExecutor executor = new FindExecutor();
+    public <T> FindExecutor<T> minAsync(final String tableName, final String columnName, final Class<T> columnType) {
+        final FindExecutor<T> executor = new FindExecutor<>();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -862,7 +862,7 @@ public class FluentQuery {
      *            The type of the based on column.
      * @return A FindExecutor instance.
      */
-    public <T> FindExecutor sumAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
+    public <T> FindExecutor<T> sumAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
         return sumAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
     }
 
@@ -906,8 +906,8 @@ public class FluentQuery {
      *            The type of the based on column.
      * @return A FindExecutor instance.
      */
-    public <T> FindExecutor sumAsync(final String tableName, final String columnName, final Class<T> columnType) {
-        final FindExecutor executor = new FindExecutor();
+    public <T> FindExecutor<T> sumAsync(final String tableName, final String columnName, final Class<T> columnType) {
+        final FindExecutor<T> executor = new FindExecutor<>();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {

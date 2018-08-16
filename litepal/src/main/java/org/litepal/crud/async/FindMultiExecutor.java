@@ -23,21 +23,21 @@ import org.litepal.crud.callback.FindMultiCallback;
  * @author Tony Green
  * @since 2017/2/22
  */
-public class FindMultiExecutor extends AsyncExecutor {
+public class FindMultiExecutor<T> extends AsyncExecutor {
 
-    private FindMultiCallback cb;
+    private FindMultiCallback<T> cb;
 
     /**
      * Register a callback listener and async task will start executing right away.
      * @param callback
      *          Callback for find multiple records in background.
      */
-    public void listen(FindMultiCallback callback) {
+    public void listen(FindMultiCallback<T> callback) {
         cb = callback;
         execute();
     }
 
-    public FindMultiCallback getListener() {
+    public FindMultiCallback<T> getListener() {
         return  cb;
     }
 
