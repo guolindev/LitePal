@@ -21,8 +21,8 @@ package org.litepal.crud.callback;
  * @author Tony Green
  * @since 2017/2/22
  */
-public interface FindCallback {
+public interface FindCallback<T> {
 
-    <T> void onFinish(T t);
+    void onFinish(T t);
 
 }

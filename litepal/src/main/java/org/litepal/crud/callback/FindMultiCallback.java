@@ -23,8 +23,8 @@ import java.util.List;
  * @author Tony Green
  * @since 2017/2/22
  */
-public interface FindMultiCallback {
+public interface FindMultiCallback<T> {
 
-    <T> void onFinish(List<T> t);
+    void onFinish(List<T> t);
 
 }
