@@ -16,27 +16,19 @@
 
 package org.litepal.litepalsample.activity;
 
-import org.litepal.litepalsample.R;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-public class CRUDActivity extends Activity implements OnClickListener {
+import org.litepal.litepalsample.R;
 
-	private Button mSaveSampleBtn;
+public class CRUDActivity extends AppCompatActivity implements OnClickListener {
 
-	private Button mUpdateSampleBtn;
-
-	private Button mDeleteSampleBtn;
-
-	private Button mQuerySampleBtn;
-
-	public static void actionStart(Context context) {
+    public static void actionStart(Context context) {
 		Intent intent = new Intent(context, CRUDActivity.class);
 		context.startActivity(intent);
 	}
@@ -45,10 +37,10 @@ public class CRUDActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.crud_layout);
-		mSaveSampleBtn = (Button) findViewById(R.id.save_sample_btn);
-		mUpdateSampleBtn = (Button) findViewById(R.id.update_sample_btn);
-		mDeleteSampleBtn = (Button) findViewById(R.id.delete_sample_btn);
-		mQuerySampleBtn = (Button) findViewById(R.id.query_sample_btn);
+        Button mSaveSampleBtn = findViewById(R.id.save_sample_btn);
+        Button mUpdateSampleBtn = findViewById(R.id.update_sample_btn);
+        Button mDeleteSampleBtn = findViewById(R.id.delete_sample_btn);
+        Button mQuerySampleBtn = findViewById(R.id.query_sample_btn);
 		mSaveSampleBtn.setOnClickListener(this);
 		mUpdateSampleBtn.setOnClickListener(this);
 		mDeleteSampleBtn.setOnClickListener(this);

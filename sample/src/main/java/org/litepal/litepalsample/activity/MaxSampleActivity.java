@@ -16,10 +16,10 @@
 
 package org.litepal.litepalsample.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -30,13 +30,9 @@ import org.litepal.LitePal;
 import org.litepal.litepalsample.R;
 import org.litepal.litepalsample.model.Singer;
 
-public class MaxSampleActivity extends Activity implements OnClickListener {
+public class MaxSampleActivity extends AppCompatActivity implements OnClickListener {
 
-	private Button mMaxBtn1;
-
-	private Button mMaxBtn2;
-
-	private EditText mAgeEdit;
+    private EditText mAgeEdit;
 
 	private TextView mResultText;
 
@@ -49,10 +45,10 @@ public class MaxSampleActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.max_sample_layout);
-		mMaxBtn1 = (Button) findViewById(R.id.max_btn1);
-		mMaxBtn2 = (Button) findViewById(R.id.max_btn2);
-		mAgeEdit = (EditText) findViewById(R.id.age_edit);
-		mResultText = (TextView) findViewById(R.id.result_text);
+        Button mMaxBtn1 = findViewById(R.id.max_btn1);
+        Button mMaxBtn2 = findViewById(R.id.max_btn2);
+		mAgeEdit = findViewById(R.id.age_edit);
+		mResultText = findViewById(R.id.result_text);
 		mMaxBtn1.setOnClickListener(this);
 		mMaxBtn2.setOnClickListener(this);
 	}

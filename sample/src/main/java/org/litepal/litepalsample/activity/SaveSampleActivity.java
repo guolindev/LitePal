@@ -16,19 +16,11 @@
 
 package org.litepal.litepalsample.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.litepal.litepalsample.R;
-import org.litepal.litepalsample.adapter.DataArrayAdapter;
-import org.litepal.litepalsample.model.Singer;
-import org.litepal.tablemanager.Connector;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -37,7 +29,15 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-public class SaveSampleActivity extends Activity implements OnClickListener {
+import org.litepal.litepalsample.R;
+import org.litepal.litepalsample.adapter.DataArrayAdapter;
+import org.litepal.litepalsample.model.Singer;
+import org.litepal.tablemanager.Connector;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class SaveSampleActivity extends AppCompatActivity implements OnClickListener {
 
 	private EditText mSingerNameEdit;
 
@@ -47,13 +47,11 @@ public class SaveSampleActivity extends Activity implements OnClickListener {
 
 	private ProgressBar mProgressBar;
 
-	private Button mSaveBtn;
-
-	private ListView mDataListView;
+    private ListView mDataListView;
 
 	private DataArrayAdapter mAdapter;
 
-	private List<List<String>> mList = new ArrayList<List<String>>();
+	private List<List<String>> mList = new ArrayList<>();
 
 	public static void actionStart(Context context) {
 		Intent intent = new Intent(context, SaveSampleActivity.class);
@@ -64,12 +62,12 @@ public class SaveSampleActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.save_sample_layout);
-		mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
-		mSingerNameEdit = (EditText) findViewById(R.id.singer_name_edit);
-		mSingerAgeEdit = (EditText) findViewById(R.id.singer_age_edit);
-		mSingerGenderEdit = (EditText) findViewById(R.id.singer_gender_edit);
-		mSaveBtn = (Button) findViewById(R.id.save_btn);
-		mDataListView = (ListView) findViewById(R.id.data_list_view);
+		mProgressBar = findViewById(R.id.progress_bar);
+		mSingerNameEdit = findViewById(R.id.singer_name_edit);
+		mSingerAgeEdit = findViewById(R.id.singer_age_edit);
+		mSingerGenderEdit = findViewById(R.id.singer_gender_edit);
+        Button mSaveBtn = findViewById(R.id.save_btn);
+		mDataListView = findViewById(R.id.data_list_view);
 		mSaveBtn.setOnClickListener(this);
 		mAdapter = new DataArrayAdapter(this, 0, mList);
 		mDataListView.setAdapter(mAdapter);

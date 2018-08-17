@@ -1,22 +1,32 @@
 package com.litepaltest.test.annotation;
 
+import android.support.test.filters.SmallTest;
+
 import com.litepaltest.model.Cellphone;
 import com.litepaltest.test.LitePalTestCase;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.litepal.LitePal;
 
 import java.util.UUID;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
+
 /**
  * Created by tony on 15-8-24.
  */
+@SmallTest
 public class ColumnTest extends LitePalTestCase {
 
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() {
         LitePal.getDatabase();
     }
 
+    @Test
     public void testUnique() {
         String serial = UUID.randomUUID().toString();
         for (int i = 0; i < 2; i++) {
@@ -33,6 +43,7 @@ public class ColumnTest extends LitePalTestCase {
         }
     }
 
+    @Test
     public void testNotNull() {
         Cellphone cellphone = new Cellphone();
         cellphone.setBrand("三星");
@@ -43,6 +54,7 @@ public class ColumnTest extends LitePalTestCase {
         assertTrue(cellphone.save());
     }
 
+    @Test
     public void testDefaultValue() {
         Cellphone cellphone = new Cellphone();
         cellphone.setBrand("三星");

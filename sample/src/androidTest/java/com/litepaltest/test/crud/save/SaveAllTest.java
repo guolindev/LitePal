@@ -1,13 +1,7 @@
 package com.litepaltest.test.crud.save;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
-
-import org.litepal.LitePal;
-import org.litepal.crud.DataSupport;
-import org.litepal.util.DBUtility;
+import android.database.Cursor;
+import android.support.test.filters.SmallTest;
 
 import com.litepaltest.model.Cellphone;
 import com.litepaltest.model.Classroom;
@@ -15,22 +9,33 @@ import com.litepaltest.model.IdCard;
 import com.litepaltest.model.Student;
 import com.litepaltest.model.Teacher;
 
-import android.database.Cursor;
-import android.test.AndroidTestCase;
+import org.junit.Before;
+import org.junit.Test;
+import org.litepal.LitePal;
+import org.litepal.util.DBUtility;
 
-public class SaveAllTest extends AndroidTestCase {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
+
+@SmallTest
+public class SaveAllTest {
 
     String classroomTable;
 
     String studentTable;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() {
         classroomTable = DBUtility.getTableNameByClassName(Classroom.class.getName());
         studentTable = DBUtility.getTableNameByClassName(Student.class.getName());
     }
 
+    @Test
     public void testSaveAll() {
 		List<Cellphone> cellList = new ArrayList<Cellphone>();
 		for (int i = 0; i < 50; i++) {
@@ -46,6 +51,7 @@ public class SaveAllTest extends AndroidTestCase {
 		}
 	}
 
+    @Test
 	public void testSaveAllWithM2OOnOneSide() {
 		Classroom classroom = new Classroom();
 		classroom.setName("Music room");
@@ -63,6 +69,7 @@ public class SaveAllTest extends AndroidTestCase {
 
 	}
 
+    @Test
 	public void testSaveAllWithM2OOnManySide() {
 		Classroom classroom = new Classroom();
 		classroom.setName("English room");
@@ -81,6 +88,7 @@ public class SaveAllTest extends AndroidTestCase {
 		assertEquals(50, list.size());
 	}
 
+    @Test
 	public void testSaveAllWithO2O() {
 		List<IdCard> idcardList = new ArrayList<IdCard>();
 		List<Student> studentList = new ArrayList<Student>();
@@ -103,6 +111,7 @@ public class SaveAllTest extends AndroidTestCase {
 		}
 	}
 
+    @Test
 	public void testSaveAllWithM2M() {
 		List<Student> studentList = new ArrayList<Student>();
 		List<Teacher> teacherList = new ArrayList<Teacher>();
@@ -144,6 +153,7 @@ public class SaveAllTest extends AndroidTestCase {
 		}
 	}
 
+    @Test
     public void testSaveAllGenericData() {
         List<Classroom> classroomList = new ArrayList<Classroom>();
         for (int i = 0; i < 50; i++) {

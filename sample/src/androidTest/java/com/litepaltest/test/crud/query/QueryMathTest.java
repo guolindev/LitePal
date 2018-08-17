@@ -1,24 +1,30 @@
 package com.litepaltest.test.crud.query;
 
-import org.litepal.LitePal;
-import org.litepal.crud.DataSupport;
-import org.litepal.util.DBUtility;
+import android.database.Cursor;
+import android.support.test.filters.SmallTest;
 
 import com.litepaltest.model.Student;
 
-import android.database.Cursor;
-import android.test.AndroidTestCase;
+import org.junit.Before;
+import org.junit.Test;
+import org.litepal.LitePal;
+import org.litepal.util.DBUtility;
 
-public class QueryMathTest extends AndroidTestCase {
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.fail;
+
+
+@SmallTest
+public class QueryMathTest {
 
     String studentTable;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() {
         studentTable = DBUtility.getTableNameByClassName(Student.class.getName());
     }
 
+    @Test
     public void testCount() {
 		int result = LitePal.count(Student.class);
 		int realResult = -100;
@@ -42,6 +48,7 @@ public class QueryMathTest extends AndroidTestCase {
 		}
 	}
 
+	@Test
 	public void testAverage() {
 		double result = LitePal.average(Student.class, "age");
 		double realResult = -100;
@@ -66,6 +73,7 @@ public class QueryMathTest extends AndroidTestCase {
 		}
 	}
 
+	@Test
 	public void testMax() {
 		int result = LitePal.max(Student.class, "age", Integer.TYPE);
 		int realResult = -100;
@@ -84,6 +92,7 @@ public class QueryMathTest extends AndroidTestCase {
 		assertEquals(realResult, result);
 	}
 
+	@Test
 	public void testMin() {
 		int result = LitePal.min(Student.class, "age", Integer.TYPE);
 		int realResult = -100;
@@ -102,6 +111,7 @@ public class QueryMathTest extends AndroidTestCase {
 		assertEquals(realResult, result);
 	}
 
+	@Test
 	public void testSum() {
 		int result = LitePal.sum(Student.class, "age", Integer.TYPE);
 		int realResult = -100;

@@ -16,29 +16,19 @@
 
 package org.litepal.litepalsample.activity;
 
-import org.litepal.litepalsample.R;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-public class AggregateActivity extends Activity implements OnClickListener {
+import org.litepal.litepalsample.R;
 
-	private Button mCountSampleBtn;
+public class AggregateActivity extends AppCompatActivity implements OnClickListener {
 
-	private Button mMaxSampleBtn;
-
-	private Button mMinSampleBtn;
-
-	private Button mAverageSampleBtn;
-	
-	private Button mSumSampleBtn;
-
-	public static void actionStart(Context context) {
+    public static void actionStart(Context context) {
 		Intent intent = new Intent(context, AggregateActivity.class);
 		context.startActivity(intent);
 	}
@@ -47,11 +37,11 @@ public class AggregateActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.aggregate_layout);
-		mCountSampleBtn = (Button) findViewById(R.id.count_sample_btn);
-		mMaxSampleBtn = (Button) findViewById(R.id.max_sample_btn);
-		mMinSampleBtn = (Button) findViewById(R.id.min_sample_btn);
-		mAverageSampleBtn = (Button) findViewById(R.id.average_sample_btn);
-		mSumSampleBtn = (Button) findViewById(R.id.sum_sample_btn);
+        Button mCountSampleBtn = findViewById(R.id.count_sample_btn);
+        Button mMaxSampleBtn = findViewById(R.id.max_sample_btn);
+        Button mMinSampleBtn = findViewById(R.id.min_sample_btn);
+        Button mAverageSampleBtn = findViewById(R.id.average_sample_btn);
+        Button mSumSampleBtn = findViewById(R.id.sum_sample_btn);
 		mCountSampleBtn.setOnClickListener(this);
 		mMaxSampleBtn.setOnClickListener(this);
 		mMinSampleBtn.setOnClickListener(this);

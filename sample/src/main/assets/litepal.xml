@@ -6,7 +6,7 @@
 		If you didn't name your database end with .db, 
 		LitePal would plus the suffix automatically for you.
 		For example:    
-    	<dbname value="demo" ></dbname>
+    	<dbname value="demo" />
     -->
     <dbname value="sample" />
 
@@ -17,7 +17,7 @@
     	make the version value plus one, the upgrade of database
     	will be processed automatically without concern.
 		For example:    
-    	<version value="1" ></version>
+    	<version value="1" />
     -->
     <version value="1" />
 
@@ -27,15 +27,15 @@
     	defined in models will be mapped into columns.
     	For example:    
     	<list>
-    		<mapping class="com.test.model.Reader"></mapping>
-    		<mapping class="com.test.model.Magazine"></mapping>
+    		<mapping class="com.test.model.Reader" />
+    		<mapping class="com.test.model.Magazine" />
     	</list>
     -->
     <list>
         <mapping class="org.litepal.litepalsample.model.Album" />
         <mapping class="org.litepal.litepalsample.model.Song" />
         <mapping class="org.litepal.litepalsample.model.Singer" />
-        <!--     <mapping class="com.litepaltest.model.Classroom" />
+        <!--   <mapping class="com.litepaltest.model.Classroom" />
               <mapping class="com.litepaltest.model.Teacher" />
               <mapping class="com.litepaltest.model.IdCard" />
               <mapping class="com.litepaltest.model.Student" />
@@ -45,7 +45,7 @@
               <mapping class="com.litepaltest.model.Product" />
               <mapping class="com.litepaltest.model.Headset" />
               <mapping class="com.litepaltest.model.WeChatMessage" />
-              <mapping class="com.litepaltest.model.WeiboMessage" /> -->
+              <mapping class="com.litepaltest.model.WeiboMessage" />-->
     </list>
 
     <!--
@@ -60,7 +60,7 @@
     	or it might cause the exception that column can not be found.
     	value options: keep lower upper
     	For example:    
-    	<cases value="lower" ></cases>
+    	<cases value="lower" />
     -->
 
     <!--
@@ -71,7 +71,7 @@
         the application can place persistent files it owns which everyone
         can access. "internal" will act as default.
         For example:
-        <storage value="external"></storage>
+        <storage value="external" />
     -->
 
     <storage value="external" />

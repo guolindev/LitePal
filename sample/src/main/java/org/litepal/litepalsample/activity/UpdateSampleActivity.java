@@ -16,19 +16,11 @@
 
 package org.litepal.litepalsample.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.litepal.litepalsample.R;
-import org.litepal.litepalsample.adapter.DataArrayAdapter;
-import org.litepal.litepalsample.model.Singer;
-import org.litepal.tablemanager.Connector;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -37,7 +29,15 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-public class UpdateSampleActivity extends Activity implements OnClickListener {
+import org.litepal.litepalsample.R;
+import org.litepal.litepalsample.adapter.DataArrayAdapter;
+import org.litepal.litepalsample.model.Singer;
+import org.litepal.tablemanager.Connector;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class UpdateSampleActivity extends AppCompatActivity implements OnClickListener {
 
 	private EditText mSingerIdEdit;
 
@@ -51,15 +51,9 @@ public class UpdateSampleActivity extends Activity implements OnClickListener {
 
 	private ProgressBar mProgressBar;
 
-	private Button mUpdateBtn1;
+    private DataArrayAdapter mAdapter;
 
-	private Button mUpdateBtn2;
-
-	private ListView mDataListView;
-
-	private DataArrayAdapter mAdapter;
-
-	private List<List<String>> mList = new ArrayList<List<String>>();
+	private List<List<String>> mList = new ArrayList<>();
 
 	public static void actionStart(Context context) {
 		Intent intent = new Intent(context, UpdateSampleActivity.class);
@@ -70,15 +64,15 @@ public class UpdateSampleActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.update_sample_layout);
-		mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
-		mSingerIdEdit = (EditText) findViewById(R.id.singer_id_edit);
-		mSingerNameEdit = (EditText) findViewById(R.id.singer_name_edit);
-		mSingerAgeEdit = (EditText) findViewById(R.id.singer_age_edit);
-		mNameToUpdateEdit = (EditText) findViewById(R.id.name_to_update);
-		mAgeToUpdateEdit = (EditText) findViewById(R.id.age_to_update);
-		mUpdateBtn1 = (Button) findViewById(R.id.update_btn1);
-		mUpdateBtn2 = (Button) findViewById(R.id.update_btn2);
-		mDataListView = (ListView) findViewById(R.id.data_list_view);
+		mProgressBar = findViewById(R.id.progress_bar);
+		mSingerIdEdit =  findViewById(R.id.singer_id_edit);
+		mSingerNameEdit = findViewById(R.id.singer_name_edit);
+		mSingerAgeEdit = findViewById(R.id.singer_age_edit);
+		mNameToUpdateEdit = findViewById(R.id.name_to_update);
+		mAgeToUpdateEdit = findViewById(R.id.age_to_update);
+        Button mUpdateBtn1 = findViewById(R.id.update_btn1);
+        Button mUpdateBtn2 = findViewById(R.id.update_btn2);
+        ListView mDataListView = findViewById(R.id.data_list_view);
 		mUpdateBtn1.setOnClickListener(this);
 		mUpdateBtn2.setOnClickListener(this);
 		mAdapter = new DataArrayAdapter(this, 0, mList);
@@ -136,7 +130,7 @@ public class UpdateSampleActivity extends Activity implements OnClickListener {
 			@Override
 			public void run() {
 				mList.clear();
-				List<String> columnList = new ArrayList<String>();
+				List<String> columnList = new ArrayList<>();
 				columnList.add("id");
 				columnList.add("name");
 				columnList.add("age");
@@ -152,7 +146,7 @@ public class UpdateSampleActivity extends Activity implements OnClickListener {
 							String name = cursor.getString(cursor.getColumnIndex("name"));
 							int age = cursor.getInt(cursor.getColumnIndex("age"));
 							int isMale = cursor.getInt(cursor.getColumnIndex("ismale"));
-							List<String> stringList = new ArrayList<String>();
+							List<String> stringList = new ArrayList<>();
 							stringList.add(String.valueOf(id));
 							stringList.add(name);
 							stringList.add(String.valueOf(age));

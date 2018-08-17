@@ -1,16 +1,22 @@
 package com.litepaltest.test.crud.save;
 
+import android.support.test.filters.SmallTest;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.litepal.crud.DataSupport;
+import org.junit.Test;
 import org.litepal.crud.LitePalSupport;
 
 import com.litepaltest.model.Student;
 import com.litepaltest.model.Teacher;
 import com.litepaltest.test.LitePalTestCase;
 
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
+
+@SmallTest
 public class Many2ManySaveTest extends LitePalTestCase {
 
 	private Student danny;
@@ -84,6 +90,7 @@ public class Many2ManySaveTest extends LitePalTestCase {
 		}
 	}
 
+	@Test
 	public void testCase1() {
 		init();
 		buildBidirectionalAssociation();
@@ -98,6 +105,7 @@ public class Many2ManySaveTest extends LitePalTestCase {
 		assertM2M(getTableName(mick), getTableName(jack), mick.getId(), jack.getId());
 	}
 
+    @Test
 	public void testCase2() {
 		init();
 		buildBidirectionalAssociation();
@@ -114,6 +122,7 @@ public class Many2ManySaveTest extends LitePalTestCase {
 		assertM2MFalse(getTableName(mick), getTableName(jack), mick.getId(), jack.getId());
 	}
 
+    @Test
 	public void testCase3() {
 		init();
 		buildBidirectionalAssociation();
@@ -129,6 +138,7 @@ public class Many2ManySaveTest extends LitePalTestCase {
 		assertM2MFalse(getTableName(mick), getTableName(jack), mick.getId(), jack.getId());
 	}
 
+    @Test
 	public void testCase4() {
 		init();
 		buildUnidirectionalAssociation();

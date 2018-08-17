@@ -1,14 +1,19 @@
 package com.litepaltest.test.crud.save;
 
+import android.support.test.filters.SmallTest;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import junit.framework.Assert;
 
 import com.litepaltest.model.Classroom;
 import com.litepaltest.model.Student;
 import com.litepaltest.test.LitePalTestCase;
 
+import org.junit.Test;
+
+import static junit.framework.TestCase.assertTrue;
+
+@SmallTest
 public class Many2OneBiSaveTest extends LitePalTestCase {
 
 	private Classroom c1;
@@ -26,6 +31,7 @@ public class Many2OneBiSaveTest extends LitePalTestCase {
 		s2.setName("Lily");
 	}
 
+    @Test
 	public void testCase1() {
 		init();
 		Set<Student> ss = new HashSet<Student>();
@@ -38,6 +44,7 @@ public class Many2OneBiSaveTest extends LitePalTestCase {
 		assertFK(c1, s1, s2);
 	}
 
+    @Test
 	public void testCase2() {
 		init();
 		Set<Student> ss = new HashSet<Student>();
@@ -50,6 +57,7 @@ public class Many2OneBiSaveTest extends LitePalTestCase {
 		assertFK(c1, s1, s2);
 	}
 
+    @Test
 	public void testCase3() {
 		init();
 		Set<Student> ss = new HashSet<Student>();
@@ -62,6 +70,7 @@ public class Many2OneBiSaveTest extends LitePalTestCase {
 		assertFK(c1, s1, s2);
 	}
 
+    @Test
 	public void testCase4() {
 		init();
 		s1.setClassroom(c1);
@@ -72,6 +81,7 @@ public class Many2OneBiSaveTest extends LitePalTestCase {
 		assertFK(c1, s1, s2);
 	}
 
+    @Test
 	public void testCase5() {
 		init();
 		s1.setClassroom(c1);
@@ -82,6 +92,7 @@ public class Many2OneBiSaveTest extends LitePalTestCase {
 		assertFK(c1, s1, s2);
 	}
 
+    @Test
 	public void testCase6() {
 		init();
 		s1.setClassroom(c1);
@@ -92,6 +103,7 @@ public class Many2OneBiSaveTest extends LitePalTestCase {
 		assertFK(c1, s1, s2);
 	}
 
+    @Test
 	public void testCase7() {
 		init();
 		s1.setClassroom(c1);
@@ -106,6 +118,7 @@ public class Many2OneBiSaveTest extends LitePalTestCase {
 		assertFK(c1, s1, s2);
 	}
 
+    @Test
 	public void testCase8() {
 		init();
 		s1.setClassroom(c1);
@@ -120,6 +133,7 @@ public class Many2OneBiSaveTest extends LitePalTestCase {
 		assertFK(c1, s1, s2);
 	}
 
+    @Test
 	public void testCase9() {
 		init();
 		s1.setClassroom(c1);
@@ -134,6 +148,7 @@ public class Many2OneBiSaveTest extends LitePalTestCase {
 		assertFK(c1, s1, s2);
 	}
 
+    @Test
 	public void testCase10() {
 		init();
 		s1 = null;
@@ -155,9 +170,9 @@ public class Many2OneBiSaveTest extends LitePalTestCase {
 	}
 
 	private void assertFK(Classroom c1, Student s1, Student s2) {
-		Assert.assertTrue(isFKInsertCorrect(getTableName(c1), getTableName(s1), c1.get_id(),
+		assertTrue(isFKInsertCorrect(getTableName(c1), getTableName(s1), c1.get_id(),
 				s1.getId()));
-		Assert.assertTrue(isFKInsertCorrect(getTableName(c1), getTableName(s2), c1.get_id(),
+		assertTrue(isFKInsertCorrect(getTableName(c1), getTableName(s2), c1.get_id(),
 				s2.getId()));
 	}
 

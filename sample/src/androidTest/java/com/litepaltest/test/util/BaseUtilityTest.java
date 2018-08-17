@@ -1,11 +1,18 @@
 package com.litepaltest.test.util;
 
+import android.support.test.filters.SmallTest;
+
+import org.junit.Test;
 import org.litepal.util.BaseUtility;
 
 import com.litepaltest.test.LitePalTestCase;
 
+import static junit.framework.TestCase.assertEquals;
+
+@SmallTest
 public class BaseUtilityTest extends LitePalTestCase{
 
+    @Test
 	public void testCount() {
 		String string = " This is a good one. That is a bad one. ";
 		String markThis = "This";

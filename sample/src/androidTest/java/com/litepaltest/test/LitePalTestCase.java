@@ -9,7 +9,7 @@ import org.litepal.util.DBUtility;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.test.InstrumentationTestCase;
+import android.support.test.filters.SmallTest;
 
 import com.litepaltest.model.Book;
 import com.litepaltest.model.Cellphone;
@@ -19,9 +19,14 @@ import com.litepaltest.model.IdCard;
 import com.litepaltest.model.Student;
 import com.litepaltest.model.Teacher;
 
-public class LitePalTestCase extends InstrumentationTestCase {
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
+
+@SmallTest
+public class LitePalTestCase {
 
 	protected void assertM2M(String table1, String table2, long id1, long id2) {
+
 		assertTrue(isIntermediateDataCorrect(table1, table2, id1, id2));
 	}
 

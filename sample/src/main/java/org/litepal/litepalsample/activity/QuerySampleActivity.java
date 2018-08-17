@@ -16,14 +16,14 @@
 
 package org.litepal.litepalsample.activity;
 
-import org.litepal.litepalsample.R;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
-public class QuerySampleActivity extends Activity {
+import org.litepal.litepalsample.R;
+
+public class QuerySampleActivity extends AppCompatActivity {
 
 	public static void actionStart(Context context) {
 		Intent intent = new Intent(context, QuerySampleActivity.class);

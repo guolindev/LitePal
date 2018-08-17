@@ -16,31 +16,25 @@
 
 package org.litepal.litepalsample.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import org.litepal.litepalsample.R;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity extends AppCompatActivity implements OnClickListener {
 
     private static final String TAG = "MainActivity";
 
-	private Button mManageTableBtn;
-
-	private Button mCrudBtn;
-
-	private Button mAggregateBtn;
-
-	@Override
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_layout);
-		mManageTableBtn = (Button) findViewById(R.id.manage_table_btn);
-		mCrudBtn = (Button) findViewById(R.id.crud_btn);
-		mAggregateBtn = (Button) findViewById(R.id.aggregate_btn);
+        Button mManageTableBtn = findViewById(R.id.manage_table_btn);
+        Button mCrudBtn = findViewById(R.id.crud_btn);
+        Button mAggregateBtn = findViewById(R.id.aggregate_btn);
 		mManageTableBtn.setOnClickListener(this);
 		mCrudBtn.setOnClickListener(this);
 		mAggregateBtn.setOnClickListener(this);

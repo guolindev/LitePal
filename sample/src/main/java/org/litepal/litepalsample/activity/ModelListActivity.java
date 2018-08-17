@@ -16,10 +16,15 @@
 
 package org.litepal.litepalsample.activity;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.AssetManager;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 
 import org.litepal.LitePalApplication;
 import org.litepal.exceptions.ParseConfigurationFileException;
@@ -30,23 +35,14 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.AssetManager;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ModelListActivity extends Activity {
+public class ModelListActivity extends AppCompatActivity {
 
-	private ListView mModelListview;
-
-	private StringArrayAdapter mAdapter;
-
-	private List<String> mList = new ArrayList<String>();
+    private List<String> mList = new ArrayList<>();
 
 	public static void actionStart(Context context) {
 		Intent intent = new Intent(context, ModelListActivity.class);
@@ -57,11 +53,11 @@ public class ModelListActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.model_list_layout);
-		mModelListview = (ListView) findViewById(R.id.model_listview);
+        ListView mModelListView = findViewById(R.id.model_listview);
 		populateMappingClasses();
-		mAdapter = new StringArrayAdapter(this, 0, mList);
-		mModelListview.setAdapter(mAdapter);
-		mModelListview.setOnItemClickListener(new OnItemClickListener() {
+        StringArrayAdapter mAdapter = new StringArrayAdapter(this, 0, mList);
+        mModelListView.setAdapter(mAdapter);
+        mModelListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View view, int index, long id) {
 				ModelStructureActivity.actionStart(ModelListActivity.this, mList.get(index));

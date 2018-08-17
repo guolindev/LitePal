@@ -1,15 +1,24 @@
 package com.litepaltest.test.crud.query;
 
+import android.support.test.filters.SmallTest;
+
 import java.util.List;
 
+import org.junit.Test;
 import org.litepal.LitePal;
-import org.litepal.crud.DataSupport;
 
 import com.litepaltest.model.Book;
 import com.litepaltest.test.LitePalTestCase;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+
+@SmallTest
 public class QueryClusterTest extends LitePalTestCase {
 
+    @Test
 	public void testSelect() {
 		List<Book> expectedBooks = getBooks(null, null, null, null, null, null, null);
 		List<Book> books = LitePal.select("bookname", "price").find(Book.class);
@@ -53,6 +62,7 @@ public class QueryClusterTest extends LitePalTestCase {
 		}
 	}
 
+    @Test
 	public void testWhere() {
 		List<Book> books = LitePal.where("bookname = ?", "Android First Line").find(Book.class);
         Book firstBook = LitePal.where("bookname = ?", "Android First Line").findFirst(Book.class);
@@ -96,6 +106,7 @@ public class QueryClusterTest extends LitePalTestCase {
 		assertEquals(expectedBooks.size(), realBooks.size());
 	}
 
+    @Test
 	public void testOrder() {
 		List<Book> books = LitePal.order("ID").find(Book.class);
 		Book firstBook = LitePal.order("ID").findFirst(Book.class);
@@ -167,6 +178,7 @@ public class QueryClusterTest extends LitePalTestCase {
 		}
 	}
 
+    @Test
 	public void testLimit() {
 		List<Book> bookList = LitePal.limit(1).find(Book.class);
 		assertEquals(1, bookList.size());
@@ -198,6 +210,7 @@ public class QueryClusterTest extends LitePalTestCase {
 		assertEquals(lastBook.getId(), book.getId());
 	}
 
+    @Test
 	public void testOffset() {
 		List<Book> list = LitePal.offset(1).find(Book.class);
 		assertEquals(0, list.size());
@@ -217,6 +230,7 @@ public class QueryClusterTest extends LitePalTestCase {
 		assertEquals(expectedBook.getId(), book.getId());
 	}
 
+    @Test
 	public void testCluster() {
 		long[] ids = new long[3];
 		for (int i = 0; i < 3; i++) {

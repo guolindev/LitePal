@@ -16,10 +16,10 @@
 
 package org.litepal.litepalsample.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -30,13 +30,9 @@ import org.litepal.LitePal;
 import org.litepal.litepalsample.R;
 import org.litepal.litepalsample.model.Singer;
 
-public class MinSampleActivity extends Activity implements OnClickListener {
+public class MinSampleActivity extends AppCompatActivity implements OnClickListener {
 
-	private Button mMinBtn1;
-
-	private Button mMinBtn2;
-
-	private EditText mAgeEdit;
+    private EditText mAgeEdit;
 
 	private TextView mResultText;
 
@@ -49,10 +45,10 @@ public class MinSampleActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.min_sample_layout);
-		mMinBtn1 = (Button) findViewById(R.id.min_btn1);
-		mMinBtn2 = (Button) findViewById(R.id.min_btn2);
-		mAgeEdit = (EditText) findViewById(R.id.age_edit);
-		mResultText = (TextView) findViewById(R.id.result_text);
+        Button mMinBtn1 = findViewById(R.id.min_btn1);
+        Button mMinBtn2 = findViewById(R.id.min_btn2);
+		mAgeEdit = findViewById(R.id.age_edit);
+		mResultText = findViewById(R.id.result_text);
 		mMinBtn1.setOnClickListener(this);
 		mMinBtn2.setOnClickListener(this);
 	}

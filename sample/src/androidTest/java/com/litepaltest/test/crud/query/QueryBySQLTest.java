@@ -1,23 +1,30 @@
 package com.litepaltest.test.crud.query;
 
 import android.database.Cursor;
-import android.test.AndroidTestCase;
+import android.support.test.filters.SmallTest;
 
 import com.litepaltest.model.Book;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.litepal.LitePal;
 import org.litepal.exceptions.DataSupportException;
 import org.litepal.util.DBUtility;
 
-public class QueryBySQLTest extends AndroidTestCase {
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
+
+@SmallTest
+public class QueryBySQLTest {
 
 	private Book book;
 
     private String bookTable;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() {
         bookTable = DBUtility.getTableNameByClassName(Book.class.getName());
 		book = new Book();
 		book.setBookName("数据库");
@@ -25,12 +32,14 @@ public class QueryBySQLTest extends AndroidTestCase {
 		book.save();
 	}
 
+	@Test
 	public void testQueryBySQL() {
 		Cursor cursor = LitePal.findBySQL("select * from " + bookTable);
 		assertTrue(cursor.getCount() > 0);
 		cursor.close();
 	}
 
+    @Test
 	public void testQueryBySQLWithPlaceHolder() {
 		Cursor cursor = LitePal.findBySQL(
 				"select * from " + bookTable + " where id=? and bookname=? and pages=?",
@@ -44,6 +53,7 @@ public class QueryBySQLTest extends AndroidTestCase {
 		cursor.close();
 	}
 
+    @Test
 	public void testQueryBySQLWithWrongParams() {
 		try {
             LitePal.findBySQL("select * from " + bookTable + " where id=? and bookname=? and pages=?",

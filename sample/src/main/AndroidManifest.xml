@@ -24,6 +24,7 @@
         android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        <meta-data android:name="android.max_aspect" android:value="2.3" />
         <activity
             android:name="org.litepal.litepalsample.activity.MainActivity"
             android:screenOrientation="portrait" >

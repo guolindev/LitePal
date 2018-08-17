@@ -16,11 +16,11 @@
 
 package org.litepal.litepalsample.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -38,7 +38,7 @@ import org.litepal.tablemanager.Connector;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeleteSampleActivity extends Activity implements OnClickListener {
+public class DeleteSampleActivity extends AppCompatActivity implements OnClickListener {
 
 	private EditText mSingerIdEdit;
 
@@ -48,15 +48,9 @@ public class DeleteSampleActivity extends Activity implements OnClickListener {
 
 	private ProgressBar mProgressBar;
 
-	private Button mDeleteBtn1;
+    private DataArrayAdapter mAdapter;
 
-	private Button mDeleteBtn2;
-
-	private ListView mDataListView;
-
-	private DataArrayAdapter mAdapter;
-
-	private List<List<String>> mList = new ArrayList<List<String>>();
+	private List<List<String>> mList = new ArrayList<>();
 
 	public static void actionStart(Context context) {
 		Intent intent = new Intent(context, DeleteSampleActivity.class);
@@ -67,13 +61,13 @@ public class DeleteSampleActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.delete_sample_layout);
-		mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
-		mSingerIdEdit = (EditText) findViewById(R.id.singer_id_edit);
-		mNameToDeleteEdit = (EditText) findViewById(R.id.name_to_delete);
-		mAgeToDeleteEdit = (EditText) findViewById(R.id.age_to_delete);
-		mDeleteBtn1 = (Button) findViewById(R.id.delete_btn1);
-		mDeleteBtn2 = (Button) findViewById(R.id.delete_btn2);
-		mDataListView = (ListView) findViewById(R.id.data_list_view);
+		mProgressBar = findViewById(R.id.progress_bar);
+		mSingerIdEdit = findViewById(R.id.singer_id_edit);
+		mNameToDeleteEdit = findViewById(R.id.name_to_delete);
+		mAgeToDeleteEdit = findViewById(R.id.age_to_delete);
+        Button mDeleteBtn1 = findViewById(R.id.delete_btn1);
+        Button mDeleteBtn2 = findViewById(R.id.delete_btn2);
+        ListView mDataListView = findViewById(R.id.data_list_view);
 		mDeleteBtn1.setOnClickListener(this);
 		mDeleteBtn2.setOnClickListener(this);
 		mAdapter = new DataArrayAdapter(this, 0, mList);

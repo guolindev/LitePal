@@ -1,11 +1,16 @@
 package com.litepaltest.test.crud.save;
 
-import junit.framework.Assert;
+import android.support.test.filters.SmallTest;
 
 import com.litepaltest.model.Classroom;
 import com.litepaltest.model.Teacher;
 import com.litepaltest.test.LitePalTestCase;
 
+import org.junit.Test;
+
+import static junit.framework.TestCase.assertTrue;
+
+@SmallTest
 public class Many2OneUniSaveTest extends LitePalTestCase {
 
 	private Classroom c1;
@@ -25,6 +30,7 @@ public class Many2OneUniSaveTest extends LitePalTestCase {
 		t2.setAge(35);
 	}
 
+    @Test
 	public void testCase1() {
 		init();
 		c1.getTeachers().add(t1);
@@ -35,6 +41,7 @@ public class Many2OneUniSaveTest extends LitePalTestCase {
 		assertFK(c1, t1, t2);
 	}
 
+    @Test
 	public void testCase2() {
 		init();
 		c1.getTeachers().add(t1);
@@ -45,6 +52,7 @@ public class Many2OneUniSaveTest extends LitePalTestCase {
 		assertFK(c1, t1, t2);
 	}
 
+    @Test
 	public void testCase3() {
 		init();
 		c1.getTeachers().add(t1);
@@ -55,6 +63,7 @@ public class Many2OneUniSaveTest extends LitePalTestCase {
 		assertFK(c1, t1, t2);
 	}
 
+    @Test
 	public void testCase4() {
 		init();
 		t1 = null;
@@ -66,9 +75,9 @@ public class Many2OneUniSaveTest extends LitePalTestCase {
 	}
 
 	private void assertFK(Classroom c1, Teacher t1, Teacher t2) {
-		Assert.assertTrue(isFKInsertCorrect(getTableName(c1), getTableName(t1), c1.get_id(),
+		assertTrue(isFKInsertCorrect(getTableName(c1), getTableName(t1), c1.get_id(),
 				t1.getId()));
-		Assert.assertTrue(isFKInsertCorrect(getTableName(c1), getTableName(t2), c1.get_id(),
+		assertTrue(isFKInsertCorrect(getTableName(c1), getTableName(t2), c1.get_id(),
 				t2.getId()));
 	}
 

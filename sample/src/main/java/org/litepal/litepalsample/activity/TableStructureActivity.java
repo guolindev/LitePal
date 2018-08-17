@@ -16,19 +16,10 @@
 
 package org.litepal.litepalsample.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.litepal.litepalsample.R;
-import org.litepal.tablemanager.Connector;
-import org.litepal.tablemanager.model.ColumnModel;
-import org.litepal.tablemanager.model.TableModel;
-import org.litepal.util.DBUtility;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,17 +28,22 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class TableStructureActivity extends Activity {
+import org.litepal.litepalsample.R;
+import org.litepal.tablemanager.Connector;
+import org.litepal.tablemanager.model.ColumnModel;
+import org.litepal.tablemanager.model.TableModel;
+import org.litepal.util.DBUtility;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class TableStructureActivity extends AppCompatActivity {
 
 	public static final String TABLE_NAME = "table_name";
 
-	private ListView mTableStructureListView;
+    private String mTableName;
 
-	private ArrayAdapter<ColumnModel> mAdapter;
-
-	private String mTableName;
-
-	private List<ColumnModel> mList = new ArrayList<ColumnModel>();
+	private List<ColumnModel> mList = new ArrayList<>();
 
 	public static void actionStart(Context context, String tableName) {
 		Intent intent = new Intent(context, TableStructureActivity.class);
@@ -61,9 +57,9 @@ public class TableStructureActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.table_structure_layout);
 		mTableName = getIntent().getStringExtra(TABLE_NAME);
-		mTableStructureListView = (ListView) findViewById(R.id.table_structure_listview);
+        ListView mTableStructureListView = findViewById(R.id.table_structure_listview);
 		analyzeTableStructure();
-		mAdapter = new MyArrayAdapter(this, 0, mList);
+        ArrayAdapter<ColumnModel> mAdapter = new MyArrayAdapter(this, 0, mList);
 		mTableStructureListView.setAdapter(mAdapter);
 	}
 
@@ -93,15 +89,15 @@ public class TableStructureActivity extends Activity {
 			} else {
 				view = convertView;
 			}
-			TextView text1 = (TextView) view.findViewById(R.id.text_1);
+			TextView text1 = view.findViewById(R.id.text_1);
 			text1.setText(columnName);
-			TextView text2 = (TextView) view.findViewById(R.id.text_2);
+			TextView text2 = view.findViewById(R.id.text_2);
 			text2.setText(columnType);
-            TextView text3 = (TextView) view.findViewById(R.id.text_3);
+            TextView text3 = view.findViewById(R.id.text_3);
             text3.setText(String.valueOf(nullable));
-            TextView text4 = (TextView) view.findViewById(R.id.text_4);
+            TextView text4 = view.findViewById(R.id.text_4);
             text4.setText(String.valueOf(unique));
-            TextView text5 = (TextView) view.findViewById(R.id.text_5);
+            TextView text5 = view.findViewById(R.id.text_5);
             text5.setText(defaultValue);
 			return view;
 		}

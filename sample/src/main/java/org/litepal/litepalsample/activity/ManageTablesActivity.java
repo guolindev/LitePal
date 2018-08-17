@@ -16,23 +16,19 @@
 
 package org.litepal.litepalsample.activity;
 
-import org.litepal.litepalsample.R;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-public class ManageTablesActivity extends Activity implements OnClickListener {
+import org.litepal.litepalsample.R;
 
-	private Button mCurrentModelStructureBtn;
-	
-	private Button mOperateDatabaseBtn;
+public class ManageTablesActivity extends AppCompatActivity implements OnClickListener {
 
-	public static void actionStart(Context context) {
+    public static void actionStart(Context context) {
 		Intent intent = new Intent(context, ManageTablesActivity.class);
 		context.startActivity(intent);
 	}
@@ -41,8 +37,8 @@ public class ManageTablesActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.manage_tables_layout);
-		mCurrentModelStructureBtn = (Button) findViewById(R.id.current_model_structure_btn);
-		mOperateDatabaseBtn = (Button) findViewById(R.id.operate_database_btn);
+        Button mCurrentModelStructureBtn = findViewById(R.id.current_model_structure_btn);
+        Button mOperateDatabaseBtn = findViewById(R.id.operate_database_btn);
 		mCurrentModelStructureBtn.setOnClickListener(this);
 		mOperateDatabaseBtn.setOnClickListener(this);
 	}

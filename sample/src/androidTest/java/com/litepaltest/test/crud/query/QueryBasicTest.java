@@ -1,14 +1,24 @@
 package com.litepaltest.test.crud.query;
 
+import android.support.test.filters.SmallTest;
+
 import com.litepaltest.model.Book;
 import com.litepaltest.test.LitePalTestCase;
 
+import org.junit.Test;
 import org.litepal.LitePal;
 
 import java.util.List;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
+
+@SmallTest
 public class QueryBasicTest extends LitePalTestCase {
 
+    @Test
 	public void testFind() {
 		short isbn = 30013;
 		Book book = new Book();
@@ -32,6 +42,7 @@ public class QueryBasicTest extends LitePalTestCase {
 		assertTrue(b.isSaved());
 	}
 
+    @Test
 	public void testFindMul() {
 		short isbn1 = 30017;
 		Book book1 = new Book();
@@ -81,6 +92,7 @@ public class QueryBasicTest extends LitePalTestCase {
 		}
 	}
 
+    @Test
 	public void testFindAll() {
 		List<Book> expectBooks = getBooks(null, null, null, null, null, null, null);
 		List<Book> realBooks = LitePal.findAll(Book.class);
@@ -100,6 +112,7 @@ public class QueryBasicTest extends LitePalTestCase {
 		}
 	}
 
+    @Test
 	public void testFindFirst() {
 		List<Book> expectedBooks = getBooks(null, null, null, null, null, null, null);
 		Book expectedFirstBook = expectedBooks.get(0);
@@ -115,6 +128,7 @@ public class QueryBasicTest extends LitePalTestCase {
 		assertTrue(realFirstBook.isSaved());
 	}
 
+    @Test
 	public void testFindLast() {
 		List<Book> expectedBooks = getBooks(null, null, null, null, null, null, null);
 		Book expectedLastBook = expectedBooks.get(expectedBooks.size() - 1);
@@ -130,6 +144,7 @@ public class QueryBasicTest extends LitePalTestCase {
 		assertTrue(realLastBook.isSaved());
 	}
 
+    @Test
     public void testIsExist() {
         Book book = new Book();
         book.setArea(10.5f);

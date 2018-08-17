@@ -16,33 +16,31 @@
 
 package org.litepal.litepalsample.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.litepal.litepalsample.R;
-import org.litepal.litepalsample.adapter.StringArrayAdapter;
-import org.litepal.tablemanager.Connector;
-import org.litepal.util.DBUtility;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
-public class TableListActivity extends Activity {
+import org.litepal.litepalsample.R;
+import org.litepal.litepalsample.adapter.StringArrayAdapter;
+import org.litepal.tablemanager.Connector;
+import org.litepal.util.DBUtility;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class TableListActivity extends AppCompatActivity {
 
 	private ProgressBar mProgressBar;
 
-	private ListView mTableListview;
+    private StringArrayAdapter mAdapter;
 
-	private StringArrayAdapter mAdapter;
-
-	private List<String> mList = new ArrayList<String>();
+	private List<String> mList = new ArrayList<>();
 
 	public static void actionStart(Context context) {
 		Intent intent = new Intent(context, TableListActivity.class);
@@ -53,12 +51,12 @@ public class TableListActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.table_list_layout);
-		mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
-		mTableListview = (ListView) findViewById(R.id.table_listview);
+		mProgressBar = findViewById(R.id.progress_bar);
+        ListView mTableListView = findViewById(R.id.table_listview);
 		mAdapter = new StringArrayAdapter(this, 0, mList);
-		mTableListview.setAdapter(mAdapter);
+		mTableListView.setAdapter(mAdapter);
 		populateTables();
-		mTableListview.setOnItemClickListener(new OnItemClickListener() {
+		mTableListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View view, int index, long id) {
 				TableStructureActivity.actionStart(TableListActivity.this, mList.get(index));

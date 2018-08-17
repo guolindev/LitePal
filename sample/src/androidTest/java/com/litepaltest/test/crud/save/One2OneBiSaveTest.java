@@ -1,11 +1,16 @@
 package com.litepaltest.test.crud.save;
 
-import junit.framework.Assert;
+import android.support.test.filters.SmallTest;
 
 import com.litepaltest.model.IdCard;
 import com.litepaltest.model.Student;
 import com.litepaltest.test.LitePalTestCase;
 
+import org.junit.Test;
+
+import static junit.framework.TestCase.assertTrue;
+
+@SmallTest
 public class One2OneBiSaveTest extends LitePalTestCase {
 
 	private Student s;
@@ -21,6 +26,7 @@ public class One2OneBiSaveTest extends LitePalTestCase {
 		i.setAddress("Nanjing road");
 	}
 
+    @Test
 	public void testO2OBiSaveStudentFirst() {
 		init();
 		s.setIdcard(i);
@@ -30,6 +36,7 @@ public class One2OneBiSaveTest extends LitePalTestCase {
 		assertFK(s, i);
 	}
 
+    @Test
 	public void testO2OBiSaveIdCardFirst() {
 		init();
 		s.setIdcard(i);
@@ -39,6 +46,7 @@ public class One2OneBiSaveTest extends LitePalTestCase {
 		assertFK(s, i);
 	}
 
+    @Test
 	public void testO2OBiBuildNullAssocations() {
 		init();
 		s.setIdcard(null);
@@ -49,6 +57,7 @@ public class One2OneBiSaveTest extends LitePalTestCase {
 		isDataExists(getTableName(i), i.getId());
 	}
 
+    @Test
 	public void testO2OBiBuildUniAssociationsSaveStudentFirst() {
 		init();
 		s.setIdcard(i);
@@ -57,6 +66,7 @@ public class One2OneBiSaveTest extends LitePalTestCase {
 		assertFK(s, i);
 	}
 
+    @Test
 	public void testO2OBiBuildUniAssociationsSaveIdCardFirst() {
 		init();
 		s.setIdcard(i);
@@ -66,8 +76,8 @@ public class One2OneBiSaveTest extends LitePalTestCase {
 	}
 
 	private void assertFK(Student s, IdCard i) {
-		Assert.assertTrue(isFKInsertCorrect(getTableName(s), getTableName(i), s.getId(), i.getId()));
-		Assert.assertTrue(isFKInsertCorrect(getTableName(i), getTableName(s), i.getId(), s.getId()));
+		assertTrue(isFKInsertCorrect(getTableName(s), getTableName(i), s.getId(), i.getId()));
+		assertTrue(isFKInsertCorrect(getTableName(i), getTableName(s), i.getId(), s.getId()));
 	}
 
 }

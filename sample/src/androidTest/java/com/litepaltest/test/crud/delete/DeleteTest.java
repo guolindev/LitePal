@@ -1,7 +1,9 @@
 package com.litepaltest.test.crud.delete;
 
 import android.database.Cursor;
+
 import android.database.sqlite.SQLiteException;
+import android.support.test.filters.SmallTest;
 
 import com.litepaltest.model.Classroom;
 import com.litepaltest.model.IdCard;
@@ -9,6 +11,8 @@ import com.litepaltest.model.Student;
 import com.litepaltest.model.Teacher;
 import com.litepaltest.test.LitePalTestCase;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.litepal.LitePal;
 import org.litepal.exceptions.DataSupportException;
 import org.litepal.util.DBUtility;
@@ -18,6 +22,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
+
+@SmallTest
 public class DeleteTest extends LitePalTestCase {
 
 	private Classroom gameRoom;
@@ -42,14 +54,14 @@ public class DeleteTest extends LitePalTestCase {
     
     private String teacherTable;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() {
         studentTable = DBUtility.getTableNameByClassName(Student.class.getName());
         teacherTable = DBUtility.getTableNameByClassName(Teacher.class.getName());
     }
 
-    private void createClassroomStudentsTeachers() {
+    @Test
+    public void createClassroomStudentsTeachers() {
 		initGameRoom();
 		initRose();
 		initJude();
@@ -68,7 +80,8 @@ public class DeleteTest extends LitePalTestCase {
 		mike.save();
 	}
 
-	private void createStudentsTeachersWithIdCard() {
+    @Test
+	public void createStudentsTeachersWithIdCard() {
 		initRose();
 		initJude();
 		initMike();
@@ -83,7 +96,8 @@ public class DeleteTest extends LitePalTestCase {
 		johnCard.save();
 	}
 
-	private void createStudentsTeachersWithAssociations() {
+    @Test
+	public void createStudentsTeachersWithAssociations() {
 		initRose();
 		initJude();
 		initMike();
@@ -97,6 +111,7 @@ public class DeleteTest extends LitePalTestCase {
 		mike.save();
 	}
 
+    @Test
 	public void testDeleteWithNoParameter() {
 		initJude();
 		jude.save();
@@ -106,6 +121,7 @@ public class DeleteTest extends LitePalTestCase {
 		assertNull(s);
 	}
 
+    @Test
 	public void testDeleteById() {
 		initJude();
 		jude.save();
@@ -115,6 +131,7 @@ public class DeleteTest extends LitePalTestCase {
 		assertNull(s);
 	}
 
+    @Test
 	public void testDeleteNoSavedModelWithNoParameter() {
 		Student tony = new Student();
 		tony.setName("Tony");
@@ -123,11 +140,13 @@ public class DeleteTest extends LitePalTestCase {
 		assertEquals(0, rowsAffected);
 	}
 
+    @Test
 	public void testDeleteWithNotExistsRecordById() {
 		int rowsAffected = LitePal.delete(Student.class, 998909);
 		assertEquals(0, rowsAffected);
 	}
 
+    @Test
 	public void testDeleteCascadeM2OAssociationsOnMSideWithNoParameter() {
 		createClassroomStudentsTeachers();
 		int rowsAffected = gameRoom.delete();
@@ -138,7 +157,8 @@ public class DeleteTest extends LitePalTestCase {
 		assertNull(getTeacher(john.getId()));
 		assertNull(getTeacher(mike.getId()));
 	}
-	
+
+    @Test
 	public void testDeleteCascadeM2OAssociationsOnMSideById() {
 		createClassroomStudentsTeachers();
 		int rowsAffected = LitePal.delete(Classroom.class, gameRoom.get_id());
@@ -149,7 +169,8 @@ public class DeleteTest extends LitePalTestCase {
 		assertNull(getTeacher(john.getId()));
 		assertNull(getTeacher(mike.getId()));
 	}
-	
+
+    @Test
 	public void testDeleteAllCascadeM2OAssociationsOnMSide() {
 		createClassroomStudentsTeachers();
 		int rowsAffected = LitePal.deleteAll(Classroom.class, "id = ?", gameRoom.get_id() + "");
@@ -161,6 +182,7 @@ public class DeleteTest extends LitePalTestCase {
 		assertNull(getTeacher(mike.getId()));
 	}
 
+    @Test
 	public void testDeleteCascadeM2OAssociationsOnOSideWithNoParameter() {
 		createClassroomStudentsTeachers();
 		int rowsAffected = jude.delete();
@@ -177,6 +199,7 @@ public class DeleteTest extends LitePalTestCase {
 		assertNull(getTeacher(mike.getId()));
 	}
 
+    @Test
 	public void testDeleteCascadeM2OAssociationsOnOSideById() {
 		createClassroomStudentsTeachers();
 		int rowsAffected = LitePal.delete(Student.class, jude.getId());
@@ -192,7 +215,8 @@ public class DeleteTest extends LitePalTestCase {
 		assertEquals(1, rowsAffected);
 		assertNull(getTeacher(mike.getId()));
 	}
-	
+
+    @Test
 	public void testDeleteAllCascadeM2OAssociationsOnOSide() {
 		createClassroomStudentsTeachers();
 		int rowsAffected = LitePal.deleteAll(Student.class, "id = ?", String.valueOf(jude.getId()));
@@ -209,6 +233,7 @@ public class DeleteTest extends LitePalTestCase {
 		assertNull(getTeacher(mike.getId()));
 	}
 
+    @Test
 	public void testDeleteCascadeO2OAssociationsWithNoParameter() {
 		createStudentsTeachersWithIdCard();
 		int affectedRows = jude.delete();
@@ -228,6 +253,7 @@ public class DeleteTest extends LitePalTestCase {
 		assertNull(getIdCard(mikeCard.getId()));
 	}
 
+    @Test
 	public void testDeleteCascadeO2OAssociationsById() {
 		createStudentsTeachersWithIdCard();
 		int affectedRows = LitePal.delete(Student.class, jude.getId());
@@ -246,7 +272,8 @@ public class DeleteTest extends LitePalTestCase {
 		assertEquals(1, affectedRows);
 		assertNull(getIdCard(mikeCard.getId()));
 	}
-	
+
+    @Test
 	public void testDeleteAllCascadeO2OAssociations() {
 		createStudentsTeachersWithIdCard();
 		int affectedRows = LitePal.deleteAll(Student.class, "id = ?", String.valueOf(jude.getId()));
@@ -266,6 +293,7 @@ public class DeleteTest extends LitePalTestCase {
 		assertNull(getIdCard(mikeCard.getId()));
 	}
 
+    @Test
 	public void testDeleteCascadeM2MAssociationsWithNoParameter() {
 		createStudentsTeachersWithAssociations();
 		int rowsAffected = jude.delete();
@@ -283,6 +311,7 @@ public class DeleteTest extends LitePalTestCase {
 		assertM2M(studentTable, teacherTable, jude.getId(), mike.getId());
 	}
 
+    @Test
 	public void testDeleteCascadeM2MAssociationsById() {
 		createStudentsTeachersWithAssociations();
 		int rowsAffected = LitePal.delete(Teacher.class, john.getId());
@@ -299,7 +328,8 @@ public class DeleteTest extends LitePalTestCase {
 		assertM2MFalse(studentTable, teacherTable, jude.getId(), mike.getId());
 		assertM2M(studentTable, teacherTable, rose.getId(), john.getId());
 	}
-	
+
+    @Test
 	public void testDeleteAllCascadeM2MAssociations() {
 		createStudentsTeachersWithAssociations();
 		int rowsAffected = LitePal.deleteAll(Teacher.class, "id=?", "" + john.getId());
@@ -316,7 +346,8 @@ public class DeleteTest extends LitePalTestCase {
 		assertM2MFalse(studentTable, teacherTable, jude.getId(), mike.getId());
 		assertM2M(studentTable, teacherTable, rose.getId(), john.getId());
 	}
-	
+
+    @Test
 	public void testDeleteAllCascadeWithConditions() {
 		Classroom classroom = new Classroom();
 		classroom.setName("1"+System.currentTimeMillis());
@@ -346,6 +377,7 @@ public class DeleteTest extends LitePalTestCase {
 		assertNull(getStudent(s3.getId()));
 	}
 
+    @Test
 	public void testDeleteAll() {
 		Student s;
 		int[] ids = new int[5];
@@ -364,6 +396,7 @@ public class DeleteTest extends LitePalTestCase {
 		assertEquals(4, affectedRows);
 	}
 
+    @Test
 	public void testDeleteAllRows() {
 		createStudentsTeachersWithIdCard();
 		int rowsCount = getRowsCount(teacherTable);
@@ -388,6 +421,7 @@ public class DeleteTest extends LitePalTestCase {
 		assertTrue(rowsCount<=affectedRows);
 	}
 
+    @Test
     public void testMarkAsDeleted() {
         List<Student> students = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
@@ -411,6 +445,7 @@ public class DeleteTest extends LitePalTestCase {
         assertEquals(5, list.size());
     }
 
+    @Test
 	public void testDeleteAllWithWrongConditions() {
 		try {
             LitePal.deleteAll(Student.class, "name = 'Dustin'", "aaa");
@@ -431,6 +466,7 @@ public class DeleteTest extends LitePalTestCase {
 		}
 	}
 
+    @Test
     public void testDeleteWithGenericData() {
         Classroom classroom = new Classroom();
         classroom.setName("classroom1");

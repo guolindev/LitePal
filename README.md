@@ -223,9 +223,9 @@ Then increase the version number in **litepal.xml**:
     make the version value plus one, the upgrade of database
     will be processed automatically without concern.
     For example:    
-    <version value="1" ></version>
+    <version value="1" />
 -->
-<version value="2" ></version>
+<version value="2" />
 ```
 The tables will be upgraded next time you operate database. A **releasedate** column will be added into **album** table and the original **price** column will be removed. All the data in **album** table except those removed columns will be retained.
 

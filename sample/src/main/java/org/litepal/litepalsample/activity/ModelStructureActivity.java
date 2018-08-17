@@ -16,18 +16,10 @@
 
 package org.litepal.litepalsample.activity;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.litepal.litepalsample.R;
-import org.litepal.util.BaseUtility;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,17 +28,21 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class ModelStructureActivity extends Activity {
+import org.litepal.litepalsample.R;
+import org.litepal.util.BaseUtility;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ModelStructureActivity extends AppCompatActivity {
 
 	public static final String CLASS_NAME = "class_name";
 
-	private ListView mModelStructureListView;
+    private String mClassName;
 
-	private ArrayAdapter<Field> mAdapter;
-
-	private String mClassName;
-
-	private List<Field> mList = new ArrayList<Field>();
+	private List<Field> mList = new ArrayList<>();
 
 	public static void actionStart(Context context, String className) {
 		Intent intent = new Intent(context, ModelStructureActivity.class);
@@ -60,9 +56,9 @@ public class ModelStructureActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.model_structure_layout);
 		mClassName = getIntent().getStringExtra(CLASS_NAME);
-		mModelStructureListView = (ListView) findViewById(R.id.model_structure_listview);
+        ListView mModelStructureListView = findViewById(R.id.model_structure_listview);
 		analyzeModelStructure();
-		mAdapter = new MyArrayAdapter(this, 0, mList);
+        ArrayAdapter<Field> mAdapter = new MyArrayAdapter(this, 0, mList);
 		mModelStructureListView.setAdapter(mAdapter);
 	}
 
@@ -101,9 +97,9 @@ public class ModelStructureActivity extends Activity {
 			} else {
 				view = convertView;
 			}
-			TextView text1 = (TextView) view.findViewById(R.id.text_1);
+			TextView text1 = view.findViewById(R.id.text_1);
 			text1.setText(field.getName());
-			TextView text2 = (TextView) view.findViewById(R.id.text_2);
+			TextView text2 = view.findViewById(R.id.text_2);
 			text2.setText(field.getType().getName());
 			return view;
 		}
