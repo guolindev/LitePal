@@ -57,8 +57,7 @@ object LitePal {
      * @param context
      * Application context.
      */
-    @JvmStatic
-    fun initialize(context: Context) {
+    @JvmStatic fun initialize(context: Context) {
         LitePalApplication.sContext = context
     }
 
@@ -67,8 +66,7 @@ object LitePal {
      *
      * @return A writable SQLiteDatabase instance
      */
-    @JvmStatic
-    fun getDatabase(): SQLiteDatabase {
+    @JvmStatic fun getDatabase(): SQLiteDatabase {
         synchronized(LitePalSupport::class.java) {
             return Connector.getDatabase()
         }
@@ -78,16 +76,14 @@ object LitePal {
      * Get the main thread handler. You don't need this method. It's used by framework only.
      * @return Main thread handler.
      */
-    @JvmStatic
-    fun getHandler() = handler
+    @JvmStatic fun getHandler() = handler
 
     /**
      * Switch the using database to the one specified by parameter.
      * @param litePalDB
      * The database to switch to.
      */
-    @JvmStatic
-    fun use(litePalDB: LitePalDB) {
+    @JvmStatic fun use(litePalDB: LitePalDB) {
         synchronized(LitePalSupport::class.java) {
             val litePalAttr = LitePalAttr.getInstance()
             litePalAttr.dbName = litePalDB.dbName
@@ -107,8 +103,7 @@ object LitePal {
     /**
      * Switch the using database to default with configuration by litepal.xml.
      */
-    @JvmStatic
-    fun useDefault() {
+    @JvmStatic fun useDefault() {
         synchronized(LitePalSupport::class.java) {
             LitePalAttr.clearInstance()
             Connector.clearLitePalOpenHelperInstance()
@@ -121,8 +116,7 @@ object LitePal {
      * Name of database to delete.
      * @return True if delete success, false otherwise.
      */
-    @JvmStatic
-    fun deleteDatabase(dbName: String): Boolean {
+    @JvmStatic fun deleteDatabase(dbName: String): Boolean {
         var realDBName: String
         synchronized(LitePalSupport::class.java) {
             if (!TextUtils.isEmpty(dbName)) {
@@ -153,8 +147,7 @@ object LitePal {
         }
     }
 
-    @JvmStatic
-    fun aesKey(key: String) {
+    @JvmStatic fun aesKey(key: String) {
         CipherUtil.aesKey = key
     }
 
@@ -163,8 +156,7 @@ object LitePal {
      * @param dbName
      * Name of database to delete.
      */
-    @JvmStatic
-    private fun removeVersionInSharedPreferences(dbName: String) {
+    @JvmStatic private fun removeVersionInSharedPreferences(dbName: String) {
         if (isDefaultDatabase(dbName)) {
             SharedUtil.removeVersion(null)
         } else {
@@ -179,8 +171,7 @@ object LitePal {
      * Name of database to check.
      * @return True if it's default database, false otherwise.
      */
-    @JvmStatic
-    private fun isDefaultDatabase(dbName: String): Boolean {
+    @JvmStatic private fun isDefaultDatabase(dbName: String): Boolean {
         var realDBName = dbName
         if (BaseUtility.isLitePalXMLExists()) {
             if (!dbName.endsWith(Const.Config.DB_NAME_SUFFIX)) {
@@ -209,8 +200,7 @@ object LitePal {
      *
      * @return A FluentQuery instance.
      */
-    @JvmStatic
-    fun select(vararg columns: String): FluentQuery {
+    @JvmStatic fun select(vararg columns: String): FluentQuery {
         val cQuery = FluentQuery()
         cQuery.mColumns = columns
         return cQuery
@@ -229,8 +219,7 @@ object LitePal {
      * WHERE clause. Passing null will return all rows.
      * @return A FluentQuery instance.
      */
-    @JvmStatic
-    fun where(vararg conditions: String): FluentQuery {
+    @JvmStatic fun where(vararg conditions: String): FluentQuery {
         val cQuery = FluentQuery()
         cQuery.mConditions = conditions
         return cQuery
@@ -250,8 +239,7 @@ object LitePal {
      * unordered.
      * @return A FluentQuery instance.
      */
-    @JvmStatic
-    fun order(column: String): FluentQuery {
+    @JvmStatic fun order(column: String): FluentQuery {
         val cQuery = FluentQuery()
         cQuery.mOrderBy = column
         return cQuery
@@ -269,8 +257,7 @@ object LitePal {
      * LIMIT clause.
      * @return A FluentQuery instance.
      */
-    @JvmStatic
-    fun limit(value: Int): FluentQuery {
+    @JvmStatic fun limit(value: Int): FluentQuery {
         val cQuery = FluentQuery()
         cQuery.mLimit = value.toString()
         return cQuery
@@ -288,8 +275,7 @@ object LitePal {
      * The offset amount of rows returned by the query.
      * @return A FluentQuery instance.
      */
-    @JvmStatic
-    fun offset(value: Int): FluentQuery {
+    @JvmStatic fun offset(value: Int): FluentQuery {
         val cQuery = FluentQuery()
         cQuery.mOffset = value.toString()
         return cQuery
@@ -310,8 +296,7 @@ object LitePal {
      * Which table to query from by class.
      * @return Count of the specified table.
      */
-    @JvmStatic
-    fun count(modelClass: Class<*>) = count(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.name)))
+    @JvmStatic fun count(modelClass: Class<*>) = count(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.name)))
 
     /**
      * Basically same as [LitePal.count] but pending to a new thread for executing.
@@ -320,8 +305,7 @@ object LitePal {
      * Which table to query from by class.
      * @return A CountExecutor instance.
      */
-    @JvmStatic
-    fun countAsync(modelClass: Class<*>) = countAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.name)))
+    @JvmStatic fun countAsync(modelClass: Class<*>) = countAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.name)))
 
     /**
      * Count the records.
@@ -338,8 +322,7 @@ object LitePal {
      * Which table to query from.
      * @return Count of the specified table.
      */
-    @JvmStatic
-    fun count(tableName: String): Int {
+    @JvmStatic fun count(tableName: String): Int {
         synchronized(LitePalSupport::class.java) {
             val cQuery = FluentQuery()
             return cQuery.count(tableName)
@@ -353,8 +336,7 @@ object LitePal {
      * Which table to query from.
      * @return A CountExecutor instance.
      */
-    @JvmStatic
-    fun countAsync(tableName: String): CountExecutor {
+    @JvmStatic fun countAsync(tableName: String): CountExecutor {
         val executor = CountExecutor()
         val runnable = Runnable {
             synchronized(LitePalSupport::class.java) {
@@ -383,8 +365,7 @@ object LitePal {
      * The based on column to calculate.
      * @return The average value on a given column.
      */
-    @JvmStatic
-    fun average(modelClass: Class<*>, column: String) = average(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.name)), column)
+    @JvmStatic fun average(modelClass: Class<*>, column: String) = average(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.name)), column)
 
     /**
      * Basically same as [LitePal.average] but pending to a new thread for executing.
@@ -395,8 +376,7 @@ object LitePal {
      * The based on column to calculate.
      * @return A AverageExecutor instance.
      */
-    @JvmStatic
-    fun averageAsync(modelClass: Class<*>, column: String) = averageAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.name)), column)
+    @JvmStatic fun averageAsync(modelClass: Class<*>, column: String) = averageAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.name)), column)
 
     /**
      * Calculates the average value on a given column.
@@ -413,8 +393,7 @@ object LitePal {
      * The based on column to calculate.
      * @return The average value on a given column.
      */
-    @JvmStatic
-    fun average(tableName: String, column: String): Double {
+    @JvmStatic fun average(tableName: String, column: String): Double {
         synchronized(LitePalSupport::class.java) {
             val cQuery = FluentQuery()
             return cQuery.average(tableName, column)
@@ -430,8 +409,7 @@ object LitePal {
      * The based on column to calculate.
      * @return A AverageExecutor instance.
      */
-    @JvmStatic
-    fun averageAsync(tableName: String, column: String): AverageExecutor {
+    @JvmStatic fun averageAsync(tableName: String, column: String): AverageExecutor {
         val executor = AverageExecutor()
         val runnable = Runnable {
             synchronized(LitePalSupport::class.java) {
@@ -463,8 +441,7 @@ object LitePal {
      * The type of the based on column.
      * @return The maximum value on a given column.
      */
-    @JvmStatic
-    fun <T> max(modelClass: Class<*>, columnName: String, columnType: Class<T>) = max(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.name)), columnName, columnType)
+    @JvmStatic fun <T> max(modelClass: Class<*>, columnName: String, columnType: Class<T>) = max(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.name)), columnName, columnType)
 
     /**
      * Basically same as [LitePal.max] but pending to a new thread for executing.
@@ -477,8 +454,7 @@ object LitePal {
      * The type of the based on column.
      * @return A FindExecutor instance.
      */
-    @JvmStatic
-    fun <T> maxAsync(modelClass: Class<*>, columnName: String, columnType: Class<T>) = maxAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.name)), columnName, columnType)
+    @JvmStatic fun <T> maxAsync(modelClass: Class<*>, columnName: String, columnType: Class<T>) = maxAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.name)), columnName, columnType)
 
     /**
      * Calculates the maximum value on a given column. The value is returned
@@ -498,8 +474,7 @@ object LitePal {
      * The type of the based on column.
      * @return The maximum value on a given column.
      */
-    @JvmStatic
-    fun <T> max(tableName: String, columnName: String, columnType: Class<T>): T {
+    @JvmStatic fun <T> max(tableName: String, columnName: String, columnType: Class<T>): T {
         synchronized(LitePalSupport::class.java) {
             val cQuery = FluentQuery()
             return cQuery.max(tableName, columnName, columnType)
@@ -517,8 +492,7 @@ object LitePal {
      * The type of the based on column.
      * @return A FindExecutor instance.
      */
-    @JvmStatic
-    fun <T> maxAsync(tableName: String, columnName: String, columnType: Class<T>): FindExecutor<T> {
+    @JvmStatic fun <T> maxAsync(tableName: String, columnName: String, columnType: Class<T>): FindExecutor<T> {
         val executor = FindExecutor<T>()
         val runnable = Runnable {
             synchronized(LitePalSupport::class.java) {
@@ -550,8 +524,7 @@ object LitePal {
      * The type of the based on column.
      * @return The minimum value on a given column.
      */
-    @JvmStatic
-    fun <T> min(modelClass: Class<*>, columnName: String, columnType: Class<T>) = min(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.name)), columnName, columnType)
+    @JvmStatic fun <T> min(modelClass: Class<*>, columnName: String, columnType: Class<T>) = min(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.name)), columnName, columnType)
 
     /**
      * Basically same as [LitePal.min] but pending to a new thread for executing.
@@ -564,8 +537,7 @@ object LitePal {
      * The type of the based on column.
      * @return A FindExecutor instance.
      */
-    @JvmStatic
-    fun <T> minAsync(modelClass: Class<*>, columnName: String, columnType: Class<T>) = minAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.name)), columnName, columnType)
+    @JvmStatic fun <T> minAsync(modelClass: Class<*>, columnName: String, columnType: Class<T>) = minAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.name)), columnName, columnType)
 
     /**
      * Calculates the minimum value on a given column. The value is returned
@@ -585,8 +557,7 @@ object LitePal {
      * The type of the based on column.
      * @return The minimum value on a given column.
      */
-    @JvmStatic
-    fun <T> min(tableName: String, columnName: String, columnType: Class<T>): T {
+    @JvmStatic fun <T> min(tableName: String, columnName: String, columnType: Class<T>): T {
         synchronized(LitePalSupport::class.java) {
             val cQuery = FluentQuery()
             return cQuery.min(tableName, columnName, columnType)
@@ -604,8 +575,7 @@ object LitePal {
      * The type of the based on column.
      * @return A FindExecutor instance.
      */
-    @JvmStatic
-    fun <T> minAsync(tableName: String, columnName: String, columnType: Class<T>): FindExecutor<T> {
+    @JvmStatic fun <T> minAsync(tableName: String, columnName: String, columnType: Class<T>): FindExecutor<T> {
         val executor = FindExecutor<T>()
         val runnable = Runnable {
             synchronized(LitePalSupport::class.java) {
@@ -637,8 +607,7 @@ object LitePal {
      * The type of the based on column.
      * @return The sum value on a given column.
      */
-    @JvmStatic
-    fun <T> sum(modelClass: Class<*>, columnName: String, columnType: Class<T>) = sum(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.name)), columnName, columnType)
+    @JvmStatic fun <T> sum(modelClass: Class<*>, columnName: String, columnType: Class<T>) = sum(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.name)), columnName, columnType)
 
     /**
      * Basically same as [LitePal.sum] but pending to a new thread for executing.
@@ -651,8 +620,7 @@ object LitePal {
      * The type of the based on column.
      * @return A FindExecutor instance.
      */
-    @JvmStatic
-    fun <T> sumAsync(modelClass: Class<*>, columnName: String, columnType: Class<T>) = sumAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.name)), columnName, columnType)
+    @JvmStatic fun <T> sumAsync(modelClass: Class<*>, columnName: String, columnType: Class<T>) = sumAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.name)), columnName, columnType)
 
     /**
      * Calculates the sum of values on a given column. The value is returned
@@ -672,8 +640,7 @@ object LitePal {
      * The type of the based on column.
      * @return The sum value on a given column.
      */
-    @JvmStatic
-    fun <T> sum(tableName: String, columnName: String, columnType: Class<T>): T {
+    @JvmStatic fun <T> sum(tableName: String, columnName: String, columnType: Class<T>): T {
         synchronized(LitePalSupport::class.java) {
             val cQuery = FluentQuery()
             return cQuery.sum(tableName, columnName, columnType)
@@ -691,8 +658,7 @@ object LitePal {
      * The type of the based on column.
      * @return A FindExecutor instance.
      */
-    @JvmStatic
-    fun <T> sumAsync(tableName: String, columnName: String, columnType: Class<T>): FindExecutor<T> {
+    @JvmStatic fun <T> sumAsync(tableName: String, columnName: String, columnType: Class<T>): FindExecutor<T> {
         val executor = FindExecutor<T>()
         val runnable = Runnable {
             synchronized(LitePalSupport::class.java) {
@@ -724,8 +690,7 @@ object LitePal {
      * Which record to query.
      * @return An object with found data from database, or null.
      */
-    @JvmStatic
-    fun <T> find(modelClass: Class<T>, id: Long) = find(modelClass, id, false)
+    @JvmStatic fun <T> find(modelClass: Class<T>, id: Long) = find(modelClass, id, false)
 
     /**
      * Basically same as [LitePal.find] but pending to a new thread for executing.
@@ -736,8 +701,7 @@ object LitePal {
      * Which record to query.
      * @return A FindExecutor instance.
      */
-    @JvmStatic
-    fun <T> findAsync(modelClass: Class<T>, id: Long) = findAsync(modelClass, id, false)
+    @JvmStatic fun <T> findAsync(modelClass: Class<T>, id: Long) = findAsync(modelClass, id, false)
 
     /**
      * It is mostly same as [LitePal.find] but an isEager
@@ -754,8 +718,7 @@ object LitePal {
      * True to load the associated models, false not.
      * @return An object with found data from database, or null.
      */
-    @JvmStatic
-    fun <T> find(modelClass: Class<T>, id: Long, isEager: Boolean): T? {
+    @JvmStatic fun <T> find(modelClass: Class<T>, id: Long, isEager: Boolean): T? {
         synchronized(LitePalSupport::class.java) {
             val queryHandler = QueryHandler(Connector.getDatabase())
             return queryHandler.onFind(modelClass, id, isEager)
@@ -773,8 +736,7 @@ object LitePal {
      * True to load the associated models, false not.
      * @return A FindExecutor instance.
      */
-    @JvmStatic
-    fun <T> findAsync(modelClass: Class<T>, id: Long, isEager: Boolean): FindExecutor<T> {
+    @JvmStatic fun <T> findAsync(modelClass: Class<T>, id: Long, isEager: Boolean): FindExecutor<T> {
         val executor = FindExecutor<T>()
         val runnable = Runnable {
             synchronized(LitePalSupport::class.java) {
@@ -801,8 +763,7 @@ object LitePal {
      * Which table to query and the object type to return.
      * @return An object with data of first row, or null.
      */
-    @JvmStatic
-    fun <T> findFirst(modelClass: Class<T>) = findFirst(modelClass, false)
+    @JvmStatic fun <T> findFirst(modelClass: Class<T>) = findFirst(modelClass, false)
 
     /**
      * Basically same as [LitePal.findFirst] but pending to a new thread for executing.
@@ -811,8 +772,7 @@ object LitePal {
      * Which table to query and the object type to return.
      * @return A FindExecutor instance.
      */
-    @JvmStatic
-    fun <T> findFirstAsync(modelClass: Class<T>) = findFirstAsync(modelClass, false)
+    @JvmStatic fun <T> findFirstAsync(modelClass: Class<T>) = findFirstAsync(modelClass, false)
 
     /**
      * It is mostly same as [LitePal.findFirst] but an isEager
@@ -827,8 +787,7 @@ object LitePal {
      * True to load the associated models, false not.
      * @return An object with data of first row, or null.
      */
-    @JvmStatic
-    fun <T> findFirst(modelClass: Class<T>, isEager: Boolean): T? {
+    @JvmStatic fun <T> findFirst(modelClass: Class<T>, isEager: Boolean): T? {
         synchronized(LitePalSupport::class.java) {
             val queryHandler = QueryHandler(Connector.getDatabase())
             return queryHandler.onFindFirst(modelClass, isEager)
@@ -844,8 +803,7 @@ object LitePal {
      * True to load the associated models, false not.
      * @return A FindExecutor instance.
      */
-    @JvmStatic
-    fun <T> findFirstAsync(modelClass: Class<T>, isEager: Boolean): FindExecutor<T> {
+    @JvmStatic fun <T> findFirstAsync(modelClass: Class<T>, isEager: Boolean): FindExecutor<T> {
         val executor = FindExecutor<T>()
         val runnable = Runnable {
             synchronized(LitePalSupport::class.java) {
@@ -872,8 +830,7 @@ object LitePal {
      * Which table to query and the object type to return.
      * @return An object with data of last row, or null.
      */
-    @JvmStatic
-    fun <T> findLast(modelClass: Class<T>) = findLast(modelClass, false)
+    @JvmStatic fun <T> findLast(modelClass: Class<T>) = findLast(modelClass, false)
 
     /**
      * Basically same as [LitePal.findLast] but pending to a new thread for executing.
@@ -882,8 +839,7 @@ object LitePal {
      * Which table to query and the object type to return.
      * @return A FindExecutor instance.
      */
-    @JvmStatic
-    fun <T> findLastAsync(modelClass: Class<T>) = findLastAsync(modelClass, false)
+    @JvmStatic fun <T> findLastAsync(modelClass: Class<T>) = findLastAsync(modelClass, false)
 
     /**
      * It is mostly same as [LitePal.findLast] but an isEager
@@ -898,8 +854,7 @@ object LitePal {
      * True to load the associated models, false not.
      * @return An object with data of last row, or null.
      */
-    @JvmStatic
-    fun <T> findLast(modelClass: Class<T>, isEager: Boolean): T? {
+    @JvmStatic fun <T> findLast(modelClass: Class<T>, isEager: Boolean): T? {
         synchronized(LitePalSupport::class.java) {
             val queryHandler = QueryHandler(Connector.getDatabase())
             return queryHandler.onFindLast(modelClass, isEager)
@@ -915,8 +870,7 @@ object LitePal {
      * True to load the associated models, false not.
      * @return A FindExecutor instance.
      */
-    @JvmStatic
-    fun <T> findLastAsync(modelClass: Class<T>, isEager: Boolean): FindExecutor<T> {
+    @JvmStatic fun <T> findLastAsync(modelClass: Class<T>, isEager: Boolean): FindExecutor<T> {
         val executor = FindExecutor<T>()
         val runnable = Runnable {
             synchronized(LitePalSupport::class.java) {
@@ -956,8 +910,7 @@ object LitePal {
      * Which records to query. Or do not pass it to find all records.
      * @return An object list with found data from database, or an empty list.
      */
-    @JvmStatic
-    fun <T> findAll(modelClass: Class<T>, vararg ids: Long) = findAll(modelClass, false, *ids)
+    @JvmStatic fun <T> findAll(modelClass: Class<T>, vararg ids: Long) = findAll(modelClass, false, *ids)
 
     /**
      * Basically same as [LitePal.findAll] but pending to a new thread for executing.
@@ -968,8 +921,7 @@ object LitePal {
      * Which records to query. Or do not pass it to find all records.
      * @return A FindMultiExecutor instance.
      */
-    @JvmStatic
-    fun <T> findAllAsync(modelClass: Class<T>, vararg ids: Long) = findAllAsync(modelClass, false, *ids)
+    @JvmStatic fun <T> findAllAsync(modelClass: Class<T>, vararg ids: Long) = findAllAsync(modelClass, false, *ids)
 
     /**
      * It is mostly same as [LitePal.findAll] but an
@@ -986,8 +938,7 @@ object LitePal {
      * Which records to query. Or do not pass it to find all records.
      * @return An object list with found data from database, or an empty list.
      */
-    @JvmStatic
-    fun <T> findAll(modelClass: Class<T>, isEager: Boolean, vararg ids: Long): List<T> {
+    @JvmStatic fun <T> findAll(modelClass: Class<T>, isEager: Boolean, vararg ids: Long): List<T> {
         synchronized(LitePalSupport::class.java) {
             val queryHandler = QueryHandler(Connector.getDatabase())
             return queryHandler.onFindAll(modelClass, isEager, *ids)
@@ -1005,8 +956,7 @@ object LitePal {
      * Which records to query. Or do not pass it to find all records.
      * @return A FindMultiExecutor instance.
      */
-    @JvmStatic
-    fun <T> findAllAsync(modelClass: Class<T>, isEager: Boolean, vararg ids: Long): FindMultiExecutor<T> {
+    @JvmStatic fun <T> findAllAsync(modelClass: Class<T>, isEager: Boolean, vararg ids: Long): FindMultiExecutor<T> {
         val executor = FindMultiExecutor<T>()
         val runnable = Runnable {
             synchronized(LitePalSupport::class.java) {
@@ -1034,8 +984,7 @@ object LitePal {
      * that Cursors are not synchronized, see the documentation for more
      * details.
      */
-    @JvmStatic
-    fun findBySQL(vararg sql: String): Cursor? {
+    @JvmStatic fun findBySQL(vararg sql: String): Cursor? {
         synchronized(LitePalSupport::class.java) {
             BaseUtility.checkConditionsCorrect(*sql)
             if (sql == null) {
@@ -1071,8 +1020,7 @@ object LitePal {
      * Which record to delete.
      * @return The number of rows affected. Including cascade delete rows.
      */
-    @JvmStatic
-    fun delete(modelClass: Class<*>, id: Long): Int {
+    @JvmStatic fun delete(modelClass: Class<*>, id: Long): Int {
         synchronized(LitePalSupport::class.java) {
             val rowsAffected: Int
             val db = Connector.getDatabase()
@@ -1097,8 +1045,7 @@ object LitePal {
      * Which record to delete.
      * @return A UpdateOrDeleteExecutor instance.
      */
-    @JvmStatic
-    fun deleteAsync(modelClass: Class<*>, id: Long): UpdateOrDeleteExecutor {
+    @JvmStatic fun deleteAsync(modelClass: Class<*>, id: Long): UpdateOrDeleteExecutor {
         val executor = UpdateOrDeleteExecutor()
         val runnable = Runnable {
             synchronized(LitePalSupport::class.java) {
@@ -1134,8 +1081,7 @@ object LitePal {
      * all rows.
      * @return The number of rows affected.
      */
-    @JvmStatic
-    fun deleteAll(modelClass: Class<*>, vararg conditions: String): Int {
+    @JvmStatic fun deleteAll(modelClass: Class<*>, vararg conditions: String): Int {
         synchronized(LitePalSupport::class.java) {
             val deleteHandler = DeleteHandler(Connector.getDatabase())
             return deleteHandler.onDeleteAll(modelClass, *conditions)
@@ -1157,8 +1103,7 @@ object LitePal {
      * all rows.
      * @return A UpdateOrDeleteExecutor instance.
      */
-    @JvmStatic
-    fun deleteAllAsync(modelClass: Class<*>, vararg conditions: String): UpdateOrDeleteExecutor {
+    @JvmStatic fun deleteAllAsync(modelClass: Class<*>, vararg conditions: String): UpdateOrDeleteExecutor {
         val executor = UpdateOrDeleteExecutor()
         val runnable = Runnable {
             synchronized(LitePalSupport::class.java) {
@@ -1197,8 +1142,7 @@ object LitePal {
      * all rows.
      * @return The number of rows affected.
      */
-    @JvmStatic
-    fun deleteAll(tableName: String, vararg conditions: String): Int {
+    @JvmStatic fun deleteAll(tableName: String, vararg conditions: String): Int {
         synchronized(LitePalSupport::class.java) {
             val deleteHandler = DeleteHandler(Connector.getDatabase())
             return deleteHandler.onDeleteAll(tableName, *conditions)
@@ -1220,8 +1164,7 @@ object LitePal {
      * all rows.
      * @return A UpdateOrDeleteExecutor instance.
      */
-    @JvmStatic
-    fun deleteAllAsync(tableName: String, vararg conditions: String): UpdateOrDeleteExecutor {
+    @JvmStatic fun deleteAllAsync(tableName: String, vararg conditions: String): UpdateOrDeleteExecutor {
         val executor = UpdateOrDeleteExecutor()
         val runnable = Runnable {
             synchronized(LitePalSupport::class.java) {
@@ -1256,8 +1199,7 @@ object LitePal {
      * Which record to update.
      * @return The number of rows affected.
      */
-    @JvmStatic
-    fun update(modelClass: Class<*>, values: ContentValues, id: Long): Int {
+    @JvmStatic fun update(modelClass: Class<*>, values: ContentValues, id: Long): Int {
         synchronized(LitePalSupport::class.java) {
             val updateHandler = UpdateHandler(Connector.getDatabase())
             return updateHandler.onUpdate(modelClass, id, values)
@@ -1276,8 +1218,7 @@ object LitePal {
      * Which record to update.
      * @return A UpdateOrDeleteExecutor instance.
      */
-    @JvmStatic
-    fun updateAsync(modelClass: Class<*>, values: ContentValues, id: Long): UpdateOrDeleteExecutor {
+    @JvmStatic fun updateAsync(modelClass: Class<*>, values: ContentValues, id: Long): UpdateOrDeleteExecutor {
         val executor = UpdateOrDeleteExecutor()
         val runnable = Runnable {
             synchronized(LitePalSupport::class.java) {
@@ -1320,8 +1261,7 @@ object LitePal {
      * all rows.
      * @return The number of rows affected.
      */
-    @JvmStatic
-    fun updateAll(modelClass: Class<*>, values: ContentValues,
+    @JvmStatic fun updateAll(modelClass: Class<*>, values: ContentValues,
                   vararg conditions: String): Int {
         return updateAll(BaseUtility.changeCase(DBUtility.getTableNameByClassName(
                 modelClass.name)), values, *conditions)
@@ -1345,8 +1285,7 @@ object LitePal {
      * all rows.
      * @return A UpdateOrDeleteExecutor instance.
      */
-    @JvmStatic
-    fun updateAllAsync(modelClass: Class<*>, values: ContentValues, vararg conditions: String): UpdateOrDeleteExecutor {
+    @JvmStatic fun updateAllAsync(modelClass: Class<*>, values: ContentValues, vararg conditions: String): UpdateOrDeleteExecutor {
         return updateAllAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(
                 modelClass.name)), values, *conditions)
     }
@@ -1380,8 +1319,7 @@ object LitePal {
      * all rows.
      * @return The number of rows affected.
      */
-    @JvmStatic
-    fun updateAll(tableName: String, values: ContentValues,
+    @JvmStatic fun updateAll(tableName: String, values: ContentValues,
                   vararg conditions: String): Int {
         synchronized(LitePalSupport::class.java) {
             val updateHandler = UpdateHandler(Connector.getDatabase())
@@ -1407,8 +1345,7 @@ object LitePal {
      * all rows.
      * @return A UpdateOrDeleteExecutor instance.
      */
-    @JvmStatic
-    fun updateAllAsync(tableName: String, values: ContentValues, vararg conditions: String): UpdateOrDeleteExecutor {
+    @JvmStatic fun updateAllAsync(tableName: String, values: ContentValues, vararg conditions: String): UpdateOrDeleteExecutor {
         val executor = UpdateOrDeleteExecutor()
         val runnable = Runnable {
             synchronized(LitePalSupport::class.java) {
@@ -1445,8 +1382,7 @@ object LitePal {
      * @param collection
      * Holds all models to save.
      */
-    @JvmStatic
-    fun <T : LitePalSupport> saveAll(collection: Collection<T>) {
+    @JvmStatic fun <T : LitePalSupport> saveAll(collection: Collection<T>) {
         synchronized(LitePalSupport::class.java) {
             val db = Connector.getDatabase()
             db.beginTransaction()
@@ -1469,8 +1405,7 @@ object LitePal {
      * Holds all models to save.
      * @return A SaveExecutor instance.
      */
-    @JvmStatic
-    fun <T : LitePalSupport> saveAllAsync(collection: Collection<T>): SaveExecutor {
+    @JvmStatic fun <T : LitePalSupport> saveAllAsync(collection: Collection<T>): SaveExecutor {
         val executor = SaveExecutor()
         val runnable = Runnable {
             synchronized(LitePalSupport::class.java) {
@@ -1496,8 +1431,7 @@ object LitePal {
      * @param collection
      * Collection of models which want to mark as deleted and clear their save state.
      */
-    @JvmStatic
-    fun <T : LitePalSupport> markAsDeleted(collection: Collection<T>) {
+    @JvmStatic fun <T : LitePalSupport> markAsDeleted(collection: Collection<T>) {
         for (t in collection) {
             t.clearSavedState()
         }
@@ -1513,8 +1447,7 @@ object LitePal {
      * @return Return true if the specified conditions data already exists in the table.
      * False otherwise. Null conditions will result in false.
      */
-    @JvmStatic
-    fun <T> isExist(modelClass: Class<T>, vararg conditions: String): Boolean {
+    @JvmStatic fun <T> isExist(modelClass: Class<T>, vararg conditions: String): Boolean {
         return conditions != null && where(*conditions).count(modelClass) > 0
     }
 
