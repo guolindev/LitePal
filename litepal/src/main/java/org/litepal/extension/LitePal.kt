@@ -26,6 +26,52 @@ import org.litepal.LitePal
  */
 
 /**
+ * Count the records.
+ *
+ * LitePal.count&lt;Person&gt;()
+ *
+ * This will count all rows in person table.
+ *
+ * You can also specify a where clause when counting.
+ *
+ * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).count&lt;Person&gt;()
+ *
+ * @return Count of the specified table.
+ */
+inline fun <reified T> LitePal.count() = count(T::class.java)
+
+/**
+ * Basically same as [LitePal.count] but pending to a new thread for executing.
+ *
+ * @return A CountExecutor instance.
+ */
+inline fun <reified T> LitePal.countAsync() = countAsync(T::class.java)
+
+/**
+ * Calculates the average value on a given column.
+ *
+ * LitePal.average&lt;Person&gt;(&quot;age&quot;)
+ *
+ * You can also specify a where clause when calculating.
+ *
+ * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).average&lt;Person&gt;(&quot;age&quot;)
+ *
+ * @param column
+ * The based on column to calculate.
+ * @return The average value on a given column.
+ */
+inline fun <reified T> LitePal.average(column: String) = average(T::class.java, column)
+
+/**
+ * Basically same as [LitePal.average] but pending to a new thread for executing.
+ *
+ * @param column
+ * The based on column to calculate.
+ * @return A AverageExecutor instance.
+ */
+inline fun <reified T> LitePal.averageAsync(column: String) = averageAsync(T::class.java, column)
+
+/**
  * Calculates the maximum value on a given column. The value is returned
  * with the same data type of the column.
  *

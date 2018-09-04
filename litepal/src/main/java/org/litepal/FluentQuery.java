@@ -71,7 +71,7 @@ public class FluentQuery {
 	 * Declaring to query which columns in table.
 	 *
 	 * <pre>
-	 * LitePalSupport.select(&quot;name&quot;, &quot;age&quot;).find(Person.class);
+	 * LitePal.select(&quot;name&quot;, &quot;age&quot;).find(Person.class);
 	 * </pre>
 	 *
 	 * This will find all rows with name and age columns in Person table.
@@ -91,7 +91,7 @@ public class FluentQuery {
 	 * Declaring to query which rows in table.
 	 *
 	 * <pre>
-	 * LitePalSupport.where(&quot;name = ? or age &gt; ?&quot;, &quot;Tom&quot;, &quot;14&quot;).find(Person.class);
+	 * LitePal.where(&quot;name = ? or age &gt; ?&quot;, &quot;Tom&quot;, &quot;14&quot;).find(Person.class);
 	 * </pre>
 	 *
 	 * This will find rows which name is Tom or age greater than 14 in Person
@@ -111,7 +111,7 @@ public class FluentQuery {
 	 * Declaring how to order the rows queried from table.
 	 *
 	 * <pre>
-	 * LitePalSupport.order(&quot;name desc&quot;).find(Person.class);
+	 * LitePal.order(&quot;name desc&quot;).find(Person.class);
 	 * </pre>
 	 *
 	 * This will find all rows in Person table sorted by name with inverted
@@ -132,7 +132,7 @@ public class FluentQuery {
 	 * Limits the number of rows returned by the query.
 	 *
 	 * <pre>
-	 * LitePalSupport.limit(2).find(Person.class);
+	 * LitePal.limit(2).find(Person.class);
 	 * </pre>
 	 *
 	 * This will find the top 2 rows in Person table.
@@ -152,7 +152,7 @@ public class FluentQuery {
 	 * used with {@link #limit(int)}, or nothing will return.
 	 *
 	 * <pre>
-	 * LitePalSupport.limit(1).offset(2).find(Person.class);
+	 * LitePal.limit(1).offset(2).find(Person.class);
 	 * </pre>
 	 *
 	 * This will find the third row in Person table.
@@ -171,7 +171,7 @@ public class FluentQuery {
 	 * way to finish a complicated query:
 	 *
 	 * <pre>
-	 * LitePalSupport.select(&quot;name&quot;).where(&quot;age &gt; ?&quot;, &quot;14&quot;).order(&quot;age&quot;).limit(1).offset(2)
+	 * LitePal.select(&quot;name&quot;).where(&quot;age &gt; ?&quot;, &quot;14&quot;).order(&quot;age&quot;).limit(1).offset(2)
 	 * 		.find(Person.class);
 	 * </pre>
 	 *
@@ -271,7 +271,7 @@ public class FluentQuery {
      * way to finish a complicated query:
      *
      * <pre>
-     * LitePalSupport.select(&quot;name&quot;).where(&quot;age &gt; ?&quot;, &quot;14&quot;).order(&quot;age&quot;).limit(1).offset(2)
+     * LitePal.select(&quot;name&quot;).where(&quot;age &gt; ?&quot;, &quot;14&quot;).order(&quot;age&quot;).limit(10).offset(2)
      * 		.findFirst(Person.class);
      * </pre>
      *
@@ -357,7 +357,7 @@ public class FluentQuery {
      * way to finish a complicated query:
      *
      * <pre>
-     * LitePalSupport.select(&quot;name&quot;).where(&quot;age &gt; ?&quot;, &quot;14&quot;).order(&quot;age&quot;).limit(1).offset(2)
+     * LitePal.select(&quot;name&quot;).where(&quot;age &gt; ?&quot;, &quot;14&quot;).order(&quot;age&quot;).limit(10).offset(2)
      * 		.findLast(Person.class);
      * </pre>
      *
@@ -443,14 +443,14 @@ public class FluentQuery {
 	 * Count the records.
 	 *
 	 * <pre>
-	 * LitePalSupport.count(Person.class);
+	 * LitePal.count(Person.class);
 	 * </pre>
 	 *
 	 * This will count all rows in person table.<br>
 	 * You can also specify a where clause when counting.
 	 *
 	 * <pre>
-	 * LitePalSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).count(Person.class);
+	 * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).count(Person.class);
 	 * </pre>
 	 *
 	 * @param modelClass
@@ -476,14 +476,14 @@ public class FluentQuery {
 	 * Count the records.
 	 *
 	 * <pre>
-	 * LitePalSupport.count(&quot;person&quot;);
+	 * LitePal.count(&quot;person&quot;);
 	 * </pre>
 	 *
 	 * This will count all rows in person table.<br>
 	 * You can also specify a where clause when counting.
 	 *
 	 * <pre>
-	 * LitePalSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).count(&quot;person&quot;);
+	 * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).count(&quot;person&quot;);
 	 * </pre>
 	 *
 	 * @param tableName
@@ -530,13 +530,13 @@ public class FluentQuery {
 	 * Calculates the average value on a given column.
 	 *
 	 * <pre>
-	 * LitePalSupport.average(Person.class, &quot;age&quot;);
+	 * LitePal.average(Person.class, &quot;age&quot;);
 	 * </pre>
 	 *
 	 * You can also specify a where clause when calculating.
 	 *
 	 * <pre>
-	 * LitePalSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).average(Person.class, &quot;age&quot;);
+	 * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).average(Person.class, &quot;age&quot;);
 	 * </pre>
 	 *
 	 * @param modelClass
@@ -566,13 +566,13 @@ public class FluentQuery {
 	 * Calculates the average value on a given column.
 	 *
 	 * <pre>
-	 * LitePalSupport.average(&quot;person&quot;, &quot;age&quot;);
+	 * LitePal.average(&quot;person&quot;, &quot;age&quot;);
 	 * </pre>
 	 *
 	 * You can also specify a where clause when calculating.
 	 *
 	 * <pre>
-	 * LitePalSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).average(&quot;person&quot;, &quot;age&quot;);
+	 * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).average(&quot;person&quot;, &quot;age&quot;);
 	 * </pre>
 	 *
 	 * @param tableName
@@ -624,13 +624,13 @@ public class FluentQuery {
 	 * with the same data type of the column.
 	 *
 	 * <pre>
-	 * LitePalSupport.max(Person.class, &quot;age&quot;, int.class);
+	 * LitePal.max(Person.class, &quot;age&quot;, int.class);
 	 * </pre>
 	 *
 	 * You can also specify a where clause when calculating.
 	 *
 	 * <pre>
-	 * LitePalSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).max(Person.class, &quot;age&quot;, Integer.TYPE);
+	 * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).max(Person.class, &quot;age&quot;, Integer.TYPE);
 	 * </pre>
 	 *
 	 * @param modelClass
@@ -665,13 +665,13 @@ public class FluentQuery {
 	 * with the same data type of the column.
 	 *
 	 * <pre>
-	 * LitePalSupport.max(&quot;person&quot;, &quot;age&quot;, int.class);
+	 * LitePal.max(&quot;person&quot;, &quot;age&quot;, int.class);
 	 * </pre>
 	 *
 	 * You can also specify a where clause when calculating.
 	 *
 	 * <pre>
-	 * LitePalSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).max(&quot;person&quot;, &quot;age&quot;, Integer.TYPE);
+	 * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).max(&quot;person&quot;, &quot;age&quot;, Integer.TYPE);
 	 * </pre>
 	 *
 	 * @param tableName
@@ -727,13 +727,13 @@ public class FluentQuery {
 	 * with the same data type of the column.
 	 *
 	 * <pre>
-	 * LitePalSupport.min(Person.class, &quot;age&quot;, int.class);
+	 * LitePal.min(Person.class, &quot;age&quot;, int.class);
 	 * </pre>
 	 *
 	 * You can also specify a where clause when calculating.
 	 *
 	 * <pre>
-	 * LitePalSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).min(Person.class, &quot;age&quot;, Integer.TYPE);
+	 * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).min(Person.class, &quot;age&quot;, Integer.TYPE);
 	 * </pre>
 	 *
 	 * @param modelClass
@@ -768,13 +768,13 @@ public class FluentQuery {
 	 * with the same data type of the column.
 	 *
 	 * <pre>
-	 * LitePalSupport.min(&quot;person&quot;, &quot;age&quot;, int.class);
+	 * LitePal.min(&quot;person&quot;, &quot;age&quot;, int.class);
 	 * </pre>
 	 *
 	 * You can also specify a where clause when calculating.
 	 *
 	 * <pre>
-	 * LitePalSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).min(&quot;person&quot;, &quot;age&quot;, Integer.TYPE);
+	 * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).min(&quot;person&quot;, &quot;age&quot;, Integer.TYPE);
 	 * </pre>
 	 *
 	 * @param tableName
@@ -830,13 +830,13 @@ public class FluentQuery {
 	 * with the same data type of the column.
 	 * 
 	 * <pre>
-	 * LitePalSupport.sum(Person.class, &quot;age&quot;, int.class);
+	 * LitePal.sum(Person.class, &quot;age&quot;, int.class);
 	 * </pre>
 	 * 
 	 * You can also specify a where clause when calculating.
 	 * 
 	 * <pre>
-	 * LitePalSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).sum(Person.class, &quot;age&quot;, Integer.TYPE);
+	 * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).sum(Person.class, &quot;age&quot;, Integer.TYPE);
 	 * </pre>
 	 * 
 	 * @param modelClass
@@ -871,13 +871,13 @@ public class FluentQuery {
 	 * with the same data type of the column.
 	 * 
 	 * <pre>
-	 * LitePalSupport.sum(&quot;person&quot;, &quot;age&quot;, int.class);
+	 * LitePal.sum(&quot;person&quot;, &quot;age&quot;, int.class);
 	 * </pre>
 	 * 
 	 * You can also specify a where clause when calculating.
 	 * 
 	 * <pre>
-	 * LitePalSupport.where(&quot;age &gt; ?&quot;, &quot;15&quot;).sum(&quot;person&quot;, &quot;age&quot;, Integer.TYPE);
+	 * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).sum(&quot;person&quot;, &quot;age&quot;, Integer.TYPE);
 	 * </pre>
 	 * 
 	 * @param tableName
