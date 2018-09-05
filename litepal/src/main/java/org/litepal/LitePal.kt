@@ -200,7 +200,7 @@ object LitePal {
      *
      * @return A FluentQuery instance.
      */
-    @JvmStatic fun select(vararg columns: String): FluentQuery {
+    @JvmStatic fun select(vararg columns: String?): FluentQuery {
         val cQuery = FluentQuery()
         cQuery.mColumns = columns
         return cQuery
@@ -219,7 +219,7 @@ object LitePal {
      * WHERE clause. Passing null will return all rows.
      * @return A FluentQuery instance.
      */
-    @JvmStatic fun where(vararg conditions: String): FluentQuery {
+    @JvmStatic fun where(vararg conditions: String?): FluentQuery {
         val cQuery = FluentQuery()
         cQuery.mConditions = conditions
         return cQuery
@@ -239,7 +239,7 @@ object LitePal {
      * unordered.
      * @return A FluentQuery instance.
      */
-    @JvmStatic fun order(column: String): FluentQuery {
+    @JvmStatic fun order(column: String?): FluentQuery {
         val cQuery = FluentQuery()
         cQuery.mOrderBy = column
         return cQuery
@@ -1077,11 +1077,11 @@ object LitePal {
      * deleting. The way of specifying place holders is to insert one
      * or more question marks in the SQL. The first question mark is
      * replaced by the second element of the array, the next question
-     * mark by the third, and so on. Passing empty string will update
+     * mark by the third, and so on. Passing empty string will delete
      * all rows.
      * @return The number of rows affected.
      */
-    @JvmStatic fun deleteAll(modelClass: Class<*>, vararg conditions: String): Int {
+    @JvmStatic fun deleteAll(modelClass: Class<*>, vararg conditions: String?): Int {
         synchronized(LitePalSupport::class.java) {
             val deleteHandler = DeleteHandler(Connector.getDatabase())
             return deleteHandler.onDeleteAll(modelClass, *conditions)
@@ -1099,11 +1099,11 @@ object LitePal {
      * deleting. The way of specifying place holders is to insert one
      * or more question marks in the SQL. The first question mark is
      * replaced by the second element of the array, the next question
-     * mark by the third, and so on. Passing empty string will update
+     * mark by the third, and so on. Passing empty string will delete
      * all rows.
      * @return A UpdateOrDeleteExecutor instance.
      */
-    @JvmStatic fun deleteAllAsync(modelClass: Class<*>, vararg conditions: String): UpdateOrDeleteExecutor {
+    @JvmStatic fun deleteAllAsync(modelClass: Class<*>, vararg conditions: String?): UpdateOrDeleteExecutor {
         val executor = UpdateOrDeleteExecutor()
         val runnable = Runnable {
             synchronized(LitePalSupport::class.java) {
@@ -1138,11 +1138,11 @@ object LitePal {
      * deleting. The way of specifying place holders is to insert one
      * or more question marks in the SQL. The first question mark is
      * replaced by the second element of the array, the next question
-     * mark by the third, and so on. Passing empty string will update
+     * mark by the third, and so on. Passing empty string will delete
      * all rows.
      * @return The number of rows affected.
      */
-    @JvmStatic fun deleteAll(tableName: String, vararg conditions: String): Int {
+    @JvmStatic fun deleteAll(tableName: String, vararg conditions: String?): Int {
         synchronized(LitePalSupport::class.java) {
             val deleteHandler = DeleteHandler(Connector.getDatabase())
             return deleteHandler.onDeleteAll(tableName, *conditions)
@@ -1160,11 +1160,11 @@ object LitePal {
      * deleting. The way of specifying place holders is to insert one
      * or more question marks in the SQL. The first question mark is
      * replaced by the second element of the array, the next question
-     * mark by the third, and so on. Passing empty string will update
+     * mark by the third, and so on. Passing empty string will delete
      * all rows.
      * @return A UpdateOrDeleteExecutor instance.
      */
-    @JvmStatic fun deleteAllAsync(tableName: String, vararg conditions: String): UpdateOrDeleteExecutor {
+    @JvmStatic fun deleteAllAsync(tableName: String, vararg conditions: String?): UpdateOrDeleteExecutor {
         val executor = UpdateOrDeleteExecutor()
         val runnable = Runnable {
             synchronized(LitePalSupport::class.java) {
@@ -1262,7 +1262,7 @@ object LitePal {
      * @return The number of rows affected.
      */
     @JvmStatic fun updateAll(modelClass: Class<*>, values: ContentValues,
-                  vararg conditions: String): Int {
+                  vararg conditions: String?): Int {
         return updateAll(BaseUtility.changeCase(DBUtility.getTableNameByClassName(
                 modelClass.name)), values, *conditions)
     }
@@ -1285,7 +1285,7 @@ object LitePal {
      * all rows.
      * @return A UpdateOrDeleteExecutor instance.
      */
-    @JvmStatic fun updateAllAsync(modelClass: Class<*>, values: ContentValues, vararg conditions: String): UpdateOrDeleteExecutor {
+    @JvmStatic fun updateAllAsync(modelClass: Class<*>, values: ContentValues, vararg conditions: String?): UpdateOrDeleteExecutor {
         return updateAllAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(
                 modelClass.name)), values, *conditions)
     }
@@ -1320,7 +1320,7 @@ object LitePal {
      * @return The number of rows affected.
      */
     @JvmStatic fun updateAll(tableName: String, values: ContentValues,
-                  vararg conditions: String): Int {
+                  vararg conditions: String?): Int {
         synchronized(LitePalSupport::class.java) {
             val updateHandler = UpdateHandler(Connector.getDatabase())
             return updateHandler.onUpdateAll(tableName, values, *conditions)
@@ -1345,7 +1345,7 @@ object LitePal {
      * all rows.
      * @return A UpdateOrDeleteExecutor instance.
      */
-    @JvmStatic fun updateAllAsync(tableName: String, values: ContentValues, vararg conditions: String): UpdateOrDeleteExecutor {
+    @JvmStatic fun updateAllAsync(tableName: String, values: ContentValues, vararg conditions: String?): UpdateOrDeleteExecutor {
         val executor = UpdateOrDeleteExecutor()
         val runnable = Runnable {
             synchronized(LitePalSupport::class.java) {
@@ -1447,7 +1447,7 @@ object LitePal {
      * @return Return true if the specified conditions data already exists in the table.
      * False otherwise. Null conditions will result in false.
      */
-    @JvmStatic fun <T> isExist(modelClass: Class<T>, vararg conditions: String): Boolean {
+    @JvmStatic fun <T> isExist(modelClass: Class<T>, vararg conditions: String?): Boolean {
         return conditions != null && where(*conditions).count(modelClass) > 0
     }
 

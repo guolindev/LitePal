@@ -467,11 +467,11 @@ inline fun <reified T> LitePal.deleteAsync(id: Long) = deleteAsync(T::class.java
  * deleting. The way of specifying place holders is to insert one
  * or more question marks in the SQL. The first question mark is
  * replaced by the second element of the array, the next question
- * mark by the third, and so on. Passing empty string will update
+ * mark by the third, and so on. Passing empty string will delete
  * all rows.
  * @return The number of rows affected.
  */
-inline fun <reified T> LitePal.deleteAll(vararg conditions: String) = deleteAll(T::class.java, *conditions)
+inline fun <reified T> LitePal.deleteAll(vararg conditions: String?) = deleteAll(T::class.java, *conditions)
 
 /**
  * Basically same as [LitePal.deleteAll] but pending to a new thread for executing.
@@ -482,11 +482,11 @@ inline fun <reified T> LitePal.deleteAll(vararg conditions: String) = deleteAll(
  * deleting. The way of specifying place holders is to insert one
  * or more question marks in the SQL. The first question mark is
  * replaced by the second element of the array, the next question
- * mark by the third, and so on. Passing empty string will update
+ * mark by the third, and so on. Passing empty string will delete
  * all rows.
  * @return A UpdateOrDeleteExecutor instance.
  */
-inline fun <reified T> LitePal.deleteAllAsync(vararg conditions: String) = deleteAllAsync(T::class.java, *conditions)
+inline fun <reified T> LitePal.deleteAllAsync(vararg conditions: String?) = deleteAllAsync(T::class.java, *conditions)
 
 /**
  * Updates the corresponding record by id with ContentValues. Returns the
@@ -548,7 +548,7 @@ inline fun <reified T> LitePal.updateAsync(values: ContentValues, id: Long) = up
  * all rows.
  * @return The number of rows affected.
  */
-inline fun <reified T> LitePal.updateAll(values: ContentValues, vararg conditions: String) = updateAll(T::class.java, values, *conditions)
+inline fun <reified T> LitePal.updateAll(values: ContentValues, vararg conditions: String?) = updateAll(T::class.java, values, *conditions)
 
 /**
  * Basically same as [LitePal.updateAll] but pending to a new thread for executing.
@@ -566,7 +566,7 @@ inline fun <reified T> LitePal.updateAll(values: ContentValues, vararg condition
  * all rows.
  * @return A UpdateOrDeleteExecutor instance.
  */
-inline fun <reified T> LitePal.updateAllAsync(values: ContentValues, vararg conditions: String) = updateAllAsync(T::class.java, values, *conditions)
+inline fun <reified T> LitePal.updateAllAsync(values: ContentValues, vararg conditions: String?) = updateAllAsync(T::class.java, values, *conditions)
 
 /**
  * Check if the specified conditions data already exists in the table.
@@ -576,4 +576,4 @@ inline fun <reified T> LitePal.updateAllAsync(values: ContentValues, vararg cond
  * @return Return true if the specified conditions data already exists in the table.
  * False otherwise. Null conditions will result in false.
  */
-inline fun <reified T> LitePal.isExist(vararg conditions: String) = isExist(T::class.java, *conditions)
+inline fun <reified T> LitePal.isExist(vararg conditions: String?) = isExist(T::class.java, *conditions)
