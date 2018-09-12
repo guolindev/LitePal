@@ -29,6 +29,7 @@ import org.litepal.exceptions.LitePalSupportException
 import org.litepal.parser.LitePalAttr
 import org.litepal.parser.LitePalParser
 import org.litepal.tablemanager.Connector
+import org.litepal.tablemanager.callback.DatabaseListener
 import org.litepal.util.BaseUtility
 import org.litepal.util.Const
 import org.litepal.util.DBUtility
@@ -48,6 +49,8 @@ import java.io.File
 object LitePal {
 
     private val handler = Handler(Looper.getMainLooper())
+
+    private var dbListener: DatabaseListener? = null
 
     /**
      * Initialize to make LitePal ready to work. If you didn't configure LitePalApplication
@@ -1450,5 +1453,14 @@ object LitePal {
     @JvmStatic fun <T> isExist(modelClass: Class<T>, vararg conditions: String?): Boolean {
         return conditions != null && where(*conditions).count(modelClass) > 0
     }
+
+    /**
+     * Register a listener to listen database create and upgrade events.
+     */
+    @JvmStatic fun registerDatabaseListener(listener: DatabaseListener) {
+        dbListener = listener
+    }
+
+    @JvmStatic internal fun getDBListener() = dbListener
 
 }
