@@ -16,9 +16,8 @@ Experience the magic right now and have fun!
  * More for you to explore.
  
 ## Latest Downloads
- * **[litepal-2.0.0.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-2.0.0.jar)** (library contains *.class files)
- * **[litepal-2.0.0-src.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-2.0.0-src.jar)** (library contains *.class files and *.java files)
- 
+ * **[litepal-2.1.0.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-2.1.0.jar)**
+
 ## Quick Setup
 #### 1. Include library
 ##### Using Eclipse
