@@ -471,6 +471,22 @@ And you can delete any database by specified database name:
 LitePal.deleteDatabase("newdb");
 ```
 
+#### 9. Listen database create or upgrade
+If you need to listen database create or upgrade events and fill some initial data in the callbacks, you can do it like this:
+```java
+LitePal.registerDatabaseListener(new DatabaseListener() {
+    @Override
+    public void onCreate() {
+    	// fill some initial data
+    }
+
+    @Override
+    public void onUpgrade(int oldVersion, int newVersion) {
+    	// upgrade data in db
+    }
+});
+```
+
 ## ProGuard
 If you are using ProGuard you might need to add the following option:
 
@@ -502,6 +518,12 @@ Get it on:
 If you find any bug when using LitePal, please report **[here](https://github.com/LitePalFramework/LitePal/issues/new)**. Thanks for helping us making better.
 
 ## Change logs
+
+### 2.1.0
+ * Optimize generic usage for async operation APIs.
+ * Add **LitePal.registerDatabaseListener()** method for listening create or upgrade database events.
+ * Provider better CRUD API usage for using generic declaration instead of Class parameter for kotlin.
+ * Fix known bugs.
 
 ### 2.0.0
  * Offer new APIs for CRUD operations. Deprecate **DataSupport**, use **LitePal** and **LitePalSupport** instead.
