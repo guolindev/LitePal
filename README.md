@@ -29,7 +29,7 @@ Experience the magic right now and have fun!
 Edit your **build.gradle** file and add below dependency:
 ``` groovy
 dependencies {
-    compile 'org.litepal.android:core:2.0.0'
+    implementation 'org.litepal.android:core:2.1.0'
 }
 ```
 #### 2. Configure litepal.xml
@@ -237,7 +237,9 @@ But there are some upgrading conditions that LitePal can't handle and all data i
 Be careful of the above conditions which will cause losing data.
 
 #### 3. Save data
-The saving API is quite object oriented. Each model which inherits from **LitePalSupport** would have the **save()** method for free:
+The saving API is quite object oriented. Each model which inherits from **LitePalSupport** would have the **save()** method for free.
+
+Java:
 ``` java
 Album album = new Album();
 album.setName("album");
@@ -255,50 +257,136 @@ song2.setDuration(356);
 song2.setAlbum(album);
 song2.save();
 ```
+
+Kotlin:
+```kotlin
+val album = Album()
+album.name = "album"
+album.price = 10.99f
+album.cover = getCoverImageBytes()
+album.save()
+val song1 = Song()
+song1.name = "song1"
+song1.duration = 320
+song1.album = album
+song1.save()
+val song2 = Song()
+song2.name = "song2"
+song2.duration = 356
+song2.album = album
+song2.save()
+```
 This will insert album, song1 and song2 into database with associations.
 
 #### 4. Update data
-The simplest way, use **save()** method to update a record found by **find()**:
+The simplest way, use **save()** method to update a record found by **find()**.
+
+Java:
 ``` java
 Album albumToUpdate = LitePal.find(Album.class, 1);
 albumToUpdate.setPrice(20.99f); // raise the price
 albumToUpdate.save();
 ```
-Each model which inherits from **LitePalSupport** would also have **update()** and **updateAll()** method. You can update a single record with a specified id:
+
+Kotlin:
+```kotlin
+val albumToUpdate = LitePal.find<Album>(1)
+albumToUpdate.price = 20.99f // raise the price
+albumToUpdate.save()
+```
+
+Each model which inherits from **LitePalSupport** would also have **update()** and **updateAll()** method. You can update a single record with a specified id.
+
+Java:
 ``` java
 Album albumToUpdate = new Album();
 albumToUpdate.setPrice(20.99f); // raise the price
 albumToUpdate.update(id);
 ```
-Or you can update multiple records with a where condition:
+
+Kotlin:
+```kotlin
+val albumToUpdate = Album()
+albumToUpdate.price = 20.99f // raise the price
+albumToUpdate.update(id)
+```
+
+Or you can update multiple records with a where condition.
+
+Java:
 ``` java
 Album albumToUpdate = new Album();
 albumToUpdate.setPrice(20.99f); // raise the price
 albumToUpdate.updateAll("name = ?", "album");
 ```
 
+Kotlin:
+```kotlin
+val albumToUpdate = Album()
+albumToUpdate.price = 20.99f // raise the price
+albumToUpdate.updateAll("name = ?", "album")
+```
+
 #### 5. Delete data
-You can delete a single record using the static **delete()** method in **LitePal**:
+You can delete a single record using the static **delete()** method in **LitePal**.
+
+Java:
 ``` java
 LitePal.delete(Song.class, id);
 ```
-Or delete multiple records using the static **deleteAll()** method in **LitePal**:
+
+Kotlin:
+```kotlin
+LitePal.delete<Song>(id)
+```
+
+Or delete multiple records using the static **deleteAll()** method in **LitePal**.
+
+Java:
 ``` java
 LitePal.deleteAll(Song.class, "duration > ?" , "350");
 ```
 
+Kotlin:
+```kotlin
+LitePal.deleteAll<Song>("duration > ?" , "350")
+```
+
 #### 6. Query data
-Find a single record from song table with specified id:
+Find a single record from song table with specified id.
+
+Java:
 ``` java
 Song song = LitePal.find(Song.class, id);
 ```
-Find all records from song table:
+
+Kotlin:
+```kotlin
+val song = LitePal.find<Song>(id)
+```
+
+Find all records from song table.
+
+Java:
 ``` java
 List<Song> allSongs = LitePal.findAll(Song.class);
 ```
-Constructing complex query with fluent query:
+
+Kotlin:
+```kotlin
+val allSongs = LitePal.findAll<Song>()
+```
+
+Constructing complex query with fluent query.
+
+Java:
 ``` java
 List<Song> songs = LitePal.where("name like ? and duration < ?", "song%", "200").order("duration").find(Song.class);
+```
+
+Kotlin:
+``` kotlin
+val songs = LitePal.where("name like ? and duration < ?", "song%", "200").order("duration").find<Song>()
 ```
 
 #### 7. Async operations
@@ -306,19 +394,31 @@ Every database operation is on main thread by default. If your operation might s
 for example saving or querying tons of records. You may want to use async operations.
 
 LitePal support async operations on all crud methods. If you want to find all records from song table
-on a background thread, use codes like this:
+on a background thread, use codes like this.
+
+Java:
 ```java
-LitePal.findAllAsync(Song.class).listen(new FindMultiCallback() {
+LitePal.findAllAsync(Song.class).listen(new FindMultiCallback<Song>() {
     @Override
-    public <T> void onFinish(List<T> t) {
-        List<Song> allSongs = (List<Song>) t;
+    public void onFinish(List<Song> allSongs) {
+    
     }
 });
 ```
+
+Kotlin:
+```kotlin
+LitePal.findAsync<Song>().listen { allSongs ->
+
+}
+```
+
 Just use **findAllAsync()** instead of **findAll()**, and append a **listen()** method, the finding result will
 be callback to **onFinish()** method once it finished.
 
-Abd saving asynchronously is quite the same:
+Abd saving asynchronously is quite the same.
+
+Java:
 ```java
 Album album = new Album();
 album.setName("album");
@@ -331,6 +431,18 @@ album.saveAsync().listen(new SaveCallback() {
     }
 });
 ```
+
+Kotlin:
+```kotlin
+val album = Album()
+album.name = "album"
+album.price = 10.99f
+album.cover = getCoverImageBytes()
+album.saveAsync().listen { success ->
+
+}
+```
+
 Just use **saveAsync()** instead of **save()**. It will save Album into database on a background, and
 the saving result will be callback to **onFinish()** method.
 
@@ -390,6 +502,7 @@ Get it on:
 If you find any bug when using LitePal, please report **[here](https://github.com/LitePalFramework/LitePal/issues/new)**. Thanks for helping us making better.
 
 ## Change logs
+
 ### 2.0.0
  * Offer new APIs for CRUD operations. Deprecate **DataSupport**, use **LitePal** and **LitePalSupport** instead.
  * Fully support kotlin programming.
