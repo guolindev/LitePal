@@ -14,21 +14,14 @@ Experience the magic right now and have fun!
  * Awesome fluent query API.
  * Alternative choice to use SQL still, but easier and better APIs than the originals.
  * More for you to explore.
- 
-## Latest Downloads
- * **[litepal-2.1.0.jar](https://github.com/LitePalFramework/LitePal/raw/master/downloads/litepal-2.1.0.jar)**
 
 ## Quick Setup
 #### 1. Include library
-##### Using Eclipse
- * Download the latest jar in the above section. Or browse all versions **[here](https://github.com/LitePalFramework/LitePal/tree/master/downloads)** to choose one to download.
- * Put the jar into **libs** folder of your Android project.
- 
-##### Using Android Studio
+
 Edit your **build.gradle** file and add below dependency:
 ``` groovy
 dependencies {
-    implementation 'org.litepal.android:core:2.1.0'
+    implementation 'org.litepal.android:core:2.0.0'
 }
 ```
 #### 2. Configure litepal.xml
