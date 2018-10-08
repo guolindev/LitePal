@@ -1,1 +1,1 @@
-include ':litepal', 'sample'
+include 'sample', 'core', 'java', 'kotlin'

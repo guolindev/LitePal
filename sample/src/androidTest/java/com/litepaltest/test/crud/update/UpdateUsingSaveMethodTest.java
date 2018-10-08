@@ -11,7 +11,7 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.litepal.LitePal;
-import org.litepal.crud.DataSupport;
+import org.litepal.extension.LitePalKt;
 import org.litepal.util.DBUtility;
 
 import com.litepaltest.model.Cellphone;
@@ -125,7 +125,7 @@ public class UpdateUsingSaveMethodTest extends LitePalTestCase {
         classroom.getNews().add("s");
         classroom.getNumbers().clear();
         classroom.save();
-        Classroom c = DataSupport.find(Classroom.class, classroom.get_id());
+        Classroom c = LitePal.find(Classroom.class, classroom.get_id());
         assertEquals("Classroom update", c.getName());
         assertEquals(4, classroom.getNews().size());
         assertEquals(0, classroom.getNumbers().size());

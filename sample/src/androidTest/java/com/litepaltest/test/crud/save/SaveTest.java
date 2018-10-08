@@ -15,7 +15,6 @@ import com.litepaltest.test.LitePalTestCase;
 
 import org.junit.Test;
 import org.litepal.LitePal;
-import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -177,7 +176,7 @@ public class SaveTest extends LitePalTestCase {
         cell2.setInStock('Y');
         cell2.setSerial(serial);
         assertFalse(cell.saveIfNotExist("serial = ?", serial));
-        List<Cellphone> cellphoneList = DataSupport.where("serial = ?", serial).find(Cellphone.class);
+        List<Cellphone> cellphoneList = LitePal.where("serial = ?", serial).find(Cellphone.class);
         assertEquals(1, cellphoneList.size());
     }
 
