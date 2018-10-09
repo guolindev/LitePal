@@ -28,7 +28,7 @@ import org.litepal.tablemanager.model.GenericModel;
 import org.litepal.util.BaseUtility;
 import org.litepal.util.Const;
 import org.litepal.util.DBUtility;
-import org.litepal.util.LogUtil;
+import org.litepal.util.LitePalLog;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -108,7 +108,7 @@ public abstract class AssociationCreator extends Generator {
             }
         }
 		createTableSQL.append(")");
-		LogUtil.d(TAG, "create table sql is >> " + createTableSQL);
+		LitePalLog.d(TAG, "create table sql is >> " + createTableSQL);
 		return createTableSQL.toString();
 	}
 
@@ -157,7 +157,7 @@ public abstract class AssociationCreator extends Generator {
                 addColumnSQL.append(" default ").append(defaultValue);
             }
         }
-		LogUtil.d(TAG, "add column sql is >> " + addColumnSQL);
+		LitePalLog.d(TAG, "add column sql is >> " + addColumnSQL);
 		return addColumnSQL.toString();
 	}
 
@@ -192,7 +192,7 @@ public abstract class AssociationCreator extends Generator {
 	protected void giveTableSchemaACopy(String tableName, int tableType, SQLiteDatabase db) {
 		StringBuilder sql = new StringBuilder("select * from ");
 		sql.append(Const.TableSchema.TABLE_NAME);
-		LogUtil.d(TAG, "giveTableSchemaACopy SQL is >> " + sql);
+		LitePalLog.d(TAG, "giveTableSchemaACopy SQL is >> " + sql);
 		Cursor cursor = null;
 		try {
 			cursor = db.rawQuery(sql.toString(), null);
@@ -410,7 +410,7 @@ public abstract class AssociationCreator extends Generator {
                     sqls.add(generateAddColumnSQL(tableHoldsForeignKey, columnModel));
 					execute(sqls, db);
 				} else {
-					LogUtil.d(TAG, "column " + foreignKeyColumn
+					LitePalLog.d(TAG, "column " + foreignKeyColumn
 							+ " is already exist, no need to add one");
 				}
 			} else {

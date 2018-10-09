@@ -24,7 +24,7 @@ import org.litepal.tablemanager.model.ColumnModel;
 import org.litepal.tablemanager.model.TableModel;
 import org.litepal.util.Const;
 import org.litepal.util.DBUtility;
-import org.litepal.util.LogUtil;
+import org.litepal.util.LitePalLog;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -65,7 +65,7 @@ public class Upgrader extends AssociationUpdater {
 		for (TableModel tableModel : getAllTableModels()) {
 			mTableModel = tableModel;
             mTableModelDB = getTableModelFromDB(tableModel.getTableName());
-            LogUtil.d(TAG, "createOrUpgradeTable: model is " + mTableModel.getTableName());
+            LitePalLog.d(TAG, "createOrUpgradeTable: model is " + mTableModel.getTableName());
             upgradeTable();
 		}
 	}
@@ -159,7 +159,7 @@ public class Upgrader extends AssociationUpdater {
                 removeColumns.add(dbColumnName);
             }
         }
-        LogUtil.d(TAG, "remove columns from " + tableName + " >> " + removeColumns);
+        LitePalLog.d(TAG, "remove columns from " + tableName + " >> " + removeColumns);
 		return removeColumns;
 	}
 
@@ -186,7 +186,7 @@ public class Upgrader extends AssociationUpdater {
                     }
                     if (!hasConstraintChanged) {
                         // for reducing loops, check column constraints change here.
-                        LogUtil.d(TAG, "default value db is:" + columnModelDB.getDefaultValue() + ", default value is:" + columnModel.getDefaultValue());
+                        LitePalLog.d(TAG, "default value db is:" + columnModelDB.getDefaultValue() + ", default value is:" + columnModel.getDefaultValue());
                         if (columnModelDB.isNullable() != columnModel.isNullable() ||
                             !columnModelDB.getDefaultValue().equalsIgnoreCase(columnModel.getDefaultValue()) ||
                             (columnModelDB.isUnique() && !columnModel.isUnique())) { // unique constraint can not be added
@@ -262,7 +262,7 @@ public class Upgrader extends AssociationUpdater {
      *            The column names that need to remove.
      */
     private void removeColumns(List<String> removeColumnNames) {
-        LogUtil.d(TAG, "do removeColumns " + removeColumnNames);
+        LitePalLog.d(TAG, "do removeColumns " + removeColumnNames);
         removeColumns(removeColumnNames, mTableModel.getTableName());
         for (String columnName : removeColumnNames) {
             mTableModelDB.removeColumnModelByName(columnName);
@@ -277,7 +277,7 @@ public class Upgrader extends AssociationUpdater {
 	 *            List with ColumnModel to add new column.
 	 */
 	private void addColumns(List<ColumnModel> columnModelList) {
-        LogUtil.d(TAG, "do addColumn");
+        LitePalLog.d(TAG, "do addColumn");
 		execute(getAddColumnSQLs(columnModelList), mDb);
         for (ColumnModel columnModel : columnModelList) {
             mTableModelDB.addColumnModel(columnModel);
@@ -292,7 +292,7 @@ public class Upgrader extends AssociationUpdater {
 	 *            List with ColumnModel to change column type.
 	 */
 	private void changeColumnsType(List<ColumnModel> columnModelList) {
-        LogUtil.d(TAG, "do changeColumnsType");
+        LitePalLog.d(TAG, "do changeColumnsType");
         List<String> columnNames = new ArrayList<String>();
         if (columnModelList != null && !columnModelList.isEmpty()) {
             for (ColumnModel columnModel : columnModelList) {
@@ -309,7 +309,7 @@ public class Upgrader extends AssociationUpdater {
      */
     private void changeColumnsConstraints() {
         if (hasConstraintChanged) {
-            LogUtil.d(TAG, "do changeColumnsConstraints");
+            LitePalLog.d(TAG, "do changeColumnsConstraints");
             execute(getChangeColumnsConstraintsSQL(), mDb);
         }
     }
@@ -331,11 +331,11 @@ public class Upgrader extends AssociationUpdater {
         sqls.addAll(addForeignKeySQLs);
         sqls.add(dataMigrationSQL);
         sqls.add(dropTempTableSQL);
-        LogUtil.d(TAG, "generateChangeConstraintSQL >> ");
+        LitePalLog.d(TAG, "generateChangeConstraintSQL >> ");
         for (String sql : sqls) {
-            LogUtil.d(TAG, sql);
+            LitePalLog.d(TAG, sql);
         }
-        LogUtil.d(TAG, "<< generateChangeConstraintSQL");
+        LitePalLog.d(TAG, "<< generateChangeConstraintSQL");
         return sqls;
     }
 

@@ -18,7 +18,7 @@ package org.litepal.util;
 
 import android.util.Log;
 
-public final class LogUtil {
+public final class LitePalLog {
 	
 	public static final int DEBUG = 2;
 	

@@ -28,7 +28,7 @@ import org.litepal.tablemanager.model.TableModel;
 import org.litepal.util.Const;
 import org.litepal.util.DBUtility;
 import org.litepal.util.BaseUtility;
-import org.litepal.util.LogUtil;
+import org.litepal.util.LitePalLog;
 
 import android.database.sqlite.SQLiteDatabase;
 
@@ -92,7 +92,7 @@ public abstract class AssociationUpdater extends Creator {
 			if (isForeignKeyColumnFormat(columnModel.getColumnName())) {
                 if (!tableModel.containsColumn(columnName)) {
                     // Now this is a foreign key column.
-                    LogUtil.d(TAG, "getForeignKeyColumnNames >> foreign key column is " + columnName);
+                    LitePalLog.d(TAG, "getForeignKeyColumnNames >> foreign key column is " + columnName);
                     foreignKeyColumns.add(columnName);
                 }
 			}
@@ -184,7 +184,7 @@ public abstract class AssociationUpdater extends Creator {
 				deleteData.append(" lower(").append(Const.TableSchema.COLUMN_NAME).append(") ");
 				deleteData.append("=").append(" lower('").append(tableName).append("')");
 			}
-			LogUtil.d(TAG, "clear table schema value sql is " + deleteData);
+			LitePalLog.d(TAG, "clear table schema value sql is " + deleteData);
             List<String> sqls = new ArrayList<String>();
             sqls.add(deleteData.toString());
 			execute(sqls, mDb);
@@ -252,7 +252,7 @@ public abstract class AssociationUpdater extends Creator {
 				removeRelations.add(foreignKeyColumn);
 			}
 		}
-		LogUtil.d(TAG, "findForeignKeyToRemove >> " + tableModel.getTableName() + " "
+		LitePalLog.d(TAG, "findForeignKeyToRemove >> " + tableModel.getTableName() + " "
 				+ removeRelations);
 		return removeRelations;
 	}
@@ -286,7 +286,7 @@ public abstract class AssociationUpdater extends Creator {
 				}
 			}
 		}
-		LogUtil.d(TAG, "findIntermediateTablesToDrop >> " + intermediateTables);
+		LitePalLog.d(TAG, "findIntermediateTablesToDrop >> " + intermediateTables);
 		return intermediateTables;
 	}
 
@@ -422,13 +422,13 @@ public abstract class AssociationUpdater extends Creator {
 	private List<String> getRemoveColumnSQLs(Collection<String> removeColumnNames, String tableName) {
         TableModel tableModelFromDB = getTableModelFromDB(tableName);
 		String alterToTempTableSQL = generateAlterToTempTableSQL(tableName);
-		LogUtil.d(TAG, "generateRemoveColumnSQL >> " + alterToTempTableSQL);
+		LitePalLog.d(TAG, "generateRemoveColumnSQL >> " + alterToTempTableSQL);
 		String createNewTableSQL = generateCreateNewTableSQL(removeColumnNames, tableModelFromDB);
-		LogUtil.d(TAG, "generateRemoveColumnSQL >> " + createNewTableSQL);
+		LitePalLog.d(TAG, "generateRemoveColumnSQL >> " + createNewTableSQL);
 		String dataMigrationSQL = generateDataMigrationSQL(tableModelFromDB);
-		LogUtil.d(TAG, "generateRemoveColumnSQL >> " + dataMigrationSQL);
+		LitePalLog.d(TAG, "generateRemoveColumnSQL >> " + dataMigrationSQL);
 		String dropTempTableSQL = generateDropTempTableSQL(tableName);
-		LogUtil.d(TAG, "generateRemoveColumnSQL >> " + dropTempTableSQL);
+		LitePalLog.d(TAG, "generateRemoveColumnSQL >> " + dropTempTableSQL);
         List<String> sqls = new ArrayList<String>();
         sqls.add(alterToTempTableSQL);
         sqls.add(createNewTableSQL);

@@ -23,7 +23,7 @@ import java.util.List;
 import org.litepal.tablemanager.model.TableModel;
 import org.litepal.util.BaseUtility;
 import org.litepal.util.Const;
-import org.litepal.util.LogUtil;
+import org.litepal.util.LitePalLog;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -86,7 +86,7 @@ public class Dropper extends AssociationUpdater {
 							.getColumnIndexOrThrow(Const.TableSchema.COLUMN_TYPE));
 					if (shouldDropThisTable(tableName, tableType)) {
 						// need to drop tableNameDB
-						LogUtil.d(TAG, "need to drop " + tableName);
+						LitePalLog.d(TAG, "need to drop " + tableName);
 						dropTableNames.add(tableName);
 					}
 				} while (cursor.moveToNext());
