@@ -18,12 +18,22 @@ Experience the magic right now and have fun!
 ## Quick Setup
 #### 1. Include library
 
-Edit your **build.gradle** file and add below dependency:
+Edit your **build.gradle** file and add below dependency.
+
+If you program with Java:
 ``` groovy
 dependencies {
-    implementation 'org.litepal.android:core:2.0.0'
+    implementation 'org.litepal.android:java:3.0.0'
 }
 ```
+
+If you program with Kotlin:
+``` groovy
+dependencies {
+    implementation 'org.litepal.android:kotlin:3.0.0'
+}
+```
+
 #### 2. Configure litepal.xml
 Create a file in the **assets** folder of your project and name it as **litepal.xml**. Then copy the following codes into it.
 ``` xml
@@ -511,7 +521,7 @@ If you find any bug when using LitePal, please report **[here](https://github.co
 
 ## Change logs
 
-### 2.1.0
+### 3.0.0
  * Optimize generic usage for async operation APIs.
  * Add **LitePal.registerDatabaseListener()** method for listening create or upgrade database events.
  * Provider better CRUD API usage for using generic declaration instead of Class parameter for kotlin.
