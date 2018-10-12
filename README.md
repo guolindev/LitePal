@@ -129,7 +129,7 @@ public class MyOwnApplication extends Application {
 ```
 Make sure to call this method as early as you can. In the **onCreate()** method of Application will be fine. And always remember to use the application context as parameter. Do not use any instance of activity or service as parameter, or memory leaks might happen.
 ## Get Started
-After setup, you can experience the powerful function now.
+After setup, you can experience the powerful functions now.
 
 #### 1. Create tables
 Define the models first. For example you have two models, **Album** and **Song**. The models can be defined as below:
