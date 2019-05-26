@@ -493,17 +493,9 @@ LitePal.registerDatabaseListener(new DatabaseListener() {
 If you are using ProGuard you might need to add the following option:
 
 ```proguard
--keep class org.litepal.** {
-    *;
-}
-
--keep class * extends org.litepal.crud.DataSupport {
-    *;
-}
-
--keep class * extends org.litepal.crud.LitePalSupport {
-    *;
-}
+-keep class org.litepal.** {*;}
+-keep class * extends org.litepal.crud.DataSupport {*;}
+-keep class * extends org.litepal.crud.LitePalSupport {*;}
 ```
 
 ## Developed By
