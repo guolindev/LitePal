@@ -85,6 +85,8 @@ abstract class DataHandler extends LitePalBase {
 	 * 
 	 * @param modelClass
 	 *            The model to compile the query against.
+	 * @param distinct
+	 *            true if you want each row to be unique, false otherwise.
 	 * @param columns
 	 *            A list of which columns to return. Passing null will return
 	 *            all columns, which is discouraged to prevent reading data from
@@ -120,7 +122,7 @@ abstract class DataHandler extends LitePalBase {
 	 * @return A model list. The list may be empty.
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T> List<T> query(Class<T> modelClass, String[] columns, String selection,
+	protected <T> List<T> query(Class<T> modelClass, boolean distinct, String[] columns, String selection,
 			String[] selectionArgs, String groupBy, String having, String orderBy, String limit,
 			List<AssociationsInfo> foreignKeyAssociations) {
 		List<T> dataList = new ArrayList<T>();
@@ -130,7 +132,7 @@ abstract class DataHandler extends LitePalBase {
             List<Field> supportedGenericFields = getSupportedGenericFields(modelClass.getName());
             String[] customizedColumns = DBUtility.convertSelectClauseToValidNames(getCustomizedColumns(columns, supportedGenericFields, foreignKeyAssociations));
             String tableName = getTableName(modelClass);
-			cursor = mDatabase.query(tableName, customizedColumns, selection, selectionArgs,
+			cursor = mDatabase.query(distinct, tableName, customizedColumns, selection, selectionArgs,
 					groupBy, having, orderBy, limit);
 			if (cursor.moveToFirst()) {
                 SparseArray<QueryInfoCache> queryInfoCacheSparseArray = new SparseArray<QueryInfoCache>();

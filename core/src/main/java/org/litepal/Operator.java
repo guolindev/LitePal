@@ -840,21 +840,27 @@ public class Operator {
      *
      * @param modelClass
      *            Which table to query and the object type to return.
+     * @param distinct
+     *            true if you want each row to be unique, false otherwise.
      * @param id
      *            Which record to query.
      * @param isEager
      *            True to load the associated models, false not.
      * @return An object with found data from database, or null.
      */
-    public static <T> T find(Class<T> modelClass, long id, boolean isEager) {
+    public static <T> T find(Class<T> modelClass, boolean distinct, long id, boolean isEager) {
         synchronized (LitePalSupport.class) {
             QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
-            return queryHandler.onFind(modelClass, id, isEager);
+            return queryHandler.onFind(modelClass, distinct, id, isEager);
         }
     }
 
     /**
-     * Basically same as {@link #find(Class, long, boolean)} but pending to a new thread for executing.
+     * It is mostly same as {@link Operator#find(Class, long)} but an isEager
+     * parameter. If set true the associated models will be loaded as well.
+     * <br>
+     * Note that isEager will only work for one deep level relation, considering the query efficiency.
+     * You have to implement on your own if you need to load multiple deepness of relation at once.
      *
      * @param modelClass
      *            Which table to query and the object type to return.
@@ -862,15 +868,32 @@ public class Operator {
      *            Which record to query.
      * @param isEager
      *            True to load the associated models, false not.
+     * @return An object with found data from database, or null.
+     */
+    public static <T> T find(Class<T> modelClass, long id, boolean isEager) {
+        return find(modelClass, false, id, isEager);
+    }
+
+    /**
+     * Basically same as {@link #find(Class, long, boolean)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query and the object type to return.
+     * @param distinct
+     *            true if you want each row to be unique, false otherwise.
+     * @param id
+     *            Which record to query.
+     * @param isEager
+     *            True to load the associated models, false not.
      * @return A FindExecutor instance.
      */
-    public static <T> FindExecutor<T> findAsync(final Class<T> modelClass, final long id, final boolean isEager) {
+    public static <T> FindExecutor<T> findAsync(final Class<T> modelClass, final boolean distinct, final long id, final boolean isEager) {
         final FindExecutor<T> executor = new FindExecutor<>();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 synchronized (LitePalSupport.class) {
-                    final T t = find(modelClass, id, isEager);
+                    final T t = find(modelClass, distinct, id, isEager);
                     if (executor.getListener() != null) {
                         Operator.getHandler().post(new Runnable() {
                             @Override
@@ -884,6 +907,21 @@ public class Operator {
         };
         executor.submit(runnable);
         return executor;
+    }
+
+    /**
+     * Basically same as {@link #find(Class, long, boolean)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query and the object type to return.
+     * @param id
+     *            Which record to query.
+     * @param isEager
+     *            True to load the associated models, false not.
+     * @return A FindExecutor instance.
+     */
+    public static <T> FindExecutor<T> findAsync(Class<T> modelClass, long id, boolean isEager) {
+        return findAsync(modelClass, false, id, isEager);
     }
 
     /**

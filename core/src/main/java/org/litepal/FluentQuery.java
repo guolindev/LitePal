@@ -202,7 +202,7 @@ public class FluentQuery {
      *            Which table to query and the object type to return as a list.
      * @return A FindMultiExecutor instance.
      */
-    public <T> FindMultiExecutor<T> findAsync(final Class<T> modelClass) {
+    public <T> FindMultiExecutor<T> findAsync(Class<T> modelClass) {
         return findAsync(modelClass, false);
     }
 
@@ -215,11 +215,13 @@ public class FluentQuery {
 	 *
 	 * @param modelClass
 	 *            Which table to query and the object type to return as a list.
+	 * @param distinct
+	 *            true if you want each row to be unique, false otherwise.
 	 * @param isEager
 	 *            True to load the associated models, false not.
 	 * @return An object list with founded data from database, or an empty list.
 	 */
-	public <T> List<T> find(Class<T> modelClass, boolean isEager) {
+	public <T> List<T> find(Class<T> modelClass, boolean distinct, boolean isEager) {
         synchronized (LitePalSupport.class) {
             QueryHandler queryHandler = new QueryHandler(Connector.getDatabase());
             String limit;
@@ -231,8 +233,58 @@ public class FluentQuery {
                 }
                 limit = mOffset + "," + mLimit;
             }
-            return queryHandler.onFind(modelClass, mColumns, mConditions, mOrderBy, limit, isEager);
+            return queryHandler.onFind(modelClass, distinct, mColumns, mConditions, mOrderBy, limit, isEager);
         }
+	}
+
+	/**
+	 * It is mostly same as {@link FluentQuery#find(Class)} but an isEager
+	 * parameter. If set true the associated models will be loaded as well.
+	 * <br>
+	 * Note that isEager will only work for one deep level relation, considering the query efficiency.
+	 * You have to implement on your own if you need to load multiple deepness of relation at once.
+	 *
+	 * @param modelClass
+	 *            Which table to query and the object type to return as a list.
+	 * @param isEager
+	 *            True to load the associated models, false not.
+	 * @return An object list with founded data from database, or an empty list.
+	 */
+	public <T> List<T> find(Class<T> modelClass, boolean isEager) {
+		return find(modelClass, false, isEager);
+	}
+
+	/**
+	 * Basically same as {@link #find(Class, boolean)} but pending to a new thread for executing.
+	 *
+	 * @param modelClass
+	 *            Which table to query and the object type to return as a list.
+	 * @param distinct
+	 *            true if you want each row to be unique, false otherwise.
+	 * @param isEager
+	 *            True to load the associated models, false not.
+	 * @return A FindMultiExecutor instance.
+	 */
+	public <T> FindMultiExecutor<T> findAsync(final Class<T> modelClass, final boolean distinct, final boolean isEager) {
+		final FindMultiExecutor<T> executor = new FindMultiExecutor<>();
+		Runnable runnable = new Runnable() {
+			@Override
+			public void run() {
+				synchronized (LitePalSupport.class) {
+					final List<T> t = find(modelClass, distinct, isEager);
+					if (executor.getListener() != null) {
+						Operator.getHandler().post(new Runnable() {
+							@Override
+							public void run() {
+								executor.getListener().onFinish(t);
+							}
+						});
+					}
+				}
+			}
+		};
+		executor.submit(runnable);
+		return executor;
 	}
 
     /**
@@ -244,26 +296,8 @@ public class FluentQuery {
      *            True to load the associated models, false not.
      * @return A FindMultiExecutor instance.
      */
-    public <T> FindMultiExecutor<T> findAsync(final Class<T> modelClass, final boolean isEager) {
-        final FindMultiExecutor<T> executor = new FindMultiExecutor<>();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                synchronized (LitePalSupport.class) {
-                    final List<T> t = find(modelClass, isEager);
-                    if (executor.getListener() != null) {
-                        Operator.getHandler().post(new Runnable() {
-                            @Override
-                            public void run() {
-                                executor.getListener().onFinish(t);
-                            }
-                        });
-                    }
-                }
-            }
-        };
-        executor.submit(runnable);
-        return executor;
+    public <T> FindMultiExecutor<T> findAsync(Class<T> modelClass, boolean isEager) {
+    	return findAsync(modelClass, false, isEager);
     }
 
     /**

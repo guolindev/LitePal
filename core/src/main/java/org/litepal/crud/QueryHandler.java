@@ -46,6 +46,29 @@ public class QueryHandler extends DataHandler {
 	/**
 	 * The open interface for other classes in CRUD package to query a record
 	 * based on id. If the result set is empty, gives null back.
+	 *
+	 * @param modelClass
+	 *            Which table to query and the object type to return.
+	 * @param distinct
+	 *            true if you want each row to be unique, false otherwise.
+	 * @param id
+	 *            Which record to query.
+	 * @param isEager
+	 *            True to load the associated models, false not.
+	 * @return An object with found data from database, or null.
+	 */
+	public <T> T onFind(Class<T> modelClass, boolean distinct, long id, boolean isEager) {
+		List<T> dataList = query(modelClass, distinct, null, "id = ?", new String[] { String.valueOf(id) },
+				null, null, null, null, getForeignKeyAssociations(modelClass.getName(), isEager));
+		if (dataList.size() > 0) {
+			return dataList.get(0);
+		}
+		return null;
+	}
+
+	/**
+	 * The open interface for other classes in CRUD package to query a record
+	 * based on id. If the result set is empty, gives null back.
 	 * 
 	 * @param modelClass
 	 *            Which table to query and the object type to return.
@@ -56,12 +79,7 @@ public class QueryHandler extends DataHandler {
 	 * @return An object with found data from database, or null.
 	 */
     public <T> T onFind(Class<T> modelClass, long id, boolean isEager) {
-		List<T> dataList = query(modelClass, null, "id = ?", new String[] { String.valueOf(id) },
-				null, null, null, null, getForeignKeyAssociations(modelClass.getName(), isEager));
-		if (dataList.size() > 0) {
-			return dataList.get(0);
-		}
-		return null;
+		return onFind(modelClass, false, id, isEager);
 	}
 
 	/**
@@ -75,7 +93,7 @@ public class QueryHandler extends DataHandler {
 	 * @return An object with data of first row, or null.
 	 */
     public <T> T onFindFirst(Class<T> modelClass, boolean isEager) {
-		List<T> dataList = query(modelClass, null, null, null, null, null, "id", "1",
+		List<T> dataList = query(modelClass, false, null, null, null, null, null, "id", "1",
 				getForeignKeyAssociations(modelClass.getName(), isEager));
 		if (dataList.size() > 0) {
 			return dataList.get(0);
@@ -94,12 +112,38 @@ public class QueryHandler extends DataHandler {
 	 * @return An object with data of last row, or null.
 	 */
     public <T> T onFindLast(Class<T> modelClass, boolean isEager) {
-		List<T> dataList = query(modelClass, null, null, null, null, null, "id desc", "1",
+		List<T> dataList = query(modelClass, false, null, null, null, null, null, "id desc", "1",
 				getForeignKeyAssociations(modelClass.getName(), isEager));
 		if (dataList.size() > 0) {
 			return dataList.get(0);
 		}
 		return null;
+	}
+
+	/**
+	 * The open interface for other classes in CRUD package to query multiple
+	 * records by an id array. Pass no ids means query all rows.
+	 *
+	 * @param modelClass
+	 *            Which table to query and the object type to return as a list.
+	 * @param distinct
+	 *            true if you want each row to be unique, false otherwise.
+	 * @param isEager
+	 *            True to load the associated models, false not.
+	 * @param ids
+	 *            Which records to query. Or do not pass it to find all records.
+	 * @return An object list with found data from database, or an empty list.
+	 */
+	public <T> List<T> onFindAll(Class<T> modelClass, boolean distinct, boolean isEager, long... ids) {
+		List<T> dataList;
+		if (isAffectAllLines(ids)) {
+			dataList = query(modelClass, distinct, null, null, null, null, null, "id", null,
+					getForeignKeyAssociations(modelClass.getName(), isEager));
+		} else {
+			dataList = query(modelClass, distinct, null, getWhereOfIdsWithOr(ids), null, null, null, "id",
+					null, getForeignKeyAssociations(modelClass.getName(), isEager));
+		}
+		return dataList;
 	}
 
 	/**
@@ -115,15 +159,44 @@ public class QueryHandler extends DataHandler {
 	 * @return An object list with found data from database, or an empty list.
 	 */
     public <T> List<T> onFindAll(Class<T> modelClass, boolean isEager, long... ids) {
-		List<T> dataList;
-		if (isAffectAllLines(ids)) {
-			dataList = query(modelClass, null, null, null, null, null, "id", null,
-					getForeignKeyAssociations(modelClass.getName(), isEager));
-		} else {
-			dataList = query(modelClass, null, getWhereOfIdsWithOr(ids), null, null, null, "id",
-					null, getForeignKeyAssociations(modelClass.getName(), isEager));
+    	return onFindAll(modelClass, false, isEager, ids);
+	}
+
+	/**
+	 * The open interface for other classes in CRUD package to query multiple
+	 * records by parameters.
+	 *
+	 * @param modelClass
+	 *            Which table to query and the object type to return as a list.
+	 * @param distinct
+	 *            true if you want each row to be unique, false otherwise.
+	 * @param columns
+	 *            A String array of which columns to return. Passing null will
+	 *            return all columns.
+	 * @param conditions
+	 *            A filter declaring which rows to return, formatted as an SQL
+	 *            WHERE clause. Passing null will return all rows.
+	 * @param orderBy
+	 *            How to order the rows, formatted as an SQL ORDER BY clause.
+	 *            Passing null will use the default sort order, which may be
+	 *            unordered.
+	 * @param limit
+	 *            Limits the number of rows returned by the query, formatted as
+	 *            LIMIT clause.
+	 * @param isEager
+	 *            True to load the associated models, false not.
+	 * @return An object list with found data from database, or an empty list.
+	 */
+	public <T> List<T> onFind(Class<T> modelClass, boolean distinct, String[] columns, String[] conditions, String orderBy,
+							  String limit, boolean isEager) {
+		BaseUtility.checkConditionsCorrect(conditions);
+		if (conditions != null && conditions.length > 0) {
+			conditions[0] = DBUtility.convertWhereClauseToColumnName(conditions[0]);
 		}
-		return dataList;
+		orderBy = DBUtility.convertOrderByClauseToValidName(orderBy);
+		return query(modelClass, distinct, columns, getWhereClause(conditions),
+				getWhereArgs(conditions), null, null, orderBy, limit,
+				getForeignKeyAssociations(modelClass.getName(), isEager));
 	}
 
 	/**
@@ -151,14 +224,7 @@ public class QueryHandler extends DataHandler {
 	 */
 	public <T> List<T> onFind(Class<T> modelClass, String[] columns, String[] conditions, String orderBy,
 			String limit, boolean isEager) {
-		BaseUtility.checkConditionsCorrect(conditions);
-        if (conditions != null && conditions.length > 0) {
-            conditions[0] = DBUtility.convertWhereClauseToColumnName(conditions[0]);
-        }
-        orderBy = DBUtility.convertOrderByClauseToValidName(orderBy);
-		return query(modelClass, columns, getWhereClause(conditions),
-                getWhereArgs(conditions), null, null, orderBy, limit,
-                getForeignKeyAssociations(modelClass.getName(), isEager));
+		return onFind(modelClass, false, columns, conditions, orderBy, limit, isEager);
 	}
 
 	/**
