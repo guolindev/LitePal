@@ -18,8 +18,11 @@ package org.litepal;
 
 import org.litepal.exceptions.GlobalException;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 
 /**
  * Base class of LitePal to make things easier when developers need to use
@@ -44,7 +47,10 @@ public class LitePalApplication extends Application {
 	/**
 	 * Global application context.
 	 */
+	@SuppressLint("StaticFieldLeak")
 	public static Context sContext;
+
+	public static Handler sHandler = new Handler(Looper.getMainLooper());
 
 	/**
 	 * Construct of LitePalApplication. Initialize application context.
