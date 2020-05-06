@@ -648,28 +648,35 @@ abstract class DataHandler extends LitePalBase {
 	 */
 	protected Constructor<?> findBestSuitConstructor(Class<?> modelClass) {
 		Constructor<?>[] constructors = modelClass.getDeclaredConstructors();
-		SparseArray<Constructor<?>> map = new SparseArray<Constructor<?>>();
-		int minKey = Integer.MAX_VALUE;
+		if (constructors.length == 0) throw new LitePalSupportException( modelClass.getName() + " has no constructor. LitePal could not handle it");
+		Constructor<?> bestSuitConstructor = null;
+		int minConstructorParamLength = Integer.MAX_VALUE;
 		for (Constructor<?> constructor : constructors) {
-			int key = constructor.getParameterTypes().length;
 			Class<?>[] types = constructor.getParameterTypes();
+			boolean canUseThisConstructor = true; // under some conditions, constructor can not use for create instance
 			for (Class<?> parameterType : types) {
-				if (parameterType == modelClass) {
-					key = key + 10000; // plus the key for not using this constructor
-				} else if (parameterType.getName().startsWith("com.android") && parameterType.getName().endsWith("InstantReloadException")) {
-                    key = key + 10000; // plus the key for not using this constructor
-                }
+				if (parameterType == modelClass
+					|| parameterType.getName().startsWith("com.android") && parameterType.getName().endsWith("InstantReloadException")) {
+					// we can not use this constructor
+					canUseThisConstructor = false;
+					break;
+				}
 			}
-			if (map.get(key) == null) {
-				map.put(key, constructor);
-			}
-			if (key < minKey) {
-				minKey = key;
+			if (canUseThisConstructor) { // we can use this constructor
+				if (types.length < minConstructorParamLength) { // find the constructor with least parameter
+					bestSuitConstructor = constructor;
+					minConstructorParamLength = types.length;
+				}
 			}
 		}
-		Constructor<?> bestSuitConstructor = map.get(minKey);
 		if (bestSuitConstructor != null) {
 			bestSuitConstructor.setAccessible(true);
+		} else {
+			StringBuilder builder = new StringBuilder(modelClass.getName()).append(" has no suited constructor to new instance. Constructors defined in class:");
+			for (Constructor<?> constructor : constructors) {
+				builder.append("\n").append(constructor.toString());
+			}
+			throw new LitePalSupportException(builder.toString());
 		}
 		return bestSuitConstructor;
 	}

@@ -19,7 +19,7 @@
 		For example:    
     	<version value="1" />
     -->
-    <version value="2" />
+    <version value="1" />
 
     <!--
     	Define your models in the list with mapping tag, LitePal will
@@ -35,7 +35,7 @@
         <mapping class="org.litepal.litepalsample.model.Album" />
         <mapping class="org.litepal.litepalsample.model.Song" />
         <mapping class="org.litepal.litepalsample.model.Singer" />
-        <!--  <mapping class="com.litepaltest.model.Classroom" />
+        <!-- --> <mapping class="com.litepaltest.model.Classroom" />
               <mapping class="com.litepaltest.model.Teacher" />
               <mapping class="com.litepaltest.model.IdCard" />
               <mapping class="com.litepaltest.model.Student" />
@@ -45,7 +45,7 @@
               <mapping class="com.litepaltest.model.Product" />
               <mapping class="com.litepaltest.model.Headset" />
               <mapping class="com.litepaltest.model.WeChatMessage" />
-              <mapping class="com.litepaltest.model.WeiboMessage" />-->
+              <mapping class="com.litepaltest.model.WeiboMessage" />
     </list>
 
     <!--
