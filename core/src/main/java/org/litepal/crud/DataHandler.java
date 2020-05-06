@@ -1374,11 +1374,7 @@ abstract class DataHandler extends LitePalBase {
             value = ((String) value).charAt(0);
         } else if (field.getType() == Date.class) {
             long date = (Long) value;
-            if (date <= 0) {
-                value = null;
-            } else {
-                value = new Date(date);
-            }
+            value = new Date(date);
         }
         if (isCollection(field.getType())) {
             Collection<Object> collection = (Collection<Object>) DynamicExecutor.getField(modelInstance, field.getName(), modelInstance.getClass());

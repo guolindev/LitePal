@@ -149,8 +149,6 @@ class QueryEagerKotlinTest {
             }
             fail()
         }
-        val s3 = LitePal.find<Student>(student3!!.id.toLong())
-        assertNull(s3!!.birthday)
     }
 
     fun resetData() {
