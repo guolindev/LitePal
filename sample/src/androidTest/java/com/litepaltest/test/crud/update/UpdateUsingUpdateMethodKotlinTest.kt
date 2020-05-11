@@ -205,7 +205,8 @@ class UpdateUsingUpdateMethodKotlinTest : LitePalTestCase() {
         val affectedStudent = s.update(student!!.id.toLong())
         assertEquals(1, affectedStudent)
         val newStudent = LitePal.find<Student>(student!!.id.toLong())
-        assertEquals(null, newStudent!!.name)
+        assertNull(newStudent!!.birthday)
+        assertNull(newStudent.name)
         assertEquals(0, newStudent.age)
         val t = Teacher()
         t.age = 45

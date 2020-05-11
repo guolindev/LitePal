@@ -155,6 +155,8 @@ public class QueryEagerTest {
 			}
 			fail();
 		}
+		Student s3 = LitePal.find(Student.class, student3.getId());
+		assertNull(s3.getBirthday());
 	}
 
 	public void resetData() {

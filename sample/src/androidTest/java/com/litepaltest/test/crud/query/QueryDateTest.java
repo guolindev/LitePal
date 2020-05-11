@@ -10,7 +10,9 @@ import org.litepal.LitePal;
 
 import java.util.Calendar;
 
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
 
 @SmallTest
 public class QueryDateTest extends LitePalTestCase {
@@ -29,7 +31,7 @@ public class QueryDateTest extends LitePalTestCase {
 		assertEquals(calendar.getTimeInMillis(), studentFromDB.getBirthday().getTime());
 	}
 
-	@Test
+@Test
 	public void testQueryDateBefore1970() {
 		Calendar calendar = Calendar.getInstance();
 		calendar.clear();
@@ -41,6 +43,15 @@ public class QueryDateTest extends LitePalTestCase {
 		Student studentFromDB = LitePal.find(Student.class, student1.getId());
 		assertEquals("Student 2", studentFromDB.getName());
 		assertEquals(calendar.getTimeInMillis(), studentFromDB.getBirthday().getTime());
+	}
+
+	@Test
+	public void testQueryDateWithDefaultValue() {
+		Student student = new Student();
+		student.setName("School Student");
+		assertTrue(student.save());
+		Student studentFromDB = LitePal.find(Student.class, student.getId());
+		assertEquals(1589203961859L, studentFromDB.getSchoolDate().getTime());
 	}
 
 }

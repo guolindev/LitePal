@@ -251,6 +251,7 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 		int affectedStudent = s.update(student.getId());
 		assertEquals(1, affectedStudent);
 		Student newStudent = LitePal.find(Student.class, student.getId());
+		assertNull(newStudent.getBirthday());
 		assertNull(newStudent.getName());
 		assertEquals(0, newStudent.getAge());
 		Teacher t = new Teacher();

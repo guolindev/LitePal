@@ -19,10 +19,12 @@ package org.litepal.crud;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.util.SparseArray;
 
 import org.litepal.LitePalBase;
 import org.litepal.Operator;
+import org.litepal.annotation.Column;
 import org.litepal.annotation.Encrypt;
 import org.litepal.crud.model.AssociationsInfo;
 import org.litepal.exceptions.DatabaseGenerateException;
@@ -262,29 +264,47 @@ abstract class DataHandler extends LitePalBase {
 	protected void putContentValuesForSave(LitePalSupport baseObj, Field field, ContentValues values)
 			throws SecurityException, IllegalArgumentException, NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException {
-        Object fieldValue = DynamicExecutor.getField(baseObj, field.getName(), baseObj.getClass());
-        if (fieldValue != null) {
-            // put content value only when value is not null. this allows to use defaultValue declared in annotation.
-            if ("java.util.Date".equals(field.getType().getName())) {
-                Date date = (Date) fieldValue;
-                fieldValue = date.getTime();
-            }
-            Encrypt annotation = field.getAnnotation(Encrypt.class);
-            if (annotation != null && "java.lang.String".equals(field.getType().getName())) {
-                fieldValue = encryptValue(annotation.algorithm(), fieldValue);
-            }
-            Object[] parameters = new Object[] { changeCase(DBUtility.convertToValidColumnName(field.getName())), fieldValue };
-            Class<?>[] parameterTypes = getParameterTypes(field, fieldValue, parameters);
-            DynamicExecutor.send(values, "put", parameters, values.getClass(), parameterTypes);
-        }
+        Object fieldValue = getFieldValue(baseObj, field);
+        if ("java.util.Date".equals(field.getType().getName())) {
+        	// handle java.util.Date type for special
+			if (fieldValue != null) {
+				// If Date field is not null, use date.getTime() value for save.
+				Date date = (Date) fieldValue;
+				fieldValue = date.getTime();
+			} else {
+				// If Date field is null, try to use defaultValue on annotation first.
+				Column annotation = field.getAnnotation(Column.class);
+				if (annotation != null) {
+					String defaultValue = annotation.defaultValue();
+					if (!defaultValue.isEmpty()) {
+						try {
+							fieldValue = Long.parseLong(defaultValue);
+						} catch (NumberFormatException e) {
+							Log.w(TAG, field + " in " + baseObj.getClass() + " with invalid defaultValue. So we use null instead");
+						}
+					}
+				}
+				if (fieldValue == null) {
+					// If Date field is still null, use Long.MAX_VALUE for save. Because it's a date that will never reach.
+					fieldValue = Long.MAX_VALUE;
+				}
+			}
+		}
+		if (fieldValue != null) {
+			// put content value only when value is not null. this allows to use defaultValue declared in annotation.
+			Encrypt annotation = field.getAnnotation(Encrypt.class);
+			if (annotation != null && "java.lang.String".equals(field.getType().getName())) {
+				fieldValue = encryptValue(annotation.algorithm(), fieldValue);
+			}
+			Object[] parameters = new Object[] { changeCase(DBUtility.convertToValidColumnName(field.getName())), fieldValue };
+			Class<?>[] parameterTypes = getParameterTypes(field, fieldValue, parameters);
+			DynamicExecutor.send(values, "put", parameters, values.getClass(), parameterTypes);
+		}
 	}
 
     /**
-     * This method deals with the putting values job into ContentValues. The
-     * ContentValues has <b>put</b> method to set data. But we do not know we
-     * should use which <b>put</b> method cause the field type isn't clear. So
-     * the reflection API is necessary here to put values into ContentValues
-     * with dynamically getting field type to put value.
+     * putContentValuesForUpdate operation is almost same with putContentValuesForSave, except allowing put null fieldValue into database,
+     * which is made for {@link LitePalSupport#setToDefault} function.
      *
      * @param baseObj
      *            The class of base object.
@@ -302,9 +322,14 @@ abstract class DataHandler extends LitePalBase {
             throws SecurityException, IllegalArgumentException, NoSuchMethodException,
             IllegalAccessException, InvocationTargetException {
         Object fieldValue = getFieldValue(baseObj, field);
-        if ("java.util.Date".equals(field.getType().getName()) && fieldValue != null) {
-            Date date = (Date) fieldValue;
-            fieldValue = date.getTime();
+        if ("java.util.Date".equals(field.getType().getName())) {
+        	if (fieldValue != null) {
+				Date date = (Date) fieldValue;
+				fieldValue = date.getTime();
+			} else {
+				// If Date field is null, use Long.MAX_VALUE for save. Because it's a date that will never reach.
+        		fieldValue = Long.MAX_VALUE;
+			}
         }
         Encrypt annotation = field.getAnnotation(Encrypt.class);
         if (annotation != null && "java.lang.String".equals(field.getType().getName())) {
@@ -1373,8 +1398,12 @@ abstract class DataHandler extends LitePalBase {
         } else if (field.getType() == char.class || field.getType() == Character.class) {
             value = ((String) value).charAt(0);
         } else if (field.getType() == Date.class) {
-            long date = (Long) value;
-            value = new Date(date);
+            long date = (long) value;
+            if (date == Long.MAX_VALUE) { // Long.MAX_VALUE is a date that will never reach, which represents null in our case.
+				value = null;
+			} else {
+				value = new Date(date);
+			}
         }
         if (isCollection(field.getType())) {
             Collection<Object> collection = (Collection<Object>) DynamicExecutor.getField(modelInstance, field.getName(), modelInstance.getClass());

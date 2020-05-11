@@ -96,7 +96,7 @@ public class SaveHandler extends DataHandler {
 	/**
 	 * The open interface for other classes in CRUD package to save a model
 	 * collection. It is called when developer calls
-	 * {@link org.litepal.LitePal#saveAll(java.util.Collection)}. Each model in the collection
+	 * {@link org.litepal.Operator#saveAll(java.util.Collection)}. Each model in the collection
 	 * will be persisted. If there're associated models detected, each
 	 * associated model which is persisted will build association with current
 	 * model in database.

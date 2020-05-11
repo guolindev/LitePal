@@ -1,5 +1,6 @@
 package com.litepaltest.model;
 
+import org.litepal.annotation.Column;
 import org.litepal.crud.LitePalSupport;
 
 import java.util.ArrayList;
@@ -11,6 +12,9 @@ public class Student extends LitePalSupport {
 	private String name;
 	private int age;
 	private Date birthday;
+
+	@Column(defaultValue = "1589203961859")
+	private Date schoolDate;
 	private Classroom classroom;
 	private IdCard idcard;
 
@@ -139,5 +143,14 @@ public class Student extends LitePalSupport {
 	// public void setIdCard(IdCard idCard) {
 	// this.idCard = idCard;
 	// }
+
+
+	public Date getSchoolDate() {
+		return schoolDate;
+	}
+
+	public void setSchoolDate(Date schoolDate) {
+		this.schoolDate = schoolDate;
+	}
 
 }
