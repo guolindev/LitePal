@@ -106,6 +106,7 @@ public class Upgrader extends AssociationUpdater {
     private boolean hasNewUniqueOrNotNullColumn() {
         List<ColumnModel> columnModelList = mTableModel.getColumnModels();
         for (ColumnModel columnModel : columnModelList) {
+            if (columnModel.isIdColumn()) continue; // id don't check unique or nullable, we never upgrade it.
             ColumnModel columnModelDB = mTableModelDB.getColumnModelByName(columnModel.getColumnName());
             if (columnModel.isUnique()) {
                 if (columnModelDB == null || !columnModelDB.isUnique()) {
