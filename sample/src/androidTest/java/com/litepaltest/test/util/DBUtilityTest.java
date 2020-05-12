@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.litepal.tablemanager.Connector;
 import org.litepal.util.DBUtility;
 
-import java.util.List;
+import java.util.Set;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
@@ -29,7 +29,7 @@ public class DBUtilityTest extends LitePalTestCase {
 
     @Test
     public void testFindUniqueColumns() {
-        List<String> uniqueColumns = DBUtility.findUniqueColumns(DBUtility.getTableNameByClassName(
+        Set<String> uniqueColumns = DBUtility.findUniqueColumns(DBUtility.getTableNameByClassName(
                         Cellphone.class.getName()), db);
         assertEquals(1, uniqueColumns.size());
         assertTrue(uniqueColumns.contains("serial"));

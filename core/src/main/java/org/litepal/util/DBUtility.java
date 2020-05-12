@@ -26,8 +26,10 @@ import org.litepal.tablemanager.model.TableModel;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -363,7 +365,7 @@ public class DBUtility {
 	 */
 	public static TableModel findPragmaTableInfo(String tableName, SQLiteDatabase db) {
 		if (isTableExists(tableName, db)) {
-            List<String> uniqueColumns = findUniqueColumns(tableName, db);
+            Set<String> uniqueColumns = findUniqueColumns(tableName, db);
 			TableModel tableModelDB = new TableModel();
 			tableModelDB.setTableName(tableName);
 			String checkingColumnSQL = "pragma table_info(" + tableName + ")";
@@ -412,10 +414,10 @@ public class DBUtility {
      *          The table to find unique columns.
      * @param db
      *          Instance of SQLiteDatabase.
-     * @return A list with all unique column names of specified table.
+     * @return A set with all unique column names of specified table.
      */
-    public static List<String> findUniqueColumns(String tableName, SQLiteDatabase db) {
-        List<String> columns = new ArrayList<String>();
+    public static Set<String> findUniqueColumns(String tableName, SQLiteDatabase db) {
+		Set<String> columns = new HashSet<>();
         Cursor cursor = null;
         Cursor innerCursor = null;
         try {
