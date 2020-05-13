@@ -16,10 +16,9 @@
 
 package org.litepal.tablemanager.model;
 
-import android.text.TextUtils;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This is a model class for tables. It stores a table name and a HashMap for
@@ -36,9 +35,9 @@ public class TableModel {
 	private String tableName;
 
     /**
-     * A list contains all column models with column name, type and constraints.
+     * A map contains all column models with column name, type and constraints.
      */
-    private List<ColumnModel> columnModels = new ArrayList<ColumnModel>();
+    private Map<String, ColumnModel> columnModelMap = new HashMap<>();
 
 	/**
 	 * Class name for the table name. This value might be null. Don't rely on it.
@@ -90,15 +89,15 @@ public class TableModel {
      *            A column model contains name, type and constraints.
      */
     public void addColumnModel(ColumnModel columnModel) {
-        columnModels.add(columnModel);
+        columnModelMap.put(columnModel.getColumnName(), columnModel);
     }
 
     /**
      * Find all the column models of the current table model.
      * @return A list contains all column models.
      */
-    public List<ColumnModel> getColumnModels() {
-        return columnModels;
+    public Collection<ColumnModel> getColumnModels() {
+        return columnModelMap.values();
     }
 
     /**
@@ -108,12 +107,7 @@ public class TableModel {
      * @return A ColumnModel which can map the column name passed in. Or null.
      */
     public ColumnModel getColumnModelByName(String columnName) {
-        for (ColumnModel columnModel : columnModels) {
-            if (columnModel.getColumnName().equalsIgnoreCase(columnName)) {
-                return columnModel;
-            }
-        }
-        return null;
+        return columnModelMap.get(columnName);
     }
 
     /**
@@ -122,20 +116,7 @@ public class TableModel {
      *          Name of the column to remove.
      */
     public void removeColumnModelByName(String columnName) {
-        if (TextUtils.isEmpty(columnName)) {
-            return;
-        }
-        int indexToRemove = -1;
-        for (int i = 0; i < columnModels.size(); i++) {
-            ColumnModel columnModel = columnModels.get(i);
-            if (columnName.equalsIgnoreCase(columnModel.getColumnName())) {
-                indexToRemove = i;
-                break;
-            }
-        }
-        if (indexToRemove != -1) {
-            columnModels.remove(indexToRemove);
-        }
+        columnModelMap.remove(columnName);
     }
 
     /**
@@ -145,13 +126,7 @@ public class TableModel {
      * @return True if matches a column in the table model. False otherwise.
      */
     public boolean containsColumn(String columnName) {
-        for (int i = 0; i < columnModels.size(); i++) {
-            ColumnModel columnModel = columnModels.get(i);
-            if (columnName.equalsIgnoreCase(columnModel.getColumnName())) {
-                return true;
-            }
-        }
-        return false;
+        return columnModelMap.containsKey(columnName);
     }
 
 }

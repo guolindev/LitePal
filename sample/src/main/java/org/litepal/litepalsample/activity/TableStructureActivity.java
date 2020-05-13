@@ -35,6 +35,7 @@ import org.litepal.tablemanager.model.TableModel;
 import org.litepal.util.DBUtility;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class TableStructureActivity extends AppCompatActivity {
@@ -65,7 +66,7 @@ public class TableStructureActivity extends AppCompatActivity {
 
 	private void analyzeTableStructure() {
 		TableModel tableMode = DBUtility.findPragmaTableInfo(mTableName, Connector.getDatabase());
-		List<ColumnModel> columnModelList = tableMode.getColumnModels();
+		Collection<ColumnModel> columnModelList = tableMode.getColumnModels();
         mList.addAll(columnModelList);
 	}
 

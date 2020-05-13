@@ -86,8 +86,8 @@ public abstract class AssociationUpdater extends Creator {
 	 */
 	protected List<String> getForeignKeyColumns(TableModel tableModel) {
 		List<String> foreignKeyColumns = new ArrayList<String>();
-        List<ColumnModel> columnModelList = getTableModelFromDB(tableModel.getTableName()).getColumnModels();
-		for (ColumnModel columnModel : columnModelList) {
+        Collection<ColumnModel> columnModels = getTableModelFromDB(tableModel.getTableName()).getColumnModels();
+		for (ColumnModel columnModel : columnModels) {
             String columnName = columnModel.getColumnName();
 			if (isForeignKeyColumnFormat(columnModel.getColumnName())) {
                 if (!tableModel.containsColumn(columnName)) {
@@ -357,7 +357,7 @@ public abstract class AssociationUpdater extends Creator {
 	 */
 	protected String generateDataMigrationSQL(TableModel tableModel) {
         String tableName = tableModel.getTableName();
-		List<ColumnModel> columnModels = tableModel.getColumnModels();
+		Collection<ColumnModel> columnModels = tableModel.getColumnModels();
 		if (!columnModels.isEmpty()) {
 			StringBuilder sql = new StringBuilder();
 			sql.append("insert into ").append(tableName).append("(");

@@ -75,7 +75,7 @@ public abstract class AssociationCreator extends Generator {
      *            an auto increment id.
 	 * @return A generated create table SQL.
 	 */
-	protected String generateCreateTableSQL(String tableName, List<ColumnModel> columnModels,
+	protected String generateCreateTableSQL(String tableName, Collection<ColumnModel> columnModels,
 			boolean autoIncrementId) {
 		StringBuilder createTableSQL = new StringBuilder("create table ");
 		createTableSQL.append(tableName).append(" (");
@@ -429,10 +429,11 @@ public abstract class AssociationCreator extends Generator {
      *          List contains model fields.
      * @return If ColumnModel list is empty or contains only id, _id field, return true. Otherwise return false.
      */
-    private boolean isContainsOnlyIdField(List<ColumnModel> columnModels) {
-        return columnModels.size() == 0
-                || (columnModels.size() == 1 && isIdColumn(columnModels.get(0).getColumnName()))
-                || (columnModels.size() == 2 && isIdColumn(columnModels.get(0).getColumnName()) && isIdColumn(columnModels.get(1).getColumnName()));
+    private boolean isContainsOnlyIdField(Collection<ColumnModel> columnModels) {
+    	for (ColumnModel columnModel : columnModels) {
+    		if (!columnModel.isIdColumn()) return false;
+		}
+    	return true;
     }
 
 }
