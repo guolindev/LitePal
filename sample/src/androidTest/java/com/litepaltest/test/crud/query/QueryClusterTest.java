@@ -289,6 +289,23 @@ public class QueryClusterTest extends LitePalTestCase {
                 assertEquals(lastBook.getId(), b.getId());
             }
 		}
+
+		Book first1 = LitePal.findFirst(Book.class);
+		Book first2 = LitePal.select("id").findFirst(Book.class);
+		assertEquals(first1.getId(), first2.getId());
+
+		Book last1 = LitePal.findLast(Book.class);
+		Book last2 = LitePal.select("id").findLast(Book.class);
+		assertEquals(last1.getId(), last2.getId());
+
+		List<Book> firstTwoBooks = LitePal.where("id=? or id=? or id=?", String.valueOf(ids[0]), String.valueOf(ids[1]),
+				String.valueOf(ids[2])).order("id").limit(2).find(Book.class);
+		firstBook = LitePal.where("id=? or id=? or id=?", String.valueOf(ids[0]), String.valueOf(ids[1]),
+				String.valueOf(ids[2])).order("id").limit(2).findFirst(Book.class);
+		lastBook = LitePal.where("id=? or id=? or id=?", String.valueOf(ids[0]), String.valueOf(ids[1]),
+				String.valueOf(ids[2])).order("id").limit(2).findLast(Book.class);
+		assertEquals(firstTwoBooks.get(0).getId(), firstBook.getId());
+		assertEquals(firstTwoBooks.get(1).getId(), lastBook.getId());
 	}
 
 }

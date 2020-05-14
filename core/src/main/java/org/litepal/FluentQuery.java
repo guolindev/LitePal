@@ -16,12 +16,15 @@
 
 package org.litepal;
 
+import android.text.TextUtils;
+
 import org.litepal.crud.LitePalSupport;
 import org.litepal.crud.QueryHandler;
 import org.litepal.crud.async.AverageExecutor;
 import org.litepal.crud.async.CountExecutor;
 import org.litepal.crud.async.FindExecutor;
 import org.litepal.crud.async.FindMultiExecutor;
+import org.litepal.exceptions.LitePalSupportException;
 import org.litepal.tablemanager.Connector;
 import org.litepal.util.BaseUtility;
 import org.litepal.util.DBUtility;
@@ -313,8 +316,14 @@ public class FluentQuery {
      */
     public <T> T findFirst(Class<T> modelClass, boolean isEager) {
         synchronized (LitePalSupport.class) {
+        	String limitTemp = mLimit;
+        	if (!"0".equals(mLimit)) { // If mLimit not equals to 0, set mLimit to 1 to find the first record.
+        		mLimit = "1";
+			}
             List<T> list = find(modelClass, isEager);
+        	mLimit = limitTemp; // Don't forget to change it back after finding operation.
             if (list.size() > 0) {
+				if (list.size() != 1) throw new LitePalSupportException("Found multiple records while only one record should be found at most.");
                 return list.get(0);
             }
             return null;
@@ -399,7 +408,29 @@ public class FluentQuery {
      */
     public <T> T findLast(Class<T> modelClass, boolean isEager) {
         synchronized (LitePalSupport.class) {
+			String orderByTemp = mOrderBy;
+			String limitTemp = mLimit;
+        	if (TextUtils.isEmpty(mOffset) && TextUtils.isEmpty(mLimit)) { // If mOffset or mLimit is specified, we can't use the strategy in this block to speed up finding.
+				if (TextUtils.isEmpty(mOrderBy)) {
+					// If mOrderBy is null, we can use id desc order, then the first record will be the record value where want to find.
+					mOrderBy = "id desc";
+				} else {
+					// If mOrderBy is not null, check if it ends with desc.
+					if (mOrderBy.endsWith(" desc")) {
+						// If mOrderBy ends with desc, then the last record of desc order will be the first record of asc order, so we remove the desc.
+						mOrderBy = mOrderBy.replace(" desc", "");
+					} else {
+						// If mOrderBy not ends with desc, then the last record of asc order will be the first record of desc order, so we add the desc.
+						mOrderBy += " desc";
+					}
+				}
+				if (!"0".equals(mLimit)) {
+					mLimit = "1";
+				}
+			}
             List<T> list = find(modelClass, isEager);
+        	mOrderBy = orderByTemp;
+        	mLimit = limitTemp;
             int size = list.size();
             if (size > 0) {
                 return list.get(size - 1);
