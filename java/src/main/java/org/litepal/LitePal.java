@@ -589,12 +589,53 @@ public class LitePal {
      *
      * @param modelClass
      *            Which table to query and the object type to return.
+     * @param distinct
+     *            true if you want each row to be unique, false otherwise.
+     * @param id
+     *            Which record to query.
+     * @return An object with found data from database, or null.
+     */
+    public static <T> T find(Class<T> modelClass, boolean distinct, long id) {
+        return Operator.find(modelClass, distinct, id, false);
+    }
+
+    /**
+     * Finds the record by a specific id.
+     *
+     * <pre>
+     * Person p = LitePal.find(Person.class, 1);
+     * </pre>
+     *
+     * The modelClass determines which table to query and the object type to
+     * return. If no record can be found, then return null. <br>
+     *
+     * Note that the associated models won't be loaded by default considering
+     * the efficiency, but you can do that by using
+     * {@link LitePal#find(Class, long, boolean)}.
+     *
+     * @param modelClass
+     *            Which table to query and the object type to return.
      * @param id
      *            Which record to query.
      * @return An object with found data from database, or null.
      */
     public static <T> T find(Class<T> modelClass, long id) {
-        return Operator.find(modelClass, id);
+        return find(modelClass, false, id);
+    }
+
+    /**
+     * Basically same as {@link #find(Class, long)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query and the object type to return.
+     * @param distinct
+     *            true if you want each row to be unique, false otherwise.
+     * @param id
+     *            Which record to query.
+     * @return A FindExecutor instance.
+     */
+    public static <T> FindExecutor<T> findAsync(Class<T> modelClass, boolean distinct, long id) {
+        return Operator.findAsync(modelClass, distinct, id, false);
     }
 
     /**
@@ -607,7 +648,28 @@ public class LitePal {
      * @return A FindExecutor instance.
      */
     public static <T> FindExecutor<T> findAsync(Class<T> modelClass, long id) {
-        return Operator.findAsync(modelClass, id);
+        return findAsync(modelClass, false, id);
+    }
+
+    /**
+     * It is mostly same as {@link LitePal#find(Class, long)} but an isEager
+     * parameter. If set true the associated models will be loaded as well.
+     * <br>
+     * Note that isEager will only work for one deep level relation, considering the query efficiency.
+     * You have to implement on your own if you need to load multiple deepness of relation at once.
+     *
+     * @param modelClass
+     *            Which table to query and the object type to return.
+     * @param distinct
+     *            true if you want each row to be unique, false otherwise.
+     * @param id
+     *            Which record to query.
+     * @param isEager
+     *            True to load the associated models, false not.
+     * @return An object with found data from database, or null.
+     */
+    public static <T> T find(Class<T> modelClass, boolean distinct, long id, boolean isEager) {
+        return Operator.find(modelClass, distinct, id, isEager);
     }
 
     /**
@@ -626,7 +688,24 @@ public class LitePal {
      * @return An object with found data from database, or null.
      */
     public static <T> T find(Class<T> modelClass, long id, boolean isEager) {
-        return Operator.find(modelClass, id, isEager);
+        return find(modelClass, false, id, isEager);
+    }
+
+    /**
+     * Basically same as {@link #find(Class, long, boolean)} but pending to a new thread for executing.
+     *
+     * @param modelClass
+     *            Which table to query and the object type to return.
+     * @param distinct
+     *            true if you want each row to be unique, false otherwise.
+     * @param id
+     *            Which record to query.
+     * @param isEager
+     *            True to load the associated models, false not.
+     * @return A FindExecutor instance.
+     */
+    public static <T> FindExecutor<T> findAsync(Class<T> modelClass, boolean distinct, long id, boolean isEager) {
+        return Operator.findAsync(modelClass, distinct, id, isEager);
     }
 
     /**
@@ -640,8 +719,8 @@ public class LitePal {
      *            True to load the associated models, false not.
      * @return A FindExecutor instance.
      */
-    public static <T> FindExecutor<T> findAsync(final Class<T> modelClass, final long id, final boolean isEager) {
-        return Operator.findAsync(modelClass, id, isEager);
+    public static <T> FindExecutor<T> findAsync(Class<T> modelClass, long id, boolean isEager) {
+        return findAsync(modelClass, false, id, isEager);
     }
 
     /**
