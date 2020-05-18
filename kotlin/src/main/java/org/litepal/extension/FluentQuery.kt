@@ -109,15 +109,6 @@ inline fun <reified T> FluentQuery.findFirstAsync(): FindExecutor<T> = findFirst
 inline fun <reified T> FluentQuery.findFirst(isEager: Boolean): T? = findFirst(T::class.java, isEager)
 
 /**
- * Basically same as {@link #findFirst(Class, boolean)} but pending to a new thread for executing.
- *
- * @param isEager
- *            True to load the associated models, false not.
- * @return A FindExecutor instance.
- */
-inline fun <reified T> FluentQuery.findFirstAsync(isEager: Boolean): FindExecutor<T> = findFirstAsync(T::class.java, isEager)
-
-/**
  * Finds the last record by the cluster parameters. You can use the below
  * way to finish a complicated query:
  *
@@ -132,13 +123,6 @@ inline fun <reified T> FluentQuery.findFirstAsync(isEager: Boolean): FindExecuto
 inline fun <reified T> FluentQuery.findLast(): T? = findLast(T::class.java)
 
 /**
- * Basically same as {@link #findLast(Class)} but pending to a new thread for executing.
- *
- * @return A FindExecutor instance.
- */
-inline fun <reified T> FluentQuery.findLastAsync(): FindExecutor<T> = findLastAsync(T::class.java)
-
-/**
  * It is mostly same as {@link FluentQuery#findLast(Class)} but an isEager
  * parameter. If set true the associated models will be loaded as well.
  *
@@ -150,15 +134,6 @@ inline fun <reified T> FluentQuery.findLastAsync(): FindExecutor<T> = findLastAs
  * @return An object with founded data from database, or null.
  */
 inline fun <reified T> FluentQuery.findLast(isEager: Boolean): T? = findLast(T::class.java, isEager)
-
-/**
- * Basically same as {@link #findLast(Class, boolean)} but pending to a new thread for executing.
- *
- * @param isEager
- *            True to load the associated models, false not.
- * @return A FindExecutor instance.
- */
-inline fun <reified T> FluentQuery.findLastAsync(isEager: Boolean): FindExecutor<T> = findLastAsync(T::class.java, isEager)
 
 /**
  * Count the records.
@@ -176,13 +151,6 @@ inline fun <reified T> FluentQuery.findLastAsync(isEager: Boolean): FindExecutor
 inline fun <reified T> FluentQuery.count() = count(T::class.java)
 
 /**
- * Basically same as [LitePal.count] but pending to a new thread for executing.
- *
- * @return A CountExecutor instance.
- */
-inline fun <reified T> FluentQuery.countAsync() = countAsync(T::class.java)
-
-/**
  * Calculates the average value on a given column.
  *
  * LitePal.average&lt;Person&gt;(&quot;age&quot;)
@@ -196,15 +164,6 @@ inline fun <reified T> FluentQuery.countAsync() = countAsync(T::class.java)
  * @return The average value on a given column.
  */
 inline fun <reified T> FluentQuery.average(column: String) = average(T::class.java, column)
-
-/**
- * Basically same as [LitePal.average] but pending to a new thread for executing.
- *
- * @param column
- * The based on column to calculate.
- * @return A AverageExecutor instance.
- */
-inline fun <reified T> FluentQuery.averageAsync(column: String) = averageAsync(T::class.java, column)
 
 /**
  * Calculates the maximum value on a given column. The value is returned
@@ -222,15 +181,6 @@ inline fun <reified T> FluentQuery.averageAsync(column: String) = averageAsync(T
  * @return The maximum value on a given column.
  */
 inline fun <reified T, reified R> FluentQuery.max(columnName: String): R = max(T::class.java, columnName, R::class.java)
-
-/**
- * Basically same as [LitePal.max] but pending to a new thread for executing.
- *
- * @param columnName
- * The based on column to calculate.
- * @return A FindExecutor instance.
- */
-inline fun <reified T, reified R> FluentQuery.maxAsync(columnName: String) = maxAsync(T::class.java, columnName, R::class.java)
 
 /**
  * Calculates the maximum value on a given column. The value is returned
@@ -251,17 +201,6 @@ inline fun <reified T, reified R> FluentQuery.maxAsync(columnName: String) = max
 inline fun <reified R> FluentQuery.max(tableName: String, columnName: String): R = max(tableName, columnName, R::class.java)
 
 /**
- * Basically same as [LitePal.max] but pending to a new thread for executing.
- *
- * @param tableName
- * Which table to query from.
- * @param columnName
- * The based on column to calculate.
- * @return A FindExecutor instance.
- */
-inline fun <reified R> FluentQuery.maxAsync(tableName: String, columnName: String) = maxAsync(tableName, columnName, R::class.java)
-
-/**
  * Calculates the minimum value on a given column. The value is returned
  * with the same data type of the column.
  *
@@ -276,15 +215,6 @@ inline fun <reified R> FluentQuery.maxAsync(tableName: String, columnName: Strin
  * @return The minimum value on a given column.
  */
 inline fun <reified T, reified R> FluentQuery.min(columnName: String): R = min(T::class.java, columnName, R::class.java)
-
-/**
- * Basically same as [LitePal.min] but pending to a new thread for executing.
- *
- * @param columnName
- * The based on column to calculate.
- * @return A FindExecutor instance.
- */
-inline fun <reified T, reified R> FluentQuery.minAsync(columnName: String) = minAsync(T::class.java, columnName, R::class.java)
 
 /**
  * Calculates the minimum value on a given column. The value is returned
@@ -305,17 +235,6 @@ inline fun <reified T, reified R> FluentQuery.minAsync(columnName: String) = min
 inline fun <reified R> FluentQuery.min(tableName: String, columnName: String): R = min(tableName, columnName, R::class.java)
 
 /**
- * Basically same as [LitePal.min] but pending to a new thread for executing.
- *
- * @param tableName
- * Which table to query from.
- * @param columnName
- * The based on column to calculate.
- * @return A FindExecutor instance.
- */
-inline fun <reified R> FluentQuery.minAsync(tableName: String, columnName: String) = minAsync(tableName, columnName, R::class.java)
-
-/**
  * Calculates the sum of values on a given column. The value is returned
  * with the same data type of the column.
  *
@@ -330,15 +249,6 @@ inline fun <reified R> FluentQuery.minAsync(tableName: String, columnName: Strin
  * @return The sum value on a given column.
  */
 inline fun <reified T, reified R> FluentQuery.sum(columnName: String): R = sum(T::class.java, columnName, R::class.java)
-
-/**
- * Basically same as [LitePal.sum] but pending to a new thread for executing.
- *
- * @param columnName
- * The based on column to calculate.
- * @return A FindExecutor instance.
- */
-inline fun <reified T, reified R> FluentQuery.sumAsync(columnName: String) = sumAsync(T::class.java, columnName, R::class.java)
 
 /**
  * Calculates the sum of values on a given column. The value is returned
@@ -357,14 +267,3 @@ inline fun <reified T, reified R> FluentQuery.sumAsync(columnName: String) = sum
  * @return The sum value on a given column.
  */
 inline fun <reified R> FluentQuery.sum(tableName: String, columnName: String): R = sum(tableName, columnName, R::class.java)
-
-/**
- * Basically same as [LitePal.sum] but pending to a new thread for executing.
- *
- * @param tableName
- * Which table to query from.
- * @param columnName
- * The based on column to calculate.
- * @return A FindExecutor instance.
- */
-inline fun <reified R> FluentQuery.sumAsync(tableName: String, columnName: String) = sumAsync(tableName, columnName, R::class.java)

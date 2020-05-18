@@ -154,10 +154,10 @@ public class LitePalSupport {
 	}
 
     /**
-     * Basically same as {@link #delete()} but pending to a new thread for executing.
-     *
-     * @return A UpdateOrDeleteExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public UpdateOrDeleteExecutor deleteAsync() {
         final UpdateOrDeleteExecutor executor = new UpdateOrDeleteExecutor();
         Runnable runnable = new Runnable() {
@@ -215,12 +215,10 @@ public class LitePalSupport {
 	}
 
     /**
-     * Basically same as {@link #update(long)} but pending to a new thread for executing.
-     *
-     * @param id
-     *            Which record to update.
-     * @return A UpdateOrDeleteExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public UpdateOrDeleteExecutor updateAsync(final long id) {
         final UpdateOrDeleteExecutor executor = new UpdateOrDeleteExecutor();
         Runnable runnable = new Runnable() {
@@ -286,18 +284,10 @@ public class LitePalSupport {
 	}
 
     /**
-     * Basically same as {@link #updateAll(String...)} but pending to a new thread for executing.
-     *
-     * @param conditions
-     *            A string array representing the WHERE part of an SQL
-     *            statement. First parameter is the WHERE clause to apply when
-     *            updating. The way of specifying place holders is to insert one
-     *            or more question marks in the SQL. The first question mark is
-     *            replaced by the second element of the array, the next question
-     *            mark by the third, and so on. Passing empty string will update
-     *            all rows.
-     * @return A UpdateOrDeleteExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public UpdateOrDeleteExecutor updateAllAsync(final String... conditions) {
         final UpdateOrDeleteExecutor executor = new UpdateOrDeleteExecutor();
         Runnable runnable = new Runnable() {
@@ -355,10 +345,10 @@ public class LitePalSupport {
 	}
 
     /**
-     * Basically same as {@link #save()} but pending to a new thread for executing.
-     *
-     * @return A SaveExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public SaveExecutor saveAsync() {
         final SaveExecutor executor = new SaveExecutor();
         Runnable runnable = new Runnable() {
@@ -423,18 +413,6 @@ public class LitePalSupport {
 	}
 
     /**
-     * This method is deprecated and will be removed in the future releases.
-     * Use {@link #saveOrUpdate(String...)} instead.
-     */
-    @Deprecated
-    public boolean saveIfNotExist(String... conditions) {
-        if (!Operator.isExist(getClass(), conditions)) {
-            return save();
-        }
-        return false;
-    }
-
-    /**
      * Save the model if the conditions data not exist, or update the matching models if the conditions data exist. <br>
      *
      * <pre>
@@ -497,18 +475,10 @@ public class LitePalSupport {
     }
 
     /**
-     * Basically same as {@link #saveOrUpdate(String...)} but pending to a new thread for executing.
-     *
-     * @param conditions
-     *            A string array representing the WHERE part of an SQL
-     *            statement. First parameter is the WHERE clause to apply when
-     *            updating. The way of specifying place holders is to insert one
-     *            or more question marks in the SQL. The first question mark is
-     *            replaced by the second element of the array, the next question
-     *            mark by the third, and so on. Passing empty string will update
-     *            all rows.
-     * @return A SaveExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public SaveExecutor saveOrUpdateAsync(final String... conditions) {
         final SaveExecutor executor = new SaveExecutor();
         Runnable runnable = new Runnable() {
