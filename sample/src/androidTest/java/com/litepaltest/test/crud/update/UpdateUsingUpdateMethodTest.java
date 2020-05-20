@@ -121,33 +121,6 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 	}
 
     @Test
-    public void testUpdateBlobWithStaticUpdate() {
-        byte[] b = new byte[10];
-        for (int i = 0; i < b.length; i++) {
-            b[i] = (byte)i;
-        }
-        Product product = new Product();
-        product.setBrand("Android");
-        product.setPrice(2899.69);
-        product.setPic(b);
-        assertTrue(product.save());
-        for (int i = 0; i < b.length; i++) {
-            b[i] = (byte) (b.length - i);
-        }
-        ContentValues values = new ContentValues();
-        values.put("pic", b);
-        int rows = LitePal.update(Product.class, values, product.getId());
-        assertEquals(1, rows);
-        Product p = LitePal.find(Product.class, product.getId());
-        byte[] pic = p.getPic();
-        assertEquals(b.length, pic.length);
-        for (int i = 0; i < b.length; i++) {
-            byte a = (byte) (b.length - i);
-            assertEquals(a, pic[i]);
-        }
-    }
-
-    @Test
 	public void testUpdateWithStaticUpdateButWrongClass() {
 		ContentValues values = new ContentValues();
 		values.put("TEACHERNAME", "Toy");
@@ -190,33 +163,6 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 		assertEquals(33, newTeacher.getTeachYears());
 		assertEquals(66, newTeacher.getAge());
 	}
-
-    @Test
-    public void testUpdateBlobWithInstanceUpdate() {
-        byte[] b = new byte[10];
-        for (int i = 0; i < b.length; i++) {
-            b[i] = (byte)i;
-        }
-        Product product = new Product();
-        product.setBrand("Android");
-        product.setPrice(2899.69);
-        product.setPic(b);
-        assertTrue(product.save());
-        for (int i = 0; i < b.length; i++) {
-            b[i] = (byte) (b.length - i);
-        }
-        Product pro = new Product();
-        pro.setPic(b);
-        int rows = pro.update(product.getId());
-        assertEquals(1, rows);
-        Product p = LitePal.find(Product.class, product.getId());
-        byte[] pic = p.getPic();
-        assertEquals(b.length, pic.length);
-        for (int i = 0; i < b.length; i++) {
-            byte a = (byte) (b.length - i);
-            assertEquals(a, pic[i]);
-        }
-    }
 
     @Test
 	public void testUpdateWithDefaultValueWithInstanceUpdate() {

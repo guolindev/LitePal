@@ -1192,9 +1192,7 @@ abstract class DataHandler extends LitePalBase {
 			methodName = "getLong";
 		} else if ("getInteger".equals(methodName)) {
 			methodName = "getInt";
-		} else if ("getbyte[]".equalsIgnoreCase(methodName)) {
-            methodName = "getBlob";
-        }
+		}
 		return methodName;
 	}
 

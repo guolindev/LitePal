@@ -143,25 +143,6 @@ public class SaveTest extends LitePalTestCase {
 	}
 
     @Test
-    public void testSaveWithBlob() {
-        byte[] b = new byte[10];
-        for (int i = 0; i < b.length; i++) {
-            b[i] = (byte)i;
-        }
-        Product product = new Product();
-        product.setBrand("Android");
-        product.setPrice(2899.69);
-        product.setPic(b);
-        assertTrue(product.save());
-        Product p = LitePal.find(Product.class, product.getId());
-        byte[] pic = p.getPic();
-        assertEquals(b.length, pic.length);
-        for (int i = 0; i < b.length; i++) {
-            assertEquals(i, pic[i]);
-        }
-    }
-
-    @Test
     public void testSaveInheritModels() {
         WeChatMessage weChatMessage = new WeChatMessage();
         weChatMessage.setFriend("Tom");

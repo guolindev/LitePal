@@ -137,31 +137,6 @@ public class UpdateUsingSaveMethodTest extends LitePalTestCase {
     }
 
     @Test
-    public void testUpdateBlobValues() {
-        byte[] b = new byte[10];
-        for (int i = 0; i < b.length; i++) {
-            b[i] = (byte)i;
-        }
-        Product product = new Product();
-        product.setBrand("Android");
-        product.setPrice(2899.69);
-        product.setPic(b);
-        assertTrue(product.save());
-        for (int i = 0; i < b.length; i++) {
-            b[i] = (byte) (b.length - i);
-        }
-        product.setPic(b);
-        assertTrue(product.save());
-        Product p = LitePal.find(Product.class, product.getId());
-        byte[] pic = p.getPic();
-        assertEquals(b.length, pic.length);
-        for (int i = 0; i < b.length; i++) {
-            byte a = (byte) (b.length - i);
-            assertEquals(a, pic[i]);
-        }
-    }
-
-    @Test
 	public void testUpdateM2OAssociationsOnMSide() {
 		init();
 		s1.setClassroom(c1);

@@ -73,33 +73,6 @@ class UpdateUsingUpdateMethodKotlinTest : LitePalTestCase() {
     }
 
     @Test
-    fun testUpdateBlobWithStaticUpdate() {
-        val b = ByteArray(10)
-        for (i in b.indices) {
-            b[i] = i.toByte()
-        }
-        val product = Product()
-        product.brand = "Android"
-        product.price = 2899.69
-        product.pic = b
-        assertTrue(product.save())
-        for (i in b.indices) {
-            b[i] = (b.size - i).toByte()
-        }
-        val values = ContentValues()
-        values.put("pic", b)
-        val rows = LitePal.update<Product>(values, product.id.toLong())
-        assertEquals(1, rows)
-        val p = LitePal.find<Product>(product.id.toLong())
-        val pic = p!!.pic
-        assertEquals(b.size, pic.size)
-        for (i in b.indices) {
-            val a = (b.size - i).toByte()
-            assertEquals(a, pic[i])
-        }
-    }
-
-    @Test
     fun testUpdateWithStaticUpdateButWrongClass() {
         val values = ContentValues()
         values.put("TEACHERNAME", "Toy")
@@ -143,33 +116,6 @@ class UpdateUsingUpdateMethodKotlinTest : LitePalTestCase() {
         assertEquals("Jobs", newTeacher!!.teacherName)
         assertEquals(33, newTeacher.teachYears)
         assertEquals(66, newTeacher.age)
-    }
-
-    @Test
-    fun testUpdateBlobWithInstanceUpdate() {
-        val b = ByteArray(10)
-        for (i in b.indices) {
-            b[i] = i.toByte()
-        }
-        val product = Product()
-        product.brand = "Android"
-        product.price = 2899.69
-        product.pic = b
-        assertTrue(product.save())
-        for (i in b.indices) {
-            b[i] = (b.size - i).toByte()
-        }
-        val pro = Product()
-        pro.pic = b
-        val rows = pro.update(product.id.toLong())
-        assertEquals(1, rows)
-        val p = LitePal.find<Product>(product.id.toLong())
-        val pic = p!!.pic
-        assertEquals(b.size, pic.size)
-        for (i in b.indices) {
-            val a = (b.size - i).toByte()
-            assertEquals(a, pic[i])
-        }
     }
 
     @Test
