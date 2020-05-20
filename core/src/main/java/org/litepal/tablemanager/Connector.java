@@ -16,17 +16,12 @@
 
 package org.litepal.tablemanager;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
 import org.litepal.LitePalApplication;
-import org.litepal.exceptions.DatabaseGenerateException;
 import org.litepal.parser.LitePalAttr;
-import org.litepal.util.BaseUtility;
 
 import java.io.File;
 
@@ -99,10 +94,6 @@ public class Connector {
                 // internal or empty means internal storage, neither or them means sdcard storage
                 String dbPath = Environment.getExternalStorageDirectory().getPath() + "/" + litePalAttr.getStorage();
                 dbPath = dbPath.replace("//", "/");
-                if (BaseUtility.isClassAndMethodExist("android.support.v4.content.ContextCompat", "checkSelfPermission") &&
-                        ContextCompat.checkSelfPermission(LitePalApplication.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    throw new DatabaseGenerateException(String.format(DatabaseGenerateException.EXTERNAL_STORAGE_PERMISSION_DENIED, dbPath));
-                }
                 File path = new File(dbPath);
                 if (!path.exists()) {
                     path.mkdirs();

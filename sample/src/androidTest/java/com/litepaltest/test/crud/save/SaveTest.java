@@ -162,25 +162,6 @@ public class SaveTest extends LitePalTestCase {
     }
 
     @Test
-    public void testSaveIfExists() {
-        String serial = UUID.randomUUID().toString();
-        Cellphone cell = new Cellphone();
-        cell.setBrand("iPhone");
-        cell.setPrice(4998.01);
-        cell.setInStock('Y');
-        cell.setSerial(serial);
-        assertTrue(cell.saveIfNotExist("serial = ?", serial));
-        Cellphone cell2 = new Cellphone();
-        cell2.setBrand("Android");
-        cell2.setPrice(1998.01);
-        cell2.setInStock('Y');
-        cell2.setSerial(serial);
-        assertFalse(cell.saveIfNotExist("serial = ?", serial));
-        List<Cellphone> cellphoneList = LitePal.where("serial = ?", serial).find(Cellphone.class);
-        assertEquals(1, cellphoneList.size());
-    }
-
-    @Test
     public void testSaveInheritModels() {
         WeChatMessage weChatMessage = new WeChatMessage();
         weChatMessage.setFriend("Tom");
