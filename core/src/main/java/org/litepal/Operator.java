@@ -328,12 +328,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #count(Class)} but pending to a new thread for executing.
-     *
-     * @param modelClass
-     *          Which table to query from by class.
-     * @return A CountExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static CountExecutor countAsync(final Class<?> modelClass) {
         return countAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())));
     }
@@ -364,12 +362,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #count(String)} but pending to a new thread for executing.
-     *
-     * @param tableName
-     *          Which table to query from.
-     * @return A CountExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static CountExecutor countAsync(final String tableName) {
         final CountExecutor executor = new CountExecutor();
         Runnable runnable = new Runnable() {
@@ -416,14 +412,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #average(Class, String)} but pending to a new thread for executing.
-     *
-     * @param modelClass
-     *            Which table to query from by class.
-     * @param column
-     *            The based on column to calculate.
-     * @return A AverageExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static AverageExecutor averageAsync(final Class<?> modelClass, final String column) {
         return averageAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), column);
     }
@@ -455,14 +447,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #average(String, String)} but pending to a new thread for executing.
-     *
-     * @param tableName
-     *            Which table to query from.
-     * @param column
-     *            The based on column to calculate.
-     * @return A AverageExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static AverageExecutor averageAsync(final String tableName, final String column) {
         final AverageExecutor executor = new AverageExecutor();
         Runnable runnable = new Runnable() {
@@ -512,16 +500,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #max(Class, String, Class)} but pending to a new thread for executing.
-     *
-     * @param modelClass
-     *            Which table to query from by class.
-     * @param columnName
-     *            The based on column to calculate.
-     * @param columnType
-     *            The type of the based on column.
-     * @return A FindExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static <T> FindExecutor<T> maxAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
         return maxAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
     }
@@ -556,16 +538,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #max(String, String, Class)} but pending to a new thread for executing.
-     *
-     * @param tableName
-     *            Which table to query from.
-     * @param columnName
-     *            The based on column to calculate.
-     * @param columnType
-     *            The type of the based on column.
-     * @return A FindExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static <T> FindExecutor<T> maxAsync(final String tableName, final String columnName, final Class<T> columnType) {
         final FindExecutor<T> executor = new FindExecutor<>();
         Runnable runnable = new Runnable() {
@@ -615,16 +591,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #min(Class, String, Class)} but pending to a new thread for executing.
-     *
-     * @param modelClass
-     *            Which table to query from by class.
-     * @param columnName
-     *            The based on column to calculate.
-     * @param columnType
-     *            The type of the based on column.
-     * @return A FindExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static <T> FindExecutor<T> minAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
         return minAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
     }
@@ -659,16 +629,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #min(String, String, Class)} but pending to a new thread for executing.
-     *
-     * @param tableName
-     *            Which table to query from.
-     * @param columnName
-     *            The based on column to calculate.
-     * @param columnType
-     *            The type of the based on column.
-     * @return A FindExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static <T> FindExecutor<T> minAsync(final String tableName, final String columnName, final Class<T> columnType) {
         final FindExecutor<T> executor = new FindExecutor<>();
         Runnable runnable = new Runnable() {
@@ -718,16 +682,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #sum(Class, String, Class)} but pending to a new thread for executing.
-     *
-     * @param modelClass
-     *            Which table to query from by class.
-     * @param columnName
-     *            The based on column to calculate.
-     * @param columnType
-     *            The type of the based on column.
-     * @return A FindExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static <T> FindExecutor<T> sumAsync(final Class<?> modelClass, final String columnName, final Class<T> columnType) {
         return sumAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(modelClass.getName())), columnName, columnType);
     }
@@ -762,16 +720,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #sum(String, String, Class)} but pending to a new thread for executing.
-     *
-     * @param tableName
-     *            Which table to query from.
-     * @param columnName
-     *            The based on column to calculate.
-     * @param columnType
-     *            The type of the based on column.
-     * @return A FindExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static <T> FindExecutor<T> sumAsync(final String tableName, final String columnName, final Class<T> columnType) {
         final FindExecutor<T> executor = new FindExecutor<>();
         Runnable runnable = new Runnable() {
@@ -819,14 +771,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #find(Class, long)} but pending to a new thread for executing.
-     *
-     * @param modelClass
-     *            Which table to query and the object type to return.
-     * @param id
-     *            Which record to query.
-     * @return A FindExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static <T> FindExecutor<T> findAsync(Class<T> modelClass, long id) {
         return findAsync(modelClass, id, false);
     }
@@ -854,16 +802,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #find(Class, long, boolean)} but pending to a new thread for executing.
-     *
-     * @param modelClass
-     *            Which table to query and the object type to return.
-     * @param id
-     *            Which record to query.
-     * @param isEager
-     *            True to load the associated models, false not.
-     * @return A FindExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static <T> FindExecutor<T> findAsync(final Class<T> modelClass, final long id, final boolean isEager) {
         final FindExecutor<T> executor = new FindExecutor<>();
         Runnable runnable = new Runnable() {
@@ -906,12 +848,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #findFirst(Class)} but pending to a new thread for executing.
-     *
-     * @param modelClass
-     *            Which table to query and the object type to return.
-     * @return A FindExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static <T> FindExecutor<T> findFirstAsync(Class<T> modelClass) {
         return findFirstAsync(modelClass, false);
     }
@@ -937,14 +877,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #findFirst(Class, boolean)} but pending to a new thread for executing.
-     *
-     * @param modelClass
-     *            Which table to query and the object type to return.
-     * @param isEager
-     *            True to load the associated models, false not.
-     * @return A FindExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static <T> FindExecutor<T> findFirstAsync(final Class<T> modelClass, final boolean isEager) {
         final FindExecutor<T> executor = new FindExecutor<>();
         Runnable runnable = new Runnable() {
@@ -987,12 +923,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #findLast(Class)} but pending to a new thread for executing.
-     *
-     * @param modelClass
-     *            Which table to query and the object type to return.
-     * @return A FindExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static <T> FindExecutor<T> findLastAsync(Class<T> modelClass) {
         return findLastAsync(modelClass, false);
     }
@@ -1018,14 +952,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #findLast(Class, boolean)} but pending to a new thread for executing.
-     *
-     * @param modelClass
-     *            Which table to query and the object type to return.
-     * @param isEager
-     *            True to load the associated models, false not.
-     * @return A FindExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static <T> FindExecutor<T> findLastAsync(final Class<T> modelClass, final boolean isEager) {
         final FindExecutor<T> executor = new FindExecutor<>();
         Runnable runnable = new Runnable() {
@@ -1083,14 +1013,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #findAll(Class, long...)} but pending to a new thread for executing.
-     *
-     * @param modelClass
-     *            Which table to query and the object type to return as a list.
-     * @param ids
-     *            Which records to query. Or do not pass it to find all records.
-     * @return A FindMultiExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static <T> FindMultiExecutor<T> findAllAsync(Class<T> modelClass, long... ids) {
         return findAllAsync(modelClass, false, ids);
     }
@@ -1119,16 +1045,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #findAll(Class, boolean, long...)} but pending to a new thread for executing.
-     *
-     * @param modelClass
-     *            Which table to query and the object type to return as a list.
-     * @param isEager
-     *            True to load the associated models, false not.
-     * @param ids
-     *            Which records to query. Or do not pass it to find all records.
-     * @return A FindMultiExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static <T> FindMultiExecutor<T> findAllAsync(final Class<T> modelClass, final boolean isEager, final long... ids) {
         final FindMultiExecutor<T> executor = new FindMultiExecutor<>();
         Runnable runnable = new Runnable() {
@@ -1221,14 +1141,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #delete(Class, long)} but pending to a new thread for executing.
-     *
-     * @param modelClass
-     *            Which table to delete from by class.
-     * @param id
-     *            Which record to delete.
-     * @return A UpdateOrDeleteExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static UpdateOrDeleteExecutor deleteAsync(final Class<?> modelClass, final long id) {
         final UpdateOrDeleteExecutor executor = new UpdateOrDeleteExecutor();
         Runnable runnable = new Runnable() {
@@ -1283,20 +1199,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #deleteAll(Class, String...)} but pending to a new thread for executing.
-     *
-     * @param modelClass
-     *            Which table to delete from by class.
-     * @param conditions
-     *            A string array representing the WHERE part of an SQL
-     *            statement. First parameter is the WHERE clause to apply when
-     *            deleting. The way of specifying place holders is to insert one
-     *            or more question marks in the SQL. The first question mark is
-     *            replaced by the second element of the array, the next question
-     *            mark by the third, and so on. Passing empty string will update
-     *            all rows.
-     * @return A UpdateOrDeleteExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static UpdateOrDeleteExecutor deleteAllAsync(final Class<?> modelClass, final String... conditions) {
         final UpdateOrDeleteExecutor executor = new UpdateOrDeleteExecutor();
         Runnable runnable = new Runnable() {
@@ -1354,20 +1260,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #deleteAll(String, String...)} but pending to a new thread for executing.
-     *
-     * @param tableName
-     *            Which table to delete from.
-     * @param conditions
-     *            A string array representing the WHERE part of an SQL
-     *            statement. First parameter is the WHERE clause to apply when
-     *            deleting. The way of specifying place holders is to insert one
-     *            or more question marks in the SQL. The first question mark is
-     *            replaced by the second element of the array, the next question
-     *            mark by the third, and so on. Passing empty string will update
-     *            all rows.
-     * @return A UpdateOrDeleteExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static UpdateOrDeleteExecutor deleteAllAsync(final String tableName, final String... conditions) {
         final UpdateOrDeleteExecutor executor = new UpdateOrDeleteExecutor();
         Runnable runnable = new Runnable() {
@@ -1419,17 +1315,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #update(Class, ContentValues, long)} but pending to a new thread for executing.
-     *
-     * @param modelClass
-     *            Which table to update by class.
-     * @param values
-     *            A map from column names to new column values. null is a valid
-     *            value that will be translated to NULL.
-     * @param id
-     *            Which record to update.
-     * @return A UpdateOrDeleteExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static UpdateOrDeleteExecutor updateAsync(final Class<?> modelClass, final ContentValues values, final long id) {
         final UpdateOrDeleteExecutor executor = new UpdateOrDeleteExecutor();
         Runnable runnable = new Runnable() {
@@ -1488,23 +1377,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #updateAll(Class, ContentValues, String...)} but pending to a new thread for executing.
-     *
-     * @param modelClass
-     *            Which table to update by class.
-     * @param values
-     *            A map from column names to new column values. null is a valid
-     *            value that will be translated to NULL.
-     * @param conditions
-     *            A string array representing the WHERE part of an SQL
-     *            statement. First parameter is the WHERE clause to apply when
-     *            updating. The way of specifying place holders is to insert one
-     *            or more question marks in the SQL. The first question mark is
-     *            replaced by the second element of the array, the next question
-     *            mark by the third, and so on. Passing empty string will update
-     *            all rows.
-     * @return A UpdateOrDeleteExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static UpdateOrDeleteExecutor updateAllAsync(Class<?> modelClass, ContentValues values, String... conditions) {
         return updateAllAsync(BaseUtility.changeCase(DBUtility.getTableNameByClassName(
                 modelClass.getName())), values, conditions);
@@ -1548,23 +1424,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #updateAll(String, ContentValues, String...)} but pending to a new thread for executing.
-     *
-     * @param tableName
-     *            Which table to update.
-     * @param values
-     *            A map from column names to new column values. null is a valid
-     *            value that will be translated to NULL.
-     * @param conditions
-     *            A string array representing the WHERE part of an SQL
-     *            statement. First parameter is the WHERE clause to apply when
-     *            updating. The way of specifying place holders is to insert one
-     *            or more question marks in the SQL. The first question mark is
-     *            replaced by the second element of the array, the next question
-     *            mark by the third, and so on. Passing empty string will update
-     *            all rows.
-     * @return A UpdateOrDeleteExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static UpdateOrDeleteExecutor updateAllAsync(final String tableName, final ContentValues values, final String... conditions) {
         final UpdateOrDeleteExecutor executor = new UpdateOrDeleteExecutor();
         Runnable runnable = new Runnable() {
@@ -1629,12 +1492,10 @@ public class Operator {
     }
 
     /**
-     * Basically same as {@link #saveAll(Collection)} but pending to a new thread for executing.
-     *
-     * @param collection
-     *            Holds all models to save.
-     * @return A SaveExecutor instance.
+     * This method is deprecated and will be removed in the future releases.
+     * Handle async db operation in your own logic instead.
      */
+    @Deprecated
     public static <T extends LitePalSupport> SaveExecutor saveAllAsync(final Collection<T> collection) {
         final SaveExecutor executor = new SaveExecutor();
         Runnable runnable = new Runnable() {

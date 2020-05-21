@@ -50,6 +50,7 @@ inline fun <reified T> FluentQuery.find(): List<T> = find(T::class.java)
  *
  * @return A FindMultiExecutor instance.
  */
+@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
 inline fun <reified T> FluentQuery.findAsync() = findAsync(T::class.java)
 
 /**
@@ -72,6 +73,7 @@ inline fun <reified T> FluentQuery.find(isEager: Boolean): List<T> = find(T::cla
  *            True to load the associated models, false not.
  * @return A FindMultiExecutor instance.
  */
+@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
 inline fun <reified T> FluentQuery.findAsync(isEager: Boolean) = findAsync(T::class.java, isEager)
 
 /**
@@ -93,6 +95,7 @@ inline fun <reified T> FluentQuery.findFirst(): T? = findFirst(T::class.java)
  *
  * @return A FindExecutor instance.
  */
+@Deprecated("This method is deprecated and will be removed in the future releases.", ReplaceWith("Handle async db operation in your own logic instead."))
 inline fun <reified T> FluentQuery.findFirstAsync(): FindExecutor<T> = findFirstAsync(T::class.java)
 
 /**
