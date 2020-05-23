@@ -18,6 +18,7 @@ package org.litepal.extension
 
 import android.content.ContentValues
 import org.litepal.LitePal
+import org.litepal.crud.LitePalSupport
 
 /**
  * Extension of LitePal class for Kotlin api.
@@ -27,15 +28,15 @@ import org.litepal.LitePal
 
 /**
  * Count the records.
- *
- * LitePal.count&lt;Person&gt;()
- *
+ * ```
+ * LitePal.count<Person>()
+ * ```
  * This will count all rows in person table.
  *
  * You can also specify a where clause when counting.
- *
- * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).count&lt;Person&gt;()
- *
+ * ```
+ * LitePal.where("age > ?", "15").count<Person>()
+ * ```
  * @return Count of the specified table.
  */
 inline fun <reified T> LitePal.count() = count(T::class.java)
@@ -50,13 +51,13 @@ inline fun <reified T> LitePal.countAsync() = countAsync(T::class.java)
 
 /**
  * Calculates the average value on a given column.
- *
- * LitePal.average&lt;Person&gt;(&quot;age&quot;)
- *
+ * ```
+ * LitePal.average<Person>("age")
+ * ```
  * You can also specify a where clause when calculating.
- *
- * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).average&lt;Person&gt;(&quot;age&quot;)
- *
+ * ```
+ * LitePal.where("age > ?", "15").average<Person>("age")
+ * ```
  * @param column
  * The based on column to calculate.
  * @return The average value on a given column.
@@ -76,13 +77,13 @@ inline fun <reified T> LitePal.averageAsync(column: String) = averageAsync(T::cl
 /**
  * Calculates the maximum value on a given column. The value is returned
  * with the same data type of the column.
- *
- * LitePal.max&lt;Person, Int&gt;(&quot;age&quot;)
- *
+ * ```
+ * LitePal.max<Person, Int>("age")
+ * ```
  * You can also specify a where clause when calculating.
- *
- * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).max&lt;Person, Int&gt;(&quot;age&quot;)
- *
+ * ```
+ * LitePal.where("age > ?", "15").max<Person, Int>("age")
+ * ```
  * @param columnName
  * The based on column to calculate.
  *
@@ -103,13 +104,13 @@ inline fun <reified T, reified R> LitePal.maxAsync(columnName: String) = maxAsyn
 /**
  * Calculates the maximum value on a given column. The value is returned
  * with the same data type of the column.
- *
- * LitePal.max&lt;Int&gt;(&quot;person&quot;, &quot;age&quot;)
- *
+ * ```
+ * LitePal.max<Int>("person", "age")
+ * ```
  * You can also specify a where clause when calculating.
- *
- * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).max&lt;Int&gt;(&quot;person&quot;, &quot;age&quot;)
- *
+ * ```
+ * LitePal.where("age > ?", "15").max<Int>("person", "age")
+ * ```
  * @param tableName
  * Which table to query from.
  * @param columnName
@@ -133,13 +134,13 @@ inline fun <reified R> LitePal.maxAsync(tableName: String, columnName: String) =
 /**
  * Calculates the minimum value on a given column. The value is returned
  * with the same data type of the column.
- *
- * LitePal.min&lt;Person, Int&gt;(&quot;age&quot;)
- *
+ * ```
+ * LitePal.min<Person, Int>("age")
+ * ```
  * You can also specify a where clause when calculating.
- *
- * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).min&lt;Person, Int&gt;(&quot;age&quot;)
- *
+ * ```
+ * LitePal.where("age > ?", "15").min<Person, Int>("age")
+ * ```
  * @param columnName
  * The based on column to calculate.
  * @return The minimum value on a given column.
@@ -159,13 +160,13 @@ inline fun <reified T, reified R> LitePal.minAsync(columnName: String) = minAsyn
 /**
  * Calculates the minimum value on a given column. The value is returned
  * with the same data type of the column.
- *
- * LitePal.min&lt;Int&gt;(&quot;person&quot;, &quot;age&quot;)
- *
+ * ```
+ * LitePal.min<Int>("person", "age")
+ * ```
  * You can also specify a where clause when calculating.
- *
- * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).min&lt;Int&gt;(&quot;person&quot;, &quot;age&quot;)
- *
+ * ```
+ * LitePal.where("age > ?", "15").min<Int>("person", "age")
+ * ```
  * @param tableName
  * Which table to query from.
  * @param columnName
@@ -189,13 +190,13 @@ inline fun <reified R> LitePal.minAsync(tableName: String, columnName: String) =
 /**
  * Calculates the sum of values on a given column. The value is returned
  * with the same data type of the column.
- *
- * LitePal.sum&lt;Person, Int&gt;(&quot;age&quot;)
- *
+ * ```
+ * LitePal.sum<Person, Int>("age")
+ * ```
  * You can also specify a where clause when calculating.
- *
- * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).sum&lt;Person, Int&gt;(&quot;age&quot;)
- *
+ * ```
+ * LitePal.where("age > ?", "15").sum<Person, Int>("age")
+ * ```
  * @param columnName
  * The based on column to calculate.
  * @return The sum value on a given column.
@@ -215,13 +216,13 @@ inline fun <reified T, reified R> LitePal.sumAsync(columnName: String) = sumAsyn
 /**
  * Calculates the sum of values on a given column. The value is returned
  * with the same data type of the column.
- *
- * LitePal.sum&lt;Int&gt;(&quot;person&quot;, &quot;age&quot;)
- *
+ * ```
+ * LitePal.sum<Int>("person", "age")
+ * ```
  * You can also specify a where clause when calculating.
- *
- * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).sum&lt;Int&gt;(&quot;person&quot;, &quot;age&quot;)
- *
+ * ```
+ * LitePal.where("age > ?", "15").sum<Int>("person", "age")
+ * ```
  * @param tableName
  * Which table to query from.
  * @param columnName
@@ -244,9 +245,9 @@ inline fun <reified R> LitePal.sumAsync(tableName: String, columnName: String) =
 
 /**
  * Finds the record by a specific id.
- *
- * val person = LitePal.find&lt;Person&gt;(1)
- *
+ * ```
+ * val person = LitePal.find<Person>(1)
+ * ```
  * Note that the associated models won't be loaded by default considering
  * the efficiency, but you can do that by using[LitePal.find] with isEager parameter.
  *
@@ -295,9 +296,9 @@ inline fun <reified T> LitePal.findAsync(id: Long, isEager: Boolean) = find(T::c
 
 /**
  * Finds the first record of a single table.
- *
- * val person = LitePal.findFirst&lt;Person&gt;()
- *
+ * ```
+ * val person = LitePal.findFirst<Person>()
+ * ```
  * Note that the associated models won't be loaded by default considering
  * the efficiency, but you can do that by using
  * [LitePal.findFirst] with isEager parameter.
@@ -339,9 +340,9 @@ inline fun <reified T> LitePal.findFirstAsync(isEager: Boolean) = findFirstAsync
 
 /**
  * Finds the last record of a single table.
- *
- * val p = LitePal.findLast&lt;Person&gt;()
- *
+ * ```
+ * val p = LitePal.findLast<Person>()
+ * ```
  * Note that the associated models won't be loaded by default considering
  * the efficiency, but you can do that by using
  * [LitePal.findLast] with isEager parameter.
@@ -383,17 +384,15 @@ inline fun <reified T> LitePal.findLastAsync(isEager: Boolean) = findLastAsync(T
 
 /**
  * Finds multiple records by an id array.
- *
- * val people = LitePal.findAll&lt;Person&gt;(1, 2, 3)
- *
+ * ```
+ * val people = LitePal.findAll<Person>(1, 2, 3)
  * val bookIds = longArrayOf(10, 18)
- *
- * LitePal.findAll&lt;Book&gt;(*bookIds)
- *
+ * LitePal.findAll<Book>(*bookIds)
+ * ```
  * Of course you can find all records by passing nothing to the ids
  * parameter.
  *
- * val allBooks = LitePal.findAll&lt;Book&gt;()
+ * val allBooks = LitePal.findAll<Book>()
  *
  * Note that the associated models won't be loaded by default considering
  * the efficiency, but you can do that by using
@@ -447,9 +446,9 @@ inline fun <reified T> LitePal.findAllAsync(isEager: Boolean, vararg ids: Long) 
  *
  * The data in other tables which is referenced with the record will be
  * removed too.
- *
- * LitePal.delete&lt;Person&gt;(1)
- *
+ * ```
+ * LitePal.delete<Person>(1)
+ * ```
  * This means that the record 1 in person table will be removed.
  *
  * @param id
@@ -472,9 +471,9 @@ inline fun <reified T> LitePal.deleteAsync(id: Long) = deleteAsync(T::class.java
  * Deletes all records with details given if they match a set of conditions
  * supplied. This method constructs a single SQL DELETE statement and sends
  * it to the database.
- *
- * LitePal.deleteAll&lt;Person&gt;(&quot;name = ? and age = ?&quot;, &quot;Tom&quot;, &quot;14&quot;)
- *
+ * ```
+ * LitePal.deleteAll<Person>("name = ? and age = ?", "Tom", "14")
+ * ```
  * This means that all the records which name is Tom and age is 14 will be
  * removed.
  *
@@ -509,13 +508,11 @@ inline fun <reified T> LitePal.deleteAllAsync(vararg conditions: String?) = dele
 /**
  * Updates the corresponding record by id with ContentValues. Returns the
  * number of affected rows.
- *
+ * ```
  * val cv = ContentValues()
- *
- * cv.put(&quot;name&quot;, &quot;Jim&quot;)
- *
- * LitePal.update&lt;Person&gt;(cv, 1)
- *
+ * cv.put("name", "Jim")
+ * LitePal.update<Person>(cv, 1)
+ * ```
  * This means that the name of record 1 will be updated into Jim.
  *
  * @param values
@@ -544,13 +541,11 @@ inline fun <reified T> LitePal.updateAsync(values: ContentValues, id: Long) = up
  * Updates all records with details given if they match a set of conditions
  * supplied. This method constructs a single SQL UPDATE statement and sends
  * it to the database.
- *
+ * ```
  * val cv = ContentValues()
- *
- * cv.put(&quot;name&quot;, &quot;Jim&quot;)
- *
- * LitePal.update&lt;Person&gt;(cv, &quot;name = ?&quot;, &quot;Tom&quot;)
- *
+ * cv.put("name", "Jim")
+ * LitePal.update<Person>(cv, "name = ?", "Tom")
+ * ```
  * This means that all the records which name is Tom will be updated into
  * Jim.
  *
@@ -597,3 +592,28 @@ inline fun <reified T> LitePal.updateAllAsync(values: ContentValues, vararg cond
  * False otherwise. Null conditions will result in false.
  */
 inline fun <reified T> LitePal.isExist(vararg conditions: String?) = isExist(T::class.java, *conditions)
+
+/**
+ * Saves the collection into database.
+ * ```
+ * val people = listOf<Person>(...)
+ * people.saveAll();
+ * ```
+ * If the model in collection is a new record gets created in the database,
+ * otherwise the existing record gets updated.
+ *
+ * If saving process failed by any accident, the whole action will be
+ * cancelled and your database will be **rolled back**.
+ *
+ * This method acts the same result as the below way, but **much more
+ * efficient**.
+ * ```
+ * for (person in people) {
+ *      person.save()
+ * }
+ * ```
+ *
+ * @param collection
+ * Holds all models to save.
+ */
+fun <T : LitePalSupport> Collection<T>.saveAll() = LitePal.saveAll(this)

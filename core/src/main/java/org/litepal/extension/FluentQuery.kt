@@ -28,14 +28,14 @@ import org.litepal.crud.async.FindExecutor
 /**
  * Finds multiple records by the cluster parameters. You can use the below
  * way to finish a complicated query:
- *
- * LitePal.select(&quot;name&quot;).where(&quot;age &gt; ?&quot;, &quot;14&quot;).order(&quot;age&quot;).limit(1).offset(2).find&lt;Person&gt;()
- *
+ * ```
+ * LitePal.select("name").where("age > ?", "14").order("age").limit(1).offset(2).find<Person>()
+ * ```
  * You can also do the same job with SQLiteDatabase like this:
- *
- * getSQLiteDatabase().query(&quot;Person&quot;, &quot;name&quot;, &quot;age &gt; ?&quot;, new String[] { &quot;14&quot; }, null, null, &quot;age&quot;,
- * 		&quot;2,1&quot;)
- *
+ * ```
+ * getSQLiteDatabase().query("Person", "name", "age > ?", new String[] { "14" }, null, null, "age",
+ * 		"2,1")
+ * ```
  * Obviously, the first way is much more semantic.<br>
  * Note that the associated models won't be loaded by default considering
  * the efficiency, but you can do that by using
@@ -54,7 +54,7 @@ inline fun <reified T> FluentQuery.find(): List<T> = find(T::class.java)
 inline fun <reified T> FluentQuery.findAsync() = findAsync(T::class.java)
 
 /**
- * It is mostly same as {@link FluentQuery#find(Class)} but an isEager
+ * It is mostly same as [FluentQuery.find(Class)] but an isEager
  * parameter. If set true the associated models will be loaded as well.
  *
  * Note that isEager will only work for one deep level relation, considering the query efficiency.
@@ -79,12 +79,12 @@ inline fun <reified T> FluentQuery.findAsync(isEager: Boolean) = findAsync(T::cl
 /**
  * Finds the first record by the cluster parameters. You can use the below
  * way to finish a complicated query:
- *
- * LitePal.select(&quot;name&quot;).where(&quot;age &gt; ?&quot;, &quot;14&quot;).order(&quot;age&quot;).limit(10).offset(2).findFirst&lt;Person&gt;()
- *
+ * ```
+ * LitePal.select("name").where("age > ?", "14").order("age").limit(10).offset(2).findFirst<Person>()
+ * ```
  * Note that the associated models won't be loaded by default considering
  * the efficiency, but you can do that by using
- * {@link FluentQuery#findFirst(Class, boolean)}.
+ * [FluentQuery.findFirst(Class, boolean)].
  *
  * @return An object with founded data from database, or null.
  */
@@ -99,7 +99,7 @@ inline fun <reified T> FluentQuery.findFirst(): T? = findFirst(T::class.java)
 inline fun <reified T> FluentQuery.findFirstAsync(): FindExecutor<T> = findFirstAsync(T::class.java)
 
 /**
- * It is mostly same as {@link FluentQuery#findFirst(Class)} but an isEager
+ * It is mostly same as [FluentQuery.findFirst(Class)] but an isEager
  * parameter. If set true the associated models will be loaded as well.
  *
  * Note that isEager will only work for one deep level relation, considering the query efficiency.
@@ -114,19 +114,19 @@ inline fun <reified T> FluentQuery.findFirst(isEager: Boolean): T? = findFirst(T
 /**
  * Finds the last record by the cluster parameters. You can use the below
  * way to finish a complicated query:
- *
- * LitePal.select(&quot;name&quot;).where(&quot;age &gt; ?&quot;, &quot;14&quot;).order(&quot;age&quot;).limit(10).offset(2).findLast&lt;Person&gt;()
- *
+ * ```
+ * LitePal.select("name").where("age > ?", "14").order("age").limit(10).offset(2).findLast<Person>()
+ * ```
  * Note that the associated models won't be loaded by default considering
  * the efficiency, but you can do that by using
- * {@link FluentQuery#findLast(Class, boolean)}.
+ * [FluentQuery.findLast(Class, boolean)].
  *
  * @return An object with founded data from database, or null.
  */
 inline fun <reified T> FluentQuery.findLast(): T? = findLast(T::class.java)
 
 /**
- * It is mostly same as {@link FluentQuery#findLast(Class)} but an isEager
+ * It is mostly same as [FluentQuery.findLast(Class)] but an isEager
  * parameter. If set true the associated models will be loaded as well.
  *
  * Note that isEager will only work for one deep level relation, considering the query efficiency.
@@ -140,28 +140,28 @@ inline fun <reified T> FluentQuery.findLast(isEager: Boolean): T? = findLast(T::
 
 /**
  * Count the records.
- *
- * LitePal.count&lt;Person&gt;()
- *
+ * ```
+ * LitePal.count<Person>()
+ * ```
  * This will count all rows in person table.
  *
  * You can also specify a where clause when counting.
- *
- * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).count&lt;Person&gt;()
- *
+ * ```
+ * LitePal.where("age > ?", "15").count<Person>()
+ * ```
  * @return Count of the specified table.
  */
 inline fun <reified T> FluentQuery.count() = count(T::class.java)
 
 /**
  * Calculates the average value on a given column.
- *
- * LitePal.average&lt;Person&gt;(&quot;age&quot;)
- *
+ * ```
+ * LitePal.average<Person>("age")
+ * ```
  * You can also specify a where clause when calculating.
- *
- * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).average&lt;Person&gt;(&quot;age&quot;)
- *
+ * ```
+ * LitePal.where("age > ?", "15").average<Person>("age")
+ * ```
  * @param column
  * The based on column to calculate.
  * @return The average value on a given column.
@@ -171,13 +171,13 @@ inline fun <reified T> FluentQuery.average(column: String) = average(T::class.ja
 /**
  * Calculates the maximum value on a given column. The value is returned
  * with the same data type of the column.
- *
- * LitePal.max&lt;Person, Int&gt;(&quot;age&quot;)
- *
+ * ```
+ * LitePal.max<Person, Int>("age")
+ * ```
  * You can also specify a where clause when calculating.
- *
- * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).max&lt;Person, Int&gt;(&quot;age&quot;)
- *
+ * ```
+ * LitePal.where("age > ?", "15").max<Person, Int>("age")
+ * ```
  * @param columnName
  * The based on column to calculate.
  *
@@ -188,13 +188,13 @@ inline fun <reified T, reified R> FluentQuery.max(columnName: String): R = max(T
 /**
  * Calculates the maximum value on a given column. The value is returned
  * with the same data type of the column.
- *
- * LitePal.max&lt;Int&gt;(&quot;person&quot;, &quot;age&quot;)
- *
+ * ```
+ * LitePal.max<Int>("person", "age")
+ * ```
  * You can also specify a where clause when calculating.
- *
- * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).max&lt;Int&gt;(&quot;person&quot;, &quot;age&quot;)
- *
+ * ```
+ * LitePal.where("age > ?", "15").max<Int>("person", "age")
+ * ```
  * @param tableName
  * Which table to query from.
  * @param columnName
@@ -206,13 +206,13 @@ inline fun <reified R> FluentQuery.max(tableName: String, columnName: String): R
 /**
  * Calculates the minimum value on a given column. The value is returned
  * with the same data type of the column.
- *
- * LitePal.min&lt;Person, Int&gt;(&quot;age&quot;)
- *
+ * ```
+ * LitePal.min<Person, Int>("age")
+ * ```
  * You can also specify a where clause when calculating.
- *
- * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).min&lt;Person, Int&gt;(&quot;age&quot;)
- *
+ * ```
+ * LitePal.where("age > ?", "15").min<Person, Int>("age")
+ * ```
  * @param columnName
  * The based on column to calculate.
  * @return The minimum value on a given column.
@@ -222,13 +222,13 @@ inline fun <reified T, reified R> FluentQuery.min(columnName: String): R = min(T
 /**
  * Calculates the minimum value on a given column. The value is returned
  * with the same data type of the column.
- *
- * LitePal.min&lt;Int&gt;(&quot;person&quot;, &quot;age&quot;)
- *
+ * ```
+ * LitePal.min<Int>("person", "age")
+ * ```
  * You can also specify a where clause when calculating.
- *
- * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).min&lt;Int&gt;(&quot;person&quot;, &quot;age&quot;)
- *
+ * ```
+ * LitePal.where("age > ?", "15").min<Int>("person", "age")
+ * ```
  * @param tableName
  * Which table to query from.
  * @param columnName
@@ -240,13 +240,13 @@ inline fun <reified R> FluentQuery.min(tableName: String, columnName: String): R
 /**
  * Calculates the sum of values on a given column. The value is returned
  * with the same data type of the column.
- *
- * LitePal.sum&lt;Person, Int&gt;(&quot;age&quot;)
- *
+ * ```
+ * LitePal.sum<Person, Int>("age")
+ * ```
  * You can also specify a where clause when calculating.
- *
- * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).sum&lt;Person, Int&gt;(&quot;age&quot;)
- *
+ * ```
+ * LitePal.where("age > ?", "15").sum<Person, Int>("age")
+ * ```
  * @param columnName
  * The based on column to calculate.
  * @return The sum value on a given column.
@@ -256,13 +256,13 @@ inline fun <reified T, reified R> FluentQuery.sum(columnName: String): R = sum(T
 /**
  * Calculates the sum of values on a given column. The value is returned
  * with the same data type of the column.
- *
- * LitePal.sum&lt;Int&gt;(&quot;person&quot;, &quot;age&quot;)
- *
+ * ```
+ * LitePal.sum<Int>("person", "age")
+ * ```
  * You can also specify a where clause when calculating.
- *
- * LitePal.where(&quot;age &gt; ?&quot;, &quot;15&quot;).sum&lt;Int&gt;(&quot;person&quot;, &quot;age&quot;)
- *
+ * ```
+ * LitePal.where("age > ?", "15").sum<Int>("person", "age")
+ * ```
  * @param tableName
  * Which table to query from.
  * @param columnName
