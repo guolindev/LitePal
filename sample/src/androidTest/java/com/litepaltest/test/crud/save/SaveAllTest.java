@@ -20,6 +20,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 
 @SmallTest
@@ -45,7 +46,7 @@ public class SaveAllTest {
             cellPhone.setSerial(UUID.randomUUID().toString());
 			cellList.add(cellPhone);
 		}
-		LitePal.saveAll(cellList);
+		assertTrue(LitePal.saveAll(cellList));
 		for (Cellphone cell : cellList) {
 			assertTrue(cell.isSaved());
 		}
@@ -61,7 +62,7 @@ public class SaveAllTest {
 			student.setAge(new Random().nextInt(20));
 			classroom.getStudentCollection().add(student);
 		}
-        LitePal.saveAll(classroom.getStudentCollection());
+		assertTrue(LitePal.saveAll(classroom.getStudentCollection()));
 		classroom.save();
 		List<Student> list = LitePal.where(classroomTable + "_id = ?",
 				String.valueOf(classroom.get_id())).find(Student.class);
@@ -81,7 +82,7 @@ public class SaveAllTest {
 			student.setClassroom(classroom);
 			studentList.add(student);
 		}
-        LitePal.saveAll(studentList);
+		assertTrue(LitePal.saveAll(studentList));
 		classroom.save();
 		List<Student> list = LitePal.where(classroomTable + "_id = ?",
 				String.valueOf(classroom.get_id())).find(Student.class);
@@ -102,8 +103,8 @@ public class SaveAllTest {
 			idcardList.add(idcard);
 			studentList.add(student);
 		}
-        LitePal.saveAll(idcardList);
-        LitePal.saveAll(studentList);
+		assertTrue(LitePal.saveAll(idcardList));
+		assertTrue(LitePal.saveAll(studentList));
 		for (Student student : studentList) {
 			List<IdCard> result = LitePal
 					.where(studentTable + "_id=?", String.valueOf(student.getId())).find(IdCard.class);
@@ -139,8 +140,8 @@ public class SaveAllTest {
 			student.getTeachers().add(teacherList.get(index3));
 			studentList.add(student);
 		}
-        LitePal.saveAll(studentList);
-        LitePal.saveAll(teacherList);
+		assertTrue(LitePal.saveAll(studentList));
+		assertTrue(LitePal.saveAll(teacherList));
         String studentTable = DBUtility.getTableNameByClassName(Student.class.getName());
         String teacherTable = DBUtility.getTableNameByClassName(Teacher.class.getName());
         String tableName = DBUtility.getIntermediateTableName(studentTable, teacherTable);
@@ -167,7 +168,7 @@ public class SaveAllTest {
             }
             classroomList.add(classroom);
         }
-        LitePal.saveAll(classroomList);
+		assertTrue(LitePal.saveAll(classroomList));
         assertEquals(50, classroomList.size());
         for (Classroom classroom : classroomList) {
             assertTrue(classroom.isSaved());
@@ -177,5 +178,20 @@ public class SaveAllTest {
             assertEquals(13, c.getNumbers().size());
         }
     }
+
+    @Test
+    public void testSaveAllFailed() {
+    	List<Cellphone> cellphones = new ArrayList<>();
+    	String serial = UUID.randomUUID().toString();
+		for (int i = 0; i < 20; i++) {
+			Cellphone cellphone = new Cellphone();
+			cellphone.setBrand("Apple");
+			cellphone.setSerial(serial + (i % 10)); // serial is unique, so this should save failed
+			cellphones.add(cellphone);
+		}
+		assertFalse(LitePal.saveAll(cellphones));
+		List<Cellphone> list = LitePal.where("serial like ?", serial + "%").find(Cellphone.class);
+		assertTrue(list.isEmpty());
+	}
 
 }

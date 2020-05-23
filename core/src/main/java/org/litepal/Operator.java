@@ -92,9 +92,7 @@ public class Operator {
      * @return A writable SQLiteDatabase instance
      */
     public static SQLiteDatabase getDatabase() {
-        synchronized (LitePalSupport.class) {
-            return Connector.getDatabase();
-        }
+        return Connector.getDatabase();
     }
 
     /**
@@ -1474,8 +1472,9 @@ public class Operator {
      *
      * @param collection
      *            Holds all models to save.
+     * @return True if all records in collection are saved. False none record in collection is saved. There won't be partial saved condition.
      */
-    public static <T extends LitePalSupport> void saveAll(Collection<T> collection) {
+    public static <T extends LitePalSupport> boolean saveAll(Collection<T> collection) {
         synchronized (LitePalSupport.class) {
             SQLiteDatabase db = Connector.getDatabase();
             db.beginTransaction();
@@ -1483,8 +1482,10 @@ public class Operator {
                 SaveHandler saveHandler = new SaveHandler(db);
                 saveHandler.onSaveAll(collection);
                 db.setTransactionSuccessful();
+                return true;
             } catch (Exception e) {
-                throw new LitePalSupportException(e.getMessage(), e);
+                e.printStackTrace();
+                return false;
             } finally {
                 db.endTransaction();
             }
