@@ -19,6 +19,7 @@ package org.litepal.extension
 import android.content.ContentValues
 import org.litepal.LitePal
 import org.litepal.crud.LitePalSupport
+import java.lang.Exception
 
 /**
  * Extension of LitePal class for Kotlin api.
@@ -617,3 +618,21 @@ inline fun <reified T> LitePal.isExist(vararg conditions: String?) = isExist(T::
  * Holds all models to save.
  */
 fun <T : LitePalSupport> Collection<T>.saveAll() = LitePal.saveAll(this)
+
+/**
+ * Open a transaction scope, all codes in the lambda will under transaction.
+ * If lambda return true, all db operations in lambda will be committed.
+ * Otherwise all db operations will be rolled back.
+ */
+inline fun LitePal.runInTransaction(block: () -> Boolean) {
+    beginTransaction()
+    val succeeded = try {
+        block()
+    } catch (e: Exception) {
+        false
+    }
+    if (succeeded) {
+        setTransactionSuccessful()
+    }
+    endTransaction()
+}
