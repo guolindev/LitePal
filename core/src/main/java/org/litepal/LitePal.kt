@@ -55,6 +55,26 @@ object LitePal {
     fun getDatabase(): SQLiteDatabase = Operator.getDatabase()
 
     /**
+     * Begins a transaction in EXCLUSIVE mode.
+     */
+    @JvmStatic
+    fun beginTransaction() = Operator.beginTransaction()
+
+    /**
+     * End a transaction.
+     */
+    @JvmStatic
+    fun endTransaction() = Operator.endTransaction()
+
+    /**
+     * Marks the current transaction as successful. Do not do any more database work between calling this and calling endTransaction.
+     * Do as little non-database work as possible in that situation too.
+     * If any errors are encountered between this and endTransaction the transaction will still be committed.
+     */
+    @JvmStatic
+    fun setTransactionSuccessful() = Operator.setTransactionSuccessful()
+
+    /**
      * Switch the using database to the one specified by parameter.
      * @param litePalDB
      * The database to switch to.

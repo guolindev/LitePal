@@ -203,13 +203,18 @@ public class LitePalSupport {
 	 */
 	public int update(long id) {
         synchronized (LitePalSupport.class) {
+            SQLiteDatabase db = Connector.getDatabase();
+            db.beginTransaction();
             try {
                 UpdateHandler updateHandler = new UpdateHandler(Connector.getDatabase());
                 int rowsAffected = updateHandler.onUpdate(this, id);
                 getFieldsToSetToDefault().clear();
+                db.setTransactionSuccessful();
                 return rowsAffected;
             } catch (Exception e) {
                 throw new LitePalSupportException(e.getMessage(), e);
+            } finally {
+                db.endTransaction();
             }
         }
 	}
@@ -272,13 +277,18 @@ public class LitePalSupport {
 	 */
 	public int updateAll(String... conditions) {
         synchronized (LitePalSupport.class) {
+            SQLiteDatabase db = Connector.getDatabase();
+            db.beginTransaction();
             try {
                 UpdateHandler updateHandler = new UpdateHandler(Connector.getDatabase());
                 int rowsAffected = updateHandler.onUpdateAll(this, conditions);
                 getFieldsToSetToDefault().clear();
+                db.setTransactionSuccessful();
                 return rowsAffected;
             } catch (Exception e) {
                 throw new LitePalSupportException(e.getMessage(), e);
+            } finally {
+                db.endTransaction();
             }
         }
 	}
