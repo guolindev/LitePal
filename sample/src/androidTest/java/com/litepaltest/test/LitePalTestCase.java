@@ -26,7 +26,6 @@ import static junit.framework.TestCase.assertTrue;
 public class LitePalTestCase {
 
 	protected void assertM2M(String table1, String table2, long id1, long id2) {
-
 		assertTrue(isIntermediateDataCorrect(table1, table2, id1, id2));
 	}
 
