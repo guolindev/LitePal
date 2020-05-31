@@ -616,6 +616,7 @@ inline fun <reified T> LitePal.isExist(vararg conditions: String?) = isExist(T::
  *
  * @param collection
  * Holds all models to save.
+ * @return True if all records in collection are saved. False none record in collection is saved. There won't be partial saved condition.
  */
 fun <T : LitePalSupport> Collection<T>.saveAll() = LitePal.saveAll(this)
 

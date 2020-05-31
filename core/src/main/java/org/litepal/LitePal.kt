@@ -1086,6 +1086,7 @@ object LitePal {
      *
      * @param collection
      * Holds all models to save.
+     * @return True if all records in collection are saved. False none record in collection is saved. There won't be partial saved condition.
      */
     @JvmStatic
     fun <T : LitePalSupport> saveAll(collection: Collection<T>) = Operator.saveAll(collection)
