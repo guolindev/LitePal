@@ -445,16 +445,6 @@ If you are using ProGuard you might need to add the following option:
 }
 ```
 
-## Developed By
- * Tony Green
- 
-## Sample App
-The sample app has been published onto Google Play for easy access. 
-
-Get it on:
-
-[![Google Play](http://www.gstatic.com/android/market_images/web/play_logo.png)](https://play.google.com/store/apps/details?id=org.litepal.litepalsample)
-
 ## Bugs Report
 If you find any bug when using LitePal, please report **[here](https://github.com/LitePalFramework/LitePal/issues/new)**. Thanks for helping us making better.
 
