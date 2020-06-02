@@ -20,17 +20,9 @@ Experience the magic right now and have fun!
 
 Edit your **build.gradle** file and add below dependency.
 
-If you program with Java:
 ``` groovy
 dependencies {
-    implementation 'org.litepal.android:java:3.0.0'
-}
-```
-
-If you program with Kotlin:
-``` groovy
-dependencies {
-    implementation 'org.litepal.android:kotlin:3.0.0'
+    implementation 'org.litepal.guolindev:core:3.1.0'
 }
 ```
 
@@ -141,8 +133,6 @@ public class Album extends LitePalSupport {
 	
     private float price;
 	
-    private byte[] cover;
-	
     private List<Song> songs = new ArrayList<Song>();
 
     // generated getters and setters.
@@ -182,8 +172,7 @@ Now the tables will be generated automatically with SQLs like this:
 CREATE TABLE album (
 	id integer primary key autoincrement,
 	name text unique default 'unknown',
-	price real,
-	cover blob
+	price real
 );
 
 CREATE TABLE song (
@@ -204,8 +193,6 @@ public class Album extends LitePalSupport {
 	
     @Column(ignore = true)
     private float price;
-	
-    private byte[] cover;
 	
     private Date releaseDate;
 	
@@ -391,64 +378,7 @@ Kotlin:
 val songs = LitePal.where("name like ? and duration < ?", "song%", "200").order("duration").find<Song>()
 ```
 
-#### 7. Async operations
-Every database operation is on main thread by default. If your operation might spent a long time,
-for example saving or querying tons of records. You may want to use async operations.
-
-LitePal support async operations on all crud methods. If you want to find all records from song table
-on a background thread, use codes like this.
-
-Java:
-```java
-LitePal.findAllAsync(Song.class).listen(new FindMultiCallback<Song>() {
-    @Override
-    public void onFinish(List<Song> allSongs) {
-    
-    }
-});
-```
-
-Kotlin:
-```kotlin
-LitePal.findAsync<Song>().listen { allSongs ->
-
-}
-```
-
-Just use **findAllAsync()** instead of **findAll()**, and append a **listen()** method, the finding result will
-be callback to **onFinish()** method once it finished.
-
-Abd saving asynchronously is quite the same.
-
-Java:
-```java
-Album album = new Album();
-album.setName("album");
-album.setPrice(10.99f);
-album.setCover(getCoverImageBytes());
-album.saveAsync().listen(new SaveCallback() {
-    @Override
-    public void onFinish(boolean success) {
-
-    }
-});
-```
-
-Kotlin:
-```kotlin
-val album = Album()
-album.name = "album"
-album.price = 10.99f
-album.cover = getCoverImageBytes()
-album.saveAsync().listen { success ->
-
-}
-```
-
-Just use **saveAsync()** instead of **save()**. It will save Album into database on a background, and
-the saving result will be callback to **onFinish()** method.
-
-#### 8. Multiple databases
+#### 7. Multiple databases
 If your app needs multiple databases, LitePal support it completely. You can create as many databases as you want at runtime. For example:
 ```java
 LitePalDB litePalDB = new LitePalDB("demo2", 1);
@@ -473,20 +403,29 @@ And you can delete any database by specified database name:
 LitePal.deleteDatabase("newdb");
 ```
 
-#### 9. Listen database create or upgrade
-If you need to listen database create or upgrade events and fill some initial data in the callbacks, you can do it like this:
-```java
-LitePal.registerDatabaseListener(new DatabaseListener() {
-    @Override
-    public void onCreate() {
-    	// fill some initial data
-    }
+#### 8. Transaction
+LitePal support transaction for atomic db operations. All operations in the transaction will be committed or rolled back together.
 
-    @Override
-    public void onUpgrade(int oldVersion, int newVersion) {
-    	// upgrade data in db
-    }
-});
+Java usage:
+```java
+LitePal.beginTransaction();
+boolean result1 = // db operation1
+boolean result2 = // db operation2
+boolean result3 = // db operation3
+if (result1 && result2 && result3) {
+    LitePal.setTransactionSuccessful();
+}
+LitePal.endTransaction();
+```
+
+Kotlin usage:
+```kotlin
+LitePal.runInTransaction {
+    val result1 = // db operation1
+    val result2 = // db operation2
+    val result3 = // db operation3
+    result1 && result2 && result3
+}
 ```
 
 ## ProGuard
@@ -506,21 +445,18 @@ If you are using ProGuard you might need to add the following option:
 }
 ```
 
-## Developed By
- * Tony Green
- 
-## Sample App
-The sample app has been published onto Google Play for easy access. 
-
-Get it on:
-
-[![Google Play](http://www.gstatic.com/android/market_images/web/play_logo.png)](https://play.google.com/store/apps/details?id=org.litepal.litepalsample)
-
 ## Bugs Report
 If you find any bug when using LitePal, please report **[here](https://github.com/LitePalFramework/LitePal/issues/new)**. Thanks for helping us making better.
 
 ## Change logs
 
+### 3.1.0
+ * Support transaction.
+ * Add return value for ***LitePal.saveAll()** method.
+ * No longer support byte array field as column in table.
+ * Deprecate all async methods. You should handle async operations by yourself.
+ * Fix known bugs.
+ 
 ### 3.0.0
  * Optimize generic usage for async operation APIs.
  * Add **LitePal.registerDatabaseListener()** method for listening create or upgrade database events.
