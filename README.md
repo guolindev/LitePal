@@ -22,7 +22,7 @@ Edit your **build.gradle** file and add below dependency.
 
 ``` groovy
 dependencies {
-    implementation 'org.litepal.guolindev:core:3.1.0'
+    implementation 'org.litepal.guolindev:core:3.1.1'
 }
 ```
 
@@ -450,7 +450,7 @@ If you find any bug when using LitePal, please report **[here](https://github.co
 
 ## Change logs
 
-### 3.1.0
+### 3.1.1
  * Support transaction.
  * Add return value for ***LitePal.saveAll()** method.
  * No longer support byte array field as column in table.
