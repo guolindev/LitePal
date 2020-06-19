@@ -543,8 +543,9 @@ public class LitePalSupport {
      * Assigns value to baseObjId. This will override the original value. <b>Never call this method
      * unless you know exactly what you are doing.</b>
      * @param baseObjId
+     *          Assigns value to baseObjId.
      */
-    public void assignBaseObjId(int baseObjId) {
+    public void assignBaseObjId(long baseObjId) {
         this.baseObjId = baseObjId;
     }
 
