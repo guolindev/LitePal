@@ -7,6 +7,7 @@ public class IdCard extends LitePalSupport {
 	private String number;
 	private String address;
 	private Student student;
+	private long serial;
 //	private Teacher teacher;
 
 	/**
@@ -68,4 +69,11 @@ public class IdCard extends LitePalSupport {
 		this.student = student;
 	}
 
+	public long getSerial() {
+		return serial;
+	}
+
+	public void setSerial(long serial) {
+		this.serial = serial;
+	}
 }

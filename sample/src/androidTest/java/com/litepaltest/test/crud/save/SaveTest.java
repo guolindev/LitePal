@@ -235,4 +235,14 @@ public class SaveTest extends LitePalTestCase {
         }
     }
 
+    @Test
+    public void testSaveLongMaximumNumber() {
+    	IdCard idCard = new IdCard();
+    	idCard.setSerial(Long.MAX_VALUE);
+    	idCard.setAddress("abczyx");
+    	assertTrue(idCard.save());
+    	IdCard idCardFromDB = LitePal.find(IdCard.class, idCard.getId());
+    	assertEquals(Long.MAX_VALUE, idCardFromDB.getSerial());
+	}
+
 }
