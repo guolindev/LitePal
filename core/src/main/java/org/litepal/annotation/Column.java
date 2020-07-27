@@ -51,4 +51,9 @@ public @interface Column {
      */
     boolean ignore() default false;
 
+    /**
+     * Add index for the column.
+     */
+    boolean index() default false;
+
 }

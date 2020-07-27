@@ -113,6 +113,33 @@ public abstract class AssociationCreator extends Generator {
 	}
 
 	/**
+	 * Generate create index SQLs by the passed in parameters.
+	 *
+	 * @param tableName
+	 *            The table name.
+	 * @param columnModels
+	 *            A list contains all column models with column info.
+	 * @return A generated create index SQLs.
+	 */
+	protected List<String> generateCreateIndexSQLs(String tableName, Collection<ColumnModel> columnModels) {
+		List<String> sqls = new ArrayList<>();
+		for (ColumnModel columnModel : columnModels) {
+			if (columnModel.hasIndex()) {
+				StringBuilder createIndexSQL = new StringBuilder("create index ");
+				createIndexSQL.append(DBUtility.getIndexNameByColumnName(columnModel.getColumnName()));
+				createIndexSQL.append(" on ");
+				createIndexSQL.append(tableName);
+				createIndexSQL.append(" (");
+				createIndexSQL.append(columnModel.getColumnName());
+				createIndexSQL.append(")");
+				sqls.add(createIndexSQL.toString());
+				LitePalLog.d(TAG, "create table index sql is >> " + createIndexSQL);
+			}
+		}
+		return sqls;
+	}
+
+	/**
 	 * Generate a SQL for dropping table.
 	 * 
 	 * @param tableName

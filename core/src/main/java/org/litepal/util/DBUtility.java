@@ -83,6 +83,38 @@ public class DBUtility {
 	}
 
 	/**
+	 * Get the column name by index name.
+	 * In LitePal index name always named like columnName_index.
+	 * So split the index name by underscore and take the first one.
+	 * @param indexName
+	 * 			Index name with right rule.
+	 * @return Column name or null if index name is not right.
+	 */
+	public static String getColumnNameByIndexName(String indexName) {
+		if (!TextUtils.isEmpty(indexName)) {
+			String[] nameArray = indexName.split("_");
+			if (nameArray.length == 2) {
+				return nameArray[0];
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Get the index name by column name.
+	 * In LitePal index name always named like columnName_index.
+	 * @param columnName
+	 * 			Column name.
+	 * @return Index name or null if column name is null or empty.
+	 */
+	public static String getIndexNameByColumnName(String columnName) {
+		if (!TextUtils.isEmpty(columnName)) {
+			return columnName + "_index";
+		}
+		return null;
+	}
+
+	/**
 	 * Get the corresponding table name list by the full class name list with
 	 * package. Each table name will only get the short class name without
 	 * package.

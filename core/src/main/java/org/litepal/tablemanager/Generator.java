@@ -66,7 +66,7 @@ public abstract class Generator extends LitePalBase {
 	 */
 	protected Collection<TableModel> getAllTableModels() {
 		if (mTableModels == null) {
-			mTableModels = new ArrayList<TableModel>();
+			mTableModels = new ArrayList<>();
 		}
 		if (!canUseCache()) {
 			mTableModels.clear();

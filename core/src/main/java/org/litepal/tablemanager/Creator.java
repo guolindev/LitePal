@@ -81,6 +81,7 @@ class Creator extends AssociationCreator {
                 sqls.add(generateCreateTableSQL(tableModel));
 			}
 		}
+		sqls.addAll(generateCreateIndexSQLs(tableModel)); // create index after create table
         return sqls;
 	}
 
@@ -107,6 +108,18 @@ class Creator extends AssociationCreator {
 	 */
     String generateCreateTableSQL(TableModel tableModel) {
 		return generateCreateTableSQL(tableModel.getTableName(), tableModel.getColumnModels(), true);
+	}
+
+	/**
+	 * Generate create index SQLs by analyzing the TableModel.
+	 *
+	 * @param tableModel
+	 *            Use the TableModel to get table name and columns name to
+	 *            generate SQLs.
+	 * @return A generated create index SQLs.
+	 */
+	List<String> generateCreateIndexSQLs(TableModel tableModel) {
+		return generateCreateIndexSQLs(tableModel.getTableName(), tableModel.getColumnModels());
 	}
 
 }
