@@ -84,6 +84,7 @@ public class TableStructureActivity extends AppCompatActivity {
 			String columnType = columnModel.getColumnType();
             boolean nullable = columnModel.isNullable();
             boolean unique = columnModel.isUnique();
+            boolean hasIndex = columnModel.hasIndex();
             String defaultValue = columnModel.getDefaultValue();
 			if (convertView == null) {
 				view = LayoutInflater.from(getContext()).inflate(R.layout.table_structure_item, null);
@@ -100,6 +101,8 @@ public class TableStructureActivity extends AppCompatActivity {
             text4.setText(String.valueOf(unique));
             TextView text5 = view.findViewById(R.id.text_5);
             text5.setText(defaultValue);
+			TextView text6 = view.findViewById(R.id.text_6);
+			text6.setText(String.valueOf(hasIndex));
 			return view;
 		}
 

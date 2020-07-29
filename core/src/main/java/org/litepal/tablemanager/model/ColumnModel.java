@@ -96,7 +96,7 @@ public class ColumnModel {
         return hasIndex;
     }
 
-    public void setIndex(boolean hasIndex) {
+    public void setHasIndex(boolean hasIndex) {
         this.hasIndex = hasIndex;
     }
 

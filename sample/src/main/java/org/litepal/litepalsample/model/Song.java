@@ -26,7 +26,7 @@ public class Song extends LitePalSupport {
 	@Column(index = true)
 	private String name;
 
-	@Column(index = true)
+	@Column(unique = true, index = true)
 	private String lyric;
 
 	private String duration;

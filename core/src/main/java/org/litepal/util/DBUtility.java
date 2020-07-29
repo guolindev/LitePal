@@ -19,6 +19,7 @@ package org.litepal.util;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
+import android.util.Pair;
 
 import org.litepal.exceptions.DatabaseGenerateException;
 import org.litepal.tablemanager.model.ColumnModel;
@@ -397,7 +398,9 @@ public class DBUtility {
 	 */
 	public static TableModel findPragmaTableInfo(String tableName, SQLiteDatabase db) {
 		if (isTableExists(tableName, db)) {
-            Set<String> uniqueColumns = findUniqueColumns(tableName, db);
+			Pair<Set<String>, Set<String>> indexPair = findIndexedColumns(tableName, db);
+			Set<String> indexColumns = indexPair.first;
+			Set<String> uniqueColumns = indexPair.second;
 			TableModel tableModelDB = new TableModel();
 			tableModelDB.setTableName(tableName);
 			String checkingColumnSQL = "pragma table_info(" + tableName + ")";
@@ -411,11 +414,13 @@ public class DBUtility {
                         String type = cursor.getString(cursor.getColumnIndexOrThrow("type"));
                         boolean nullable = cursor.getInt(cursor.getColumnIndexOrThrow("notnull")) != 1;
                         boolean unique = uniqueColumns.contains(name);
+                        boolean hasIndex = indexColumns.contains(name);
                         String defaultValue = cursor.getString(cursor.getColumnIndexOrThrow("dflt_value"));
                         columnModel.setColumnName(name);
                         columnModel.setColumnType(type);
                         columnModel.setNullable(nullable);
                         columnModel.setUnique(unique);
+                        columnModel.setHasIndex(hasIndex);
                         if (defaultValue != null) {
                             defaultValue = defaultValue.replace("'", "");
                         } else {
@@ -441,30 +446,33 @@ public class DBUtility {
 	}
 
     /**
-     * Find all unique column names of specified table.
+     * Find all columns with index, including normal index and unique index of specified table.
      * @param tableName
      *          The table to find unique columns.
      * @param db
      *          Instance of SQLiteDatabase.
-     * @return A set with all unique column names of specified table.
+     * @return A pair contains two types of index columns. First is normal index columns. Second is unique index columns.
      */
-    public static Set<String> findUniqueColumns(String tableName, SQLiteDatabase db) {
-		Set<String> columns = new HashSet<>();
+    public static Pair<Set<String>, Set<String>> findIndexedColumns(String tableName, SQLiteDatabase db) {
+		Set<String> indexColumns = new HashSet<>();
+		Set<String> uniqueColumns = new HashSet<>();
         Cursor cursor = null;
         Cursor innerCursor = null;
         try {
             cursor = db.rawQuery("pragma index_list(" + tableName +")", null);
             if (cursor.moveToFirst()) {
                 do {
-                    int unique = cursor.getInt(cursor.getColumnIndexOrThrow("unique"));
-                    if (unique == 1) {
-                        String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
-                        innerCursor = db.rawQuery("pragma index_info(" + name + ")", null);
-                        if (innerCursor.moveToFirst()) {
-                            String columnName = innerCursor.getString(innerCursor.getColumnIndexOrThrow("name"));
-                            columns.add(columnName);
-                        }
-                    }
+                    boolean unique = cursor.getInt(cursor.getColumnIndexOrThrow("unique")) == 1;
+					String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+					innerCursor = db.rawQuery("pragma index_info(" + name + ")", null);
+					if (innerCursor.moveToFirst()) {
+						String columnName = innerCursor.getString(innerCursor.getColumnIndexOrThrow("name"));
+						if (unique) {
+							uniqueColumns.add(columnName);
+						} else {
+							indexColumns.add(columnName);
+						}
+					}
                 } while (cursor.moveToNext());
             }
         } catch (Exception e) {
@@ -478,7 +486,7 @@ public class DBUtility {
                 innerCursor.close();
             }
         }
-        return columns;
+        return new Pair<>(indexColumns, uniqueColumns);
     }
 
     /**
@@ -491,9 +499,7 @@ public class DBUtility {
     public static boolean isFieldNameConflictWithSQLiteKeywords(String fieldName) {
         if (!TextUtils.isEmpty(fieldName)) {
             String fieldNameWithComma = "," + fieldName.toLowerCase(Locale.US) + ",";
-            if (SQLITE_KEYWORDS.contains(fieldNameWithComma)) {
-                return true;
-            }
+			return SQLITE_KEYWORDS.contains(fieldNameWithComma);
         }
         return false;
     }
@@ -595,8 +601,8 @@ public class DBUtility {
      * @return Converted order by item with valid column name.
      */
     private static String convertOrderByItem(String orderByItem) {
-        String column = null;
-        String append = null;
+        String column;
+        String append;
         if (orderByItem.endsWith("asc")) {
             column = orderByItem.replace("asc", "").trim();
             append = " asc";

@@ -708,7 +708,7 @@ public abstract class LitePalBase {
         columnModel.setNullable(nullable);
         columnModel.setUnique(unique);
         columnModel.setDefaultValue(defaultValue);
-        columnModel.setIndex(hasIndex);
+        columnModel.setHasIndex(hasIndex);
         return columnModel;
     }
 
