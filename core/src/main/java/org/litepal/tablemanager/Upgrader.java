@@ -332,14 +332,14 @@ public class Upgrader extends AssociationUpdater {
         List<String> addForeignKeySQLs = generateAddForeignKeySQL();
         String dataMigrationSQL = generateDataMigrationSQL(mTableModelDB);
         String dropTempTableSQL = generateDropTempTableSQL(mTableModel.getTableName());
-        List<String> createIndexSQL = generateCreateIndexSQLs(mTableModel);
+        List<String> createIndexSQLs = generateCreateIndexSQLs(mTableModel);
         List<String> sqls = new ArrayList<>();
         sqls.add(alterToTempTableSQL);
         sqls.add(createNewTableSQL);
         sqls.addAll(addForeignKeySQLs);
         sqls.add(dataMigrationSQL);
         sqls.add(dropTempTableSQL);
-        sqls.addAll(createIndexSQL);
+        sqls.addAll(createIndexSQLs);
         LitePalLog.d(TAG, "generateChangeConstraintSQL >> ");
         for (String sql : sqls) {
             LitePalLog.d(TAG, sql);
