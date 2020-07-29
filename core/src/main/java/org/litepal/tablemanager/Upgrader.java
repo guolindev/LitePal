@@ -128,7 +128,7 @@ public class Upgrader extends AssociationUpdater {
 	 * @return List with ColumnModel contains information of new columns.
 	 */
 	private List<ColumnModel> findColumnsToAdd() {
-        List<ColumnModel> columnsToAdd = new ArrayList<ColumnModel>();
+        List<ColumnModel> columnsToAdd = new ArrayList<>();
         for (ColumnModel columnModel : mTableModel.getColumnModels()) {
             String columnName = columnModel.getColumnName();
             if (!mTableModelDB.containsColumn(columnName)) {
@@ -152,7 +152,7 @@ public class Upgrader extends AssociationUpdater {
 	 */
 	private List<String> findColumnsToRemove() {
         String tableName = mTableModel.getTableName();
-		List<String> removeColumns = new ArrayList<String>();
+		List<String> removeColumns = new ArrayList<>();
         Collection<ColumnModel> columnModels = mTableModelDB.getColumnModels();
         for (ColumnModel columnModel : columnModels) {
             String dbColumnName = columnModel.getColumnName();
@@ -173,7 +173,7 @@ public class Upgrader extends AssociationUpdater {
 	 * @return A list contains all ColumnModel which type are changed from database.
 	 */
 	private List<ColumnModel> findColumnTypesToChange() {
-        List<ColumnModel> columnsToChangeType = new ArrayList<ColumnModel>();
+        List<ColumnModel> columnsToChangeType = new ArrayList<>();
         for (ColumnModel columnModelDB : mTableModelDB.getColumnModels()) {
             for (ColumnModel columnModel : mTableModel.getColumnModels()) {
                 if (columnModelDB.getColumnName().equalsIgnoreCase(columnModel.getColumnName())) {
@@ -189,8 +189,9 @@ public class Upgrader extends AssociationUpdater {
                         // for reducing loops, check column constraints change here.
                         LitePalLog.d(TAG, "default value db is:" + columnModelDB.getDefaultValue() + ", default value is:" + columnModel.getDefaultValue());
                         if (columnModelDB.isNullable() != columnModel.isNullable() ||
-                            !columnModelDB.getDefaultValue().equalsIgnoreCase(columnModel.getDefaultValue()) ||
-                            (columnModelDB.isUnique() && !columnModel.isUnique())) { // unique constraint can not be added
+                                !columnModelDB.getDefaultValue().equalsIgnoreCase(columnModel.getDefaultValue()) ||
+                                columnModelDB.hasIndex() != columnModel.hasIndex() ||
+                                (columnModelDB.isUnique() && !columnModel.isUnique())) { // unique constraint can not be added
                             hasConstraintChanged = true;
                         }
                     }
@@ -235,8 +236,13 @@ public class Upgrader extends AssociationUpdater {
 	 *            Which contains column info.
 	 * @return A SQL to add new column.
 	 */
-	private String generateAddColumnSQL(ColumnModel columnModel) {
-		return generateAddColumnSQL(mTableModel.getTableName(), columnModel);
+	private List<String> generateAddColumnSQLs(ColumnModel columnModel) {
+	    List<String> sqls = new ArrayList<>();
+	    sqls.add(generateAddColumnSQL(mTableModel.getTableName(), columnModel));
+	    if (columnModel.hasIndex()) {
+	        sqls.add(generateCreateIndexSQL(mTableModel.getTableName(), columnModel));
+        }
+		return sqls;
 	}
 
 	/**
@@ -248,9 +254,9 @@ public class Upgrader extends AssociationUpdater {
 	 * @return A SQL list contains add all new columns job.
 	 */
 	private List<String> getAddColumnSQLs(List<ColumnModel> columnModelList) {
-		List<String> sqls = new ArrayList<String>();
+		List<String> sqls = new ArrayList<>();
 		for (ColumnModel columnModel : columnModelList) {
-			sqls.add(generateAddColumnSQL(columnModel));
+			sqls.addAll(generateAddColumnSQLs(columnModel));
 		}
 		return sqls;
 	}
@@ -294,7 +300,7 @@ public class Upgrader extends AssociationUpdater {
 	 */
 	private void changeColumnsType(List<ColumnModel> columnModelList) {
         LitePalLog.d(TAG, "do changeColumnsType");
-        List<String> columnNames = new ArrayList<String>();
+        List<String> columnNames = new ArrayList<>();
         if (columnModelList != null && !columnModelList.isEmpty()) {
             for (ColumnModel columnModel : columnModelList) {
                 columnNames.add(columnModel.getColumnName());
@@ -326,12 +332,14 @@ public class Upgrader extends AssociationUpdater {
         List<String> addForeignKeySQLs = generateAddForeignKeySQL();
         String dataMigrationSQL = generateDataMigrationSQL(mTableModelDB);
         String dropTempTableSQL = generateDropTempTableSQL(mTableModel.getTableName());
-        List<String> sqls = new ArrayList<String>();
+        List<String> createIndexSQL = generateCreateIndexSQLs(mTableModel);
+        List<String> sqls = new ArrayList<>();
         sqls.add(alterToTempTableSQL);
         sqls.add(createNewTableSQL);
         sqls.addAll(addForeignKeySQLs);
         sqls.add(dataMigrationSQL);
         sqls.add(dropTempTableSQL);
+        sqls.addAll(createIndexSQL);
         LitePalLog.d(TAG, "generateChangeConstraintSQL >> ");
         for (String sql : sqls) {
             LitePalLog.d(TAG, sql);
@@ -347,7 +355,7 @@ public class Upgrader extends AssociationUpdater {
      * @return A SQL List for adding foreign keys.
      */
     private List<String> generateAddForeignKeySQL() {
-        List<String> addForeignKeySQLs = new ArrayList<String>();
+        List<String> addForeignKeySQLs = new ArrayList<>();
         List<String> foreignKeyColumns = getForeignKeyColumns(mTableModel);
         for (String foreignKeyColumn : foreignKeyColumns) {
             if (!mTableModel.containsColumn(foreignKeyColumn)) {

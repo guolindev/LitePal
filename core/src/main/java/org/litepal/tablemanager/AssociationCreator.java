@@ -125,15 +125,7 @@ public abstract class AssociationCreator extends Generator {
 		List<String> sqls = new ArrayList<>();
 		for (ColumnModel columnModel : columnModels) {
 			if (columnModel.hasIndex()) {
-				StringBuilder createIndexSQL = new StringBuilder("create index ");
-				createIndexSQL.append(DBUtility.getIndexNameByColumnName(columnModel.getColumnName()));
-				createIndexSQL.append(" on ");
-				createIndexSQL.append(tableName);
-				createIndexSQL.append(" (");
-				createIndexSQL.append(columnModel.getColumnName());
-				createIndexSQL.append(")");
-				sqls.add(createIndexSQL.toString());
-				LitePalLog.d(TAG, "create table index sql is >> " + createIndexSQL);
+				sqls.add(generateCreateIndexSQL(tableName, columnModel));
 			}
 		}
 		return sqls;
@@ -186,6 +178,30 @@ public abstract class AssociationCreator extends Generator {
         }
 		LitePalLog.d(TAG, "add column sql is >> " + addColumnSQL);
 		return addColumnSQL.toString();
+	}
+
+	/**
+	 * Generate create index SQL by the passed in parameters.
+	 *
+	 * @param tableName
+	 *            The table name.
+	 * @param columnModel
+	 *            Column model with column info.
+	 * @return A generated create index SQL.
+	 */
+	protected String generateCreateIndexSQL(String tableName, ColumnModel columnModel) {
+		StringBuilder createIndexSQL = new StringBuilder();
+		if (columnModel.hasIndex()) {
+			createIndexSQL.append("create index ");
+			createIndexSQL.append(DBUtility.getIndexName(tableName, columnModel.getColumnName()));
+			createIndexSQL.append(" on ");
+			createIndexSQL.append(tableName);
+			createIndexSQL.append(" (");
+			createIndexSQL.append(columnModel.getColumnName());
+			createIndexSQL.append(")");
+			LitePalLog.d(TAG, "create table index sql is >> " + createIndexSQL);
+		}
+		return createIndexSQL.toString();
 	}
 
 	/**

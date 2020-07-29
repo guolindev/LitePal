@@ -140,7 +140,7 @@ public abstract class AssociationUpdater extends Creator {
 	 */
 	protected void dropTables(List<String> dropTableNames, SQLiteDatabase db) {
 		if (dropTableNames != null && !dropTableNames.isEmpty()) {
-            List<String> dropTableSQLS = new ArrayList<String>();
+            List<String> dropTableSQLS = new ArrayList<>();
 			for (int i = 0; i < dropTableNames.size(); i++) {
                 dropTableSQLS.add(generateDropTableSQL(dropTableNames.get(i)));
 			}
@@ -185,7 +185,7 @@ public abstract class AssociationUpdater extends Creator {
 				deleteData.append("=").append(" lower('").append(tableName).append("')");
 			}
 			LitePalLog.d(TAG, "clear table schema value sql is " + deleteData);
-            List<String> sqls = new ArrayList<String>();
+            List<String> sqls = new ArrayList<>();
             sqls.add(deleteData.toString());
 			execute(sqls, mDb);
 		}
@@ -243,7 +243,7 @@ public abstract class AssociationUpdater extends Creator {
 	 * @return The foreign key columns need to remove in a list.
 	 */
 	private List<String> findForeignKeyToRemove(TableModel tableModel) {
-		List<String> removeRelations = new ArrayList<String>();
+		List<String> removeRelations = new ArrayList<>();
 		List<String> foreignKeyColumns = getForeignKeyColumns(tableModel);
 		String selfTableName = tableModel.getTableName();
 		for (String foreignKeyColumn : foreignKeyColumns) {
@@ -266,7 +266,7 @@ public abstract class AssociationUpdater extends Creator {
 	 * @return A list with all intermediate join tables to drop.
 	 */
 	private List<String> findIntermediateTablesToDrop() {
-		List<String> intermediateTables = new ArrayList<String>();
+		List<String> intermediateTables = new ArrayList<>();
 		for (String tableName : DBUtility.findAllTableNames(mDb)) {
 			if (DBUtility.isIntermediateTable(tableName, mDb)) {
 				boolean dropIntermediateTable = true;
@@ -298,15 +298,16 @@ public abstract class AssociationUpdater extends Creator {
      * @return A list with all generic tables to drop.
      */
     private List<String> findGenericTablesToDrop() {
-        List<String> genericTablesToDrop = new ArrayList<String>();
+        List<String> genericTablesToDrop = new ArrayList<>();
         for (String tableName : DBUtility.findAllTableNames(mDb)) {
             if (DBUtility.isGenericTable(tableName, mDb)) {
                 boolean dropGenericTable = true;
                 for (GenericModel genericModel : getGenericModels()) {
                     String genericTableName = genericModel.getTableName();
-                    if (tableName.equalsIgnoreCase(genericTableName)) {
-                        dropGenericTable = false;
-                    }
+					if (tableName.equalsIgnoreCase(genericTableName)) {
+						dropGenericTable = false;
+						break;
+					}
                 }
                 if (dropGenericTable) {
                     // drop the generic table
@@ -429,7 +430,7 @@ public abstract class AssociationUpdater extends Creator {
 		LitePalLog.d(TAG, "generateRemoveColumnSQL >> " + dataMigrationSQL);
 		String dropTempTableSQL = generateDropTempTableSQL(tableName);
 		LitePalLog.d(TAG, "generateRemoveColumnSQL >> " + dropTempTableSQL);
-        List<String> sqls = new ArrayList<String>();
+        List<String> sqls = new ArrayList<>();
         sqls.add(alterToTempTableSQL);
         sqls.add(createNewTableSQL);
         sqls.add(dataMigrationSQL);
