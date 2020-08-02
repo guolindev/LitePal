@@ -2,6 +2,7 @@ package com.litepaltest.test.util;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.support.test.filters.SmallTest;
+import android.util.Pair;
 
 import com.litepaltest.model.Book;
 import com.litepaltest.model.Cellphone;
@@ -28,12 +29,18 @@ public class DBUtilityTest extends LitePalTestCase {
     }
 
     @Test
-    public void testFindUniqueColumns() {
-        Set<String> uniqueColumns = DBUtility.findUniqueColumns(DBUtility.getTableNameByClassName(
-                        Cellphone.class.getName()), db);
+    public void testFindIndexedColumns() {
+        Pair<Set<String>, Set<String>> pair = DBUtility.findIndexedColumns(DBUtility.getTableNameByClassName(Cellphone.class.getName()), db);
+        Set<String> indexColumns = pair.first;
+        Set<String> uniqueColumns = pair.second;
+        assertEquals(1, indexColumns.size());
         assertEquals(1, uniqueColumns.size());
+        assertTrue(indexColumns.contains("brand"));
         assertTrue(uniqueColumns.contains("serial"));
-        uniqueColumns = DBUtility.findUniqueColumns(DBUtility.getTableNameByClassName(Book.class.getName()), db);
+        pair = DBUtility.findIndexedColumns(DBUtility.getTableNameByClassName(Book.class.getName()), db);
+        indexColumns = pair.first;
+        uniqueColumns = pair.second;
+        assertEquals(0, indexColumns.size());
         assertEquals(0, uniqueColumns.size());
     }
 

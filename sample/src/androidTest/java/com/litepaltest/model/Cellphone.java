@@ -10,6 +10,7 @@ public class Cellphone extends LitePalSupport {
 
 	private Long id;
 
+	@Column(index = true)
 	public String brand;
 
 	private Character inStock;
