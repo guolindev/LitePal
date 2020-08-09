@@ -625,7 +625,7 @@ fun <T : LitePalSupport> Collection<T>.saveAll() = LitePal.saveAll(this)
  * If lambda return true, all db operations in lambda will be committed.
  * Otherwise all db operations will be rolled back.
  */
-@Synchronized inline fun LitePal.runInTransaction(block: () -> Boolean) {
+@Synchronized fun LitePal.runInTransaction(block: () -> Boolean): Boolean {
     beginTransaction()
     val succeeded = try {
         block()
@@ -636,4 +636,5 @@ fun <T : LitePalSupport> Collection<T>.saveAll() = LitePal.saveAll(this)
         setTransactionSuccessful()
     }
     endTransaction()
+    return succeeded
 }
