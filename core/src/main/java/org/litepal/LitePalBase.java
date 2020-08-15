@@ -79,12 +79,12 @@ public abstract class LitePalBase {
     /**
      * This is map of class name to fields list. Indicates that each class has which supported fields.
      */
-    private Map<String, List<Field>> classFieldsMap = new HashMap<String, List<Field>>();
+    private Map<String, List<Field>> classFieldsMap = new HashMap<>();
 
 	/**
 	 * This is map of class name to generic fields list. Indicates that each class has which supported generic fields.
 	 */
-    private Map<String, List<Field>> classGenericFieldsMap = new HashMap<String, List<Field>>();
+    private Map<String, List<Field>> classGenericFieldsMap = new HashMap<>();
 
 	/**
 	 * The collection contains all association models.
@@ -138,10 +138,10 @@ public abstract class LitePalBase {
 	 */
 	protected Collection<AssociationsModel> getAssociations(List<String> classNames) {
 		if (mAssociationModels == null) {
-			mAssociationModels = new HashSet<AssociationsModel>();
+			mAssociationModels = new HashSet<>();
 		}
         if (mGenericModels == null) {
-            mGenericModels = new HashSet<GenericModel>();
+            mGenericModels = new HashSet<>();
         }
 		mAssociationModels.clear();
         mGenericModels.clear();
@@ -168,7 +168,7 @@ public abstract class LitePalBase {
 	 */
 	protected Collection<AssociationsInfo> getAssociationInfo(String className) {
 		if (mAssociationInfos == null) {
-			mAssociationInfos = new HashSet<AssociationsInfo>();
+			mAssociationInfos = new HashSet<>();
 		}
 		mAssociationInfos.clear();
 		analyzeClassFields(className, GET_ASSOCIATION_INFO_ACTION);
@@ -188,7 +188,7 @@ public abstract class LitePalBase {
 	protected List<Field> getSupportedFields(String className) {
         List<Field> fieldList = classFieldsMap.get(className);
         if (fieldList == null) {
-            List<Field> supportedFields = new ArrayList<Field>();
+            List<Field> supportedFields = new ArrayList<>();
             Class<?> clazz;
             try {
                 clazz = Class.forName(className);
@@ -211,7 +211,7 @@ public abstract class LitePalBase {
 	protected List<Field> getSupportedGenericFields(String className) {
         List<Field> genericFieldList = classGenericFieldsMap.get(className);
         if (genericFieldList == null) {
-            List<Field> supportedGenericFields = new ArrayList<Field>();
+            List<Field> supportedGenericFields = new ArrayList<>();
             Class<?> clazz;
             try {
                 clazz = Class.forName(className);
@@ -324,7 +324,7 @@ public abstract class LitePalBase {
             return;
         }
         Field[] fields = clazz.getDeclaredFields();
-        if (fields != null && fields.length > 0) {
+        if (fields.length > 0) {
             for (Field field : fields) {
                 Column annotation = field.getAnnotation(Column.class);
                 if (annotation != null && annotation.ignore()) {
@@ -348,7 +348,7 @@ public abstract class LitePalBase {
             return;
         }
         Field[] fields = clazz.getDeclaredFields();
-        if (fields != null && fields.length > 0) {
+        if (fields.length > 0) {
             for (Field field : fields) {
                 Column annotation = field.getAnnotation(Column.class);
                 if (annotation != null && annotation.ignore()) {
@@ -414,7 +414,7 @@ public abstract class LitePalBase {
      *            The field to check.
      * @return True if the field is private, false otherwise.
      */
-	private boolean isPrivate(Field field) {
+	protected boolean isPrivate(Field field) {
         return Modifier.isPrivate(field.getModifiers());
     }
 
