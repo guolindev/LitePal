@@ -22,7 +22,7 @@ Edit your **build.gradle** file and add below dependency.
 
 ``` groovy
 dependencies {
-    implementation 'org.litepal.guolindev:core:3.1.1'
+    implementation 'org.litepal.guolindev:core:3.2.1'
 }
 ```
 
@@ -130,7 +130,8 @@ public class Album extends LitePalSupport {
 	
     @Column(unique = true, defaultValue = "unknown")
     private String name;
-	
+    
+    @Column(index = true)
     private float price;
 	
     private List<Song> songs = new ArrayList<Song>();
@@ -450,9 +451,13 @@ If you find any bug when using LitePal, please report **[here](https://github.co
 
 ## Change logs
 
+### 3.2.1
+ * Support database index by adding @Column(index = true) on field.
+ * Adding return value for **runInTransaction()** function for Kotlin.
+
 ### 3.1.1
  * Support transaction.
- * Add return value for ***LitePal.saveAll()** method.
+ * Add return value for **LitePal.saveAll()** method.
  * No longer support byte array field as column in table.
  * Deprecate all async methods. You should handle async operations by yourself.
  * Fix known bugs.
@@ -479,15 +484,12 @@ If you find any bug when using LitePal, please report **[here](https://github.co
  * Fix known bugs.
 
 ### 1.4.1
- * Fix bug of DateSupport.count error.
- * Fix bug of losing blob data when upgrading database.
- * Fix other known bugs.
-
-### 1.4.0
  * Support multiple databases.
  * Support crud operations for generic collection data in models.
  * Add SQLite keywords convert function to avoid keywords conflict.
- * Fix known bugs.
+ * Fix bug of DateSupport.count error.
+ * Fix bug of losing blob data when upgrading database.
+ * Fix other known bugs.
  
 ### 1.3.2
  * Improve an outstanding speed up of querying and saving.
