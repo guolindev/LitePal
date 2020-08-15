@@ -441,8 +441,6 @@ public abstract class LitePalBase {
 	 * @param action
 	 *            Between {@link org.litepal.LitePalBase#GET_ASSOCIATIONS_ACTION} and
 	 *            {@link org.litepal.LitePalBase#GET_ASSOCIATION_INFO_ACTION}
-	 * 
-	 * @throws ClassNotFoundException
 	 */
 	private void oneToAnyConditions(String className, Field field, int action) throws ClassNotFoundException {
 		Class<?> fieldTypeClass = field.getType();
@@ -527,8 +525,6 @@ public abstract class LitePalBase {
 	 * @param action
 	 *            Between {@link org.litepal.LitePalBase#GET_ASSOCIATIONS_ACTION} and
 	 *            {@link org.litepal.LitePalBase#GET_ASSOCIATION_INFO_ACTION}
-	 * 
-	 * @throws ClassNotFoundException
 	 */
 	private void manyToAnyConditions(String className, Field field, int action) throws ClassNotFoundException {
 		if (isCollection(field.getType())) {

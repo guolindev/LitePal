@@ -80,8 +80,6 @@ public class Connector {
 	 * LitePalHelper object.Notes this method could throw a lot of exceptions.
 	 * 
 	 * @return LitePalHelper object.
-	 * 
-	 * @throws org.litepal.exceptions.InvalidAttributesException
 	 */
 	private static LitePalOpenHelper buildConnection() {
 		LitePalAttr litePalAttr = LitePalAttr.getInstance();

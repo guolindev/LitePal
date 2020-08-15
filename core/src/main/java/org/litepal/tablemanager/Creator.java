@@ -70,7 +70,7 @@ class Creator extends AssociationCreator {
 	 *         table.
 	 */
 	protected List<String> getCreateTableSQLs(TableModel tableModel, SQLiteDatabase db, boolean force) {
-        List<String> sqls = new ArrayList<String>();
+        List<String> sqls = new ArrayList<>();
 		if (force) {
             sqls.add(generateDropTableSQL(tableModel));
             sqls.add(generateCreateTableSQL(tableModel));

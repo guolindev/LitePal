@@ -356,7 +356,7 @@ public abstract class AssociationCreator extends Generator {
 	 */
 	private void createIntermediateTable(String tableName, String associatedTableName,
 			SQLiteDatabase db, boolean force) {
-        List<ColumnModel> columnModelList = new ArrayList<ColumnModel>();
+        List<ColumnModel> columnModelList = new ArrayList<>();
         ColumnModel column1 = new ColumnModel();
         column1.setColumnName(tableName + "_id");
         column1.setColumnType("integer");
@@ -367,7 +367,7 @@ public abstract class AssociationCreator extends Generator {
         columnModelList.add(column2);
         String intermediateTableName = DBUtility.getIntermediateTableName(tableName,
                 associatedTableName);
-		List<String> sqls = new ArrayList<String>();
+		List<String> sqls = new ArrayList<>();
 		if (DBUtility.isTableExists(intermediateTableName, db)) {
 			if (force) {
 				sqls.add(generateDropTableSQL(intermediateTableName));
@@ -396,7 +396,7 @@ public abstract class AssociationCreator extends Generator {
         String valueColumnName = genericModel.getValueColumnName();
         String valueColumnType = genericModel.getValueColumnType();
         String valueIdColumnName = genericModel.getValueIdColumnName();
-        List<ColumnModel> columnModelList = new ArrayList<ColumnModel>();
+        List<ColumnModel> columnModelList = new ArrayList<>();
         ColumnModel column1 = new ColumnModel();
         column1.setColumnName(valueColumnName);
         column1.setColumnType(valueColumnType);
@@ -405,7 +405,7 @@ public abstract class AssociationCreator extends Generator {
         column2.setColumnType("integer");
         columnModelList.add(column1);
         columnModelList.add(column2);
-        List<String> sqls = new ArrayList<String>();
+        List<String> sqls = new ArrayList<>();
         if (DBUtility.isTableExists(tableName, db)) {
             if (force) {
                 sqls.add(generateDropTableSQL(tableName));
@@ -432,8 +432,6 @@ public abstract class AssociationCreator extends Generator {
 	 *            The table which holds the foreign key.
 	 * @param db
 	 *            Instance of SQLiteDatabase.
-	 * 
-	 * @throws org.litepal.exceptions.DatabaseGenerateException
 	 */
 	protected void addForeignKeyColumn(String tableName, String associatedTableName,
 			String tableHoldsForeignKey, SQLiteDatabase db) {
@@ -449,7 +447,7 @@ public abstract class AssociationCreator extends Generator {
                     ColumnModel columnModel = new ColumnModel();
                     columnModel.setColumnName(foreignKeyColumn);
                     columnModel.setColumnType("integer");
-                    List<String> sqls = new ArrayList<String>();
+                    List<String> sqls = new ArrayList<>();
                     sqls.add(generateAddColumnSQL(tableHoldsForeignKey, columnModel));
 					execute(sqls, db);
 				} else {
