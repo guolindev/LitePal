@@ -134,7 +134,7 @@ public class Album extends LitePalSupport {
     @Column(index = true)
     private float price;
 	
-    private List<Song> songs = new ArrayList<Song>();
+    private List<Song> songs = new ArrayList<>();
 
     // generated getters and setters.
     ...
@@ -197,7 +197,7 @@ public class Album extends LitePalSupport {
 	
     private Date releaseDate;
 	
-    private List<Song> songs = new ArrayList<Song>();
+    private List<Song> songs = new ArrayList<>();
 
     // generated getters and setters.
     ...
