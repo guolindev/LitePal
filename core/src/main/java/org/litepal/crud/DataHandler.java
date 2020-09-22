@@ -1320,6 +1320,7 @@ abstract class DataHandler extends LitePalBase {
     private void setToModelByReflection(Object modelInstance, Field field, int columnIndex, String getMethodName, Cursor cursor)
             throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Class<?> cursorClass = cursor.getClass();
+        if (cursor.isNull(columnIndex)) return;
         Method method = cursorClass.getMethod(getMethodName, int.class);
         Object value = method.invoke(cursor, columnIndex);
         if (field.getType() == boolean.class || field.getType() == Boolean.class) {

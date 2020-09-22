@@ -2,6 +2,7 @@ package com.litepaltest.test.crud.save;
 
 import android.support.test.filters.SmallTest;
 
+import com.litepaltest.model.Book;
 import com.litepaltest.model.Cellphone;
 import com.litepaltest.model.Classroom;
 import com.litepaltest.model.Computer;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNull;
@@ -243,6 +245,23 @@ public class SaveTest extends LitePalTestCase {
     	assertTrue(idCard.save());
     	IdCard idCardFromDB = LitePal.find(IdCard.class, idCard.getId());
     	assertEquals(Long.MAX_VALUE, idCardFromDB.getSerial());
+	}
+
+	@Test
+	public void testNullValue() {
+		Book book = new Book();
+		book.setBookName("First Line of Android");
+		assertTrue(book.save());
+		Book bookFromDB = LitePal.find(Book.class, book.getId());
+		assertNotNull(bookFromDB);
+		assertNull(bookFromDB.getPages()); // pages should be null cause it's Integer type and assign no value.
+
+		book.setPages(123); // assign pages
+		assertTrue(book.save());
+		bookFromDB = LitePal.find(Book.class, book.getId());
+		assertNotNull(bookFromDB);
+		assertNotNull(bookFromDB.getPages()); // now we should be pages value.
+		assertEquals(Integer.valueOf(123), book.getPages());
 	}
 
 }

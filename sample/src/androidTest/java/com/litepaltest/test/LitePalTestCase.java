@@ -135,7 +135,10 @@ public class LitePalTestCase {
 			do {
 				long id = cursor.getLong(cursor.getColumnIndexOrThrow("id"));
 				String bookName = cursor.getString(cursor.getColumnIndexOrThrow("bookname"));
-				int pages = cursor.getInt(cursor.getColumnIndexOrThrow("pages"));
+				Integer pages = null;
+				if (!cursor.isNull(cursor.getColumnIndexOrThrow("pages"))) {
+					pages = cursor.getInt(cursor.getColumnIndexOrThrow("pages"));
+				}
 				double price = cursor.getDouble(cursor.getColumnIndexOrThrow("price"));
 				char level = cursor.getString(cursor.getColumnIndexOrThrow("level")).charAt(0);
 				short isbn = cursor.getShort(cursor.getColumnIndexOrThrow("isbn"));
