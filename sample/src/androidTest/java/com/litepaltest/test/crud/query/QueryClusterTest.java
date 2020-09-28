@@ -104,6 +104,8 @@ public class QueryClusterTest extends LitePalTestCase {
 		List<Book> realBooks = LitePal.where("bookname like ?", "Android%Line")
 				.find(Book.class);
 		assertEquals(expectedBooks.size(), realBooks.size());
+
+
 	}
 
     @Test
@@ -306,6 +308,23 @@ public class QueryClusterTest extends LitePalTestCase {
 				String.valueOf(ids[2])).order("id").limit(2).findLast(Book.class);
 		assertEquals(firstTwoBooks.get(0).getId(), firstBook.getId());
 		assertEquals(firstTwoBooks.get(1).getId(), lastBook.getId());
+	}
+
+	@Test
+	public void testBooleanQuery() {
+    	Book book1 = new Book();
+    	book1.setBookName("not published");
+    	book1.setPublished(false);
+    	Book book2 = new Book();
+    	book2.setBookName("published");
+    	book2.setPublished(true);
+    	book1.save();
+    	book2.save();
+
+    	Book book1DB = LitePal.where("isPublished = 0").findFirst(Book.class);
+    	Book book2DB = LitePal.where("isPublished = 1").findFirst(Book.class);
+    	assertNotNull(book1DB);
+    	assertNotNull(book2DB);
 	}
 
 }
