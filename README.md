@@ -22,7 +22,7 @@ Edit your **build.gradle** file and add below dependency.
 
 ``` groovy
 dependencies {
-    implementation 'org.litepal.guolindev:core:3.2.1'
+    implementation 'org.litepal.guolindev:core:3.2.2'
 }
 ```
 
@@ -451,9 +451,10 @@ If you find any bug when using LitePal, please report **[here](https://github.co
 
 ## Change logs
 
-### 3.2.1
+### 3.2.2
  * Support database index by adding @Column(index = true) on field.
  * Adding return value for **runInTransaction()** function for Kotlin.
+ * Fix known bugs.
 
 ### 3.1.1
  * Support transaction.
