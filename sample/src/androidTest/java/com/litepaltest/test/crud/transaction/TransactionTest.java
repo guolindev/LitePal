@@ -1,7 +1,7 @@
 package com.litepaltest.test.crud.transaction;
 
 import android.content.ContentValues;
-import android.support.test.filters.SmallTest;
+import androidx.test.filters.SmallTest;
 
 import com.litepaltest.model.Book;
 import com.litepaltest.model.Cellphone;

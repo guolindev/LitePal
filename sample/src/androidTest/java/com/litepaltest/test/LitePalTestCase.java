@@ -9,7 +9,7 @@ import org.litepal.util.DBUtility;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.test.filters.SmallTest;
+import androidx.test.filters.SmallTest;
 
 import com.litepaltest.model.Book;
 import com.litepaltest.model.Cellphone;
@@ -47,10 +47,8 @@ public class LitePalTestCase {
 	 */
 	protected boolean isFKInsertCorrect(String table1, String table2, long table1Id, long table2Id) {
 		SQLiteDatabase db = Connector.getDatabase();
-		Cursor cursor = null;
-		try {
-			cursor = db.query(table2, null, "id = ?", new String[] { String.valueOf(table2Id) },
-					null, null, null);
+		try (Cursor cursor = db.query(table2, null, "id = ?", new String[]{String.valueOf(table2Id)},
+				null, null, null)) {
 			cursor.moveToFirst();
 			long fkId = cursor.getLong(cursor.getColumnIndexOrThrow(BaseUtility.changeCase(table1
 					+ "_id")));
@@ -58,8 +56,6 @@ public class LitePalTestCase {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
-		} finally {
-			cursor.close();
 		}
 	}
 
@@ -77,7 +73,9 @@ public class LitePalTestCase {
 			e.printStackTrace();
 			return false;
 		} finally {
-			cursor.close();
+			if (cursor != null) {
+				cursor.close();
+			}
 		}
 	}
 
@@ -95,17 +93,11 @@ public class LitePalTestCase {
 
 	protected boolean isDataExists(String table, long id) {
 		SQLiteDatabase db = Connector.getDatabase();
-		Cursor cursor = null;
-		try {
-			cursor = db.query(table, null, "id = ?", new String[] { String.valueOf(id) }, null,
-					null, null);
-			return cursor.getCount() == 1 ? true : false;
+		try (Cursor cursor = db.query(table, null, "id = ?", new String[]{String.valueOf(id)}, null,
+				null, null)) {
+			return cursor.getCount() == 1;
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			if (cursor != null) {
-				cursor.close();
-			}
 		}
 		return false;
 	}
@@ -259,7 +251,7 @@ public class LitePalTestCase {
 	}
 
 	protected List<Teacher> getTeachers(int[] ids) {
-		List<Teacher> teachers = new ArrayList<Teacher>();
+		List<Teacher> teachers = new ArrayList<>();
 		Cursor cursor = Connector.getDatabase().query(getTableName(Teacher.class), null, getWhere(ids), null, null,
 				null, null);
 		if (cursor.moveToFirst()) {
@@ -283,7 +275,7 @@ public class LitePalTestCase {
 	}
 
 	protected List<Student> getStudents(int[] ids) {
-		List<Student> students = new ArrayList<Student>();
+		List<Student> students = new ArrayList<>();
 		Cursor cursor = Connector.getDatabase().query(getTableName(Student.class), null, getWhere(ids), null, null,
 				null, null);
 		if (cursor.moveToFirst()) {

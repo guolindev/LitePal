@@ -1,6 +1,6 @@
 package com.litepaltest.test.crud.query;
 
-import android.support.test.filters.SmallTest;
+import androidx.test.filters.SmallTest;
 
 import java.util.List;
 
@@ -11,6 +11,7 @@ import com.litepaltest.model.Book;
 import com.litepaltest.test.LitePalTestCase;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
@@ -31,7 +32,7 @@ public class QueryClusterTest extends LitePalTestCase {
 			assertTrue(book.isSaved());
 			assertEquals(expectedBooks.get(i).getBookName(), book.getBookName());
 			assertNull(book.getPages());
-			assertEquals(false, book.isPublished());
+			assertFalse(book.isPublished());
 			assertEquals(0f, book.getArea());
 			assertEquals(expectedBooks.get(i).getPrice(), book.getPrice());
 			assertEquals(0, book.getIsbn());
@@ -71,9 +72,9 @@ public class QueryClusterTest extends LitePalTestCase {
             Book book = books.get(i);
 			assertTrue(book.isSaved());
 			assertEquals("Android First Line", book.getBookName());
-			assertTrue(450 == book.getPages());
+			assertEquals(450, (int) book.getPages());
 			assertEquals(49.99, book.getPrice());
-			assertEquals(false, book.isPublished());
+			assertFalse(book.isPublished());
 			assertEquals('A', book.getLevel());
 			assertEquals(10.5f, book.getArea());
             if (i == 0) {
@@ -262,8 +263,8 @@ public class QueryClusterTest extends LitePalTestCase {
 			assertEquals(ids[i + 1], b.getId());
 			assertTrue(b.isSaved());
 			assertNull(b.getBookName());
-			assertTrue(5555 == b.getPages());
-			assertEquals(true, b.isPublished());
+			assertEquals(5555, (int) b.getPages());
+			assertTrue(b.isPublished());
 			assertEquals(0f, b.getArea());
 			assertEquals(0.0, b.getPrice());
 			assertEquals(0, b.getIsbn());

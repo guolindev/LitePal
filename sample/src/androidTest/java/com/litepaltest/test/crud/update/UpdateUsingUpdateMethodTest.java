@@ -13,18 +13,17 @@ import org.litepal.util.DBUtility;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
-import android.support.test.filters.SmallTest;
+import androidx.test.filters.SmallTest;
 
 import com.litepaltest.model.Classroom;
 import com.litepaltest.model.Computer;
-import com.litepaltest.model.Product;
 import com.litepaltest.model.Student;
 import com.litepaltest.model.Teacher;
 import com.litepaltest.test.LitePalTestCase;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.fail;
 
 @SmallTest
@@ -126,7 +125,7 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 		values.put("TEACHERNAME", "Toy");
 		try {
             LitePal.update(Object.class, values, teacher.getId());
-		} catch (SQLiteException e) {
+		} catch (SQLiteException ignored) {
 		}
 	}
 
@@ -137,7 +136,7 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 		try {
             LitePal.update(Teacher.class, values, teacher.getId());
 			fail("no such column: TEACHERYEARS");
-		} catch (SQLiteException e) {
+		} catch (SQLiteException ignored) {
 		}
 	}
 
@@ -442,7 +441,7 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 		try {
             LitePal.updateAll(Student.class, values, "address = ?", "HK");
 			fail();
-		} catch (SQLiteException e) {
+		} catch (SQLiteException ignored) {
 		}
 	}
 
@@ -461,14 +460,14 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 		Student toUpdate = new Student();
 		toUpdate.setAge(24);
 		toUpdate.setBirthday(date);
-		int affectedRows = toUpdate.updateAll(new String[] { "name = ? and age = ?", "Jessica", "13" });
+		int affectedRows = toUpdate.updateAll("name = ? and age = ?", "Jessica", "13");
 		assertEquals(1, affectedRows);
 		Student updatedStu = LitePal.find(Student.class, ids[3]);
 		assertEquals(24, updatedStu.getAge());
 		assertEquals(date.getTime(), updatedStu.getBirthday().getTime());
 		toUpdate.setAge(18);
 		toUpdate.setName("Jess");
-		affectedRows = toUpdate.updateAll(new String[] { "name = ?", "Jessica" });
+		affectedRows = toUpdate.updateAll("name = ?", "Jessica");
 		assertEquals(5, affectedRows);
 		List<Student> students = getStudents(ids);
 		for (Student updatedStudent : students) {
@@ -490,7 +489,7 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 
     @Test
 	public void testUpdateAllWithDefaultValueWithInstanceUpdate() {
-		Teacher tea = null;
+		Teacher tea;
 		int[] ids = new int[5];
 		for (int i = 0; i < 5; i++) {
 			tea = new Teacher();
@@ -513,7 +512,7 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 			assertEquals("Rose Jackson", updatedTeacher.getTeacherName());
 			assertEquals(50, updatedTeacher.getAge());
 			assertEquals(15, updatedTeacher.getTeachYears());
-			assertEquals(false, updatedTeacher.isSex());
+			assertFalse(updatedTeacher.isSex());
 		}
 	}
 
@@ -531,11 +530,11 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 		Student s = new Student();
 		s.setToDefault("age");
 		s.setToDefault("name");
-		int affectedStudent = s.updateAll(new String[] { "name = 'Michael Jackson'" });
+		int affectedStudent = s.updateAll("name = 'Michael Jackson'");
 		assertEquals(5, affectedStudent);
 		List<Student> students = getStudents(ids);
 		for (Student updatedStudent : students) {
-			assertEquals(null, updatedStudent.getName());
+			assertNull(updatedStudent.getName());
 			assertEquals(0, updatedStudent.getAge());
 		}
 	}
@@ -559,21 +558,21 @@ public class UpdateUsingUpdateMethodTest extends LitePalTestCase {
 		Student student = new Student();
 		student.setName("Dustee");
 		try {
-			student.updateAll(new String[] { "name = 'Dustin'", "aaa" });
+			student.updateAll("name = 'Dustin'", "aaa");
 			fail();
 		} catch (DataSupportException e) {
 			assertEquals("The parameters in conditions are incorrect.", e.getMessage());
 		}
 		try {
-			student.updateAll(new String[] { null, null });
+			student.updateAll(null, null);
 			fail();
 		} catch (DataSupportException e) {
 			assertEquals("The parameters in conditions are incorrect.", e.getMessage());
 		}
 		try {
-			student.updateAll(new String[] { "address = ?", "HK" });
+			student.updateAll("address = ?", "HK");
 			fail();
-		} catch (Exception e) {
+		} catch (Exception ignored) {
 		}
 	}
 

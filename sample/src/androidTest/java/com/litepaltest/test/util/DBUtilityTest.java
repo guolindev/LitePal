@@ -1,7 +1,7 @@
 package com.litepaltest.test.util;
 
 import android.database.sqlite.SQLiteDatabase;
-import android.support.test.filters.SmallTest;
+import androidx.test.filters.SmallTest;
 import android.util.Pair;
 
 import com.litepaltest.model.Book;

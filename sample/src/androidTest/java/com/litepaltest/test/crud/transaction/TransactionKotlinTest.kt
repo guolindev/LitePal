@@ -1,7 +1,7 @@
 package com.litepaltest.test.crud.transaction
 
 import android.content.ContentValues
-import android.support.test.filters.SmallTest
+import androidx.test.filters.SmallTest
 import com.litepaltest.model.*
 import com.litepaltest.test.LitePalTestCase
 import junit.framework.TestCase
@@ -188,6 +188,5 @@ class TransactionKotlinTest : LitePalTestCase() {
         val bookFromDb = LitePal.find(Book::class.java, book.id)
         Assert.assertNull(bookFromDb)
     }
-
 
 }

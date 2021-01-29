@@ -1,6 +1,6 @@
 package com.litepaltest.test.crud.save;
 
-import android.support.test.filters.SmallTest;
+import androidx.test.filters.SmallTest;
 
 import com.litepaltest.model.Book;
 import com.litepaltest.model.Cellphone;

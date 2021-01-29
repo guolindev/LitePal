@@ -1,6 +1,6 @@
 package com.litepaltest.test.crud.save
 
-import android.support.test.filters.SmallTest
+import androidx.test.filters.SmallTest
 import com.litepaltest.model.*
 import junit.framework.TestCase
 import junit.framework.TestCase.assertEquals
@@ -8,7 +8,6 @@ import org.junit.Before
 import org.junit.Test
 import org.litepal.LitePal.find
 import org.litepal.LitePal.findBySQL
-import org.litepal.LitePal.saveAll
 import org.litepal.LitePal.where
 import org.litepal.extension.saveAll
 import org.litepal.util.DBUtility

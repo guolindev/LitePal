@@ -2,7 +2,7 @@ package com.litepaltest.test.crud.update
 
 import android.content.ContentValues
 import android.database.sqlite.SQLiteException
-import android.support.test.filters.SmallTest
+import androidx.test.filters.SmallTest
 import com.litepaltest.model.*
 import com.litepaltest.test.LitePalTestCase
 import junit.framework.TestCase.*

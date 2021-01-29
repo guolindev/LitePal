@@ -1,6 +1,6 @@
 package com.litepaltest.test.crud.query;
 
-import android.support.test.filters.SmallTest;
+import androidx.test.filters.SmallTest;
 
 import com.litepaltest.model.Classroom;
 import com.litepaltest.model.IdCard;
@@ -38,8 +38,6 @@ public class QueryEagerTest {
 
 	private IdCard idcard1;
 
-	private IdCard idcard2;
-
 	@Before
 	public void setUp() {
 		Calendar calendar = Calendar.getInstance();
@@ -47,7 +45,7 @@ public class QueryEagerTest {
 		classroom.setName("Classroom 11");
 		idcard1 = new IdCard();
 		idcard1.setNumber("320311");
-		idcard2 = new IdCard();
+		IdCard idcard2 = new IdCard();
 		idcard2.setNumber("320322");
 		calendar.clear();
 		calendar.set(1990, 9, 16, 0, 0, 0);

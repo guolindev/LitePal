@@ -1,6 +1,6 @@
 package com.litepaltest.test.crud.query;
 
-import android.support.test.filters.SmallTest;
+import androidx.test.filters.SmallTest;
 
 import com.litepaltest.model.Student;
 import com.litepaltest.test.LitePalTestCase;
@@ -10,7 +10,6 @@ import org.litepal.LitePal;
 
 import java.util.Calendar;
 
-import static junit.framework.Assert.assertNotNull;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 

@@ -1,6 +1,6 @@
 package com.litepaltest.test.crud.query;
 
-import android.support.test.filters.SmallTest;
+import androidx.test.filters.SmallTest;
 
 import com.litepaltest.model.Book;
 import com.litepaltest.test.LitePalTestCase;

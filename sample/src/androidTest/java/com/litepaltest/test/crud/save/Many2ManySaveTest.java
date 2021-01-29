@@ -1,6 +1,6 @@
 package com.litepaltest.test.crud.save;
 
-import android.support.test.filters.SmallTest;
+import androidx.test.filters.SmallTest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +72,7 @@ public class Many2ManySaveTest extends LitePalTestCase {
 	}
 
 	private List<LitePalSupport> getModelList() {
-		List<LitePalSupport> list = new ArrayList<LitePalSupport>();
+		List<LitePalSupport> list = new ArrayList<>();
 		list.add(jack);
 		list.add(danny);
 		list.add(cam);
@@ -113,7 +113,7 @@ public class Many2ManySaveTest extends LitePalTestCase {
 		jack.save();
 		cam.save();
 		assertTrue(isDataExists(getTableName(danny), danny.getId()));
-		assertTrue(!isDataExists(getTableName(mick), mick.getId()));
+		assertFalse(isDataExists(getTableName(mick), mick.getId()));
 		assertTrue(isDataExists(getTableName(cam), cam.getId()));
 		assertTrue(isDataExists(getTableName(jack), jack.getId()));
 		assertM2M(getTableName(danny), getTableName(cam), danny.getId(), cam.getId());

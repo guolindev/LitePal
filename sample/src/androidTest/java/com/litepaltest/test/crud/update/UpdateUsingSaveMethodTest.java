@@ -1,6 +1,6 @@
 package com.litepaltest.test.crud.update;
 
-import android.support.test.filters.SmallTest;
+import androidx.test.filters.SmallTest;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -11,13 +11,11 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.litepal.LitePal;
-import org.litepal.extension.LitePalKt;
 import org.litepal.util.DBUtility;
 
 import com.litepaltest.model.Cellphone;
 import com.litepaltest.model.Classroom;
 import com.litepaltest.model.IdCard;
-import com.litepaltest.model.Product;
 import com.litepaltest.model.Student;
 import com.litepaltest.model.Teacher;
 import com.litepaltest.test.LitePalTestCase;
@@ -107,7 +105,7 @@ public class UpdateUsingSaveMethodTest extends LitePalTestCase {
 		assertTrue(cell.save());
 		Cellphone updatedCell = getCellPhone(cell.getId());
 		assertEquals(2899.88, updatedCell.getPrice());
-		assertTrue('N' == updatedCell.getInStock());
+		assertEquals('N', (char) updatedCell.getInStock());
 	}
 
     @Test
@@ -287,13 +285,13 @@ public class UpdateUsingSaveMethodTest extends LitePalTestCase {
 		assertTrue(s3.save());
 		assertTrue(t1.save());
 		assertTrue(t2.save());
-		List<Teacher> teachers = new LinkedList<Teacher>();
+		List<Teacher> teachers = new LinkedList<>();
 		teachers.add(t1);
 		teachers.add(t2);
 		s1.setTeachers(teachers);
 		s2.setTeachers(teachers);
 		s3.setTeachers(teachers);
-		List<Student> students = new ArrayList<Student>();
+		List<Student> students = new ArrayList<>();
 		students.add(s1);
 		students.add(s2);
 		students.add(s3);
@@ -321,13 +319,13 @@ public class UpdateUsingSaveMethodTest extends LitePalTestCase {
     @Test
 	public void testUpdateM2MAssociationsWithNull() {
 		init();
-		List<Teacher> teachers = new LinkedList<Teacher>();
+		List<Teacher> teachers = new LinkedList<>();
 		teachers.add(t1);
 		teachers.add(t2);
 		s1.setTeachers(teachers);
 		s2.setTeachers(teachers);
 		s3.setTeachers(teachers);
-		List<Student> students = new ArrayList<Student>();
+		List<Student> students = new ArrayList<>();
 		students.add(s1);
 		students.add(s2);
 		students.add(s3);
@@ -365,13 +363,13 @@ public class UpdateUsingSaveMethodTest extends LitePalTestCase {
     @Test
 	public void testUpdateM2MAssociationsWithRefreshedCollection() {
 		init();
-		List<Teacher> teachers = new LinkedList<Teacher>();
+		List<Teacher> teachers = new LinkedList<>();
 		teachers.add(t1);
 		teachers.add(t2);
 		s1.setTeachers(teachers);
 		s2.setTeachers(teachers);
 		s3.setTeachers(teachers);
-		List<Student> students = new ArrayList<Student>();
+		List<Student> students = new ArrayList<>();
 		students.add(s1);
 		students.add(s2);
 		students.add(s3);
@@ -413,13 +411,13 @@ public class UpdateUsingSaveMethodTest extends LitePalTestCase {
     @Test
 	public void testUpdateM2MAssociationsWithEmptyCollection() {
 		init();
-		List<Teacher> teachers = new LinkedList<Teacher>();
+		List<Teacher> teachers = new LinkedList<>();
 		teachers.add(t1);
 		teachers.add(t2);
 		s1.setTeachers(teachers);
 		s2.setTeachers(teachers);
 		s3.setTeachers(teachers);
-		List<Student> students = new ArrayList<Student>();
+		List<Student> students = new ArrayList<>();
 		students.add(s1);
 		students.add(s2);
 		students.add(s3);

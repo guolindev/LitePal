@@ -1,6 +1,6 @@
 package com.litepaltest.test.util;
 
-import android.support.test.filters.SmallTest;
+import androidx.test.filters.SmallTest;
 
 import org.junit.Test;
 import org.litepal.util.BaseUtility;

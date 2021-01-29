@@ -1,7 +1,7 @@
 package com.litepaltest.test.crud.query;
 
 import android.database.Cursor;
-import android.support.test.filters.SmallTest;
+import androidx.test.filters.SmallTest;
 
 import com.litepaltest.model.Book;
 
@@ -44,7 +44,7 @@ public class QueryBySQLTest {
 		Cursor cursor = LitePal.findBySQL(
 				"select * from " + bookTable + " where id=? and bookname=? and pages=?",
 				String.valueOf(book.getId()), "数据库", "300");
-		assertTrue(cursor.getCount() == 1);
+		assertEquals(1, cursor.getCount());
 		cursor.moveToFirst();
 		String bookName = cursor.getString(cursor.getColumnIndexOrThrow("bookname"));
 		int pages = cursor.getInt(cursor.getColumnIndexOrThrow("pages"));
@@ -62,7 +62,7 @@ public class QueryBySQLTest {
 		} catch (DataSupportException e) {
 			assertEquals("The parameters in conditions are incorrect.", e.getMessage());
 		}
-		Cursor cursor = LitePal.findBySQL(new String[] {});
+		Cursor cursor = LitePal.findBySQL();
 		assertNull(cursor);
 		cursor = LitePal.findBySQL();
 		assertNull(cursor);

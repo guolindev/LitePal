@@ -1,7 +1,7 @@
 package com.litepaltest.test.crud.save;
 
 import android.database.Cursor;
-import android.support.test.filters.SmallTest;
+import androidx.test.filters.SmallTest;
 
 import com.litepaltest.model.Cellphone;
 import com.litepaltest.model.Classroom;
@@ -38,7 +38,7 @@ public class SaveAllTest {
 
     @Test
     public void testSaveAll() {
-		List<Cellphone> cellList = new ArrayList<Cellphone>();
+		List<Cellphone> cellList = new ArrayList<>();
 		for (int i = 0; i < 50; i++) {
 			Cellphone cellPhone = new Cellphone();
 			cellPhone.setBrand("Samsung unique");
@@ -74,7 +74,7 @@ public class SaveAllTest {
 	public void testSaveAllWithM2OOnManySide() {
 		Classroom classroom = new Classroom();
 		classroom.setName("English room");
-		List<Student> studentList = new ArrayList<Student>();
+		List<Student> studentList = new ArrayList<>();
 		for (int i = 0; i < 50; i++) {
 			Student student = new Student();
 			student.setName("Tom");
@@ -91,8 +91,8 @@ public class SaveAllTest {
 
     @Test
 	public void testSaveAllWithO2O() {
-		List<IdCard> idcardList = new ArrayList<IdCard>();
-		List<Student> studentList = new ArrayList<Student>();
+		List<IdCard> idcardList = new ArrayList<>();
+		List<Student> studentList = new ArrayList<>();
 		for (int i = 0; i < 50; i++) {
 			IdCard idcard = new IdCard();
 			idcard.setNumber(String.valueOf(new Random().nextInt(2000000)));
@@ -114,8 +114,8 @@ public class SaveAllTest {
 
     @Test
 	public void testSaveAllWithM2M() {
-		List<Student> studentList = new ArrayList<Student>();
-		List<Teacher> teacherList = new ArrayList<Teacher>();
+		List<Student> studentList = new ArrayList<>();
+		List<Teacher> teacherList = new ArrayList<>();
 		for (int i = 0; i < 50; i++) {
 			Teacher teacher = new Teacher();
 			teacher.setTeacherName("Lucy");
@@ -156,7 +156,7 @@ public class SaveAllTest {
 
     @Test
     public void testSaveAllGenericData() {
-        List<Classroom> classroomList = new ArrayList<Classroom>();
+        List<Classroom> classroomList = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
             Classroom classroom = new Classroom();
             classroom.setName("classroom " + i);

@@ -1,6 +1,6 @@
 package com.litepaltest.test.crud.query
 
-import android.support.test.filters.SmallTest
+import androidx.test.filters.SmallTest
 import com.litepaltest.model.Student
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.fail

@@ -3,7 +3,7 @@ package com.litepaltest.test.crud.delete;
 import android.database.Cursor;
 
 import android.database.sqlite.SQLiteException;
-import android.support.test.filters.SmallTest;
+import androidx.test.filters.SmallTest;
 
 import com.litepaltest.model.Classroom;
 import com.litepaltest.model.IdCard;

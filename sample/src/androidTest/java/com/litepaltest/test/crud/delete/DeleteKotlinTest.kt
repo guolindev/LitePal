@@ -1,7 +1,7 @@
 package com.litepaltest.test.crud.delete
 
 import android.database.sqlite.SQLiteException
-import android.support.test.filters.SmallTest
+import androidx.test.filters.SmallTest
 import com.litepaltest.model.Classroom
 import com.litepaltest.model.IdCard
 import com.litepaltest.model.Student

@@ -1,6 +1,6 @@
 package com.litepaltest.test.annotation;
 
-import android.support.test.filters.SmallTest;
+import androidx.test.filters.SmallTest;
 
 import com.litepaltest.model.Cellphone;
 import com.litepaltest.test.LitePalTestCase;

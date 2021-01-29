@@ -1,6 +1,6 @@
 package com.litepaltest.test.crud.query
 
-import android.support.test.filters.SmallTest
+import androidx.test.filters.SmallTest
 import com.litepaltest.model.Classroom
 import com.litepaltest.model.IdCard
 import com.litepaltest.model.Student
@@ -153,7 +153,7 @@ class QueryEagerKotlinTest {
         assertNull(s3!!.birthday)
     }
 
-    fun resetData() {
+    private fun resetData() {
         LitePal.deleteAll<Student>()
         LitePal.deleteAll<Classroom>()
         LitePal.deleteAll<Teacher>()

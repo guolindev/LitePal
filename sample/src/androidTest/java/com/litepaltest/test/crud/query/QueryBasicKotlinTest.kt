@@ -1,6 +1,6 @@
 package com.litepaltest.test.crud.query
 
-import android.support.test.filters.SmallTest
+import androidx.test.filters.SmallTest
 import com.litepaltest.model.Book
 import com.litepaltest.test.LitePalTestCase
 import junit.framework.TestCase.*
@@ -96,7 +96,7 @@ class QueryBasicKotlinTest : LitePalTestCase() {
             val realBook = realBooks[i]
             assertEquals(expectBook.id, realBook.id)
             assertEquals(expectBook.bookName, realBook.bookName)
-            assertEquals(expectBook.pages as Int?, realBook.pages as Int?)
+            assertEquals(expectBook.pages, realBook.pages)
             assertEquals(expectBook.price, realBook.price)
             assertEquals(expectBook.area, realBook.area)
             assertEquals(expectBook.isbn, realBook.isbn)
@@ -113,7 +113,7 @@ class QueryBasicKotlinTest : LitePalTestCase() {
         val realFirstBook = LitePal.findFirst<Book>()
         assertEquals(expectedFirstBook.id, realFirstBook!!.id)
         assertEquals(expectedFirstBook.bookName, realFirstBook.bookName)
-        assertEquals(expectedFirstBook.pages as Int?, realFirstBook.pages as Int?)
+        assertEquals(expectedFirstBook.pages, realFirstBook.pages)
         assertEquals(expectedFirstBook.price, realFirstBook.price)
         assertEquals(expectedFirstBook.area, realFirstBook.area)
         assertEquals(expectedFirstBook.isbn, realFirstBook.isbn)

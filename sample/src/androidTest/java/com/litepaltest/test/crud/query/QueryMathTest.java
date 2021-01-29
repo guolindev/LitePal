@@ -1,7 +1,7 @@
 package com.litepaltest.test.crud.query;
 
 import android.database.Cursor;
-import android.support.test.filters.SmallTest;
+import androidx.test.filters.SmallTest;
 
 import com.litepaltest.model.Student;
 
@@ -44,7 +44,7 @@ public class QueryMathTest {
 		try {
             LitePal.count("nosuchtable");
 			fail();
-		} catch (Exception e) {
+		} catch (Exception ignored) {
 		}
 	}
 

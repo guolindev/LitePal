@@ -1,6 +1,6 @@
 package com.litepaltest.test.crud.save;
 
-import android.support.test.filters.SmallTest;
+import androidx.test.filters.SmallTest;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -34,7 +34,7 @@ public class Many2OneBiSaveTest extends LitePalTestCase {
     @Test
 	public void testCase1() {
 		init();
-		Set<Student> ss = new HashSet<Student>();
+		Set<Student> ss = new HashSet<>();
 		ss.add(s1);
 		ss.add(s2);
 		c1.setStudentCollection(ss);
@@ -47,7 +47,7 @@ public class Many2OneBiSaveTest extends LitePalTestCase {
     @Test
 	public void testCase2() {
 		init();
-		Set<Student> ss = new HashSet<Student>();
+		Set<Student> ss = new HashSet<>();
 		ss.add(s1);
 		ss.add(s2);
 		c1.setStudentCollection(ss);
@@ -60,7 +60,7 @@ public class Many2OneBiSaveTest extends LitePalTestCase {
     @Test
 	public void testCase3() {
 		init();
-		Set<Student> ss = new HashSet<Student>();
+		Set<Student> ss = new HashSet<>();
 		ss.add(s1);
 		ss.add(s2);
 		c1.setStudentCollection(ss);
@@ -108,7 +108,7 @@ public class Many2OneBiSaveTest extends LitePalTestCase {
 		init();
 		s1.setClassroom(c1);
 		s2.setClassroom(c1);
-		Set<Student> ss = new HashSet<Student>();
+		Set<Student> ss = new HashSet<>();
 		ss.add(s1);
 		ss.add(s2);
 		c1.setStudentCollection(ss);
@@ -123,7 +123,7 @@ public class Many2OneBiSaveTest extends LitePalTestCase {
 		init();
 		s1.setClassroom(c1);
 		s2.setClassroom(c1);
-		Set<Student> ss = new HashSet<Student>();
+		Set<Student> ss = new HashSet<>();
 		ss.add(s1);
 		ss.add(s2);
 		c1.setStudentCollection(ss);
@@ -138,7 +138,7 @@ public class Many2OneBiSaveTest extends LitePalTestCase {
 		init();
 		s1.setClassroom(c1);
 		s2.setClassroom(c1);
-		Set<Student> ss = new HashSet<Student>();
+		Set<Student> ss = new HashSet<>();
 		ss.add(s1);
 		ss.add(s2);
 		c1.setStudentCollection(ss);
@@ -153,7 +153,7 @@ public class Many2OneBiSaveTest extends LitePalTestCase {
 		init();
 		s1 = null;
 		s2 = null;
-		Set<Student> ss = new HashSet<Student>();
+		Set<Student> ss = new HashSet<>();
 		ss.add(s1);
 		ss.add(s2);
 		c1.setStudentCollection(ss);
