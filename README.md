@@ -515,7 +515,7 @@ If you find any bug when using LitePal, please report **[here](https://github.co
  
 ## License
 ```
-Copyright (C)  Tony Green, LitePal Framework Open Source Project
+Copyright (C) Lin Guo, LitePal Framework Open Source Project
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
