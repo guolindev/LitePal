@@ -456,7 +456,7 @@ public class LitePalSupport {
     @SuppressWarnings("unchecked")
     public boolean saveOrUpdate(String... conditions) {
         synchronized (LitePalSupport.class) {
-            if (conditions == null) {
+            if (conditions == null || conditions.length == 0) {
                 return save();
             }
             List<LitePalSupport> list = (List<LitePalSupport>) Operator.where(conditions).find(getClass());
