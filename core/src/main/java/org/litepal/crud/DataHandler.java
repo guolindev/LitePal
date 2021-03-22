@@ -19,22 +19,7 @@ package org.litepal.crud;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 import android.util.SparseArray;
-
-import org.litepal.LitePalBase;
-import org.litepal.Operator;
-import org.litepal.annotation.Column;
-import org.litepal.annotation.Encrypt;
-import org.litepal.crud.model.AssociationsInfo;
-import org.litepal.exceptions.DatabaseGenerateException;
-import org.litepal.exceptions.LitePalSupportException;
-import org.litepal.tablemanager.model.GenericModel;
-import org.litepal.util.BaseUtility;
-import org.litepal.util.Const;
-import org.litepal.util.DBUtility;
-import org.litepal.util.cipher.CipherUtil;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -47,6 +32,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import org.litepal.LitePalBase;
+import org.litepal.Operator;
+import org.litepal.annotation.Encrypt;
+import org.litepal.crud.model.AssociationsInfo;
+import org.litepal.exceptions.DatabaseGenerateException;
+import org.litepal.exceptions.LitePalSupportException;
+import org.litepal.tablemanager.model.GenericModel;
+import org.litepal.util.BaseUtility;
+import org.litepal.util.Const;
+import org.litepal.util.DBUtility;
+import org.litepal.util.cipher.CipherUtil;
 
 import static org.litepal.util.BaseUtility.changeCase;
 
@@ -252,35 +248,15 @@ abstract class DataHandler extends LitePalBase {
 	 *            To store data of current model for persisting or updating.
 	 */
 	protected void putContentValuesForSave(LitePalSupport baseObj, Field field, ContentValues values)
-			throws SecurityException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-        Object fieldValue = getFieldValue(baseObj, field);
-        if ("java.util.Date".equals(field.getType().getName())) {
-        	// handle java.util.Date type for special
-			if (fieldValue != null) {
-				// If Date field is not null, use date.getTime() value for save.
+		throws SecurityException, IllegalArgumentException,
+		IllegalAccessException, InvocationTargetException {
+		Object fieldValue = DynamicExecutor.getField(baseObj, field.getName(), baseObj.getClass());
+		if (fieldValue != null || "java.util.Date".equals(field.getType().getName())) {
+			// put content value only when value is not null. this allows to use defaultValue declared in annotation.
+			if ("java.util.Date".equals(field.getType().getName()) && fieldValue != null) {
 				Date date = (Date) fieldValue;
 				fieldValue = date.getTime();
-			} else {
-				// If Date field is null, try to use defaultValue on annotation first.
-				Column annotation = field.getAnnotation(Column.class);
-				if (annotation != null) {
-					String defaultValue = annotation.defaultValue();
-					if (!defaultValue.isEmpty()) {
-						try {
-							fieldValue = Long.parseLong(defaultValue);
-						} catch (NumberFormatException e) {
-							Log.w(TAG, field + " in " + baseObj.getClass() + " with invalid defaultValue. So we use null instead");
-						}
-					}
-				}
-				if (fieldValue == null) {
-					// If Date field is still null, use Long.MAX_VALUE for save. Because it's a date that will never reach.
-					fieldValue = Long.MAX_VALUE;
-				}
 			}
-		}
-		if (fieldValue != null) {
-			// put content value only when value is not null. this allows to use defaultValue declared in annotation.
 			Encrypt annotation = field.getAnnotation(Encrypt.class);
 			if (annotation != null && "java.lang.String".equals(field.getType().getName())) {
 				fieldValue = encryptValue(annotation.algorithm(), fieldValue);
@@ -302,26 +278,21 @@ abstract class DataHandler extends LitePalBase {
      * @param values
      *            To store data of current model for persisting or updating.
      */
-    protected void putContentValuesForUpdate(LitePalSupport baseObj, Field field, ContentValues values)
-            throws SecurityException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-        Object fieldValue = getFieldValue(baseObj, field);
-        if ("java.util.Date".equals(field.getType().getName())) {
-        	if (fieldValue != null) {
-				Date date = (Date) fieldValue;
-				fieldValue = date.getTime();
-			} else {
-				// If Date field is null, use Long.MAX_VALUE for save. Because it's a date that will never reach.
-        		fieldValue = Long.MAX_VALUE;
-			}
-        }
-        Encrypt annotation = field.getAnnotation(Encrypt.class);
-        if (annotation != null && "java.lang.String".equals(field.getType().getName())) {
-            fieldValue = encryptValue(annotation.algorithm(), fieldValue);
-        }
-        Object[] parameters = new Object[] { changeCase(DBUtility.convertToValidColumnName(field.getName())), fieldValue };
-        Class<?>[] parameterTypes = getParameterTypes(field, fieldValue, parameters);
-        DynamicExecutor.send(values, "put", parameters, values.getClass(), parameterTypes);
-    }
+	protected void putContentValuesForUpdate(LitePalSupport baseObj, Field field, ContentValues values)
+		throws SecurityException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+		Object fieldValue = getFieldValue(baseObj, field);
+		if ("java.util.Date".equals(field.getType().getName()) && fieldValue != null) {
+			Date date = (Date) fieldValue;
+			fieldValue = date.getTime();
+		}
+		Encrypt annotation = field.getAnnotation(Encrypt.class);
+		if (annotation != null && "java.lang.String".equals(field.getType().getName())) {
+			fieldValue = encryptValue(annotation.algorithm(), fieldValue);
+		}
+		Object[] parameters = new Object[] { changeCase(DBUtility.convertToValidColumnName(field.getName())), fieldValue };
+		Class<?>[] parameterTypes = getParameterTypes(field, fieldValue, parameters);
+		DynamicExecutor.send(values, "put", parameters, values.getClass(), parameterTypes);
+	}
 
     /**
      * Encrypt the field value with targeted algorithm.
@@ -1320,7 +1291,7 @@ abstract class DataHandler extends LitePalBase {
     private void setToModelByReflection(Object modelInstance, Field field, int columnIndex, String getMethodName, Cursor cursor)
             throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Class<?> cursorClass = cursor.getClass();
-        if (cursor.isNull(columnIndex)) return;
+        // if (cursor.isNull(columnIndex)) return;
         Method method = cursorClass.getMethod(getMethodName, int.class);
         Object value = method.invoke(cursor, columnIndex);
         if (field.getType() == boolean.class || field.getType() == Boolean.class) {
@@ -1332,11 +1303,13 @@ abstract class DataHandler extends LitePalBase {
         } else if (field.getType() == char.class || field.getType() == Character.class) {
             value = ((String) value).charAt(0);
         } else if (field.getType() == Date.class) {
-            long date = (long) value;
-            if (date == Long.MAX_VALUE) { // Long.MAX_VALUE is a date that will never reach, which represents null in our case.
-				value = null;
-			} else {
-				value = new Date(date);
+        	if(value != null) {
+				long date = (Long) value;
+				if (date <= 0L) {
+					value = null;
+				} else {
+					value = new Date(date);
+				}
 			}
         }
         if (isCollection(field.getType())) {
