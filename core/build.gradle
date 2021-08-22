@@ -2,13 +2,11 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        targetSdkVersion 31
         archivesBaseName = "core"
     }
     buildTypes {
@@ -20,36 +18,13 @@ android {
     lintOptions {
         abortOnError false
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-}
-
-apply plugin: 'com.github.panpf.bintray-publish'
-
-allprojects {
-    tasks.withType(Javadoc) {
-        options.addStringOption('Xdoclint:none', '-quiet')
-        options.addStringOption('encoding', 'UTF-8')
-    }
-}
-
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.github.panpf.bintray-publish:bintray-publish:1.0.0'
-    }
-}
-
-publish {
-    userOrg = 'sinyu890807'
-    groupId = 'org.litepal.guolindev'
-    artifactId = 'core'
-    publishVersion = '3.2.3'
-    desc = 'An Android library that allows developers to use SQLite database extremely easy'
-    website = 'https://github.com/LitePalFramework/LitePal'
 }
