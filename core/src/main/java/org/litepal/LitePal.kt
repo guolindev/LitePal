@@ -21,6 +21,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import org.litepal.crud.LitePalSupport
 import org.litepal.tablemanager.callback.DatabaseListener
+import kotlin.coroutines.CoroutineContext
 
 /**
  * LitePal is an Android library that allows developers to use SQLite database extremely easy.
@@ -46,13 +47,18 @@ object LitePal {
         Operator.initialize(context)
     }
 
+    @JvmStatic
+    fun setDbContext(context: CoroutineContext) {
+        dbSingleContextNullable = context
+    }
+
     /**
      * Get a writable SQLiteDatabase.
      *
      * @return A writable SQLiteDatabase instance
      */
     @JvmStatic
-    fun getDatabase(): SQLiteDatabase = Operator.getDatabase()
+    fun getDatabase(): SQLiteDatabase = Operator.database
 
     /**
      * Begins a transaction in EXCLUSIVE mode.
