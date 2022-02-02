@@ -19,7 +19,6 @@ package org.litepal.extension
 import android.content.ContentValues
 import org.litepal.LitePal
 import org.litepal.crud.LitePalSupport
-import java.lang.Exception
 
 /**
  * Extension of LitePal class for Kotlin api.
@@ -592,7 +591,8 @@ inline fun <reified T> LitePal.updateAllAsync(values: ContentValues, vararg cond
  * @return Return true if the specified conditions data already exists in the table.
  * False otherwise. Null conditions will result in false.
  */
-inline fun <reified T> LitePal.isExist(vararg conditions: String?) = isExist(T::class.java, *conditions)
+inline fun <reified T> LitePal.isExist(vararg conditions: String) =
+    isExist(T::class.java, *conditions)
 
 /**
  * Saves the collection into database.

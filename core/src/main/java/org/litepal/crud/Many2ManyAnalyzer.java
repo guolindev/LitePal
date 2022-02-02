@@ -16,8 +16,8 @@
 
 package org.litepal.crud;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 import org.litepal.LitePalBase;
 import org.litepal.crud.model.AssociationsInfo;
@@ -25,8 +25,8 @@ import org.litepal.tablemanager.Connector;
 import org.litepal.util.BaseUtility;
 import org.litepal.util.DBUtility;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 
 /**
  * Deals analysis work when comes to two models are associated with Many2Many
@@ -120,7 +120,7 @@ public class Many2ManyAnalyzer extends AssociationsAnalyzer {
 	private void dealAssociatedModel(LitePalSupport baseObj, LitePalSupport associatedModel) {
 		if (associatedModel.isSaved()) {
 			baseObj.addAssociatedModelForJoinTable(associatedModel.getTableName(),
-					associatedModel.getBaseObjId());
+					associatedModel.baseObjId);
 		}
 	}
 
@@ -200,8 +200,8 @@ public class Many2ManyAnalyzer extends AssociationsAnalyzer {
 	 *         associatedModel to fill.
 	 */
 	private String[] getSelectionArgs(LitePalSupport baseObj, LitePalSupport associatedModel) {
-		return new String[] { String.valueOf(baseObj.getBaseObjId()),
-				String.valueOf(associatedModel.getBaseObjId()) };
+		return new String[]{String.valueOf(baseObj.baseObjId),
+				String.valueOf(associatedModel.baseObjId)};
 	}
 
 	/**

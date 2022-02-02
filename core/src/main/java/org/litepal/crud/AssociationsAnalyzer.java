@@ -16,16 +16,16 @@
 
 package org.litepal.crud;
 
+import org.litepal.LitePalBase;
+import org.litepal.crud.model.AssociationsInfo;
+import org.litepal.exceptions.LitePalSupportException;
+import org.litepal.util.DBUtility;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-
-import org.litepal.LitePalBase;
-import org.litepal.crud.model.AssociationsInfo;
-import org.litepal.exceptions.LitePalSupportException;
-import org.litepal.util.DBUtility;
 
 /**
  * Base class of associations analyzer.
@@ -155,11 +155,11 @@ abstract class AssociationsAnalyzer extends DataHandler {
 		if (associatedModel != null) {
 			if (associatedModel.isSaved()) {
 				baseObj.addAssociatedModelWithFK(associatedModel.getTableName(),
-						associatedModel.getBaseObjId());
+						associatedModel.baseObjId);
 			} else {
 				if (baseObj.isSaved()) {
 					associatedModel.addAssociatedModelWithoutFK(baseObj.getTableName(),
-							baseObj.getBaseObjId());
+							baseObj.baseObjId);
 				}
 			}
 		}

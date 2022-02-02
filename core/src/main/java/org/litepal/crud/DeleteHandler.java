@@ -77,11 +77,11 @@ public class DeleteHandler extends DataHandler {
 	int onDelete(LitePalSupport baseObj) {
 		if (baseObj.isSaved()) {
             List<Field> supportedGenericFields = getSupportedGenericFields(baseObj.getClassName());
-            deleteGenericData(baseObj.getClass(), supportedGenericFields, baseObj.getBaseObjId());
+            deleteGenericData(baseObj.getClass(), supportedGenericFields, baseObj.baseObjId);
 			Collection<AssociationsInfo> associationInfos = analyzeAssociations(baseObj);
 			int rowsAffected = deleteCascade(baseObj);
 			rowsAffected += mDatabase.delete(baseObj.getTableName(), "id = "
-					+ baseObj.getBaseObjId(), null);
+					+ baseObj.baseObjId, null);
 			clearAssociatedModelSaveState(baseObj, associationInfos);
 			return rowsAffected;
 		}
@@ -146,7 +146,7 @@ public class DeleteHandler extends DataHandler {
                 long[] ids = new long[list.size()];
                 for (int i = 0; i < ids.length; i++) {
                     LitePalSupport dataSupport = list.get(i);
-                    ids[i] = dataSupport.getBaseObjId();
+					ids[i] = dataSupport.baseObjId;
                 }
                 deleteGenericData(modelClass, supportedGenericFields, ids);
             }
@@ -332,7 +332,7 @@ public class DeleteHandler extends DataHandler {
 		for (String associatedTableName : associatedModelMap.keySet()) {
 			String fkName = getForeignKeyColumnName(baseObj.getTableName());
 			rowsAffected += mDatabase.delete(associatedTableName, fkName
-					+ " = " + baseObj.getBaseObjId(), null);
+					+ " = " + baseObj.baseObjId, null);
 		}
 		return rowsAffected;
 	}
@@ -354,7 +354,7 @@ public class DeleteHandler extends DataHandler {
 					baseObj.getTableName(), associatedTableName);
 			String fkName = getForeignKeyColumnName(baseObj.getTableName());
 			rowsAffected += mDatabase.delete(joinTableName, fkName + " = "
-					+ baseObj.getBaseObjId(), null);
+					+ baseObj.baseObjId, null);
 		}
 		return rowsAffected;
 	}

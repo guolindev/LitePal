@@ -15,17 +15,16 @@
  */
 package org.litepal.crud
 
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.withLock
 import org.litepal.Operator.handler
 import org.litepal.Operator.where
 import org.litepal.crud.async.SaveExecutor
 import org.litepal.crud.async.UpdateOrDeleteExecutor
 import org.litepal.exceptions.LitePalSupportException
-import org.litepal.mutex
+import org.litepal.reentrantLock
 import org.litepal.tablemanager.Connector
 import org.litepal.util.BaseUtility
 import org.litepal.util.DBUtility
+import kotlin.concurrent.withLock
 
 /**
  * LitePalSupport connects classes to SQLite database tables to establish an almost
@@ -81,7 +80,9 @@ protected constructor() {
      * associations. Each corresponding table of these models contains a foreign
      * key column.
      */
-    private var associatedModelsMapWithFK: MutableMap<String, MutableSet<Long>>? = null
+    val associatedModelsMapWithFK: MutableMap<String, MutableSet<Long>> by lazy {
+        HashMap<String, MutableSet<Long>>()
+    }
     /**
      * Get the associated model's map of self model. It can be used for
      * associations actions of CRUD. The key is the name of associated model's
@@ -95,20 +96,16 @@ protected constructor() {
      * column. Instead self model has a foreign key column in the corresponding
      * table.
      */
-    var associatedModelsMapWithoutFK: MutableMap<String, Long>? = null
-        get() {
-            if (field == null) {
-                field = HashMap()
-            }
-            return field
-        }
-        private set
+    val associatedModelsMapWithoutFK: MutableMap<String, Long>? by lazy {
+        HashMap()
+    }
 
     /**
      * A map contains all the associated models' id with M2M association.
      */
-    @JvmField
-    var associatedModelsMapForJoinTable: MutableMap<String, MutableList<Long>>? = null
+    val associatedModelsMapForJoinTable: MutableMap<String, MutableList<Long>> by lazy {
+        HashMap<String, MutableList<Long>>()
+    }
     /**
      * Get the foreign key name list to clear foreign key value in current
      * model's table.
@@ -184,20 +181,19 @@ protected constructor() {
      * @return The number of rows affected. Including cascade delete rows.
      */
     fun delete(): Int {
-        return runBlocking {
-            mutex.withLock {
-                val db = Connector.getDatabase()
-                db.beginTransaction()
-                try {
-                    val deleteHandler = DeleteHandler(db)
-                    val rowsAffected = deleteHandler.onDelete(this@LitePalSupport)
-                    baseObjId = 0
-                    db.setTransactionSuccessful()
-                    rowsAffected
-                } finally {
-                    db.endTransaction()
-                }
+        return reentrantLock.withLock {
+            val db = Connector.getDatabase()
+            db.beginTransaction()
+            try {
+                val deleteHandler = DeleteHandler(db)
+                val rowsAffected = deleteHandler.onDelete(this@LitePalSupport)
+                baseObjId = 0
+                db.setTransactionSuccessful()
+                rowsAffected
+            } finally {
+                db.endTransaction()
             }
+
         }
     }
 
@@ -209,13 +205,12 @@ protected constructor() {
     fun deleteAsync(): UpdateOrDeleteExecutor {
         val executor = UpdateOrDeleteExecutor()
         val runnable = Runnable {
-            runBlocking {
-                mutex.withLock {
-                    val rowsAffected = delete()
-                    if (executor.listener != null) {
-                        handler.post { executor.listener.onFinish(rowsAffected) }
-                    }
+            reentrantLock.withLock {
+                val rowsAffected = delete()
+                if (executor.listener != null) {
+                    handler.post { executor.listener.onFinish(rowsAffected) }
                 }
+
             }
         }
         executor.submit(runnable)
@@ -244,22 +239,21 @@ protected constructor() {
      * @return The number of rows affected.
      */
     fun update(id: Long): Int {
-        return runBlocking {
-            mutex.withLock {
-                val db = Connector.getDatabase()
-                db.beginTransaction()
-                return@withLock try {
-                    val updateHandler = UpdateHandler(Connector.getDatabase())
-                    val rowsAffected = updateHandler.onUpdate(this@LitePalSupport, id)
-                    fieldsToSetToDefault!!.clear()
-                    db.setTransactionSuccessful()
-                    rowsAffected
-                } catch (e: Exception) {
-                    throw LitePalSupportException(e.message, e)
-                } finally {
-                    db.endTransaction()
-                }
+        return reentrantLock.withLock {
+            val db = Connector.getDatabase()
+            db.beginTransaction()
+            return@withLock try {
+                val updateHandler = UpdateHandler(Connector.getDatabase())
+                val rowsAffected = updateHandler.onUpdate(this@LitePalSupport, id)
+                fieldsToSetToDefault!!.clear()
+                db.setTransactionSuccessful()
+                rowsAffected
+            } catch (e: Exception) {
+                throw LitePalSupportException(e.message, e)
+            } finally {
+                db.endTransaction()
             }
+
         }
     }
 
@@ -271,13 +265,12 @@ protected constructor() {
     fun updateAsync(id: Long): UpdateOrDeleteExecutor {
         val executor = UpdateOrDeleteExecutor()
         val runnable = Runnable {
-            runBlocking {
-                mutex.withLock {
-                    val rowsAffected = update(id)
-                    if (executor.listener != null) {
-                        handler.post { executor.listener.onFinish(rowsAffected) }
-                    }
+            reentrantLock.withLock {
+                val rowsAffected = update(id)
+                if (executor.listener != null) {
+                    handler.post { executor.listener.onFinish(rowsAffected) }
                 }
+
             }
         }
         executor.submit(runnable)
@@ -314,22 +307,21 @@ protected constructor() {
      * @return The number of rows affected.
      */
     fun updateAll(vararg conditions: String?): Int {
-        return runBlocking {
-            mutex.withLock {
-                val db = Connector.getDatabase()
-                db.beginTransaction()
-                return@withLock try {
-                    val updateHandler = UpdateHandler(Connector.getDatabase())
-                    val rowsAffected = updateHandler.onUpdateAll(this@LitePalSupport, *conditions)
-                    fieldsToSetToDefault!!.clear()
-                    db.setTransactionSuccessful()
-                    rowsAffected
-                } catch (e: Exception) {
-                    throw LitePalSupportException(e.message, e)
-                } finally {
-                    db.endTransaction()
-                }
+        return reentrantLock.withLock {
+            val db = Connector.getDatabase()
+            db.beginTransaction()
+            return@withLock try {
+                val updateHandler = UpdateHandler(Connector.getDatabase())
+                val rowsAffected = updateHandler.onUpdateAll(this@LitePalSupport, *conditions)
+                fieldsToSetToDefault!!.clear()
+                db.setTransactionSuccessful()
+                rowsAffected
+            } catch (e: Exception) {
+                throw LitePalSupportException(e.message, e)
+            } finally {
+                db.endTransaction()
             }
+
         }
     }
 
@@ -341,13 +333,12 @@ protected constructor() {
     fun updateAllAsync(vararg conditions: String?): UpdateOrDeleteExecutor {
         val executor = UpdateOrDeleteExecutor()
         val runnable = Runnable {
-            runBlocking {
-                mutex.withLock {
-                    val rowsAffected = updateAll(*conditions)
-                    if (executor.listener != null) {
-                        handler.post { executor.listener.onFinish(rowsAffected) }
-                    }
+            reentrantLock.withLock {
+                val rowsAffected = updateAll(*conditions)
+                if (executor.listener != null) {
+                    handler.post { executor.listener.onFinish(rowsAffected) }
                 }
+
             }
         }
         executor.submit(runnable)
@@ -396,13 +387,12 @@ protected constructor() {
     fun saveAsync(): SaveExecutor {
         val executor = SaveExecutor()
         val runnable = Runnable {
-            runBlocking {
-                mutex.withLock {
-                    val success = save()
-                    if (executor.listener != null) {
-                        handler.post { executor.listener.onFinish(success) }
-                    }
+            reentrantLock.withLock {
+                val success = save()
+                if (executor.listener != null) {
+                    handler.post { executor.listener.onFinish(success) }
                 }
+
             }
         }
         executor.submit(runnable)
@@ -434,21 +424,20 @@ protected constructor() {
      * @throws LitePalSupportException
      */
     fun saveThrows() {
-        return runBlocking {
-            mutex.withLock {
-                val db = Connector.getDatabase()
-                db.beginTransaction()
-                try {
-                    val saveHandler = SaveHandler(db)
-                    saveHandler.onSave(this@LitePalSupport)
-                    clearAssociatedData()
-                    db.setTransactionSuccessful()
-                } catch (e: Exception) {
-                    throw LitePalSupportException(e.message, e)
-                } finally {
-                    db.endTransaction()
-                }
+        return reentrantLock.withLock {
+            val db = Connector.getDatabase()
+            db.beginTransaction()
+            try {
+                val saveHandler = SaveHandler(db)
+                saveHandler.onSave(this@LitePalSupport)
+                clearAssociatedData()
+                db.setTransactionSuccessful()
+            } catch (e: Exception) {
+                throw LitePalSupportException(e.message, e)
+            } finally {
+                db.endTransaction()
             }
+
         }
     }
 
@@ -483,35 +472,34 @@ protected constructor() {
      * all rows.
      * @return If the model saved or updated successfully, return true. Otherwise return false.
      */
-    fun saveOrUpdate(vararg conditions: String?): Boolean {
-        return runBlocking {
-            mutex.withLock {
-                if (conditions == null || conditions.size == 0) {
-                    return@runBlocking save()
-                }
-                val list = where(*conditions).find(javaClass) as List<LitePalSupport>
-                return@runBlocking if (list.isEmpty()) {
-                    save()
-                } else {
-                    val db = Connector.getDatabase()
-                    db.beginTransaction()
-                    try {
-                        for (support in list) {
-                            baseObjId = support.baseObjId
-                            val saveHandler = SaveHandler(db)
-                            saveHandler.onSave(this@LitePalSupport)
-                            clearAssociatedData()
-                        }
-                        db.setTransactionSuccessful()
-                        true
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        false
-                    } finally {
-                        db.endTransaction()
+    fun saveOrUpdate(vararg conditions: String): Boolean {
+        return reentrantLock.withLock {
+            if (conditions == null || conditions.size == 0) {
+                return save()
+            }
+            val list = where(*conditions).find(javaClass) as List<LitePalSupport>
+            return@withLock if (list.isEmpty()) {
+                save()
+            } else {
+                val db = Connector.getDatabase()
+                db.beginTransaction()
+                try {
+                    for (support in list) {
+                        baseObjId = support.baseObjId
+                        val saveHandler = SaveHandler(db)
+                        saveHandler.onSave(this@LitePalSupport)
+                        clearAssociatedData()
                     }
+                    db.setTransactionSuccessful()
+                    true
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    false
+                } finally {
+                    db.endTransaction()
                 }
             }
+
         }
     }
 
@@ -520,16 +508,15 @@ protected constructor() {
      * Handle async db operation in your own logic instead.
      */
     @Deprecated("")
-    fun saveOrUpdateAsync(vararg conditions: String?): SaveExecutor {
+    fun saveOrUpdateAsync(vararg conditions: String): SaveExecutor {
         val executor = SaveExecutor()
         val runnable = Runnable {
-            runBlocking {
-                mutex.withLock {
-                    val success = saveOrUpdate(*conditions)
-                    if (executor.listener != null) {
-                        handler.post { executor.listener.onFinish(success) }
-                    }
+            reentrantLock.withLock {
+                val success = saveOrUpdate(*conditions)
+                if (executor.listener != null) {
+                    handler.post { executor.listener.onFinish(success) }
                 }
+
             }
         }
         executor.submit(runnable)
@@ -600,30 +587,16 @@ protected constructor() {
      * The [.baseObjId] of associated model after it is saved.
      */
     fun addAssociatedModelWithFK(associatedTableName: String, associatedId: Long) {
-        var associatedIdsWithFKSet = getAssociatedModelsMapWithFK()[associatedTableName]
+        var associatedIdsWithFKSet = associatedModelsMapWithFK[associatedTableName]
         if (associatedIdsWithFKSet == null) {
             associatedIdsWithFKSet = HashSet()
             associatedIdsWithFKSet.add(associatedId)
-            associatedModelsMapWithFK!![associatedTableName] = associatedIdsWithFKSet
+            associatedModelsMapWithFK[associatedTableName] = associatedIdsWithFKSet
         } else {
             associatedIdsWithFKSet.add(associatedId)
         }
     }
 
-    /**
-     * Get the associated model's map of self model. It can be used for
-     * associations actions of CRUD. The key is the name of associated model.
-     * The value is a List of id of associated models.
-     *
-     * @return An associated model's map to update all the foreign key columns
-     * of associated models' table with self model's id.
-     */
-    fun getAssociatedModelsMapWithFK(): Map<String, MutableSet<Long>> {
-        if (associatedModelsMapWithFK == null) {
-            associatedModelsMapWithFK = HashMap()
-        }
-        return associatedModelsMapWithFK!!
-    }
 
     /**
      * Add the id of an associated model into self model's associatedIdsM2M map.
@@ -634,11 +607,11 @@ protected constructor() {
      * The id of associated model.
      */
     fun addAssociatedModelForJoinTable(associatedModelName: String, associatedId: Long) {
-        var associatedIdsM2MSet = getAssociatedModelsMapForJoinTable()[associatedModelName]
+        var associatedIdsM2MSet = associatedModelsMapForJoinTable[associatedModelName]
         if (associatedIdsM2MSet == null) {
             associatedIdsM2MSet = ArrayList()
             associatedIdsM2MSet.add(associatedId)
-            associatedModelsMapForJoinTable!![associatedModelName] = associatedIdsM2MSet
+            associatedModelsMapForJoinTable[associatedModelName] = associatedIdsM2MSet
         } else {
             associatedIdsM2MSet.add(associatedId)
         }
@@ -653,26 +626,11 @@ protected constructor() {
      * The name of associated model.
      */
     fun addEmptyModelForJoinTable(associatedModelName: String) {
-        var associatedIdsM2MSet = getAssociatedModelsMapForJoinTable()[associatedModelName]
+        var associatedIdsM2MSet = associatedModelsMapForJoinTable[associatedModelName]
         if (associatedIdsM2MSet == null) {
             associatedIdsM2MSet = ArrayList()
-            associatedModelsMapForJoinTable!![associatedModelName] = associatedIdsM2MSet
+            associatedModelsMapForJoinTable[associatedModelName] = associatedIdsM2MSet
         }
-    }
-
-    /**
-     * Get the associated model's map for intermediate join table. It is used to
-     * save values into intermediate join table. The key is the name of
-     * associated model. The value is the id of associated model.
-     *
-     * @return An associated model's map to save values into intermediate join
-     * table
-     */
-    fun getAssociatedModelsMapForJoinTable(): Map<String, MutableList<Long>> {
-        if (associatedModelsMapForJoinTable == null) {
-            associatedModelsMapForJoinTable = HashMap()
-        }
-        return associatedModelsMapForJoinTable!!
     }
 
     /**
@@ -730,10 +688,10 @@ protected constructor() {
      * Clear all the data in [.associatedModelsMapWithFK].
      */
     private fun clearIdOfModelWithFK() {
-        for (associatedModelName in getAssociatedModelsMapWithFK().keys) {
-            associatedModelsMapWithFK!![associatedModelName]!!.clear()
+        for (associatedModelName in associatedModelsMapWithFK.keys) {
+            associatedModelsMapWithFK[associatedModelName]!!.clear()
         }
-        associatedModelsMapWithFK!!.clear()
+        associatedModelsMapWithFK.clear()
     }
 
     /**
@@ -747,10 +705,10 @@ protected constructor() {
      * Clear all the data in [.associatedModelsMapForJoinTable].
      */
     private fun clearIdOfModelForJoinTable() {
-        for (associatedModelName in getAssociatedModelsMapForJoinTable().keys) {
-            associatedModelsMapForJoinTable!![associatedModelName]!!.clear()
+        for (associatedModelName in associatedModelsMapForJoinTable.keys) {
+            associatedModelsMapForJoinTable[associatedModelName]!!.clear()
         }
-        associatedModelsMapForJoinTable!!.clear()
+        associatedModelsMapForJoinTable.clear()
     }
 
     /**

@@ -16,8 +16,6 @@
 package org.litepal
 
 import android.text.TextUtils
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.withLock
 import org.litepal.Operator.handler
 import org.litepal.crud.QueryHandler
 import org.litepal.crud.async.AverageExecutor
@@ -28,6 +26,7 @@ import org.litepal.exceptions.LitePalSupportException
 import org.litepal.tablemanager.Connector
 import org.litepal.util.BaseUtility
 import org.litepal.util.DBUtility
+import kotlin.concurrent.withLock
 
 /**
  * Allows developers to query tables with fluent style.
@@ -216,18 +215,17 @@ internal constructor() {
      * @return An object list with founded data from database, or an empty list.
      */
     fun <T> find(modelClass: Class<T>?, isEager: Boolean): List<T> {
-        return runBlocking {
-            mutex.withLock {
-                val queryHandler = QueryHandler(Connector.getDatabase())
-                val limit: String?
-                if (mOffset == null) {
-                    limit = mLimit
-                } else {
-                    if (mLimit == null) {
-                        mLimit = "0"
-                    }
-                    limit = "$mOffset,$mLimit"
+        return reentrantLock.withLock {
+            val queryHandler = QueryHandler(Connector.getDatabase())
+            val limit: String?
+            if (mOffset == null) {
+                limit = mLimit
+            } else {
+                if (mLimit == null) {
+                    mLimit = "0"
                 }
+                limit = "$mOffset,$mLimit"
+            }
                 return@withLock queryHandler.onFind(
                     modelClass,
                     mColumns,
@@ -236,7 +234,7 @@ internal constructor() {
                     limit,
                     isEager
                 )
-            }
+
         }
     }
 
@@ -248,13 +246,12 @@ internal constructor() {
     fun <T> findAsync(modelClass: Class<T>?, isEager: Boolean): FindMultiExecutor<T> {
         val executor = FindMultiExecutor<T>()
         val runnable = Runnable {
-            runBlocking {
-                mutex.withLock {
-                    val t = find(modelClass, isEager)
-                    if (executor.listener != null) {
-                        handler.post { executor.listener.onFinish(t) }
-                    }
+            reentrantLock.withLock {
+                val t = find(modelClass, isEager)
+                if (executor.listener != null) {
+                    handler.post { executor.listener.onFinish(t) }
                 }
+
             }
         }
         executor.submit(runnable)
@@ -305,21 +302,20 @@ internal constructor() {
      * @return An object with founded data from database, or null.
      */
     fun <T> findFirst(modelClass: Class<T>?, isEager: Boolean): T? {
-        return runBlocking {
-            mutex.withLock {
-                val limitTemp = mLimit
-                if ("0" != mLimit) { // If mLimit not equals to 0, set mLimit to 1 to find the first record.
-                    mLimit = "1"
-                }
-                val list = find(modelClass, isEager)
-                mLimit = limitTemp // Don't forget to change it back after finding operation.
-                if (list.isNotEmpty()) {
-                    if (list.size != 1) throw LitePalSupportException("Found multiple records while only one record should be found at most.")
-                    return@withLock list[0]
-                }
+        return reentrantLock.withLock {
+            val limitTemp = mLimit
+            if ("0" != mLimit) { // If mLimit not equals to 0, set mLimit to 1 to find the first record.
+                mLimit = "1"
+            }
+            val list = find(modelClass, isEager)
+            mLimit = limitTemp // Don't forget to change it back after finding operation.
+            if (list.isNotEmpty()) {
+                if (list.size != 1) throw LitePalSupportException("Found multiple records while only one record should be found at most.")
+                return@withLock list[0]
+            }
                 return@withLock null
             }
-        }
+
     }
 
     /**
@@ -330,13 +326,12 @@ internal constructor() {
     fun <T> findFirstAsync(modelClass: Class<T>?, isEager: Boolean): FindExecutor<T> {
         val executor = FindExecutor<T>()
         val runnable = Runnable {
-            runBlocking {
-                mutex.withLock {
-                    val t: T? = findFirst(modelClass, isEager)
-                    if (executor.listener != null) {
-                        handler.post { executor.listener.onFinish(t) }
-                    }
+            reentrantLock.withLock {
+                val t: T? = findFirst(modelClass, isEager)
+                if (executor.listener != null) {
+                    handler.post { executor.listener.onFinish(t) }
                 }
+
             }
         }
         executor.submit(runnable)
@@ -387,18 +382,17 @@ internal constructor() {
      * @return An object with founded data from database, or null.
      */
     fun <T> findLast(modelClass: Class<T>?, isEager: Boolean): T? {
-        return runBlocking {
-            mutex.withLock {
-                val orderByTemp = mOrderBy
-                val limitTemp = mLimit
-                if (TextUtils.isEmpty(mOffset) && TextUtils.isEmpty(mLimit)) { // If mOffset or mLimit is specified, we can't use the strategy in this block to speed up finding.
-                    if (TextUtils.isEmpty(mOrderBy)) {
-                        // If mOrderBy is null, we can use id desc order, then the first record will be the record value where want to find.
-                        mOrderBy = "id desc"
-                    } else {
-                        // If mOrderBy is not null, check if it ends with desc.
-                        if (mOrderBy!!.endsWith(" desc")) {
-                            // If mOrderBy ends with desc, then the last record of desc order will be the first record of asc order, so we remove the desc.
+        return reentrantLock.withLock {
+            val orderByTemp = mOrderBy
+            val limitTemp = mLimit
+            if (TextUtils.isEmpty(mOffset) && TextUtils.isEmpty(mLimit)) { // If mOffset or mLimit is specified, we can't use the strategy in this block to speed up finding.
+                if (TextUtils.isEmpty(mOrderBy)) {
+                    // If mOrderBy is null, we can use id desc order, then the first record will be the record value where want to find.
+                    mOrderBy = "id desc"
+                } else {
+                    // If mOrderBy is not null, check if it ends with desc.
+                    if (mOrderBy!!.endsWith(" desc")) {
+                        // If mOrderBy ends with desc, then the last record of desc order will be the first record of asc order, so we remove the desc.
                             mOrderBy = mOrderBy!!.replace(" desc", "")
                         } else {
                             // If mOrderBy not ends with desc, then the last record of asc order will be the first record of desc order, so we add the desc.
@@ -416,7 +410,7 @@ internal constructor() {
                 return@withLock if (size > 0) {
                     list[size - 1]
                 } else null
-            }
+
         }
     }
 
@@ -428,13 +422,12 @@ internal constructor() {
     fun <T> findLastAsync(modelClass: Class<T>?, isEager: Boolean): FindExecutor<T> {
         val executor = FindExecutor<T>()
         val runnable = Runnable {
-            runBlocking {
-                mutex.withLock {
-                    val t: T? = findLast(modelClass, isEager)
-                    if (executor.listener != null) {
-                        handler.post { executor.listener.onFinish(t) }
-                    }
+            reentrantLock.withLock {
+                val t: T? = findLast(modelClass, isEager)
+                if (executor.listener != null) {
+                    handler.post { executor.listener.onFinish(t) }
                 }
+
             }
         }
         executor.submit(runnable)
@@ -491,12 +484,11 @@ internal constructor() {
      * @return Count of the specified table.
      */
     fun count(tableName: String?): Int {
-        return runBlocking {
-            mutex.withLock {
-                val queryHandler = QueryHandler(Connector.getDatabase())
-                return@withLock queryHandler.onCount(tableName, mConditions)
-            }
+        return reentrantLock.withLock {
+            val queryHandler = QueryHandler(Connector.getDatabase())
+            return@withLock queryHandler.onCount(tableName, mConditions)
         }
+
     }
 
     /**
@@ -507,13 +499,12 @@ internal constructor() {
     fun countAsync(tableName: String?): CountExecutor {
         val executor = CountExecutor()
         val runnable = Runnable {
-            runBlocking {
-                mutex.withLock {
-                    val count = count(tableName)
-                    if (executor.listener != null) {
-                        handler.post { executor.listener.onFinish(count) }
-                    }
+            reentrantLock.withLock {
+                val count = count(tableName)
+                if (executor.listener != null) {
+                    handler.post { executor.listener.onFinish(count) }
                 }
+
             }
         }
         executor.submit(runnable)
@@ -575,12 +566,11 @@ internal constructor() {
      * @return The average value on a given column.
      */
     fun average(tableName: String?, column: String?): Double {
-        return runBlocking {
-            mutex.withLock {
-                val queryHandler = QueryHandler(Connector.getDatabase())
-                queryHandler.onAverage(tableName, column, mConditions)
-            }
+        return reentrantLock.withLock {
+            val queryHandler = QueryHandler(Connector.getDatabase())
+            queryHandler.onAverage(tableName, column, mConditions)
         }
+
     }
 
     /**
@@ -591,12 +581,10 @@ internal constructor() {
     fun averageAsync(tableName: String?, column: String?): AverageExecutor {
         val executor = AverageExecutor()
         val runnable = Runnable {
-            runBlocking {
-                mutex.withLock {
-                    val average = average(tableName, column)
-                    if (executor.listener != null) {
-                        handler.post { executor.listener.onFinish(average) }
-                    }
+            reentrantLock.withLock {
+                val average = average(tableName, column)
+                if (executor.listener != null) {
+                    handler.post { executor.listener.onFinish(average) }
                 }
             }
         }
@@ -670,12 +658,11 @@ internal constructor() {
      * @return The maximum value on a given column.
      */
     fun <T> max(tableName: String?, columnName: String?, columnType: Class<T>?): T {
-        return runBlocking {
-            mutex.withLock {
-                val queryHandler = QueryHandler(Connector.getDatabase())
-                return@withLock queryHandler.onMax(tableName, columnName, mConditions, columnType)
-            }
+        return reentrantLock.withLock {
+            val queryHandler = QueryHandler(Connector.getDatabase())
+            return@withLock queryHandler.onMax(tableName, columnName, mConditions, columnType)
         }
+
     }
 
     /**
@@ -690,13 +677,12 @@ internal constructor() {
     ): FindExecutor<T> {
         val executor = FindExecutor<T>()
         val runnable = Runnable {
-            runBlocking {
-                mutex.withLock {
-                    val t = max(tableName, columnName, columnType)
-                    if (executor.listener != null) {
-                        handler.post { executor.listener.onFinish(t) }
-                    }
+            reentrantLock.withLock {
+                val t = max(tableName, columnName, columnType)
+                if (executor.listener != null) {
+                    handler.post { executor.listener.onFinish(t) }
                 }
+
             }
         }
         executor.submit(runnable)
@@ -769,12 +755,11 @@ internal constructor() {
      * @return The minimum value on a given column.
      */
     fun <T> min(tableName: String?, columnName: String?, columnType: Class<T>?): T {
-        return runBlocking {
-            mutex.withLock {
-                val queryHandler = QueryHandler(Connector.getDatabase())
-                return@withLock queryHandler.onMin(tableName, columnName, mConditions, columnType)
-            }
+        return reentrantLock.withLock {
+            val queryHandler = QueryHandler(Connector.getDatabase())
+            return@withLock queryHandler.onMin(tableName, columnName, mConditions, columnType)
         }
+
     }
 
     /**
@@ -789,13 +774,12 @@ internal constructor() {
     ): FindExecutor<T> {
         val executor = FindExecutor<T>()
         val runnable = Runnable {
-            runBlocking {
-                mutex.withLock {
-                    val t = min(tableName, columnName, columnType)
-                    if (executor.listener != null) {
-                        handler.post { executor.listener.onFinish(t) }
-                    }
+            reentrantLock.withLock {
+                val t = min(tableName, columnName, columnType)
+                if (executor.listener != null) {
+                    handler.post { executor.listener.onFinish(t) }
                 }
+
             }
         }
         executor.submit(runnable)
@@ -868,11 +852,10 @@ internal constructor() {
      * @return The sum value on a given column.
      */
     fun <T> sum(tableName: String?, columnName: String?, columnType: Class<T>?): T {
-        return runBlocking {
-            mutex.withLock {
-                val queryHandler = QueryHandler(Connector.getDatabase())
-                return@withLock queryHandler.onSum(tableName, columnName, mConditions, columnType)
-            }
+        return reentrantLock.withLock {
+            val queryHandler = QueryHandler(Connector.getDatabase())
+            return@withLock queryHandler.onSum(tableName, columnName, mConditions, columnType)
+
         }
     }
 
@@ -888,13 +871,12 @@ internal constructor() {
     ): FindExecutor<T> {
         val executor = FindExecutor<T>()
         val runnable = Runnable {
-            runBlocking {
-                mutex.withLock {
-                    val t = sum(tableName, columnName, columnType)
-                    if (executor.listener != null) {
-                        handler.post { executor.listener.onFinish(t) }
-                    }
+            reentrantLock.withLock {
+                val t = sum(tableName, columnName, columnType)
+                if (executor.listener != null) {
+                    handler.post { executor.listener.onFinish(t) }
                 }
+
             }
         }
         executor.submit(runnable)

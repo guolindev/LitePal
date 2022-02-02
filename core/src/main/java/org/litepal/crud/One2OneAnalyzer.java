@@ -16,16 +16,16 @@
 
 package org.litepal.crud;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.litepal.LitePalBase;
 import org.litepal.crud.model.AssociationsInfo;
 import org.litepal.util.DBUtility;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * Deals analysis work when comes to two models are associated with One2One
  * associations.
- * 
+ *
  * @author Tony Green
  * @since 1.1
  */
@@ -105,10 +105,10 @@ public class One2OneAnalyzer extends AssociationsAnalyzer {
 		if (associatedModel.isSaved()) {
 			// use to update associated table after saving
 			baseObj.addAssociatedModelWithFK(associatedModel.getTableName(),
-					associatedModel.getBaseObjId());
+					associatedModel.baseObjId);
 			// use to add foreign key value while saving
 			baseObj.addAssociatedModelWithoutFK(associatedModel.getTableName(),
-					associatedModel.getBaseObjId());
+					associatedModel.baseObjId);
 		}
 	}
 

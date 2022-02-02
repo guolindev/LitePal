@@ -83,7 +83,7 @@ class LitePalOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         Generator.create(db);
-        final DatabaseListener listener = Operator.getDBListener();
+        final DatabaseListener listener = Operator.dBListener;
         if (listener != null) {
             LitePalApplication.sHandler.post(new Runnable() {
                 @Override
@@ -98,7 +98,7 @@ class LitePalOpenHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, final int oldVersion, final int newVersion) {
         Generator.upgrade(db);
         SharedUtil.updateVersion(LitePalAttr.getInstance().getExtraKeyName(), newVersion);
-        final DatabaseListener listener = Operator.getDBListener();
+        final DatabaseListener listener = Operator.dBListener;
         if (listener != null) {
             LitePalApplication.sHandler.post(new Runnable() {
                 @Override

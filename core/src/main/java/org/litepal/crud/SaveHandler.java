@@ -260,7 +260,7 @@ public class SaveHandler extends DataHandler {
 	private void updating(LitePalSupport baseObj, ContentValues values) {
 	    if (values.size() > 0) {
             mDatabase.update(baseObj.getTableName(), values, "id = ?",
-                    new String[] { String.valueOf(baseObj.getBaseObjId()) });
+                    new String[]{String.valueOf(baseObj.baseObjId)});
         }
 	}
 
@@ -274,7 +274,7 @@ public class SaveHandler extends DataHandler {
 	 */
 	private void afterUpdate(LitePalSupport baseObj, List<Field> supportedGenericFields)
             throws InvocationTargetException, IllegalAccessException {
-        updateGenericTables(baseObj, supportedGenericFields, baseObj.getBaseObjId());
+        updateGenericTables(baseObj, supportedGenericFields, baseObj.baseObjId);
         updateAssociatedTableWithFK(baseObj);
         insertIntermediateJoinTableValue(baseObj, true);
         clearFKValueInAssociatedTable(baseObj);
@@ -390,7 +390,7 @@ public class SaveHandler extends DataHandler {
 		for (String associatedTableName : associatedModelMap.keySet()) {
 			values.clear();
 			String fkName = getForeignKeyColumnName(baseObj.getTableName());
-			values.put(fkName, baseObj.getBaseObjId());
+            values.put(fkName, baseObj.baseObjId);
 			Set<Long> ids = associatedModelMap.get(associatedTableName);
 			if (ids != null && !ids.isEmpty()) {
 				mDatabase.update(associatedTableName, values, getWhereOfIdsWithOr(ids), null);
@@ -411,7 +411,7 @@ public class SaveHandler extends DataHandler {
 			String fkColumnName = getForeignKeyColumnName(baseObj.getTableName());
 			ContentValues values = new ContentValues();
 			values.putNull(fkColumnName);
-			String whereClause = fkColumnName + " = " + baseObj.getBaseObjId();
+            String whereClause = fkColumnName + " = " + baseObj.baseObjId;
 			mDatabase.update(associatedTableName, values, whereClause, null);
 		}
 	}
@@ -431,15 +431,15 @@ public class SaveHandler extends DataHandler {
 		for (String associatedTableName : associatedIdsM2M.keySet()) {
 			String joinTableName = getIntermediateTableName(baseObj, associatedTableName);
 			if (isUpdate) {
-				mDatabase.delete(joinTableName, getWhereForJoinTableToDelete(baseObj),
-						new String[] { String.valueOf(baseObj.getBaseObjId()) });
+                mDatabase.delete(joinTableName, getWhereForJoinTableToDelete(baseObj),
+                        new String[]{String.valueOf(baseObj.baseObjId)});
 			}
 			List<Long> associatedIdsM2MSet = associatedIdsM2M.get(associatedTableName);
 			if (associatedIdsM2MSet != null) {
 				for (long associatedId : associatedIdsM2MSet) {
-					values.clear();
-					values.put(getForeignKeyColumnName(baseObj.getTableName()), baseObj.getBaseObjId());
-					values.put(getForeignKeyColumnName(associatedTableName), associatedId);
+                    values.clear();
+                    values.put(getForeignKeyColumnName(baseObj.getTableName()), baseObj.baseObjId);
+                    values.put(getForeignKeyColumnName(associatedTableName), associatedId);
 					mDatabase.insert(joinTableName, null, values);
 				}
 			}
@@ -514,7 +514,7 @@ public class SaveHandler extends DataHandler {
                         if (dataSupport == null) {
                             continue;
                         }
-                        long baseObjId = dataSupport.getBaseObjId();
+                        long baseObjId = dataSupport.baseObjId;
                         if (baseObjId <= 0) {
                             continue;
                         }

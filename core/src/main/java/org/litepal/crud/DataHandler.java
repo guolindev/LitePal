@@ -20,6 +20,19 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.SparseArray;
+
+import org.litepal.LitePalBase;
+import org.litepal.Operator;
+import org.litepal.annotation.Encrypt;
+import org.litepal.crud.model.AssociationsInfo;
+import org.litepal.exceptions.DatabaseGenerateException;
+import org.litepal.exceptions.LitePalSupportException;
+import org.litepal.tablemanager.model.GenericModel;
+import org.litepal.util.BaseUtility;
+import org.litepal.util.Const;
+import org.litepal.util.DBUtility;
+import org.litepal.util.cipher.CipherUtil;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -32,17 +45,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import org.litepal.LitePalBase;
-import org.litepal.Operator;
-import org.litepal.annotation.Encrypt;
-import org.litepal.crud.model.AssociationsInfo;
-import org.litepal.exceptions.DatabaseGenerateException;
-import org.litepal.exceptions.LitePalSupportException;
-import org.litepal.tablemanager.model.GenericModel;
-import org.litepal.util.BaseUtility;
-import org.litepal.util.Const;
-import org.litepal.util.DBUtility;
-import org.litepal.util.cipher.CipherUtil;
 
 import static org.litepal.util.BaseUtility.changeCase;
 
@@ -757,8 +759,8 @@ abstract class DataHandler extends LitePalBase {
                 getMethodName = genericModel.getGetMethodName();
             }
             try {
-                cursor = mDatabase.query(tableName, null, genericValueIdColumnName + " = ?",
-                        new String[]{ String.valueOf(baseObj.getBaseObjId()) }, null, null, null);
+				cursor = mDatabase.query(tableName, null, genericValueIdColumnName + " = ?",
+						new String[]{String.valueOf(baseObj.baseObjId)}, null, null, null);
                 if (cursor.moveToFirst()) {
                     do {
                         int columnIndex = cursor.getColumnIndex(BaseUtility.changeCase(genericValueColumnName));
@@ -1237,7 +1239,7 @@ abstract class DataHandler extends LitePalBase {
 							.append(" b on a.id = b.").append(associatedTableName).append("_id")
 							.append(" where b.").append(tableName).append("_id = ?");
 					cursor = Operator.findBySQL(BaseUtility.changeCase(sql.toString()),
-							String.valueOf(baseObj.getBaseObjId()));
+							String.valueOf(baseObj.baseObjId));
 				} else {
 					String foreignKeyColumn = getForeignKeyColumnName(DBUtility
 							.getTableNameByClassName(info.getSelfClassName()));
@@ -1245,7 +1247,7 @@ abstract class DataHandler extends LitePalBase {
 							.getTableNameByClassName(associatedClassName);
 					cursor = mDatabase.query(BaseUtility.changeCase(associatedTableName), null,
 							foreignKeyColumn + "=?",
-							new String[] { String.valueOf(baseObj.getBaseObjId()) }, null, null,
+							new String[]{String.valueOf(baseObj.baseObjId)}, null, null,
 							null, null);
 				}
 				if (cursor != null && cursor.moveToFirst()) {

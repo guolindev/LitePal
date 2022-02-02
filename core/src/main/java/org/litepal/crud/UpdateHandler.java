@@ -145,7 +145,7 @@ public class UpdateHandler extends DataHandler {
                 ids = new long[list.size()];
                 for (int i = 0; i < ids.length; i++) {
                     LitePalSupport dataSupport = list.get(i);
-                    ids[i] = dataSupport.getBaseObjId();
+                    ids[i] = dataSupport.baseObjId;
                 }
                 updateGenericTables(baseObj, supportedGenericFields, ids);
             }
@@ -355,7 +355,7 @@ public class UpdateHandler extends DataHandler {
                                 if (dataSupport == null) {
                                     continue;
                                 }
-                                long baseObjId = dataSupport.getBaseObjId();
+                                long baseObjId = dataSupport.baseObjId;
                                 if (baseObjId <= 0) {
                                     continue;
                                 }
