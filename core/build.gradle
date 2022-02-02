@@ -37,8 +37,6 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1'
 }
 
-apply plugin: 'com.github.panpf.bintray-publish'
-
 allprojects {
     tasks.withType(Javadoc) {
         options.addStringOption('Xdoclint:none', '-quiet')
@@ -55,11 +53,5 @@ buildscript {
     }
 }
 
-publish {
-    userOrg = 'sinyu890807'
-    groupId = 'org.litepal.guolindev'
-    artifactId = 'core'
-    publishVersion = '3.2.3'
-    desc = 'An Android library that allows developers to use SQLite database extremely easy'
-    website = 'https://github.com/LitePalFramework/LitePal'
-}
+
+apply from: 'https://raw.githubusercontent.com/Ayagikei/mvn-repo/main/gradle-mvn-push.gradle'
