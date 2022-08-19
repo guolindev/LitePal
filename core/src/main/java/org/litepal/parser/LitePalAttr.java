@@ -86,15 +86,16 @@ public final class LitePalAttr {
 		if (litePalAttr == null) {
 			synchronized (LitePalAttr.class) {
 				if (litePalAttr == null) {
-					litePalAttr = new LitePalAttr();
-                    loadLitePalXMLConfiguration();
+					LitePalAttr litePalAttrTemp = new LitePalAttr();
+					loadLitePalXMLConfiguration(litePalAttrTemp);
+					litePalAttr = litePalAttrTemp;
 				}
 			}
 		}
 		return litePalAttr;
 	}
 
-	private static void loadLitePalXMLConfiguration() {
+	private static void loadLitePalXMLConfiguration(LitePalAttr litePalAttr) {
         if (BaseUtility.isLitePalXMLExists()) {
             LitePalConfig config = LitePalParser.parseLitePalConfiguration();
             litePalAttr.setDbName(config.getDbName());
@@ -192,7 +193,7 @@ public final class LitePalAttr {
 	 */
 	public void checkSelfValid() {
 		if (TextUtils.isEmpty(dbName)) {
-            loadLitePalXMLConfiguration();
+			loadLitePalXMLConfiguration(this);
             if (TextUtils.isEmpty(dbName)) {
                 throw new InvalidAttributesException(
                         InvalidAttributesException.DBNAME_IS_EMPTY_OR_NOT_DEFINED);
